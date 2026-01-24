@@ -1,0 +1,7 @@
+# ห้าม commit credentials
+.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
