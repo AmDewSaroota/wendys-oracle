@@ -1,0 +1,116 @@
+<!--
+  EcoStove - Auto-fetch Sensor Button
+  เพิ่มโค้ดนี้ในเว็บ biomassstove
+
+  วิธีใช้:
+  1. Copy ส่วน HTML ไปวางในหน้าที่ต้องการ
+  2. Copy ส่วน JavaScript ไปวางก่อน </body>
+  3. แก้ SUPABASE_URL ให้ตรงกับ project
+-->
+
+<!-- ===== HTML: ปุ่มดึงข้อมูลจาก Sensor ===== -->
+<div class="sensor-fetch-section p-4 bg-green-50 rounded-lg mb-4">
+  <h3 class="text-lg font-bold mb-2">📡 ดึงข้อมูลจาก Sensor</h3>
+
+  <div class="grid grid-cols-2 gap-2 mb-3">
+    <div>
+      <label class="text-sm">เลือก Device:</label>
+      <select id="sensorDeviceSelect" class="w-full p-2 border rounded">
+        <option value="a3b9c2e4bdfe69ad7ekytn">MT29 - บ้าน 1</option>
+        <!-- เพิ่ม device อื่นๆ ที่นี่ -->
+      </select>
+    </div>
+    <div>
+      <label class="text-sm">ประเภทเตา:</label>
+      <select id="stoveTypeSelect" class="w-full p-2 border rounded">
+        <option value="eco">เตา Eco</option>
+        <option value="traditional">เตาแบบเดิม</option>
+      </select>
+    </div>
+  </div>
+
+  <button id="fetchSensorBtn" onclick="fetchFromSensor()"
+    class="w-full bg-green-500 text-white py-3 px-4 rounded-lg font-bold hover:bg-green-600">
+    📡 ดึงค่าจาก Sensor
+  </button>
+
+  <div id="sensorResult" class="mt-3 hidden">
+    <div class="bg-white p-3 rounded border">
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div>
+          <div class="text-2xl font-bold text-blue-600" id="resultPM25">--</div>
+          <div class="text-xs">PM2.5</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-orange-600" id="resultCO2">--</div>
+          <div class="text-xs">CO2</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-red-600" id="resultTemp">--</div>
+          <div class="text-xs">Temp</div>
+        </div>
+      </div>
+      <div class="text-center text-green-600 mt-2" id="resultMessage"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== JavaScript: ฟังก์ชันดึงข้อมูล ===== -->
+<script>
+// แก้ URL นี้ให้ตรงกับ Supabase project
+const SUPABASE_FUNCTION_URL = 'https://zijybzjstjlqvhmckgor.supabase.co/functions/v1/fetch-sensor';
+
+async function fetchFromSensor() {
+  const btn = document.getElementById('fetchSensorBtn');
+  const resultDiv = document.getElementById('sensorResult');
+
+  // Get selected values
+  const deviceId = document.getElementById('sensorDeviceSelect').value;
+  const stoveType = document.getElementById('stoveTypeSelect').value;
+
+  // Show loading
+  btn.disabled = true;
+  btn.textContent = '⏳ กำลังดึงข้อมูล...';
+  resultDiv.classList.add('hidden');
+
+  try {
+    const response = await fetch(SUPABASE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        device_id: deviceId,
+        stove_type: stoveType,
+        // volunteer_id: currentVolunteerId, // ถ้ามี login
+        // subject_id: selectedSubjectId,    // ถ้าเลือกบ้าน
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Show results
+      document.getElementById('resultPM25').textContent = data.readings.pm25 ?? '--';
+      document.getElementById('resultCO2').textContent = data.readings.co2 ?? '--';
+      document.getElementById('resultTemp').textContent = (data.readings.temperature ?? '--') + '°C';
+      document.getElementById('resultMessage').textContent = `✅ บันทึกแล้ว (ID: ${data.record_id})`;
+      resultDiv.classList.remove('hidden');
+
+      // Refresh data table if exists
+      if (typeof loadData === 'function') {
+        loadData();
+      }
+    } else {
+      alert('❌ เกิดข้อผิดพลาด: ' + (data.error || 'Unknown error'));
+    }
+
+  } catch (err) {
+    alert('❌ ไม่สามารถเชื่อมต่อได้: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📡 ดึงค่าจาก Sensor';
+  }
+}
+</script>
