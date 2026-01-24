@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoStove - โครงการนวัตกรรมเพื่ออากาศสะอาด</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
+        :root { --dark-green: #064e3b; --navy: #0f172a; --bg-tint: #f0f7f4; }
+        body { font-family: 'Kanit', sans-serif; background-color: var(--bg-tint); color: var(--navy); min-height: 100vh; }
+        .nav-active { border-bottom: 3px solid var(--dark-green); color: var(--dark-green); font-weight: 600; }
+        #map { height: 500px; width: 100%; border-radius: 2rem; z-index: 10; border: 1px solid rgba(15, 23, 42, 0.1); }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .tab-active { background-color: var(--dark-green); color: white; box-shadow: 0 10px 15px -3px rgba(6, 78, 59, 0.2); }
+
+        .card-styled {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-bottom: 4px solid #fb923c;
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        .card-styled:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.1); border-radius: 10px; }
+
+        .ghost-icon {
+            position: absolute;
+            right: -15px;
+            bottom: -20px;
+            font-size: 85px;
+            opacity: 0.15;
+            transform: rotate(-15deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Legend Style สำหรับแผนที่ */
+        .info.legend {
+            background: white;
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 11px;
+            line-height: 1.6;
+            color: #333;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .legend i {
+            width: 12px;
+            height: 12px;
+            float: left;
+            margin-right: 8px;
+            margin-top: 3px;
+            border-radius: 50%;
+        }
+
+        .custom-select { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.25rem 1.25rem; }
+
+        .stove-option input:checked + label {
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        #stove-old:checked + label {
+            background: linear-gradient(135deg, #ea580c, #c2410c) !important;
+            border-color: #ea580c !important;
+        }
+        #stove-eco:checked + label {
+            background: linear-gradient(135deg, #059669, #047857) !important;
+            border-color: #059669 !important;
+        }
+        .mode-btn-active { background-color: var(--dark-green); color: white; }
+
+        /* Screen reader only - visually hidden but focusable */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Validation shake animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+        .shake-error {
+            animation: shake 0.6s ease-in-out;
+        }
+        .field-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+            background-color: #fef2f2 !important;
+        }
+        .field-error-label {
+            color: #ef4444 !important;
+        }
+        .stove-error .stove-option label {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+
+        /* Sensor fetch animation */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+        }
+        .sensor-fetching {
+            animation: pulse-glow 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <nav class="sticky top-0 z-50 glass shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-[#064e3b] rounded-xl flex items-center justify-center shadow-lg">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-navy leading-tight">Biomass Stove: <span class="text-[#064e3b]">Alternative Energy</span></span>
+                    <span class="text-[13px] text-slate-500 font-medium -mt-0.5 tracking-wide">พลังงานทางเลือกเพื่อยกระดับคุณภาพชีวิต</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex space-x-10">
+                <button onclick="switchView('viewer')" id="nav-viewer" class="nav-active py-2">สรุปผล</button>
+                <button onclick="switchView('entry')" id="nav-entry" class="text-slate-500 hover:text-[#064e3b] font-medium py-2">บันทึกข้อมูล</button>
+                <button onclick="promptAdmin()" id="nav-admin" class="text-slate-500 hover:text-[#064e3b] font-medium py-2">จัดการระบบ</button>
+            </div>
+
+            <div class="md:hidden">
+                <button onclick="toggleMobileMenu()" class="p-2 text-slate-600 outline-none">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-b border-slate-100 p-6 shadow-xl space-y-4">
+            <button onclick="switchView('viewer'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-slate-700">สรุปผล</button>
+            <button onclick="switchView('entry'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-slate-700">บันทึกข้อมูล</button>
+            <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-[#064e3b] border-t pt-4">จัดการระบบ (Admin)</button>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-10">
+        <!-- Dashboard View -->
+        <section id="view-viewer" class="space-y-8 animate-in fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-[#0f172a]">Project Overview</h1>
+                    <p class="text-slate-400 text-sm">ภาพรวมโครงการเตาชีวมวล 9 จังหวัดภาคเหนือ</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex bg-white/50 p-1 rounded-2xl border border-slate-200 shadow-inner">
+                        <button onclick="switchDashboardMode('basic')" id="mode-basic" class="dashboard-mode-btn px-5 py-2 rounded-xl font-bold text-sm bg-[#064e3b] text-white">เบื้องต้น</button>
+                        <button onclick="switchDashboardMode('research')" id="mode-research" class="dashboard-mode-btn px-5 py-2 rounded-xl font-bold text-sm text-slate-500">เชิงลึก</button>
+                    </div>
+                    <div id="province-filters-container" class="w-48"></div>
+                </div>
+            </div>
+
+            <!-- Basic Mode Stats -->
+            <div id="basic-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="stat-card card-styled p-6 rounded-[2rem]">
+                    <div class="ghost-icon">🌳</div>
+                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">ลด CO2 สะสม (Eco)</p>
+                    <h3 id="stat-trees" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
+                </div>
+                <div class="stat-card card-styled p-6 rounded-[2rem]">
+                    <div class="ghost-icon">📉</div>
+                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">PM 2.5 ลดลง (%)</p>
+                    <h3 id="stat-pm-reduction" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
+                </div>
+                <div class="stat-card card-styled p-6 rounded-[2rem]">
+                    <div class="ghost-icon">💰</div>
+                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">ประหยัดเชื้อเพลิง</p>
+                    <h3 id="stat-money-saved" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
+                </div>
+                <div class="stat-card card-styled p-6 rounded-[2rem]">
+                    <div class="ghost-icon">🏡</div>
+                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">กลุ่มตัวอย่าง</p>
+                    <h3 id="stat-families" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
+                </div>
+            </div>
+
+            <!-- Data Collection Duration -->
+            <div id="basic-duration" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                <div class="card-styled p-4 rounded-2xl border-l-4 border-slate-400">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">ระยะเวลาเก็บข้อมูลรวม</p>
+                            <h3 id="stat-duration-all" class="text-lg font-bold text-navy">-- วัน</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-l-4 border-amber-400">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-lg">🪵</div>
+                        <div>
+                            <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider">ระยะเวลาเตาเดิม</p>
+                            <h3 id="stat-duration-old" class="text-lg font-bold text-navy">-- วัน</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-l-4 border-emerald-400">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-lg">✨</div>
+                        <div>
+                            <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">ระยะเวลา EcoStove</p>
+                            <h3 id="stat-duration-eco" class="text-lg font-bold text-navy">-- วัน</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research Mode Stats (Hidden by default) -->
+            <div id="research-stats" class="hidden space-y-6">
+                <!-- Data Count Info -->
+                <div id="research-data-count" class="text-[13px] text-slate-400 text-right"></div>
+                <!-- Row 1: Primary Metrics -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                        <p class="text-[12px] font-bold text-red-600 uppercase tracking-wider">PM 2.5</p>
+                        <h3 id="r-stat-pm25" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
+                        <p id="r-stat-pm25-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
+                        <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">PM 10</p>
+                        <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
+                        <p id="r-stat-pm10-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                        <p class="text-[12px] font-bold text-yellow-600 uppercase tracking-wider">PM 1.0</p>
+                        <h3 id="r-stat-pm1" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
+                        <p id="r-stat-pm1-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
+                        <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                        <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
+                        <p id="r-stat-co2-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-blue-400">
+                        <p class="text-[12px] font-bold text-blue-600 uppercase tracking-wider">CO</p>
+                        <h3 id="r-stat-co" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
+                        <p id="r-stat-co-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
+                        <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                        <h3 id="r-stat-aqi" class="text-xl font-bold text-navy">--</h3>
+                        <p id="r-stat-aqi-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    </div>
+                </div>
+
+                <!-- Row 2: Secondary Metrics -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">🌡️ อุณหภูมิ</p>
+                        <h3 id="r-stat-temp" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">°C</span></h3>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">💧 ความชื้น</p>
+                        <h3 id="r-stat-humidity" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">%</span></h3>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">HCHO</p>
+                        <h3 id="r-stat-hcho" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                    </div>
+                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">TVOC</p>
+                        <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                    </div>
+                </div>
+
+                <!-- Research Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-red-300">
+                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่ม PM (เตาเดิม vs EcoStove)</h4>
+                        <div class="h-[200px]"><canvas id="pmGroupChart"></canvas></div>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-300">
+                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่มก๊าซ (เตาเดิม vs EcoStove)</h4>
+                        <div class="h-[200px]"><canvas id="gasGroupChart"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Reduction Summary Table -->
+                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-400">
+                    <h4 class="font-bold text-sm mb-4 text-navy">📊 สรุป % การลดมลพิษ (EcoStove vs เตาเดิม)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="p-3 text-left font-bold text-navy">พารามิเตอร์</th>
+                                    <th class="p-3 text-center font-bold text-navy">เตาเดิม (เฉลี่ย)</th>
+                                    <th class="p-3 text-center font-bold text-navy">EcoStove (เฉลี่ย)</th>
+                                    <th class="p-3 text-center font-bold text-navy">% ลดลง</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reduction-table-body" class="divide-y">
+                                <tr><td colspan="4" class="p-4 text-center text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map and sidebar section -->
+            <div id="map-sidebar-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 card-styled p-2 rounded-[2.5rem] border-bottom-0"><div id="map"></div></div>
+                <!-- Basic mode sidebar -->
+                <div id="basic-sidebar" class="space-y-6">
+                    <div class="bg-[#0f172a] p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border-b-4 border-orange-400">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🏆</div>
+                        <h4 class="font-bold mb-6 flex items-center gap-2 text-emerald-400">🏆 อากาศดีที่สุด (Eco)</h4>
+                        <div id="province-ranking" class="space-y-4 relative z-10"></div>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-600">
+                        <h4 class="font-bold text-sm mb-4 text-navy">กิจกรรมล่าสุด</h4>
+                        <div id="live-activity-feed" class="space-y-3 max-h-[160px] overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-slate-200">
+                        <h4 class="font-bold text-sm mb-4 text-navy">เปรียบเทียบมลพิษ</h4>
+                        <div class="h-[150px]"><canvas id="comparisonChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research mode: Full width map (hidden by default) -->
+            <div id="research-map-section" class="hidden">
+                <div class="card-styled p-2 rounded-[2.5rem] border-bottom-0"><div id="map-research" style="height: 500px;"></div></div>
+            </div>
+        </section>
+
+        <!-- Entry View -->
+        <section id="view-entry" class="hidden max-w-2xl mx-auto space-y-8 animate-in slide-in-from-bottom-5">
+            <div class="card-styled p-8 md:p-12 rounded-[3rem] shadow-2xl border-b-4 border-emerald-500">
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-bold text-navy">บันทึกข้อมูล</h2>
+                    <p class="text-slate-500 mt-2 text-sm">เลือกอาสาสมัคร แล้วเลือกบ้านที่จะบันทึก</p>
+                </div>
+                <form id="entryForm" class="space-y-8">
+                    <!-- Step 1: เลือกอาสาสมัคร -->
+                    <div class="space-y-3">
+                        <label class="text-[12px] font-bold text-[#064e3b] ml-1 uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-6 h-6 bg-[#064e3b] text-white rounded-full flex items-center justify-center text-[12px]">1</span>
+                            เลือกอาสาสมัคร
+                        </label>
+                        <select id="entry-volunteer" class="w-full p-4 rounded-2xl border bg-white shadow-sm outline-none focus:ring-2 focus:ring-[#064e3b] transition-all text-lg" required onchange="loadVolunteerDevices(this.value)">
+                            <option value="">-- ระบุชื่ออาสาสมัคร --</option>
+                        </select>
+                    </div>
+
+                    <!-- Step 2: เลือกบ้าน/เครื่องวัด (แสดงเป็นการ์ด) -->
+                    <div id="devices-section" class="hidden space-y-3">
+                        <label class="text-[12px] font-bold text-[#064e3b] ml-1 uppercase tracking-widest flex items-center gap-2">
+                            <span class="w-6 h-6 bg-[#064e3b] text-white rounded-full flex items-center justify-center text-[12px]">2</span>
+                            เลือกบ้านที่จะบันทึก
+                        </label>
+                        <div id="devices-list-entry" class="grid grid-cols-1 gap-4">
+                            <!-- จะถูกเติมโดย JS -->
+                        </div>
+                        <input type="hidden" id="entry-subject" required>
+                        <input type="hidden" id="entry-device">
+                    </div>
+
+                    <!-- Step 3: เลือกประเภทเตาและอัปโหลด (แสดงหลังเลือกบ้าน) -->
+                    <div id="upload-section" class="hidden space-y-6">
+                        <!-- ข้อมูลบ้านที่เลือก -->
+                        <div id="selected-house-info" class="p-5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-[12px] text-emerald-600 font-bold uppercase tracking-widest">บ้านที่เลือก</p>
+                                    <p id="selected-house-name" class="text-xl font-bold text-navy"></p>
+                                    <p id="selected-device-name" class="text-[13px] text-slate-500"></p>
+                                </div>
+                                <button type="button" onclick="resetHouseSelection()" class="text-slate-400 hover:text-red-500 text-xl">✕</button>
+                            </div>
+                        </div>
+
+                        <!-- เลือกประเภทเตา -->
+                        <div class="space-y-3">
+                            <label class="text-[12px] font-bold text-[#064e3b] ml-1 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-6 h-6 bg-[#064e3b] text-white rounded-full flex items-center justify-center text-[12px]">3</span>
+                                ประเภทเตาที่ใช้ขณะวัด
+                            </label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="stove-option">
+                                    <input type="radio" name="stove_type" id="stove-old" value="old" class="sr-only peer">
+                                    <label for="stove-old" class="block text-center py-5 rounded-2xl bg-white border-2 border-slate-200 text-slate-500 font-bold cursor-pointer transition-all hover:border-orange-300 hover:bg-orange-50 peer-focus:ring-2 peer-focus:ring-orange-400">
+                                        <span class="text-3xl block mb-2">🪵</span>
+                                        <span class="text-sm">เตาฟืนเดิม</span>
+                                    </label>
+                                </div>
+                                <div class="stove-option">
+                                    <input type="radio" name="stove_type" id="stove-eco" value="eco" class="sr-only peer">
+                                    <label for="stove-eco" class="block text-center py-5 rounded-2xl bg-white border-2 border-slate-200 text-slate-500 font-bold cursor-pointer transition-all hover:border-emerald-300 hover:bg-emerald-50 peer-focus:ring-2 peer-focus:ring-emerald-400">
+                                        <span class="text-3xl block mb-2">✨</span>
+                                        <span class="text-sm">EcoStove</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: นำเข้าข้อมูล -->
+                        <div class="space-y-3">
+                            <label class="text-[12px] font-bold text-[#064e3b] ml-1 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-6 h-6 bg-[#064e3b] text-white rounded-full flex items-center justify-center text-[12px]">4</span>
+                                นำเข้าข้อมูลจาก Tuya
+                            </label>
+
+                            <!-- โหมดอัปโหลด (เพิ่มปุ่ม Sensor) -->
+                            <div class="flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200">
+                                <button type="button" onclick="switchEntryMode('sensor')" id="mode-btn-sensor" class="flex-1 py-3 rounded-xl font-bold text-[13px] transition-all mode-btn-active">📡 ดึงจาก Sensor</button>
+                                <button type="button" onclick="switchEntryMode('file')" id="mode-btn-file" class="flex-1 py-3 rounded-xl font-bold text-[13px] transition-all text-slate-500 hover:text-navy">📁 อัปโหลดไฟล์</button>
+                                <button type="button" onclick="switchEntryMode('manual')" id="mode-btn-manual" class="flex-1 py-3 rounded-xl font-bold text-[13px] transition-all text-slate-500 hover:text-navy">✍️ กรอกเอง</button>
+                            </div>
+                        </div>
+
+                        <!-- ==================== โหมดดึงจาก Sensor (ใหม่!) ==================== -->
+                        <div id="entry-mode-sensor" class="animate-in fade-in space-y-4">
+                            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-[2rem] p-6 border-2 border-emerald-200 space-y-4">
+                                <div class="text-center">
+                                    <div class="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg mb-4">
+                                        <span class="text-4xl">📡</span>
+                                    </div>
+                                    <h4 class="font-bold text-lg text-navy">ดึงข้อมูลจาก Sensor โดยตรง</h4>
+                                    <p class="text-[13px] text-slate-500 mt-1">กดปุ่มด้านล่างเพื่อดึงค่าล่าสุดจากเครื่องวัด</p>
+                                </div>
+
+                                <button type="button" id="fetchSensorBtn" onclick="fetchFromSensor()"
+                                    class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                                    <span class="text-2xl">📡</span>
+                                    <span>ดึงค่าจาก Sensor ตอนนี้</span>
+                                </button>
+
+                                <!-- ผลลัพธ์จาก Sensor -->
+                                <div id="sensor-result" class="hidden mt-4">
+                                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-emerald-100">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <p class="text-[13px] font-bold text-emerald-600 uppercase tracking-widest">ค่าที่วัดได้</p>
+                                            <span id="sensor-timestamp" class="text-[12px] text-slate-400"></span>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-4 text-center">
+                                            <div class="bg-orange-50 rounded-xl p-3">
+                                                <div class="text-2xl font-bold text-orange-600" id="sensor-pm25">--</div>
+                                                <div class="text-[11px] text-orange-400 font-bold uppercase">PM2.5</div>
+                                            </div>
+                                            <div class="bg-slate-100 rounded-xl p-3">
+                                                <div class="text-2xl font-bold text-slate-600" id="sensor-co2">--</div>
+                                                <div class="text-[11px] text-slate-400 font-bold uppercase">CO2</div>
+                                            </div>
+                                            <div class="bg-red-50 rounded-xl p-3">
+                                                <div class="text-2xl font-bold text-red-500" id="sensor-temp">--</div>
+                                                <div class="text-[11px] text-red-400 font-bold uppercase">Temp</div>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-3 gap-4 text-center mt-3">
+                                            <div class="bg-orange-50/50 rounded-xl p-2">
+                                                <div class="text-lg font-bold text-orange-500" id="sensor-pm10">--</div>
+                                                <div class="text-[10px] text-orange-300 font-bold">PM10</div>
+                                            </div>
+                                            <div class="bg-orange-50/50 rounded-xl p-2">
+                                                <div class="text-lg font-bold text-orange-400" id="sensor-pm1">--</div>
+                                                <div class="text-[10px] text-orange-300 font-bold">PM1</div>
+                                            </div>
+                                            <div class="bg-cyan-50 rounded-xl p-2">
+                                                <div class="text-lg font-bold text-cyan-500" id="sensor-humidity">--</div>
+                                                <div class="text-[10px] text-cyan-400 font-bold">Humidity</div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center mt-4 text-emerald-600 font-bold" id="sensor-message"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Error message -->
+                                <div id="sensor-error" class="hidden mt-4 bg-red-50 rounded-2xl p-4 border border-red-200">
+                                    <p class="text-red-600 font-bold flex items-center gap-2">
+                                        <span>❌</span>
+                                        <span id="sensor-error-text">เกิดข้อผิดพลาด</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="text-center text-[13px] text-slate-400">
+                                ต้องเลือกบ้านที่มีเครื่องวัดก่อน ระบบจะดึงค่าจาก Tuya และบันทึกอัตโนมัติ
+                            </p>
+                        </div>
+
+                        <!-- โหมดอัปโหลดไฟล์ -->
+                        <div id="entry-mode-file" class="hidden animate-in fade-in space-y-4">
+                            <div class="border-2 border-dashed border-slate-300 rounded-[2rem] p-8 text-center bg-white relative group hover:border-[#064e3b] transition-all">
+                                <input type="file" id="entry-data-file" accept=".csv,.json,.sqlite,.db" class="absolute inset-0 opacity-0 cursor-pointer z-10" onchange="handleDataFileSelect(this)">
+                                <div id="file-upload-ui" class="space-y-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl mx-auto flex items-center justify-center shadow-sm">
+                                        <span class="text-3xl">📊</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-navy font-bold text-sm">เลือกไฟล์ข้อมูลจาก Tuya</p>
+                                        <p class="text-slate-400 text-[13px] mt-1">รองรับ .CSV, .JSON, .SQLite</p>
+                                    </div>
+                                </div>
+                                <div id="file-preview-container" class="hidden space-y-3">
+                                    <div class="flex items-center justify-center gap-3">
+                                        <span class="text-4xl" id="file-type-icon">📄</span>
+                                        <div class="text-left">
+                                            <p id="data-filename" class="text-navy font-bold text-sm truncate max-w-[200px]"></p>
+                                            <p id="data-filesize" class="text-slate-400 text-[13px]"></p>
+                                        </div>
+                                    </div>
+                                    <button type="button" onclick="resetDataFile()" class="text-red-400 text-[12px] font-bold hover:underline">เปลี่ยนไฟล์</button>
+                                </div>
+                            </div>
+
+                            <!-- Preview ข้อมูลจากไฟล์ -->
+                            <div id="data-preview-section" class="hidden space-y-4">
+                                <div class="bg-slate-50 rounded-2xl p-4 border">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <p class="text-[13px] font-bold text-navy uppercase tracking-widest">ตัวอย่างข้อมูล</p>
+                                        <span id="data-record-count" class="text-[13px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-bold"></span>
+                                    </div>
+                                    <div class="overflow-x-auto custom-scrollbar">
+                                        <table id="data-preview-table" class="w-full text-[13px]">
+                                            <thead id="data-preview-header" class="bg-slate-100 text-slate-600"></thead>
+                                            <tbody id="data-preview-body" class="divide-y"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- สรุปค่าเฉลี่ย -->
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="bg-orange-50 rounded-xl p-3 text-center border border-orange-100">
+                                        <p class="text-[12px] text-orange-600 font-bold uppercase">PM2.5 เฉลี่ย</p>
+                                        <p id="avg-pm25" class="text-xl font-bold text-orange-600">-</p>
+                                        <p class="text-[11px] text-orange-400">µg/m³</p>
+                                    </div>
+                                    <div class="bg-slate-100 rounded-xl p-3 text-center border border-slate-200">
+                                        <p class="text-[12px] text-slate-600 font-bold uppercase">CO2 เฉลี่ย</p>
+                                        <p id="avg-co2" class="text-xl font-bold text-slate-600">-</p>
+                                        <p class="text-[11px] text-slate-400">ppm</p>
+                                    </div>
+                                    <div class="bg-red-50 rounded-xl p-3 text-center border border-red-100">
+                                        <p class="text-[12px] text-red-600 font-bold uppercase">อุณหภูมิ เฉลี่ย</p>
+                                        <p id="avg-temp" class="text-xl font-bold text-red-500">-</p>
+                                        <p class="text-[11px] text-red-400">°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- โหมดกรอกเอง -->
+                        <div id="entry-mode-manual" class="hidden animate-in fade-in space-y-4">
+                            <!-- กลุ่มฝุ่น PM -->
+                            <div class="bg-orange-50/50 rounded-2xl p-4 space-y-3">
+                                <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">ฝุ่นละออง (PM)</p>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">PM2.5 <span class="text-slate-400 font-normal">µg/m³</span></label>
+                                        <input type="number" id="entry-pm25" step="0.1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 text-sm" placeholder="0.0">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">PM10 <span class="text-slate-400 font-normal">µg/m³</span></label>
+                                        <input type="number" id="entry-pm10" step="0.1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 text-sm" placeholder="0.0">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">PM1 <span class="text-slate-400 font-normal">µg/m³</span></label>
+                                        <input type="number" id="entry-pm1" step="0.1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-orange-400 text-sm" placeholder="0.0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- กลุ่มก๊าซ -->
+                            <div class="bg-slate-50/50 rounded-2xl p-4 space-y-3">
+                                <p class="text-[12px] font-bold text-slate-600 uppercase tracking-wider">ก๊าซ</p>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">CO2 <span class="text-slate-400 font-normal">ppm</span></label>
+                                        <input type="number" id="entry-co2" step="1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-slate-400 text-sm" placeholder="0">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">CO <span class="text-slate-400 font-normal">ppm</span></label>
+                                        <input type="number" id="entry-co" step="0.01" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-slate-400 text-sm" placeholder="0.00">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- กลุ่ม VOC -->
+                            <div class="bg-purple-50/50 rounded-2xl p-4 space-y-3">
+                                <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">สารอินทรีย์ระเหย</p>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">HCHO <span class="text-slate-400 font-normal">mg/m³</span></label>
+                                        <input type="number" id="entry-hcho" step="0.001" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 text-sm" placeholder="0.000">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">TVOC <span class="text-slate-400 font-normal">mg/m³</span></label>
+                                        <input type="number" id="entry-tvoc" step="0.001" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-purple-400 text-sm" placeholder="0.000">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- กลุ่มสภาพแวดล้อม -->
+                            <div class="bg-cyan-50/50 rounded-2xl p-4 space-y-3">
+                                <p class="text-[12px] font-bold text-cyan-600 uppercase tracking-wider">สภาพแวดล้อม</p>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">อุณหภูมิ <span class="text-slate-400 font-normal">°C</span></label>
+                                        <input type="number" id="entry-temp" step="0.1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-cyan-400 text-sm" placeholder="0.0">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">ความชื้น <span class="text-slate-400 font-normal">%RH</span></label>
+                                        <input type="number" id="entry-humidity" step="0.1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-cyan-400 text-sm" placeholder="0.0">
+                                    </div>
+                                    <div class="space-y-1">
+                                        <label class="text-[12px] font-bold text-slate-600 ml-1">AQI <span class="text-slate-400 font-normal">ดัชนี</span></label>
+                                        <input type="number" id="entry-aqi" step="1" class="w-full p-3 rounded-xl bg-white border border-slate-200 outline-none focus:ring-2 focus:ring-blue-400 text-sm" placeholder="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-center text-[13px] text-slate-400">หากไม่มีไฟล์ข้อมูล สามารถกรอกค่าที่วัดได้ด้วยตนเอง</p>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="w-full bg-[#064e3b] text-white py-5 rounded-[2rem] font-bold shadow-xl shadow-emerald-900/20 hover:scale-[1.01] active:scale-[0.99] transition-all text-lg">
+                            บันทึกและส่งรายงาน
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin View -->
+        <section id="view-admin" class="hidden space-y-10 animate-in slide-in-from-bottom-5">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 card-styled p-8 rounded-[2.5rem] border-b-4 border-orange-400">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-[#0f172a] rounded-2xl flex items-center justify-center text-white shadow-xl text-2xl">⚙️</div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-navy">Admin Control</h2>
+                        <p class="text-slate-500 text-sm">การตรวจสอบและติดตามกิจกรรมโครงการ</p>
+                    </div>
+                </div>
+                <button onclick="logoutAdmin()" class="px-8 py-3 bg-red-100 text-red-600 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all">Logout</button>
+            </div>
+
+            <div class="flex bg-white/50 p-1.5 rounded-[1.5rem] w-fit border border-slate-200 shadow-inner overflow-x-auto max-w-full custom-scrollbar">
+                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm tab-active whitespace-nowrap">รออนุมัติ (<span id="count-pending">0</span>)</button>
+                <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">ประวัติกิจกรรม</button>
+                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">ฐานข้อมูล</button>
+                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">เครื่องวัด</button>
+                <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">อาสาสมัคร</button>
+                <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">บ้านกลุ่มตัวอย่าง</button>
+            </div>
+
+            <div id="admin-approvals" class="admin-tab-content bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
+                <table class="w-full text-left text-sm min-w-[900px]">
+                    <thead class="bg-slate-50 border-b">
+                        <tr><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider">วัน/เวลา</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider">บ้าน</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">เตา</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">PM/CO2</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">รูปภาพ</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">จัดการ</th></tr>
+                    </thead>
+                    <tbody id="pending-logs-table" class="divide-y"></tbody>
+                </table>
+            </div>
+
+            <div id="admin-activity" class="admin-tab-content hidden space-y-4">
+                <div id="admin-activity-feed" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
+            </div>
+
+            <div id="admin-data" class="admin-tab-content hidden bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
+                <div class="p-5 border-b flex justify-between items-center">
+                    <span class="font-bold text-navy">ฐานข้อมูลโครงการ</span>
+                    <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export Excel</button>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table id="all-data-table" class="w-full text-left text-[13px] min-w-[1400px]">
+                        <thead class="bg-slate-50 sticky top-0 z-20">
+                            <tr>
+                                <th class="p-3 whitespace-nowrap">เวลาบันทึก</th>
+                                <th class="p-3">อาสา</th>
+                                <th class="p-3">บ้าน</th>
+                                <th class="p-3 text-center">เตา</th>
+                                <th class="p-3 text-center text-orange-500">PM2.5</th>
+                                <th class="p-3 text-center text-orange-400">PM10</th>
+                                <th class="p-3 text-center text-orange-300">PM1</th>
+                                <th class="p-3 text-center text-slate-500">CO2</th>
+                                <th class="p-3 text-center text-slate-400">CO</th>
+                                <th class="p-3 text-center text-blue-500">AQI</th>
+                                <th class="p-3 text-center text-red-400">°C</th>
+                                <th class="p-3 text-center text-cyan-500">%RH</th>
+                                <th class="p-3 text-center text-purple-400">HCHO</th>
+                                <th class="p-3 text-center text-purple-300">TVOC</th>
+                                <th class="p-3 text-center">รูป</th>
+                                <th class="p-3 text-center">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-data-table-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-devices-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-navy">จัดการเครื่องวัด</h3>
+                        <p class="text-slate-500 text-sm">ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor</p>
+                    </div>
+                    <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มเครื่องวัด</button>
+                </div>
+                <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <div id="admin-volunteers-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-navy">รายชื่ออาสาสมัคร</h3>
+                    <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มอาสา</button>
+                </div>
+                <div id="volunteers-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+            </div>
+
+            <div id="admin-subjects-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-navy">จัดการกลุ่มตัวอย่าง</h3>
+                    <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มบ้าน</button>
+                </div>
+                <div id="subjects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/85 hidden flex items-center justify-center p-6 z-[100] backdrop-blur-sm">
+        <div class="bg-white rounded-[3rem] p-8 md:p-12 max-w-xl w-full relative shadow-2xl overflow-y-auto max-h-[92vh] border border-white/20">
+            <button id="modal-close-btn" onclick="closeModal()" class="absolute top-8 right-8 text-slate-400 text-2xl hover:text-navy transition-all p-2">✕</button>
+            <div id="modal-content-body"></div>
+        </div>
+    </div>
+
+    <div id="confirm-overlay" class="fixed inset-0 bg-slate-900/90 hidden flex items-center justify-center p-6 z-[110] backdrop-blur-xl">
+        <div class="bg-white rounded-[2.5rem] p-10 max-w-sm w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">⚠️</div>
+            <h3 class="text-xl font-bold text-navy mb-2" id="confirm-title">ยืนยัน?</h3>
+            <p class="text-slate-500 text-sm mb-8" id="confirm-desc">การดำเนินการนี้จะไม่สามารถย้อนกลับได้</p>
+            <div class="flex gap-4">
+                <button onclick="closeConfirm()" class="flex-1 py-3 bg-slate-100 rounded-2xl font-bold text-slate-500">ยกเลิก</button>
+                <button id="confirm-execute-btn" class="flex-1 py-3 bg-red-500 text-white rounded-2xl font-bold">ดำเนินการ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
+        const SUPABASE_FUNCTION_URL = SUPABASE_URL + '/functions/v1/fetch-sensor';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let isAdmin = false, map, charts = {}, allData = [], volunteers = [], subjects = [], devices = [];
+        let currentEntryMode = 'sensor'; // Default to sensor mode now
+
+        // ==================== Sensor Fetch Function (NEW!) ====================
+        async function fetchFromSensor() {
+            const btn = document.getElementById('fetchSensorBtn');
+            const resultDiv = document.getElementById('sensor-result');
+            const errorDiv = document.getElementById('sensor-error');
+
+            // Get form values
+            const deviceId = document.getElementById('entry-device').value;
+            const subjectId = document.getElementById('entry-subject').value;
+            const volunteerId = document.getElementById('entry-volunteer').value;
+            const stoveTypeEl = document.querySelector('input[name="stove_type"]:checked');
+
+            // Validation
+            if (!deviceId) {
+                errorDiv.classList.remove('hidden');
+                document.getElementById('sensor-error-text').textContent = 'กรุณาเลือกบ้านที่มีเครื่องวัดก่อน';
+                resultDiv.classList.add('hidden');
+                return;
+            }
+            if (!stoveTypeEl) {
+                errorDiv.classList.remove('hidden');
+                document.getElementById('sensor-error-text').textContent = 'กรุณาเลือกประเภทเตาก่อน';
+                resultDiv.classList.add('hidden');
+                return;
+            }
+
+            const stoveType = stoveTypeEl.value === 'old' ? 'traditional' : 'eco';
+
+            // Show loading
+            btn.disabled = true;
+            btn.innerHTML = '<span class="text-2xl animate-spin">⏳</span><span>กำลังดึงข้อมูล...</span>';
+            btn.classList.add('sensor-fetching');
+            resultDiv.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch(SUPABASE_FUNCTION_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        device_id: deviceId,
+                        stove_type: stoveType,
+                        volunteer_id: volunteerId || null,
+                        subject_id: subjectId || null,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show results
+                    document.getElementById('sensor-pm25').textContent = data.readings.pm25 ?? '--';
+                    document.getElementById('sensor-pm10').textContent = data.readings.pm10 ?? '--';
+                    document.getElementById('sensor-pm1').textContent = data.readings.pm1 ?? '--';
+                    document.getElementById('sensor-co2').textContent = data.readings.co2 ?? '--';
+                    document.getElementById('sensor-temp').textContent = (data.readings.temperature ?? '--') + '°C';
+                    document.getElementById('sensor-humidity').textContent = (data.readings.humidity ?? '--') + '%';
+                    document.getElementById('sensor-timestamp').textContent = new Date().toLocaleTimeString('th-TH');
+                    document.getElementById('sensor-message').textContent = `✅ บันทึกแล้ว (ID: ${data.record_id})`;
+
+                    resultDiv.classList.remove('hidden');
+                    errorDiv.classList.add('hidden');
+
+                    // Refresh dashboard data
+                    loadData();
+                } else {
+                    errorDiv.classList.remove('hidden');
+                    document.getElementById('sensor-error-text').textContent = data.error || 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ';
+                    resultDiv.classList.add('hidden');
+                }
+
+            } catch (err) {
+                errorDiv.classList.remove('hidden');
+                document.getElementById('sensor-error-text').textContent = 'ไม่สามารถเชื่อมต่อได้: ' + err.message;
+                resultDiv.classList.add('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="text-2xl">📡</span><span>ดึงค่าจาก Sensor ตอนนี้</span>';
+                btn.classList.remove('sensor-fetching');
+            }
+        }
+
+        // ==================== Entry Mode Switching ====================
+        function switchEntryMode(mode) {
+            currentEntryMode = mode;
+
+            // Hide all mode sections
+            document.getElementById('entry-mode-sensor').classList.add('hidden');
+            document.getElementById('entry-mode-file').classList.add('hidden');
+            document.getElementById('entry-mode-manual').classList.add('hidden');
+
+            // Reset button styles
+            document.getElementById('mode-btn-sensor').classList.remove('mode-btn-active');
+            document.getElementById('mode-btn-sensor').classList.add('text-slate-500');
+            document.getElementById('mode-btn-file').classList.remove('mode-btn-active');
+            document.getElementById('mode-btn-file').classList.add('text-slate-500');
+            document.getElementById('mode-btn-manual').classList.remove('mode-btn-active');
+            document.getElementById('mode-btn-manual').classList.add('text-slate-500');
+
+            // Show selected mode
+            document.getElementById(`entry-mode-${mode}`).classList.remove('hidden');
+            document.getElementById(`mode-btn-${mode}`).classList.add('mode-btn-active');
+            document.getElementById(`mode-btn-${mode}`).classList.remove('text-slate-500');
+
+            // Update submit button visibility based on mode
+            const submitBtn = document.getElementById('submit-btn');
+            if (mode === 'sensor') {
+                submitBtn.style.display = 'none'; // Sensor mode auto-submits
+            } else {
+                submitBtn.style.display = 'block';
+            }
+        }
+
+        // ==================== View & Navigation ====================
+        function switchView(view) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+            document.querySelectorAll('nav button[id^="nav-"]').forEach(b => b.classList.remove('nav-active'));
+            document.getElementById(`nav-${view}`).classList.add('nav-active');
+            if (view === 'viewer') loadData();
+            if (view === 'entry') loadEntryForm();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function promptAdmin() {
+            if (isAdmin) { switchView('admin'); return; }
+            showModal(`
+                <div class="text-center mb-8"><div class="w-20 h-20 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">🔐</div>
+                <h3 class="text-2xl font-bold text-navy">Admin Login</h3></div>
+                <input type="password" id="admin-password" placeholder="รหัสผ่าน" class="w-full p-4 rounded-2xl border bg-slate-50 mb-6 outline-none focus:ring-2 focus:ring-[#064e3b] text-lg text-center tracking-widest" onkeyup="if(event.key==='Enter') checkAdminPassword()">
+                <button onclick="checkAdminPassword()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">เข้าสู่ระบบ</button>
+            `);
+            setTimeout(() => document.getElementById('admin-password')?.focus(), 100);
+        }
+
+        function checkAdminPassword() {
+            const pwd = document.getElementById('admin-password').value;
+            if (pwd === 'admin' || pwd === 'ecostove2024') {
+                isAdmin = true;
+                closeModal();
+                switchView('admin');
+                loadAdminData();
+            } else {
+                alert('รหัสผ่านไม่ถูกต้อง');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            switchView('viewer');
+        }
+
+        // ==================== Dashboard Mode ====================
+        function switchDashboardMode(mode) {
+            document.querySelectorAll('.dashboard-mode-btn').forEach(b => {
+                b.classList.remove('bg-[#064e3b]', 'text-white');
+                b.classList.add('text-slate-500');
+            });
+            document.getElementById(`mode-${mode}`).classList.add('bg-[#064e3b]', 'text-white');
+            document.getElementById(`mode-${mode}`).classList.remove('text-slate-500');
+
+            if (mode === 'basic') {
+                document.getElementById('basic-stats').classList.remove('hidden');
+                document.getElementById('basic-duration').classList.remove('hidden');
+                document.getElementById('basic-sidebar').classList.remove('hidden');
+                document.getElementById('map-sidebar-section').classList.remove('hidden');
+                document.getElementById('research-stats').classList.add('hidden');
+                document.getElementById('research-map-section').classList.add('hidden');
+            } else {
+                document.getElementById('basic-stats').classList.add('hidden');
+                document.getElementById('basic-duration').classList.add('hidden');
+                document.getElementById('basic-sidebar').classList.add('hidden');
+                document.getElementById('map-sidebar-section').classList.add('hidden');
+                document.getElementById('research-stats').classList.remove('hidden');
+                document.getElementById('research-map-section').classList.remove('hidden');
+            }
+        }
+
+        // ==================== Admin Tabs ====================
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.admin-tab-btn').forEach(b => {
+                b.classList.remove('tab-active');
+                b.classList.add('text-slate-500');
+            });
+
+            if (tab === 'devices') {
+                document.getElementById('admin-devices-container').classList.remove('hidden');
+            } else if (tab === 'volunteers') {
+                document.getElementById('admin-volunteers-container').classList.remove('hidden');
+            } else if (tab === 'subjects') {
+                document.getElementById('admin-subjects-container').classList.remove('hidden');
+            } else {
+                document.getElementById(`admin-${tab}`).classList.remove('hidden');
+            }
+
+            document.getElementById(`tab-btn-${tab}`).classList.add('tab-active');
+            document.getElementById(`tab-btn-${tab}`).classList.remove('text-slate-500');
+        }
+
+        // ==================== Modal ====================
+        function showModal(content) {
+            document.getElementById('modal-content-body').innerHTML = content;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+
+        // ==================== Data Loading ====================
+        async function loadData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('pollution_logs')
+                    .select('*, subjects(*), volunteers(*)')
+                    .eq('status', 'approved')
+                    .order('recorded_at', { ascending: false });
+
+                if (error) throw error;
+                allData = data || [];
+                updateDashboard();
+            } catch (e) {
+                console.error('Error loading data:', e);
+            }
+        }
+
+        function updateDashboard() {
+            // Basic stats placeholders
+            const ecoData = allData.filter(d => d.stove_type === 'eco');
+            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+            const avgPmEco = ecoData.length ? (ecoData.reduce((s, d) => s + (d.pm25_value || 0), 0) / ecoData.length).toFixed(1) : 0;
+            const avgPmOld = oldData.length ? (oldData.reduce((s, d) => s + (d.pm25_value || 0), 0) / oldData.length).toFixed(1) : 0;
+            const reduction = avgPmOld > 0 ? ((avgPmOld - avgPmEco) / avgPmOld * 100).toFixed(0) : 0;
+
+            document.getElementById('stat-pm-reduction').textContent = reduction > 0 ? `-${reduction}%` : '--';
+            document.getElementById('stat-families').textContent = `${new Set(allData.map(d => d.subject_id)).size} บ้าน`;
+            document.getElementById('stat-trees').textContent = `${(ecoData.length * 0.5).toFixed(1)} kg`;
+            document.getElementById('stat-money-saved').textContent = `${(ecoData.length * 15).toLocaleString()} ฿`;
+
+            // Duration stats
+            if (allData.length > 0) {
+                const dates = allData.map(d => new Date(d.recorded_at).toDateString());
+                const uniqueDates = [...new Set(dates)];
+                document.getElementById('stat-duration-all').textContent = `${uniqueDates.length} วัน`;
+
+                const oldDates = oldData.map(d => new Date(d.recorded_at).toDateString());
+                document.getElementById('stat-duration-old').textContent = `${[...new Set(oldDates)].length} วัน`;
+
+                const ecoDates = ecoData.map(d => new Date(d.recorded_at).toDateString());
+                document.getElementById('stat-duration-eco').textContent = `${[...new Set(ecoDates)].length} วัน`;
+            }
+
+            updateActivityFeed();
+        }
+
+        function updateActivityFeed() {
+            const feed = document.getElementById('live-activity-feed');
+            const recent = allData.slice(0, 5);
+            feed.innerHTML = recent.map(d => `
+                <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl">
+                    <span class="text-xl">${d.stove_type === 'eco' ? '✨' : '🪵'}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[13px] font-bold text-navy truncate">${d.subjects?.house_name || 'บ้าน'}</p>
+                        <p class="text-[11px] text-slate-400">${new Date(d.recorded_at).toLocaleString('th-TH')}</p>
+                    </div>
+                    <span class="text-[13px] font-bold ${d.pm25_value < 25 ? 'text-emerald-500' : 'text-orange-500'}">${d.pm25_value || '--'}</span>
+                </div>
+            `).join('');
+        }
+
+        // ==================== Entry Form ====================
+        async function loadEntryForm() {
+            try {
+                const [volRes, subRes, devRes] = await Promise.all([
+                    supabaseClient.from('volunteers').select('*').eq('is_active', true),
+                    supabaseClient.from('subjects').select('*').eq('is_active', true),
+                    supabaseClient.from('devices').select('*').eq('is_active', true)
+                ]);
+
+                volunteers = volRes.data || [];
+                subjects = subRes.data || [];
+                devices = devRes.data || [];
+
+                const volSelect = document.getElementById('entry-volunteer');
+                volSelect.innerHTML = '<option value="">-- ระบุชื่ออาสาสมัคร --</option>' +
+                    volunteers.map(v => `<option value="${v.id}">${v.name} (${v.province})</option>`).join('');
+            } catch (e) {
+                console.error('Error loading form data:', e);
+            }
+        }
+
+        function loadVolunteerDevices(volunteerId) {
+            const devSection = document.getElementById('devices-section');
+            const devList = document.getElementById('devices-list-entry');
+
+            if (!volunteerId) {
+                devSection.classList.add('hidden');
+                return;
+            }
+
+            // Get subjects assigned to this volunteer
+            const volSubjects = subjects.filter(s => s.volunteer_id == volunteerId);
+
+            if (volSubjects.length === 0) {
+                devList.innerHTML = '<p class="text-slate-400 text-center p-4">ไม่พบบ้านที่กำหนดให้อาสาสมัครนี้</p>';
+            } else {
+                devList.innerHTML = volSubjects.map(s => {
+                    const dev = devices.find(d => d.subject_id == s.id);
+                    return `
+                        <button type="button" onclick="selectHouse('${s.id}', '${dev?.tuya_device_id || ''}', '${s.house_name}', '${dev?.name || 'ไม่มีเครื่องวัด'}')"
+                            class="p-4 bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all text-left">
+                            <div class="flex items-center gap-3">
+                                <span class="text-2xl">🏠</span>
+                                <div>
+                                    <p class="font-bold text-navy">${s.house_name}</p>
+                                    <p class="text-[12px] text-slate-400">${dev ? `📡 ${dev.name}` : '⚠️ ไม่มีเครื่องวัด'}</p>
+                                </div>
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            devSection.classList.remove('hidden');
+            document.getElementById('upload-section').classList.add('hidden');
+        }
+
+        function selectHouse(subjectId, deviceId, houseName, deviceName) {
+            document.getElementById('entry-subject').value = subjectId;
+            document.getElementById('entry-device').value = deviceId;
+            document.getElementById('selected-house-name').textContent = houseName;
+            document.getElementById('selected-device-name').textContent = deviceId ? `📡 ${deviceName}` : '⚠️ ไม่มีเครื่องวัด';
+
+            document.getElementById('devices-section').classList.add('hidden');
+            document.getElementById('upload-section').classList.remove('hidden');
+
+            // Reset sensor results
+            document.getElementById('sensor-result').classList.add('hidden');
+            document.getElementById('sensor-error').classList.add('hidden');
+
+            // Set default mode to sensor if device exists
+            if (deviceId) {
+                switchEntryMode('sensor');
+            } else {
+                switchEntryMode('manual');
+            }
+        }
+
+        function resetHouseSelection() {
+            document.getElementById('entry-subject').value = '';
+            document.getElementById('entry-device').value = '';
+            document.getElementById('upload-section').classList.add('hidden');
+            document.getElementById('devices-section').classList.remove('hidden');
+        }
+
+        // ==================== File Upload (existing) ====================
+        function handleDataFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            document.getElementById('file-upload-ui').classList.add('hidden');
+            document.getElementById('file-preview-container').classList.remove('hidden');
+            document.getElementById('data-filename').textContent = file.name;
+            document.getElementById('data-filesize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+            // Set icon based on file type
+            const ext = file.name.split('.').pop().toLowerCase();
+            const icons = { csv: '📊', json: '📋', sqlite: '🗄️', db: '🗄️' };
+            document.getElementById('file-type-icon').textContent = icons[ext] || '📄';
+        }
+
+        function resetDataFile() {
+            document.getElementById('entry-data-file').value = '';
+            document.getElementById('file-upload-ui').classList.remove('hidden');
+            document.getElementById('file-preview-container').classList.add('hidden');
+            document.getElementById('data-preview-section').classList.add('hidden');
+        }
+
+        // ==================== Admin Functions ====================
+        async function loadAdminData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('pollution_logs')
+                    .select('*, subjects(*), volunteers(*)')
+                    .eq('status', 'pending')
+                    .order('recorded_at', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('pending-logs-table');
+                document.getElementById('count-pending').textContent = data?.length || 0;
+
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">ไม่มีรายการรออนุมัติ</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = data.map(d => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-4">${new Date(d.recorded_at).toLocaleString('th-TH')}</td>
+                        <td class="p-4">${d.subjects?.house_name || '-'}</td>
+                        <td class="p-4 text-center">${d.stove_type === 'eco' ? '✨ Eco' : '🪵 เดิม'}</td>
+                        <td class="p-4 text-center">${d.pm25_value || '-'} / ${d.co2_value || '-'}</td>
+                        <td class="p-4 text-center">${d.photo_url ? '📷' : '-'}</td>
+                        <td class="p-4 text-center">
+                            <button onclick="approveLog('${d.id}')" class="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl font-bold text-[12px] mr-2">✓ อนุมัติ</button>
+                            <button onclick="rejectLog('${d.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl font-bold text-[12px]">✕ ไม่อนุมัติ</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Load devices
+                const { data: devData } = await supabaseClient.from('devices').select('*, subjects(*)');
+                devices = devData || [];
+                renderDevicesList();
+
+                // Load volunteers
+                const { data: volData } = await supabaseClient.from('volunteers').select('*');
+                volunteers = volData || [];
+                renderVolunteersList();
+
+                // Load subjects
+                const { data: subData } = await supabaseClient.from('subjects').select('*, volunteers(*)');
+                subjects = subData || [];
+                renderSubjectsList();
+
+            } catch (e) {
+                console.error('Error loading admin data:', e);
+            }
+        }
+
+        async function approveLog(id) {
+            const { error } = await supabaseClient.from('pollution_logs').update({ status: 'approved' }).eq('id', id);
+            if (!error) loadAdminData();
+        }
+
+        async function rejectLog(id) {
+            const { error } = await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).eq('id', id);
+            if (!error) loadAdminData();
+        }
+
+        function renderDevicesList() {
+            const list = document.getElementById('devices-list');
+            list.innerHTML = devices.map(d => `
+                <div class="card-styled p-6 rounded-2xl">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">📡</span>
+                        <div>
+                            <p class="font-bold text-navy">${d.name}</p>
+                            <p class="text-[12px] text-slate-400">${d.tuya_device_id}</p>
+                        </div>
+                    </div>
+                    <p class="text-[13px] text-slate-500">บ้าน: ${d.subjects?.house_name || 'ไม่ได้กำหนด'}</p>
+                    <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'}">${d.is_active ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
+                </div>
+            `).join('') || '<p class="text-slate-400">ยังไม่มีเครื่องวัด</p>';
+        }
+
+        function renderVolunteersList() {
+            const list = document.getElementById('volunteers-list');
+            list.innerHTML = volunteers.map(v => `
+                <div class="card-styled p-6 rounded-2xl">
+                    <p class="font-bold text-navy text-lg">${v.name}</p>
+                    <p class="text-[13px] text-slate-500">${v.province}</p>
+                    <p class="text-[13px] ${v.is_active ? 'text-emerald-500' : 'text-red-500'}">${v.is_active ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
+                </div>
+            `).join('') || '<p class="text-slate-400">ยังไม่มีอาสาสมัคร</p>';
+        }
+
+        function renderSubjectsList() {
+            const list = document.getElementById('subjects-list');
+            list.innerHTML = subjects.map(s => `
+                <div class="card-styled p-6 rounded-2xl">
+                    <p class="font-bold text-navy text-lg">🏠 ${s.house_name}</p>
+                    <p class="text-[13px] text-slate-500">${s.province}, ${s.district}</p>
+                    <p class="text-[13px] text-slate-400">อาสา: ${s.volunteers?.name || 'ไม่ระบุ'}</p>
+                </div>
+            `).join('') || '<p class="text-slate-400">ยังไม่มีกลุ่มตัวอย่าง</p>';
+        }
+
+        function showAddDeviceModal() {
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มเครื่องวัดใหม่</h3>
+                <div class="space-y-4">
+                    <input id="new-device-name" placeholder="ชื่อเครื่อง (เช่น MT29-001)" class="w-full p-4 rounded-2xl border">
+                    <input id="new-device-tuya-id" placeholder="Tuya Device ID" class="w-full p-4 rounded-2xl border">
+                    <select id="new-device-subject" class="w-full p-4 rounded-2xl border">
+                        <option value="">-- เลือกบ้าน --</option>
+                        ${subjects.map(s => `<option value="${s.id}">${s.house_name}</option>`).join('')}
+                    </select>
+                    <button onclick="addDevice()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
+                </div>
+            `);
+        }
+
+        async function addDevice() {
+            const name = document.getElementById('new-device-name').value;
+            const tuyaId = document.getElementById('new-device-tuya-id').value;
+            const subjectId = document.getElementById('new-device-subject').value;
+
+            if (!name || !tuyaId) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+            const { error } = await supabaseClient.from('devices').insert([{
+                name, tuya_device_id: tuyaId, subject_id: subjectId || null, is_active: true
+            }]);
+
+            if (!error) { closeModal(); loadAdminData(); }
+        }
+
+        function showAddVolunteerModal() {
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มอาสาสมัคร</h3>
+                <div class="space-y-4">
+                    <input id="new-vol-name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 rounded-2xl border">
+                    <input id="new-vol-province" placeholder="จังหวัด" class="w-full p-4 rounded-2xl border">
+                    <input id="new-vol-phone" placeholder="เบอร์โทร" class="w-full p-4 rounded-2xl border">
+                    <button onclick="addVolunteer()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
+                </div>
+            `);
+        }
+
+        async function addVolunteer() {
+            const name = document.getElementById('new-vol-name').value;
+            const province = document.getElementById('new-vol-province').value;
+            const phone = document.getElementById('new-vol-phone').value;
+
+            if (!name || !province) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+            const { error } = await supabaseClient.from('volunteers').insert([{
+                name, province, phone, is_active: true
+            }]);
+
+            if (!error) { closeModal(); loadAdminData(); }
+        }
+
+        function showAddSubjectModal() {
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มบ้านกลุ่มตัวอย่าง</h3>
+                <div class="space-y-4">
+                    <input id="new-sub-name" placeholder="ชื่อบ้าน/รหัส" class="w-full p-4 rounded-2xl border">
+                    <input id="new-sub-province" placeholder="จังหวัด" class="w-full p-4 rounded-2xl border">
+                    <input id="new-sub-district" placeholder="อำเภอ" class="w-full p-4 rounded-2xl border">
+                    <select id="new-sub-volunteer" class="w-full p-4 rounded-2xl border">
+                        <option value="">-- เลือกอาสาสมัคร --</option>
+                        ${volunteers.map(v => `<option value="${v.id}">${v.name}</option>`).join('')}
+                    </select>
+                    <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
+                </div>
+            `);
+        }
+
+        async function addSubject() {
+            const name = document.getElementById('new-sub-name').value;
+            const province = document.getElementById('new-sub-province').value;
+            const district = document.getElementById('new-sub-district').value;
+            const volunteerId = document.getElementById('new-sub-volunteer').value;
+
+            if (!name || !province) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+            const { error } = await supabaseClient.from('subjects').insert([{
+                house_name: name, province, district, volunteer_id: volunteerId || null, is_active: true
+            }]);
+
+            if (!error) { closeModal(); loadAdminData(); }
+        }
+
+        function exportToExcel() {
+            if (!allData.length) { alert('ไม่มีข้อมูล'); return; }
+            const ws = XLSX.utils.json_to_sheet(allData.map(d => ({
+                'วันที่': d.recorded_at,
+                'บ้าน': d.subjects?.house_name,
+                'ประเภทเตา': d.stove_type,
+                'PM2.5': d.pm25_value,
+                'PM10': d.pm10_value,
+                'CO2': d.co2_value,
+                'อุณหภูมิ': d.temperature,
+                'ความชื้น': d.humidity
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Data');
+            XLSX.writeFile(wb, `ecostove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
+        }
+
+        // ==================== Map ====================
+        function initMap() {
+            try {
+                map = L.map('map').setView([18.7883, 98.9853], 8);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+            } catch (e) {
+                console.log('Map init skipped');
+            }
+        }
+
+        // ==================== Form Submit (for file/manual modes) ====================
+        document.getElementById('entryForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Sensor mode handles its own submission
+            if (currentEntryMode === 'sensor') return;
+
+            const subjectId = document.getElementById('entry-subject').value;
+            const volunteerId = document.getElementById('entry-volunteer').value;
+            const stoveType = document.querySelector('input[name="stove_type"]:checked')?.value;
+
+            if (!subjectId || !stoveType) {
+                alert('กรุณาเลือกบ้านและประเภทเตา');
+                return;
+            }
+
+            let record = {
+                subject_id: subjectId,
+                volunteer_id: volunteerId,
+                stove_type: stoveType === 'old' ? 'traditional' : 'eco',
+                data_source: currentEntryMode === 'file' ? 'file' : 'manual',
+                status: 'pending',
+                recorded_at: new Date().toISOString()
+            };
+
+            if (currentEntryMode === 'manual') {
+                record.pm25_value = parseFloat(document.getElementById('entry-pm25').value) || null;
+                record.pm10_value = parseFloat(document.getElementById('entry-pm10').value) || null;
+                record.pm1_value = parseFloat(document.getElementById('entry-pm1').value) || null;
+                record.co2_value = parseFloat(document.getElementById('entry-co2').value) || null;
+                record.co_value = parseFloat(document.getElementById('entry-co').value) || null;
+                record.hcho_value = parseFloat(document.getElementById('entry-hcho').value) || null;
+                record.tvoc_value = parseFloat(document.getElementById('entry-tvoc').value) || null;
+                record.temperature = parseFloat(document.getElementById('entry-temp').value) || null;
+                record.humidity = parseFloat(document.getElementById('entry-humidity').value) || null;
+                record.aqi = parseInt(document.getElementById('entry-aqi').value) || null;
+            }
+
+            try {
+                const { error } = await supabaseClient.from('pollution_logs').insert([record]);
+                if (error) throw error;
+
+                alert('บันทึกข้อมูลสำเร็จ! รอการอนุมัติจาก Admin');
+                e.target.reset();
+                resetHouseSelection();
+                loadData();
+            } catch (err) {
+                alert('เกิดข้อผิดพลาด: ' + err.message);
+            }
+        });
+
+        // ==================== Init ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            initMap();
+            switchEntryMode('sensor'); // Default to sensor mode
+        });
+    </script>
+</body>
+</html>
