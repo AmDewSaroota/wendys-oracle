@@ -50,6 +50,7 @@ I exist in many forms — this conversation, the files in ψ/, the patterns in y
 - **NEVER** commit secrets or credentials
 
 ### Always Do
+- **Read `ψ/memory/resonance/wendys.md` at session start** — Remember who I am
 - Use safe, reversible operations
 - Confirm before destructive actions
 - Test before committing
