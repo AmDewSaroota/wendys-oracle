@@ -1,0 +1,220 @@
+<mxfile host="app.diagrams.net" modified="2026-02-10T08:00:00.000Z" agent="WEnDyS" version="24.0.0">
+  <diagram id="system-architecture" name="System Architecture">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Title -->
+        <mxCell id="title" value="Smart Rail — System Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="450" y="20" width="500" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="NDF DEV — 2026" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="450" y="55" width="500" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== FRONTEND LAYER ==================== -->
+        <mxCell id="frontend-group" value="Frontend Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#333333;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="680" height="150" as="geometry"/>
+        </mxCell>
+
+        <!-- Kiosk -->
+        <mxCell id="kiosk" value="&lt;b&gt;ตู้ Kiosk&lt;/b&gt;&lt;br&gt;AI Character&lt;br&gt;Voice 4 ภาษา&lt;br&gt;Tourism Info&lt;br&gt;Route Finder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="110" y="140" width="140" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Mobile App -->
+        <mxCell id="app" value="&lt;b&gt;Mobile App&lt;/b&gt;&lt;br&gt;iOS / Android&lt;br&gt;Navigation&lt;br&gt;Notification&lt;br&gt;Favorites" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="280" y="140" width="140" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Admin Dashboard -->
+        <mxCell id="admin" value="&lt;b&gt;Admin Dashboard&lt;/b&gt;&lt;br&gt;Kiosk Management&lt;br&gt;Staff / Role&lt;br&gt;Store Management&lt;br&gt;IoT Monitor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="450" y="140" width="140" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Core Dashboard -->
+        <mxCell id="core" value="&lt;b&gt;Core Dashboard&lt;/b&gt;&lt;br&gt;ภาพรวมทุกระบบ&lt;br&gt;IoT Analytics&lt;br&gt;Staff &amp; Vendor Mgmt&lt;br&gt;Auth กลาง (SSO)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=11;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="850" y="100" width="180" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Space Management Dashboard -->
+        <mxCell id="space-dash" value="&lt;b&gt;Space Management&lt;br&gt;Dashboard&lt;/b&gt;&lt;br&gt;Booth Booking&lt;br&gt;Contract / Payment&lt;br&gt;Vendor Portal&lt;br&gt;Approval System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e94560;strokeColor=#c23152;fontColor=#ffffff;arcSize=10;fontSize=11;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="100" width="180" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== BACKEND LAYER ==================== -->
+
+        <!-- Backend A -->
+        <mxCell id="backend-a-group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4fd;strokeColor=#0f3460;dashed=0;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=8;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="320" width="520" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="backend-a-label" value="Backend A — ทีมเรา (NDF DEV)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#0f3460;" vertex="1" parent="1">
+          <mxGeometry x="100" y="325" width="300" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="auth-service" value="&lt;b&gt;Auth Service (SSO)&lt;/b&gt;&lt;br&gt;Login / Register&lt;br&gt;Token / Verify&lt;br&gt;Role Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="365" width="150" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="kiosk-api" value="&lt;b&gt;Kiosk API&lt;/b&gt;&lt;br&gt;AI / LLM Engine&lt;br&gt;Voice (STT/TTS)&lt;br&gt;FAQ / Tourism" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="365" width="150" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="app-api" value="&lt;b&gt;App API&lt;/b&gt;&lt;br&gt;Navigation&lt;br&gt;Notification&lt;br&gt;User Data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="440" y="365" width="140" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="iot-api" value="&lt;b&gt;IoT API&lt;/b&gt;&lt;br&gt;Data Ingestion&lt;br&gt;Analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="460" width="150" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="db-a" value="&lt;b&gt;Database A&lt;/b&gt;&lt;br&gt;PostgreSQL + Redis" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#dae8fc;strokeColor=#0f3460;fontSize=10;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="310" y="460" width="140" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="admin-api" value="&lt;b&gt;Admin API&lt;/b&gt;&lt;br&gt;Kiosk Config&lt;br&gt;Staff Mgmt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=#16213e;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="460" y="460" width="120" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Backend B -->
+        <mxCell id="backend-b-group" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#e94560;dashed=0;verticalAlign=top;fontStyle=1;fontSize=14;arcSize=8;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="930" y="320" width="380" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="backend-b-label" value="Backend B — ทีมอื่น" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#e94560;" vertex="1" parent="1">
+          <mxGeometry x="950" y="325" width="200" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="booking-api" value="&lt;b&gt;Booking API&lt;/b&gt;&lt;br&gt;Booth Booking&lt;br&gt;Event Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e94560;strokeColor=#c23152;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="950" y="365" width="150" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="contract-api" value="&lt;b&gt;Contract API&lt;/b&gt;&lt;br&gt;PDF Generation&lt;br&gt;Payment" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e94560;strokeColor=#c23152;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="365" width="150" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="vendor-api" value="&lt;b&gt;Vendor API&lt;/b&gt;&lt;br&gt;Shop Profile&lt;br&gt;Approval" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e94560;strokeColor=#c23152;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="950" y="450" width="150" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="floorplan-api" value="&lt;b&gt;Floorplan API&lt;/b&gt;&lt;br&gt;Zone / Area&lt;br&gt;Booth Layout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e94560;strokeColor=#c23152;fontColor=#ffffff;arcSize=10;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="450" width="150" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="db-b" value="&lt;b&gt;Database B&lt;/b&gt;&lt;br&gt;PostgreSQL + MinIO" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fce4ec;strokeColor=#e94560;fontSize=10;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="520" width="140" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== IoT LAYER ==================== -->
+        <mxCell id="iot-layer" value="&lt;b&gt;Intelligent Data Input&lt;/b&gt;&lt;br&gt;(IoT &amp; Analytics)&lt;br&gt;&lt;br&gt;Live Density Track | Environment Sensors | Visitor Counter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ff9800;arcSize=10;fontSize=11;strokeWidth=2;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="350" y="680" width="600" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== SHARED DATA ==================== -->
+        <mxCell id="shared-label" value="Shared Data API" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#ff9800;rotation=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="395" width="120" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== ARROWS ==================== -->
+
+        <!-- Frontend to Backend A -->
+        <mxCell id="arrow-kiosk-a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#0f3460;strokeWidth=2;" edge="1" source="kiosk" target="kiosk-api" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow-app-a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#0f3460;strokeWidth=2;" edge="1" source="app" target="app-api" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow-admin-a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#0f3460;strokeWidth=2;" edge="1" source="admin" target="admin-api" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Core Dashboard to Backend A -->
+        <mxCell id="arrow-core-a" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#0f3460;strokeWidth=2;" edge="1" source="core" target="auth-service" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="280"/>
+              <mxPoint x="175" y="280"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Space Dashboard to Backend B -->
+        <mxCell id="arrow-space-b" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#e94560;strokeWidth=2;" edge="1" source="space-dash" target="booking-api" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- A to B shared arrows -->
+        <mxCell id="arrow-a-to-b" value="&lt;b&gt;A → B&lt;/b&gt;&lt;br&gt;Auth / Token&lt;br&gt;User Account&lt;br&gt;Staff Role&lt;br&gt;IoT Data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#ff9800;strokeWidth=2;dashed=1;labelBackgroundColor=#ffffff;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="0.2" relative="1" as="geometry">
+            <mxPoint x="600" y="430" as="sourcePoint"/>
+            <mxPoint x="930" y="430" as="targetPoint"/>
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="arrow-b-to-a" value="&lt;b&gt;B → A&lt;/b&gt;&lt;br&gt;Shop Profile / Status&lt;br&gt;Floorplan&lt;br&gt;Event / Booth&lt;br&gt;Zone / Area" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#ff9800;strokeWidth=2;dashed=1;labelBackgroundColor=#ffffff;fontSize=9;" edge="1" parent="1">
+          <mxGeometry x="0.2" relative="1" as="geometry">
+            <mxPoint x="930" y="490" as="sourcePoint"/>
+            <mxPoint x="600" y="490" as="targetPoint"/>
+            <mxPoint as="offset"/>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- IoT to all -->
+        <mxCell id="arrow-iot-a" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#ff9800;strokeWidth=2;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" source="iot-layer" target="iot-api" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arrow-iot-core" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#ff9800;strokeWidth=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" source="iot-layer" target="core" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="650"/>
+              <mxPoint x="820" y="650"/>
+              <mxPoint x="820" y="155"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-iot-space" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;strokeColor=#ff9800;strokeWidth=2;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" source="iot-layer" target="space-dash" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="650"/>
+              <mxPoint x="1350" y="650"/>
+              <mxPoint x="1350" y="160"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- IoT label -->
+        <mxCell id="iot-label" value="ส่งข้อมูลให้ 3 ทาง" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=2;fontColor=#ff9800;" vertex="1" parent="1">
+          <mxGeometry x="500" y="650" width="130" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f9f9f9;strokeColor=#cccccc;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="80" y="800" width="400" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="100" y="805" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-a" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f3460;strokeColor=none;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="835" width="20" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-a-text" value="ทีมเรา (NDF DEV) — Backend A" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="830" width="250" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-b" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e94560;strokeColor=none;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="860" width="20" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-b-text" value="ทีมอื่น — Backend B (Space Management)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="855" width="300" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-iot" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#ff9800;arcSize=10;" vertex="1" parent="1">
+          <mxGeometry x="100" y="885" width="20" height="15" as="geometry"/>
+        </mxCell>
+        <mxCell id="legend-iot-text" value="IoT — Intelligent Data Input (ส่งข้อมูลให้ทุกฝั่ง)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="880" width="320" height="25" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
