@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SWT — Smart Tourism Platform</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0d1b3e;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  /* Slide container */
+  .slide {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    padding: 40px 60px 70px;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+
+  /* Section badge */
+  .badge {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge-kiosk { background: #1565c0; }
+  .badge-kiosk-admin { background: #6a1b9a; }
+  .badge-webapp { background: #00897b; }
+  .badge-core { background: #c62828; }
+
+  /* Slide number */
+  .slide-num {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 14px;
+    color: #78909c;
+  }
+
+  /* Title */
+  .slide h2 {
+    color: #d4a843;
+    font-size: 28px;
+    margin-bottom: 16px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .slide h2 small {
+    display: block;
+    font-size: 16px;
+    color: #b0bec5;
+    font-weight: 400;
+    margin-top: 4px;
+  }
+
+  /* Feature list */
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    justify-content: center;
+    margin-top: 10px;
+    max-width: 1100px;
+  }
+  .features li {
+    list-style: none;
+    font-size: 14px;
+    color: #cfd8dc;
+    padding: 3px 0;
+  }
+  .features li::before {
+    content: "▸ ";
+    color: #d4a843;
+  }
+
+  /* Image layouts */
+  .img-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    flex: 1;
+    min-height: 0;
+    max-width: 100%;
+  }
+  .img-row img {
+    max-height: calc(100vh - 220px);
+    max-width: 48%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .img-row.single img {
+    max-width: 80%;
+    max-height: calc(100vh - 200px);
+  }
+
+  /* Cover slide */
+  .cover {
+    justify-content: center;
+    text-align: center;
+  }
+  .cover h1 {
+    font-size: 52px;
+    color: #d4a843;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  .cover .subtitle {
+    font-size: 24px;
+    color: #b0bec5;
+    margin-bottom: 30px;
+  }
+  .cover .org {
+    font-size: 18px;
+    color: #78909c;
+  }
+  .cover .org strong { color: #fff; }
+  .cover .divider {
+    width: 120px;
+    height: 3px;
+    background: #d4a843;
+    margin: 24px auto;
+    border-radius: 2px;
+  }
+
+  /* Overview slide */
+  .overview-grid {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .overview-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,168,67,0.3);
+    border-radius: 12px;
+    padding: 28px 24px;
+    width: 220px;
+    text-align: center;
+  }
+  .overview-card .icon { font-size: 40px; margin-bottom: 10px; }
+  .overview-card h3 { color: #d4a843; font-size: 18px; margin-bottom: 8px; }
+  .overview-card p { color: #b0bec5; font-size: 13px; line-height: 1.5; }
+
+  /* Thank you slide */
+  .thankyou { text-align: center; }
+  .thankyou h1 { font-size: 48px; color: #d4a843; margin-bottom: 16px; }
+  .thankyou p { font-size: 20px; color: #b0bec5; margin-bottom: 8px; }
+
+  /* Progress bar */
+  #progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #d4a843;
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+
+  /* Nav hints */
+  #nav-hint {
+    position: fixed;
+    bottom: 16px;
+    right: 30px;
+    font-size: 12px;
+    color: #546e7a;
+    z-index: 100;
+  }
+
+  /* Click zones */
+  .click-left, .click-right {
+    position: fixed;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 50;
+    cursor: pointer;
+  }
+  .click-left { left: 0; }
+  .click-right { right: 0; }
+</style>
+</head>
+<body>
+
+<!-- Click navigation zones -->
+<div class="click-left" onclick="prev()"></div>
+<div class="click-right" onclick="next()"></div>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+<div id="nav-hint">← → Space</div>
+
+<!-- ===== SLIDE 1: Cover ===== -->
+<section class="slide cover" data-slide="1">
+  <span class="slide-num">1 / 21</span>
+  <h1>SWT</h1>
+  <div class="subtitle">Smart Tourism Platform</div>
+  <div class="divider"></div>
+  <p style="font-size:20px; color:#cfd8dc; margin-bottom:8px;">
+    ระบบท่องเที่ยวอัจฉริยะสำหรับสถานีรถไฟ
+  </p>
+  <div class="org">
+    โดย <strong>NDF</strong> สำหรับ <strong>การรถไฟแห่งประเทศไทย (SRT)</strong>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2: System Overview ===== -->
+<section class="slide" data-slide="2">
+  <span class="slide-num">2 / 21</span>
+  <h2>System Overview<small>ภาพรวมระบบ 3 ส่วนหลัก</small></h2>
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="icon">🖥️</div>
+      <h3>Kiosk</h3>
+      <p>ตู้บริการข้อมูลสำหรับนักท่องเที่ยว ณ สถานี<br>AI Chat, ตารางรถไฟ, แผนที่, ร้านค้า</p>
+    </div>
+    <div class="overview-card">
+      <div class="icon">📱</div>
+      <h3>Mobile Web App</h3>
+      <p>แอปสำหรับนักท่องเที่ยว<br>จองตั๋ว, ตาราง, ทัวร์, Point/Reward, นำทาง</p>
+    </div>
+    <div class="overview-card">
+      <div class="icon">📊</div>
+      <h3>Core Dashboard</h3>
+      <p>แผงควบคุมสำหรับผู้บริหาร/เจ้าหน้าที่<br>Heatmap, Report, Alert, User Management</p>
+    </div>
+    <div class="overview-card">
+      <div class="icon">⚙️</div>
+      <h3>Kiosk Admin</h3>
+      <p>จัดการตู้ Kiosk ทั้งหมด<br>Banner, Analytics, LiveWalk, Walk Path</p>
+    </div>
+  </div>
+  <p style="margin-top:24px; color:#78909c; font-size:14px; text-align:center;">
+    ทุกระบบเชื่อมต่อกับ Core Database กลาง + Auth ระบบเดียว
+  </p>
+</section>
+
+<!-- ===== SLIDE 3: Kiosk — หน้าหลัก ===== -->
+<section class="slide" data-slide="3">
+  <span class="badge badge-kiosk">KIOSK</span>
+  <span class="slide-num">3 / 21</span>
+  <h2>Kiosk — หน้าหลัก</h2>
+  <div class="img-row single">
+    <img src="screenshots/kiosk-01-main.png" alt="Kiosk Main">
+  </div>
+  <ul class="features">
+    <li>AI Character (SRT BOT)</li>
+    <li>รองรับ 4 ภาษา (TH/EN/CN/KR)</li>
+    <li>การ์ดกิจกรรม/ท่องเที่ยว/โปรโมชั่น</li>
+    <li>คำถามยอดนิยม 6 ข้อ</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 4: Kiosk — ตารางรถไฟ ===== -->
+<section class="slide" data-slide="4">
+  <span class="badge badge-kiosk">KIOSK</span>
+  <span class="slide-num">4 / 21</span>
+  <h2>Kiosk — ตารางรถไฟ</h2>
+  <div class="img-row single">
+    <img src="screenshots/kiosk-02-train-schedule.png" alt="Train Schedule">
+  </div>
+  <ul class="features">
+    <li>ตาราง DEPARTURES แบบ Real-time</li>
+    <li>เวลา / ปลายทาง / ชานชาลา / สถานะ</li>
+    <li>สถานะ: ตรงเวลา / ออกแล้ว</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 5: Kiosk — แผนที่ & แผนผัง ===== -->
+<section class="slide" data-slide="5">
+  <span class="badge badge-kiosk">KIOSK</span>
+  <span class="slide-num">5 / 21</span>
+  <h2>Kiosk — แผนที่ท่องเที่ยว & แผนผังสถานี</h2>
+  <div class="img-row">
+    <img src="screenshots/kiosk-03-map.png" alt="Tourist Map">
+    <img src="screenshots/kiosk-04-floorplan.png" alt="Station Floorplan">
+  </div>
+  <ul class="features">
+    <li>แผนที่สถานที่ท่องเที่ยวรอบสถานี</li>
+    <li>แผนผังสถานีพร้อมตำแหน่ง "คุณอยู่ตรงนี้"</li>
+    <li>แสดง Gate 1-4, Red Line, Long Distance, Southern Line</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 6: Kiosk — ร้านค้า & แชท ===== -->
+<section class="slide" data-slide="6">
+  <span class="badge badge-kiosk">KIOSK</span>
+  <span class="slide-num">6 / 21</span>
+  <h2>Kiosk — ร้านค้า & แชท AI</h2>
+  <div class="img-row">
+    <img src="screenshots/kiosk-05-shops.png" alt="Shops">
+    <img src="screenshots/kiosk-07-chat.png" alt="AI Chat">
+  </div>
+  <ul class="features">
+    <li>ร้านค้า 5 ร้าน พร้อมสถานะเปิด/ปิด</li>
+    <li>Cafe Amazon, S&P, OTOP, Doi Chaang, 7-Eleven</li>
+    <li>Chatbot พิมพ์ถามคำถามได้</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 7: Kiosk Admin — Management ===== -->
+<section class="slide" data-slide="7">
+  <span class="badge badge-kiosk-admin">KIOSK ADMIN</span>
+  <span class="slide-num">7 / 21</span>
+  <h2>Kiosk Admin — Kiosk Management</h2>
+  <div class="img-row">
+    <img src="screenshots/kiosk-admin-02-dashboard.png" alt="Kiosk Dashboard">
+    <img src="screenshots/kiosk-admin-03-popup.png" alt="Popup Messages">
+  </div>
+  <ul class="features">
+    <li>จัดการ Banner Advertisement</li>
+    <li>Campaign, Type, Status, Impressions, CTR</li>
+    <li>Popup Messages หลายภาษา (Welcome, Train Delay, Emergency)</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 8: Kiosk Admin — MA & Analytics ===== -->
+<section class="slide" data-slide="8">
+  <span class="badge badge-kiosk-admin">KIOSK ADMIN</span>
+  <span class="slide-num">8 / 21</span>
+  <h2>Kiosk Admin — MA & Analytics</h2>
+  <div class="img-row">
+    <img src="screenshots/kiosk-admin-04-kiosk-ma.png" alt="Kiosk MA">
+    <img src="screenshots/kiosk-admin-05-analytics.png" alt="Analytics">
+  </div>
+  <ul class="features">
+    <li>Kiosk Maintenance — 14 ตู้, สถานะ Online/Offline</li>
+    <li>Avg Uptime 98%</li>
+    <li>Analytics — สถิติการใช้งาน 57,860 ครั้ง</li>
+    <li>กราฟคำถามยอดนิยม + กราฟอุปกรณ์</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 9: Kiosk Admin — LiveWalk ===== -->
+<section class="slide" data-slide="9">
+  <span class="badge badge-kiosk-admin">KIOSK ADMIN</span>
+  <span class="slide-num">9 / 21</span>
+  <h2>Kiosk Admin — LiveWalk Heat Map</h2>
+  <div class="img-row single">
+    <img src="screenshots/kiosk-admin-06-livewalk.png" alt="LiveWalk Heatmap">
+  </div>
+  <ul class="features">
+    <li>DeepTrack Heatmap ความหนาแน่นรายชั่วโมง</li>
+    <li>Node สถานี 8 จุด พร้อมสถานะ Comfort/Busy/Alert</li>
+    <li>Occupancy %, Detected count</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 10: Kiosk Admin — Walk Path ===== -->
+<section class="slide" data-slide="10">
+  <span class="badge badge-kiosk-admin">KIOSK ADMIN</span>
+  <span class="slide-num">10 / 21</span>
+  <h2>Kiosk Admin — Walk Path Location</h2>
+  <div class="img-row single">
+    <img src="screenshots/kiosk-admin-07-walkpath.png" alt="Walk Path">
+  </div>
+  <ul class="features">
+    <li>Node Flow Map เส้นทางการเดินภายในสถานี</li>
+    <li>Unique Device 126,240</li>
+    <li>จำนวนเดินผ่านแต่ละ Node + กราฟเปรียบเทียบ</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 11: Web App — Login & Home ===== -->
+<section class="slide" data-slide="11">
+  <span class="badge badge-webapp">WEB APP</span>
+  <span class="slide-num">11 / 21</span>
+  <h2>Mobile Web App — Login & Home</h2>
+  <div class="img-row">
+    <img src="screenshots/webapp-01-main.png" alt="Login">
+    <img src="screenshots/webapp-02-home.png" alt="Home">
+  </div>
+  <ul class="features">
+    <li>Login: ThaiID / Email / Guest</li>
+    <li>Gold Member 2,450 คะแนน</li>
+    <li>8 shortcuts: จองตั๋ว / ตาราง / ทัวร์ / ประวัติ / Point / โค้ดลด / รายการโปรด / นำทาง</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 12: Web App — ตาราง & จอง ===== -->
+<section class="slide" data-slide="12">
+  <span class="badge badge-webapp">WEB APP</span>
+  <span class="slide-num">12 / 21</span>
+  <h2>Mobile Web App — ตารางเดินรถ & จองตั๋ว</h2>
+  <div class="img-row">
+    <img src="screenshots/webapp-03-schedule.png" alt="Schedule">
+    <img src="screenshots/webapp-04-booking.png" alt="Booking">
+  </div>
+  <ul class="features">
+    <li>ตารางเดินรถ กรุงเทพ→เชียงใหม่ พร้อมราคา/ที่นั่งว่าง</li>
+    <li>จองตั๋วไป-กลับ เลือกจำนวนผู้ใหญ่/เด็ก/ชั้นที่นั่ง</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 13: Web App — ประวัติ & Point ===== -->
+<section class="slide" data-slide="13">
+  <span class="badge badge-webapp">WEB APP</span>
+  <span class="slide-num">13 / 21</span>
+  <h2>Mobile Web App — ประวัติการจอง & Point/Reward</h2>
+  <div class="img-row">
+    <img src="screenshots/webapp-05-history.png" alt="History">
+    <img src="screenshots/webapp-06-rewards.png" alt="Rewards">
+  </div>
+  <ul class="features">
+    <li>ประวัติการจอง: เดินทางแล้ว / รอเดินทาง / ยกเลิก / เสร็จสิ้น</li>
+    <li>Point/Reward — Gold Member</li>
+    <li>แลกรางวัล: ส่วนลด / อัพเกรดที่นั่ง / ตั๋วฟรี / ทัวร์ฟรี</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 14: Web App — ทัวร์ & รายการโปรด ===== -->
+<section class="slide" data-slide="14">
+  <span class="badge badge-webapp">WEB APP</span>
+  <span class="slide-num">14 / 21</span>
+  <h2>Mobile Web App — ทัวร์ & รายการโปรด</h2>
+  <div class="img-row">
+    <img src="screenshots/webapp-07-tours.png" alt="Tours">
+    <img src="screenshots/webapp-09-favorites.png" alt="Favorites">
+  </div>
+  <ul class="features">
+    <li>ทัวร์สถานีรถไฟ: หัวหิน ฿890, สะพานข้ามแม่น้ำแคว ฿2,490</li>
+    <li>รายการโปรด — บันทึกเส้นทาง/ทัวร์ที่ชอบ</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 15: Web App — ผังสถานี ===== -->
+<section class="slide" data-slide="15">
+  <span class="badge badge-webapp">WEB APP</span>
+  <span class="slide-num">15 / 21</span>
+  <h2>Mobile Web App — ผังสถานี & นำทาง</h2>
+  <div class="img-row single">
+    <img src="screenshots/webapp-08-navigation.png" alt="Station Navigation">
+  </div>
+  <ul class="features">
+    <li>ผังสถานี Interactive Map</li>
+    <li>แสดงอาคาร / จำหน่ายตั๋ว / ชานชาลา</li>
+    <li>ที่จอดรถ / สวน / ทางเข้าหลัก</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 16: Core Dashboard — Overview ===== -->
+<section class="slide" data-slide="16">
+  <span class="badge badge-core">CORE DASHBOARD</span>
+  <span class="slide-num">16 / 21</span>
+  <h2>Core Dashboard — Overview</h2>
+  <div class="img-row single">
+    <img src="screenshots/core-01-main.png" alt="Core Dashboard">
+  </div>
+  <ul class="features">
+    <li>DeepTrack Heatmap LIVE — 572 Sensors</li>
+    <li>KPI: คนในสถานี 2,340 / เที่ยวรถไฟ 42 / แจ้งเหตุ 3</li>
+    <li>บูทเปิด 8/10 / App Users 1,205</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 17: Core — Users & Roles ===== -->
+<section class="slide" data-slide="17">
+  <span class="badge badge-core">CORE DASHBOARD</span>
+  <span class="slide-num">17 / 21</span>
+  <h2>Core Dashboard — Users & Roles</h2>
+  <div class="img-row">
+    <img src="screenshots/core-02-users.png" alt="Users">
+    <img src="screenshots/core-03-roles.png" alt="Roles">
+  </div>
+  <ul class="features">
+    <li>User Management — 6 ผู้ใช้ (email, role, status, last login)</li>
+    <li>4 Roles: Admin, Executive, Staff, Vendor</li>
+    <li>สิทธิ์แตกต่างตาม Role</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 18: Core — Executive Report ===== -->
+<section class="slide" data-slide="18">
+  <span class="badge badge-core">CORE DASHBOARD</span>
+  <span class="slide-num">18 / 21</span>
+  <h2>Core Dashboard — Executive Report</h2>
+  <div class="img-row single">
+    <img src="screenshots/core-04-report.png" alt="Executive Report">
+  </div>
+  <ul class="features">
+    <li>ผู้โดยสาร 3,720 / รายได้ ฿2.3M / ร้านค้า 13/25 / แจ้งเหตุ 8</li>
+    <li>สถานะ Kiosk 10 ตู้ + แผนผังพื้นที่สถานี</li>
+    <li>ร้านค้าตามประเภทราคา + Occupancy Rate 50%</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 19: Core — Traffic & Revenue ===== -->
+<section class="slide" data-slide="19">
+  <span class="badge badge-core">CORE DASHBOARD</span>
+  <span class="slide-num">19 / 21</span>
+  <h2>Core Dashboard — Traffic & Revenue Report</h2>
+  <div class="img-row">
+    <img src="screenshots/core-04b-report-traffic.png" alt="Traffic">
+    <img src="screenshots/core-04c-report-revenue.png" alt="Revenue">
+  </div>
+  <ul class="features">
+    <li>Traffic Analytics กราฟรายชั่วโมง</li>
+    <li>Revenue: ฿723K / ฿819K / ฿463K / Kiosk Ads ฿269K</li>
+    <li>Export PDF / Excel</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 20: Core — Alert & Settings ===== -->
+<section class="slide" data-slide="20">
+  <span class="badge badge-core">CORE DASHBOARD</span>
+  <span class="slide-num">20 / 21</span>
+  <h2>Core Dashboard — Alert & Settings</h2>
+  <div class="img-row">
+    <img src="screenshots/core-05-alert.png" alt="Alert">
+    <img src="screenshots/core-06-settings.png" alt="Settings">
+  </div>
+  <ul class="features">
+    <li>จัดการแจ้งเหตุ: ใหม่ / กำลังแก้ไข / เสร็จแล้ว</li>
+    <li>Core Config: Health Check, EFK Logging, OAuth2, Notification</li>
+    <li>Theme / ภาษา / Auto Refresh / System Status 6 services</li>
+  </ul>
+</section>
+
+<!-- ===== SLIDE 21: Thank You ===== -->
+<section class="slide thankyou" data-slide="21">
+  <span class="slide-num">21 / 21</span>
+  <h1 style="color:#d4a843;">ขอบคุณค่ะ</h1>
+  <div style="width:80px;height:3px;background:#d4a843;margin:16px auto;border-radius:2px;"></div>
+  <p>SWT — Smart Tourism Platform</p>
+  <p style="font-size:16px; margin-top:20px;">พัฒนาโดย <strong style="color:#d4a843;">NDF</strong></p>
+  <p style="font-size:16px;">สำหรับ <strong style="color:#d4a843;">การรถไฟแห่งประเทศไทย (SRT)</strong></p>
+  <p style="font-size:14px; color:#546e7a; margin-top:30px;">Q&A</p>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function show(idx) {
+    if (idx < 0 || idx >= slides.length) return;
+    slides[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    document.getElementById('progress-bar').style.width =
+      ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { e.preventDefault(); show(0); }
+    if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+
+  // Initialize first slide
+  show(0);
+</script>
+</body>
+</html>
