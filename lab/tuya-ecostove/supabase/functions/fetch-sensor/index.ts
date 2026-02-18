@@ -82,12 +82,24 @@ function parseReadings(data: any) {
   return readings
 }
 
-function parseAqi(value: any) {
-  if (typeof value === 'number') return value
-  if (typeof value === 'string' && value.startsWith('level_')) {
-    return parseInt(value.replace('level_', '')) || null
+// คำนวณ AQI จาก PM2.5 ตามมาตรฐานจีน (HJ 633-2012)
+function calculateAqiFromPm25(pm25: number | null): number | null {
+  if (pm25 === null || pm25 === undefined) return null
+  const breakpoints = [
+    { cLo: 0,   cHi: 35,  aqiLo: 0,   aqiHi: 50 },
+    { cLo: 35,  cHi: 75,  aqiLo: 50,  aqiHi: 100 },
+    { cLo: 75,  cHi: 115, aqiLo: 100, aqiHi: 150 },
+    { cLo: 115, cHi: 150, aqiLo: 150, aqiHi: 200 },
+    { cLo: 150, cHi: 250, aqiLo: 200, aqiHi: 300 },
+    { cLo: 250, cHi: 350, aqiLo: 300, aqiHi: 400 },
+    { cLo: 350, cHi: 500, aqiLo: 400, aqiHi: 500 },
+  ]
+  for (const bp of breakpoints) {
+    if (pm25 <= bp.cHi) {
+      return Math.round(((bp.aqiHi - bp.aqiLo) / (bp.cHi - bp.cLo)) * (pm25 - bp.cLo) + bp.aqiLo)
+    }
   }
-  return null
+  return 500 // เกิน 500 µg/m³
 }
 
 // ===== Main Handler =====
@@ -146,7 +158,7 @@ serve(async (req) => {
       humidity: readings.humidity_value ?? null,
       hcho_value: readings.ch2o_value ?? null,
       tvoc_value: readings.tvoc_value ?? null,
-      aqi: parseAqi(readings.air_quality_index),
+      aqi: calculateAqiFromPm25(readings.pm25_value ?? null),
       data_source: 'sensor',
       stove_type: stove_type || 'eco',
       volunteer_id: volunteer_id || null,
