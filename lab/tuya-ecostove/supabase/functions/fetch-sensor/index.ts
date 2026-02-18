@@ -104,7 +104,7 @@ serve(async (req) => {
 
   try {
     // Get device_id from request
-    const { device_id, volunteer_id, subject_id, stove_type, session_type } = await req.json()
+    const { device_id, volunteer_id, house_id, stove_type, session_type } = await req.json()
 
     if (!device_id) {
       return new Response(
@@ -150,7 +150,10 @@ serve(async (req) => {
       data_source: 'sensor',
       stove_type: stove_type || 'eco',
       volunteer_id: volunteer_id || null,
-      subject_id: subject_id || null,
+      house_id: house_id || null,
+      tuya_device_id: device_id,
+      session_type: session_type || null,
+      status: 'approved',
       recorded_at: new Date().toISOString(),
     }
 
