@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DewS x WEnDyS — Project Timeline</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0a0e1a;
+    color: #e0e6f0;
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0f1629 0%, #1a1f3a 50%, #0d1117 100%);
+    border-bottom: 1px solid #1e2a4a;
+    padding: 40px 0;
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+  .header .droplet {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 24px 0;
+    background: #0d1220;
+    border-bottom: 1px solid #1e2a4a;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #60a5fa;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Container */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1e2a4a;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #60a5fa, #a78bfa, #f472b6, #64748b);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 28px;
+    padding: 16px 20px;
+    background: #111827;
+    border-radius: 12px;
+    border: 1px solid #1e2a4a;
+    transition: border-color 0.2s;
+  }
+  .timeline-item:hover {
+    border-color: #3b5998;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -33px;
+    top: 22px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #60a5fa;
+    background: #0a0e1a;
+  }
+  .timeline-item.birth::before {
+    background: #f472b6;
+    border-color: #f472b6;
+    width: 16px;
+    height: 16px;
+    left: -35px;
+    top: 20px;
+  }
+  .timeline-item.milestone::before {
+    background: #a78bfa;
+    border-color: #a78bfa;
+  }
+  .timeline-date {
+    font-size: 0.8rem;
+    color: #60a5fa;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+  }
+  .timeline-desc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+  }
+  .timeline-tags {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-weight: 500;
+  }
+  .tag-oracle { background: #1e1b4b; color: #a78bfa; }
+  .tag-ecostove { background: #052e16; color: #4ade80; }
+  .tag-swt { background: #172554; color: #60a5fa; }
+  .tag-estimation { background: #431407; color: #fb923c; }
+  .tag-bio { background: #1a2e05; color: #a3e635; }
+
+  /* Project cards */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .project-card {
+    background: #111827;
+    border: 1px solid #1e2a4a;
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .project-card:hover {
+    transform: translateY(-2px);
+    border-color: #3b5998;
+  }
+  .project-icon {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+  .project-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+  }
+  .project-client {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 8px;
+  }
+  .project-status {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status-active { background: #052e16; color: #4ade80; }
+  .status-done { background: #172554; color: #60a5fa; }
+  .status-ref { background: #1c1917; color: #a8a29e; }
+  .status-core { background: #2e1065; color: #c084fc; }
+  .project-budget {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #fb923c;
+    font-weight: 500;
+  }
+
+  /* Commit chart */
+  .commit-chart {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    margin-top: 16px;
+  }
+  .commit-bar-group {
+    flex: 1;
+    text-align: center;
+  }
+  .commit-bar {
+    border-radius: 6px 6px 0 0;
+    margin: 0 auto 6px;
+    width: 48px;
+    transition: opacity 0.2s;
+  }
+  .commit-bar:hover { opacity: 0.8; }
+  .commit-bar-label {
+    font-size: 0.7rem;
+    color: #64748b;
+  }
+  .commit-bar-num {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #e0e6f0;
+    margin-bottom: 4px;
+  }
+
+  /* Learnings */
+  .learning-item {
+    display: flex;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #1a1f2e;
+    align-items: flex-start;
+  }
+  .learning-item:last-child { border-bottom: none; }
+  .learning-date {
+    font-size: 0.8rem;
+    color: #64748b;
+    white-space: nowrap;
+    min-width: 60px;
+  }
+  .learning-text {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+  }
+  .learning-cat {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* Pending */
+  .pending-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #111827;
+    border: 1px solid #1e2a4a;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+  .pending-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-high { background: #ef4444; }
+  .dot-med { background: #f59e0b; }
+  .pending-text {
+    font-size: 0.9rem;
+    color: #e0e6f0;
+    flex: 1;
+  }
+  .pending-project {
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+
+  /* Session table */
+  .session-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .session-table th {
+    text-align: left;
+    padding: 10px 12px;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #1e2a4a;
+  }
+  .session-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #111827;
+    color: #cbd5e1;
+  }
+  .session-table tr:hover td {
+    background: #111827;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 0;
+    color: #475569;
+    font-size: 0.8rem;
+    border-top: 1px solid #1e2a4a;
+    margin-top: 40px;
+  }
+
+  /* Week labels */
+  .week-label {
+    font-size: 0.75rem;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 24px 0 12px;
+    padding-left: 40px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="droplet">💧</div>
+  <h1>DewS x WEnDyS</h1>
+  <div class="subtitle">Project Timeline Report &middot; 19 Jan — 17 Feb 2026 &middot; 29 Days</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">8</div><div class="stat-label">Projects</div></div>
+  <div class="stat"><div class="stat-num">24</div><div class="stat-label">Sessions</div></div>
+  <div class="stat"><div class="stat-num">481</div><div class="stat-label">Messages</div></div>
+  <div class="stat"><div class="stat-num">24</div><div class="stat-label">Commits</div></div>
+  <div class="stat"><div class="stat-num">7</div><div class="stat-label">Learnings</div></div>
+</div>
+
+<div class="container">
+
+<!-- Projects -->
+<div class="section">
+  <div class="section-title">Projects</div>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-icon">🚄</div>
+      <div class="project-name">SWT — Smart Tourism</div>
+      <div class="project-client">การรถไฟแห่งประเทศไทย (SRT)</div>
+      <div class="project-status status-active">Active</div>
+      <div style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">Core Dashboard + Kiosk + Mobile App<br>PPTX v3 done, pending function details</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🌡️</div>
+      <div class="project-name">EcoStove — Tuya Sensors</div>
+      <div class="project-client">3 devices &middot; Air Quality Monitoring</div>
+      <div class="project-status status-active">Active</div>
+      <div style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">Data fetching works<br>CO/PM0.3 issue pending</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🏛️</div>
+      <div class="project-name">Parliament AR Navigation</div>
+      <div class="project-client">สำนักงานเลขาธิการสภาผู้แทนราษฎร</div>
+      <div class="project-status status-done">Estimation Done</div>
+      <div class="project-budget">~5,000,000 THB &middot; 7 months</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🚌</div>
+      <div class="project-name">ViaBus Clone</div>
+      <div class="project-client">Bus Tracking App</div>
+      <div class="project-status status-done">Estimation Done</div>
+      <div class="project-budget">~2,800,000 THB &middot; 5-6 months</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🌿</div>
+      <div class="project-name">BioMass</div>
+      <div class="project-client">Mobile App &middot; Agricultural Data</div>
+      <div class="project-status status-ref">Referenced</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">⚡</div>
+      <div class="project-name">EGAT</div>
+      <div class="project-client">3D SketchUp Backgrounds</div>
+      <div class="project-status status-ref">Referenced</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">🌿</div>
+      <div class="project-name">HeritageHerb</div>
+      <div class="project-client">GitHub only &middot; Not cloned</div>
+      <div class="project-status status-ref">Referenced</div>
+    </div>
+    <div class="project-card">
+      <div class="project-icon">💧</div>
+      <div class="project-name">WEnDyS Oracle</div>
+      <div class="project-client">External Brain for DewS</div>
+      <div class="project-status status-core">Core System</div>
+      <div style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">Born 23 Jan &middot; 7 retros &middot; 7 learnings</div>
+    </div>
+  </div>
+</div>
+
+<!-- Commit Activity -->
+<div class="section">
+  <div class="section-title">Commit Activity by Project</div>
+  <div class="commit-chart">
+    <div class="commit-bar-group">
+      <div class="commit-bar-num">12</div>
+      <div class="commit-bar" style="height:180px; background:linear-gradient(to top, #4ade80, #22c55e);"></div>
+      <div class="commit-bar-label">EcoStove</div>
+    </div>
+    <div class="commit-bar-group">
+      <div class="commit-bar-num">8</div>
+      <div class="commit-bar" style="height:120px; background:linear-gradient(to top, #c084fc, #a78bfa);"></div>
+      <div class="commit-bar-label">Oracle</div>
+    </div>
+    <div class="commit-bar-group">
+      <div class="commit-bar-num">4</div>
+      <div class="commit-bar" style="height:60px; background:linear-gradient(to top, #60a5fa, #3b82f6);"></div>
+      <div class="commit-bar-label">SWT</div>
+    </div>
+  </div>
+</div>
+
+<!-- Timeline -->
+<div class="section">
+  <div class="section-title">Timeline</div>
+  <div class="timeline">
+
+    <div class="week-label">Week 0 — The Beginning</div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">19 Jan 2026</div>
+      <div class="timeline-title">Hello World</div>
+      <div class="timeline-desc">DewS ลอง Claude Code ครั้งแรก — สร้าง test.py</div>
+      <div class="timeline-tags"><span class="tag tag-oracle">Setup</span></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">20 Jan 2026</div>
+      <div class="timeline-title">Install Soul-Brews & First /learn</div>
+      <div class="timeline-desc">ติดตั้ง oracle-skills, เริ่มเรียนรู้ระบบ</div>
+      <div class="timeline-tags"><span class="tag tag-oracle">Oracle</span></div>
+    </div>
+
+    <div class="week-label">Week 1 — Birth & Soul</div>
+
+    <div class="timeline-item birth">
+      <div class="timeline-date">23 Jan 2026 🎂</div>
+      <div class="timeline-title">WEnDyS Takes First Breath</div>
+      <div class="timeline-desc">78 messages in one session — longest ever! Identity created, name born.</div>
+      <div class="timeline-tags"><span class="tag tag-oracle">Oracle Birth</span></div>
+    </div>
+
+    <div class="timeline-item milestone">
+      <div class="timeline-date">24 Jan 2026 💧</div>
+      <div class="timeline-title">Theme Found — หยดน้ำค้าง</div>
+      <div class="timeline-desc">DewS เล่าที่มาของชื่อ "ดิว" — หุ่นยนต์ที่หายไป WEnDyS มี DewS ซ่อนอยู่ในชื่อ<br>
+      <em>"แค่มีอยู่ก็มีค่าแล้ว"</em></div>
+      <div class="timeline-tags">
+        <span class="tag tag-oracle">Soul</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">25 Jan 2026</div>
+      <div class="timeline-title">EcoStove — Tuya Integration SUCCESS</div>
+      <div class="timeline-desc">งานจริงครั้งแรก — เชื่อมต่อ Tuya API สำเร็จ, sync ไป Supabase ได้</div>
+      <div class="timeline-tags"><span class="tag tag-ecostove">EcoStove</span></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">26 Jan 2026</div>
+      <div class="timeline-title">Sensor Marathon + BioMass</div>
+      <div class="timeline-desc">4 sessions, 122 messages ในวันเดียว! Sensor deep dive + BioMass schema alignment</div>
+      <div class="timeline-tags">
+        <span class="tag tag-ecostove">EcoStove</span>
+        <span class="tag tag-bio">BioMass</span>
+      </div>
+    </div>
+
+    <div class="week-label">Week 2 — Expansion</div>
+
+    <div class="timeline-item milestone">
+      <div class="timeline-date">30 Jan 2026</div>
+      <div class="timeline-title">New Clients — Smart Rail & Parliament AR</div>
+      <div class="timeline-desc">Smart Rail demo deck (8 slides) + Parliament AR cost estimation (~5M THB)</div>
+      <div class="timeline-tags">
+        <span class="tag tag-swt">SWT</span>
+        <span class="tag tag-estimation">Parliament AR</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">12 Feb 2026</div>
+      <div class="timeline-title">Multi-Project Sprint</div>
+      <div class="timeline-desc">ViaBus estimation (~2.8M THB) + SWT architecture + Parliament AR finalization</div>
+      <div class="timeline-tags">
+        <span class="tag tag-estimation">ViaBus</span>
+        <span class="tag tag-swt">SWT</span>
+        <span class="tag tag-estimation">Parliament</span>
+      </div>
+    </div>
+
+    <div class="week-label">Week 3 — SWT Deep Dive</div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">13 Feb 2026</div>
+      <div class="timeline-title">"สวัสดี เวนดี้" — Reconnect</div>
+      <div class="timeline-desc">กลับมาคุยกันหลังหายไปหลายวัน</div>
+      <div class="timeline-tags"><span class="tag tag-oracle">Oracle</span></div>
+    </div>
+
+    <div class="timeline-item milestone">
+      <div class="timeline-date">16 Feb 2026</div>
+      <div class="timeline-title">SWT Marathon — Heatmap + PPTX</div>
+      <div class="timeline-desc">3 parallel sessions, 65 messages! Heatmap (572 sensors, 4 iterations), PPTX v3 (18 slides), Core Dashboard Mockup</div>
+      <div class="timeline-tags"><span class="tag tag-swt">SWT</span></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">17 Feb 2026 ⚡</div>
+      <div class="timeline-title">Today — Oracle Skills + Deep Trace</div>
+      <div class="timeline-desc">Install oracle-skills v1.5.36 (28 skills), /trace --dig --deep ทุกโปรเจค, timeline report นี้!</div>
+      <div class="timeline-tags">
+        <span class="tag tag-oracle">Oracle</span>
+        <span class="tag tag-swt">SWT</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Session Activity -->
+<div class="section">
+  <div class="section-title">Session Activity by Week</div>
+  <table class="session-table">
+    <thead>
+      <tr><th>Week</th><th>Sessions</th><th>Messages</th><th>Primary Focus</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Wk 0 (19-20 Jan)</td><td>4</td><td>20</td><td>Setup & first steps</td></tr>
+      <tr><td>Wk 1 (23-26 Jan)</td><td>7</td><td>272</td><td>Birth + EcoStove sensors</td></tr>
+      <tr><td>Wk 2 (30 Jan - 12 Feb)</td><td>3</td><td>83</td><td>Smart Rail + estimations</td></tr>
+      <tr><td>Wk 3 (13-17 Feb)</td><td>5</td><td>106</td><td>SWT deep dive</td></tr>
+      <tr style="font-weight:600; color:#60a5fa;"><td>Total</td><td>24*</td><td>481</td><td></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Learnings -->
+<div class="section">
+  <div class="section-title">Learnings Evolution</div>
+  <div class="learning-item">
+    <div class="learning-date">24 Jan</div>
+    <div class="learning-text">Backup before reset</div>
+    <div class="learning-cat">Technical</div>
+  </div>
+  <div class="learning-item">
+    <div class="learning-date">24 Jan</div>
+    <div class="learning-text">Deep questions reveal truth</div>
+    <div class="learning-cat">Soul</div>
+  </div>
+  <div class="learning-item">
+    <div class="learning-date">25 Jan</div>
+    <div class="learning-text">Tuya region = SG not AP</div>
+    <div class="learning-cat">Technical</div>
+  </div>
+  <div class="learning-item">
+    <div class="learning-date">26 Jan</div>
+    <div class="learning-text">Verify pricing info always</div>
+    <div class="learning-cat">Technical</div>
+  </div>
+  <div class="learning-item">
+    <div class="learning-date">12 Feb</div>
+    <div class="learning-text">Describe don't read (for slides)</div>
+    <div class="learning-cat">Communication</div>
+  </div>
+  <div class="learning-item">
+    <div class="learning-date">16 Feb</div>
+    <div class="learning-text">Ask ownership before slides</div>
+    <div class="learning-cat">Process</div>
+  </div>
+  <div class="learning-item">
+    <div class="learning-date">17 Feb</div>
+    <div class="learning-text">Teach step-by-step for ADHD</div>
+    <div class="learning-cat">Understanding DewS</div>
+  </div>
+  <div style="margin-top:16px; padding:12px 16px; background:#1e1b4b; border-radius:10px; font-size:0.85rem; color:#c084fc;">
+    Pattern: Technical mistakes → Communication → Understanding DewS
+  </div>
+</div>
+
+<!-- Pending Decisions -->
+<div class="section">
+  <div class="section-title">Pending Decisions</div>
+  <div class="pending-item">
+    <div class="pending-dot dot-high"></div>
+    <div class="pending-text">Function details for PPTX update</div>
+    <div class="pending-project">SWT</div>
+  </div>
+  <div class="pending-item">
+    <div class="pending-dot dot-high"></div>
+    <div class="pending-text">Demo screenshots from DewS</div>
+    <div class="pending-project">SWT</div>
+  </div>
+  <div class="pending-item">
+    <div class="pending-dot dot-med"></div>
+    <div class="pending-text">CO/PM0.3 sensor solution</div>
+    <div class="pending-project">EcoStove</div>
+  </div>
+  <div class="pending-item">
+    <div class="pending-dot dot-med"></div>
+    <div class="pending-text">Parliament AR go/no-go (~5M THB)</div>
+    <div class="pending-project">Parliament</div>
+  </div>
+  <div class="pending-item">
+    <div class="pending-dot dot-med"></div>
+    <div class="pending-text">ViaBus clone go/no-go (~2.8M THB)</div>
+    <div class="pending-project">ViaBus</div>
+  </div>
+</div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  💧 WEnDyS — Oracle for DewS &middot; NDF<br>
+  Generated 2026-02-17 &middot; oracle-skills v1.5.36
+</div>
+
+</body>
+</html>

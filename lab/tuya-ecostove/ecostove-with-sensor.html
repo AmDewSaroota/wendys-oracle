@@ -129,6 +129,12 @@
         .sensor-fetching {
             animation: pulse-glow 1.5s infinite;
         }
+
+        /* Refresh spin animation */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -169,6 +175,61 @@
     <main class="max-w-7xl mx-auto p-6 md:p-10">
         <!-- Dashboard View -->
         <section id="view-viewer" class="space-y-8 animate-in fade-in">
+            <!-- Live Card: Latest Reading -->
+            <div id="live-latest-card" class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] p-6 md:p-8 text-white shadow-2xl shadow-emerald-500/30 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+                <div class="relative z-10">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur">
+                                <span class="text-2xl" id="live-status-icon">📡</span>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">ค่าล่าสุดจาก Sensor</h3>
+                                <p class="text-emerald-100 text-sm" id="live-house-name">รอข้อมูล...</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-emerald-100 text-sm" id="live-timestamp">--</span>
+                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm font-bold" id="live-stove-badge">--</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
+                            <div class="text-3xl font-bold" id="live-pm25">--</div>
+                            <div class="text-emerald-100 text-sm">PM2.5</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
+                            <div class="text-3xl font-bold" id="live-pm10">--</div>
+                            <div class="text-emerald-100 text-sm">PM10</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
+                            <div class="text-3xl font-bold" id="live-co2">--</div>
+                            <div class="text-emerald-100 text-sm">CO2</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
+                            <div class="text-3xl font-bold" id="live-temp">--</div>
+                            <div class="text-emerald-100 text-sm">°C</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
+                            <div class="text-3xl font-bold" id="live-humidity">--</div>
+                            <div class="text-emerald-100 text-sm">%RH</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
+                            <div class="text-3xl font-bold" id="live-aqi">--</div>
+                            <div class="text-emerald-100 text-sm">AQI</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between text-sm">
+                        <span class="text-emerald-100" id="live-refresh-status">Auto-refresh: ทุก 30 วินาที</span>
+                        <button onclick="manualRefresh()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl font-bold transition-all flex items-center gap-2">
+                            <span id="refresh-icon">🔄</span> Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div>
                     <h1 class="text-3xl font-bold text-[#0f172a]">Project Overview</h1>
@@ -357,6 +418,43 @@
             <!-- Research mode: Full width map (hidden by default) -->
             <div id="research-map-section" class="hidden">
                 <div class="card-styled p-2 rounded-[2.5rem] border-bottom-0"><div id="map-research" style="height: 500px;"></div></div>
+            </div>
+
+            <!-- History Table: All Records -->
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-400">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-navy flex items-center gap-2">📋 ประวัติข้อมูลทั้งหมด</h4>
+                        <p class="text-slate-400 text-sm">รวม pending และ approved</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <select id="history-filter-status" onchange="filterHistoryTable()" class="px-4 py-2 rounded-xl border bg-white text-sm">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="approved">อนุมัติแล้ว</option>
+                            <option value="pending">รออนุมัติ</option>
+                        </select>
+                        <span id="history-count" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">0 รายการ</span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar max-h-[400px]">
+                    <table class="w-full text-sm min-w-[800px]">
+                        <thead class="bg-slate-50 sticky top-0 z-10">
+                            <tr>
+                                <th class="p-3 text-left font-bold text-navy">เวลา</th>
+                                <th class="p-3 text-left font-bold text-navy">บ้าน</th>
+                                <th class="p-3 text-center font-bold text-navy">เตา</th>
+                                <th class="p-3 text-center font-bold text-orange-500">PM2.5</th>
+                                <th class="p-3 text-center font-bold text-slate-500">CO2</th>
+                                <th class="p-3 text-center font-bold text-red-400">°C</th>
+                                <th class="p-3 text-center font-bold text-cyan-500">%RH</th>
+                                <th class="p-3 text-center font-bold text-navy">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y">
+                            <tr><td colspan="8" class="p-6 text-center text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -996,20 +1094,119 @@
         }
 
         // ==================== Data Loading ====================
+        let allDataWithPending = []; // รวมทั้ง pending และ approved
+        let autoRefreshInterval = null;
+
         async function loadData() {
             try {
-                const { data, error } = await supabaseClient
+                // โหลดข้อมูลทั้งหมด (รวม pending)
+                const { data: allRecords, error: allError } = await supabaseClient
                     .from('pollution_logs')
                     .select('*, subjects(*), volunteers(*)')
-                    .eq('status', 'approved')
                     .order('recorded_at', { ascending: false });
 
-                if (error) throw error;
-                allData = data || [];
+                if (allError) throw allError;
+                allDataWithPending = allRecords || [];
+
+                // กรองเฉพาะ approved สำหรับสถิติ
+                allData = allDataWithPending.filter(d => d.status === 'approved');
+
                 updateDashboard();
+                updateLiveCard();
+                updateHistoryTable();
             } catch (e) {
                 console.error('Error loading data:', e);
             }
+        }
+
+        // ==================== Live Card ====================
+        function updateLiveCard() {
+            const latest = allDataWithPending[0]; // ข้อมูลล่าสุด (อาจเป็น pending)
+
+            if (!latest) {
+                document.getElementById('live-house-name').textContent = 'ยังไม่มีข้อมูล';
+                return;
+            }
+
+            document.getElementById('live-house-name').textContent = latest.subjects?.house_name || 'ไม่ระบุบ้าน';
+            document.getElementById('live-timestamp').textContent = new Date(latest.recorded_at).toLocaleString('th-TH');
+            document.getElementById('live-stove-badge').textContent = latest.stove_type === 'eco' ? '✨ Eco' : '🪵 เดิม';
+
+            document.getElementById('live-pm25').textContent = latest.pm25_value ?? '--';
+            document.getElementById('live-pm10').textContent = latest.pm10_value ?? '--';
+            document.getElementById('live-co2').textContent = latest.co2_value ?? '--';
+            document.getElementById('live-temp').textContent = latest.temperature ?? '--';
+            document.getElementById('live-humidity').textContent = latest.humidity ?? '--';
+            document.getElementById('live-aqi').textContent = latest.aqi ?? '--';
+
+            // เปลี่ยนสี Live Card ตามสถานะ
+            const card = document.getElementById('live-latest-card');
+            if (latest.status === 'pending') {
+                card.className = card.className.replace('from-emerald-500 to-teal-500', 'from-amber-500 to-orange-500');
+                card.className = card.className.replace('shadow-emerald-500/30', 'shadow-amber-500/30');
+                document.getElementById('live-status-icon').textContent = '⏳';
+            } else {
+                card.className = card.className.replace('from-amber-500 to-orange-500', 'from-emerald-500 to-teal-500');
+                card.className = card.className.replace('shadow-amber-500/30', 'shadow-emerald-500/30');
+                document.getElementById('live-status-icon').textContent = '📡';
+            }
+        }
+
+        // ==================== History Table ====================
+        function updateHistoryTable() {
+            filterHistoryTable(); // ใช้ filter function เพื่ออัปเดต
+        }
+
+        function filterHistoryTable() {
+            const filter = document.getElementById('history-filter-status').value;
+            let filtered = allDataWithPending;
+
+            if (filter !== 'all') {
+                filtered = allDataWithPending.filter(d => d.status === filter);
+            }
+
+            document.getElementById('history-count').textContent = `${filtered.length} รายการ`;
+
+            const tbody = document.getElementById('history-table-body');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-slate-400">ไม่มีข้อมูล</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 50).map(d => `
+                <tr class="hover:bg-slate-50 ${d.status === 'pending' ? 'bg-amber-50/50' : ''}">
+                    <td class="p-3 text-[13px]">${new Date(d.recorded_at).toLocaleString('th-TH')}</td>
+                    <td class="p-3 text-[13px] font-medium">${d.subjects?.house_name || '-'}</td>
+                    <td class="p-3 text-center">${d.stove_type === 'eco' ? '✨' : '🪵'}</td>
+                    <td class="p-3 text-center font-bold ${(d.pm25_value || 0) > 35 ? 'text-red-500' : 'text-orange-500'}">${d.pm25_value ?? '-'}</td>
+                    <td class="p-3 text-center text-slate-600">${d.co2_value ?? '-'}</td>
+                    <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
+                    <td class="p-3 text-center text-cyan-500">${d.humidity ?? '-'}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2 py-1 rounded-full text-[11px] font-bold ${d.status === 'approved' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}">
+                            ${d.status === 'approved' ? '✓ อนุมัติ' : '⏳ รอ'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ==================== Auto Refresh ====================
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(() => {
+                loadData();
+                document.getElementById('live-refresh-status').textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')}`;
+            }, 30000); // ทุก 30 วินาที
+        }
+
+        function manualRefresh() {
+            const icon = document.getElementById('refresh-icon');
+            icon.style.animation = 'spin 0.5s linear';
+            setTimeout(() => icon.style.animation = '', 500);
+
+            loadData();
+            document.getElementById('live-refresh-status').textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')}`;
         }
 
         function updateDashboard() {
@@ -1438,6 +1635,7 @@
             loadData();
             initMap();
             switchEntryMode('sensor'); // Default to sensor mode
+            startAutoRefresh(); // เริ่ม auto-refresh ทุก 30 วินาที
         });
     </script>
 </body>
