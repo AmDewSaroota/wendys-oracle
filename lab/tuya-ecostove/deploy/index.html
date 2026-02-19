@@ -1361,8 +1361,8 @@
         async function loadEntryForm() {
             try {
                 const [volRes, subRes, devRes] = await Promise.all([
-                    supabaseClient.from('volunteers').select('*').eq('is_active', true),
-                    supabaseClient.from('subjects').select('*').eq('is_active', true),
+                    supabaseClient.from('volunteers').select('*'),
+                    supabaseClient.from('subjects').select('*').eq('status', 'active'),
                     supabaseClient.from('devices').select('*').eq('is_active', true)
                 ]);
 
@@ -1372,7 +1372,7 @@
 
                 const volSelect = document.getElementById('entry-volunteer');
                 volSelect.innerHTML = '<option value="">-- ระบุชื่ออาสาสมัคร --</option>' +
-                    volunteers.map(v => `<option value="${v.id}">${v.name} (${v.province})</option>`).join('');
+                    volunteers.map(v => `<option value="${v.id}">${v.full_name}</option>`).join('');
             } catch (e) {
                 console.error('Error loading form data:', e);
             }
@@ -1481,22 +1481,21 @@
 
                 if (!data || data.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">ไม่มีรายการรออนุมัติ</td></tr>';
-                    return;
+                } else {
+                    tbody.innerHTML = data.map(d => `
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4">${new Date(d.recorded_at).toLocaleString('th-TH')}</td>
+                            <td class="p-4">${d.house_name || '-'}</td>
+                            <td class="p-4 text-center">${d.stove_type === 'eco' ? '✨ Eco' : '🪵 เดิม'}</td>
+                            <td class="p-4 text-center">${d.pm25_value || '-'} / ${d.co2_value || '-'}</td>
+                            <td class="p-4 text-center">${d.photo_url ? '📷' : '-'}</td>
+                            <td class="p-4 text-center">
+                                <button onclick="approveLog('${d.id}')" class="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl font-bold text-[12px] mr-2">✓ อนุมัติ</button>
+                                <button onclick="rejectLog('${d.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl font-bold text-[12px]">✕ ไม่อนุมัติ</button>
+                            </td>
+                        </tr>
+                    `).join('');
                 }
-
-                tbody.innerHTML = data.map(d => `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-4">${new Date(d.recorded_at).toLocaleString('th-TH')}</td>
-                        <td class="p-4">${d.house_name || '-'}</td>
-                        <td class="p-4 text-center">${d.stove_type === 'eco' ? '✨ Eco' : '🪵 เดิม'}</td>
-                        <td class="p-4 text-center">${d.pm25_value || '-'} / ${d.co2_value || '-'}</td>
-                        <td class="p-4 text-center">${d.photo_url ? '📷' : '-'}</td>
-                        <td class="p-4 text-center">
-                            <button onclick="approveLog('${d.id}')" class="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl font-bold text-[12px] mr-2">✓ อนุมัติ</button>
-                            <button onclick="rejectLog('${d.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl font-bold text-[12px]">✕ ไม่อนุมัติ</button>
-                        </td>
-                    </tr>
-                `).join('');
 
                 // Load devices
                 const { data: devData } = await supabaseClient.from('devices').select('*, subjects(*)');
@@ -1549,22 +1548,23 @@
             const list = document.getElementById('volunteers-list');
             list.innerHTML = volunteers.map(v => `
                 <div class="card-styled p-6 rounded-2xl">
-                    <p class="font-bold text-navy text-lg">${v.name}</p>
-                    <p class="text-[13px] text-slate-500">${v.province}</p>
-                    <p class="text-[13px] ${v.is_active ? 'text-emerald-500' : 'text-red-500'}">${v.is_active ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
+                    <p class="font-bold text-navy text-lg">${v.full_name}</p>
+                    <p class="text-[13px] text-slate-500">${v.phone_contact || 'ไม่มีเบอร์'}</p>
                 </div>
             `).join('') || '<p class="text-slate-400">ยังไม่มีอาสาสมัคร</p>';
         }
 
         function renderSubjectsList() {
             const list = document.getElementById('subjects-list');
-            list.innerHTML = subjects.map(s => `
+            list.innerHTML = subjects.map(s => {
+                const vol = volunteers.find(v => v.id === s.volunteer_id);
+                return `
                 <div class="card-styled p-6 rounded-2xl">
-                    <p class="font-bold text-navy text-lg">🏠 ${s.house_name}</p>
-                    <p class="text-[13px] text-slate-500">${s.province}, ${s.district}</p>
-                    <p class="text-[13px] text-slate-400">อาสา: ${s.volunteers?.name || 'ไม่ระบุ'}</p>
-                </div>
-            `).join('') || '<p class="text-slate-400">ยังไม่มีกลุ่มตัวอย่าง</p>';
+                    <p class="font-bold text-navy text-lg">🏠 ${s.full_name}</p>
+                    <p class="text-[13px] text-slate-500">${s.address || 'ไม่ระบุที่อยู่'}</p>
+                    <p class="text-[13px] text-slate-400">อาสา: ${vol?.full_name || 'ไม่ระบุ'}</p>
+                </div>`;
+            }).join('') || '<p class="text-slate-400">ยังไม่มีกลุ่มตัวอย่าง</p>';
         }
 
         function showAddDeviceModal() {
@@ -1593,7 +1593,8 @@
                 name, tuya_device_id: tuyaId, subject_id: subjectId || null, is_active: true
             }]);
 
-            if (!error) { closeModal(); loadAdminData(); }
+            if (error) { alert('เพิ่มเครื่องวัดไม่สำเร็จ: ' + error.message); }
+            else { closeModal(); loadAdminData(); alert('✅ เพิ่มเครื่องวัดสำเร็จ'); }
         }
 
         function showAddVolunteerModal() {
@@ -1601,7 +1602,6 @@
                 <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มอาสาสมัคร</h3>
                 <div class="space-y-4">
                     <input id="new-vol-name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 rounded-2xl border">
-                    <input id="new-vol-province" placeholder="จังหวัด" class="w-full p-4 rounded-2xl border">
                     <input id="new-vol-phone" placeholder="เบอร์โทร" class="w-full p-4 rounded-2xl border">
                     <button onclick="addVolunteer()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
                 </div>
@@ -1609,17 +1609,17 @@
         }
 
         async function addVolunteer() {
-            const name = document.getElementById('new-vol-name').value;
-            const province = document.getElementById('new-vol-province').value;
-            const phone = document.getElementById('new-vol-phone').value;
+            const full_name = document.getElementById('new-vol-name').value;
+            const phone_contact = document.getElementById('new-vol-phone').value;
 
-            if (!name || !province) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+            if (!full_name) { alert('กรุณากรอกชื่อ-นามสกุล'); return; }
 
             const { error } = await supabaseClient.from('volunteers').insert([{
-                name, province, phone, is_active: true
+                full_name, phone_contact
             }]);
 
-            if (!error) { closeModal(); loadAdminData(); }
+            if (error) { alert('เพิ่มอาสาสมัครไม่สำเร็จ: ' + error.message); }
+            else { closeModal(); loadAdminData(); alert('✅ เพิ่มอาสาสมัครสำเร็จ'); }
         }
 
         function showAddSubjectModal() {
@@ -1627,11 +1627,10 @@
                 <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มบ้านกลุ่มตัวอย่าง</h3>
                 <div class="space-y-4">
                     <input id="new-sub-name" placeholder="ชื่อบ้าน/รหัส" class="w-full p-4 rounded-2xl border">
-                    <input id="new-sub-province" placeholder="จังหวัด" class="w-full p-4 rounded-2xl border">
-                    <input id="new-sub-district" placeholder="อำเภอ" class="w-full p-4 rounded-2xl border">
+                    <input id="new-sub-address" placeholder="ที่อยู่" class="w-full p-4 rounded-2xl border">
                     <select id="new-sub-volunteer" class="w-full p-4 rounded-2xl border">
                         <option value="">-- เลือกอาสาสมัคร --</option>
-                        ${volunteers.map(v => `<option value="${v.id}">${v.name}</option>`).join('')}
+                        ${volunteers.map(v => `<option value="${v.id}">${v.full_name}</option>`).join('')}
                     </select>
                     <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
                 </div>
@@ -1639,18 +1638,18 @@
         }
 
         async function addSubject() {
-            const name = document.getElementById('new-sub-name').value;
-            const province = document.getElementById('new-sub-province').value;
-            const district = document.getElementById('new-sub-district').value;
+            const full_name = document.getElementById('new-sub-name').value;
+            const address = document.getElementById('new-sub-address').value;
             const volunteerId = document.getElementById('new-sub-volunteer').value;
 
-            if (!name || !province) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+            if (!full_name) { alert('กรุณากรอกชื่อบ้าน'); return; }
 
             const { error } = await supabaseClient.from('subjects').insert([{
-                house_name: name, province, district, volunteer_id: volunteerId || null, is_active: true
+                full_name, address, volunteer_id: volunteerId || null, status: 'active'
             }]);
 
-            if (!error) { closeModal(); loadAdminData(); }
+            if (error) { alert('เพิ่มบ้านไม่สำเร็จ: ' + error.message); }
+            else { closeModal(); loadAdminData(); alert('✅ เพิ่มบ้านกลุ่มตัวอย่างสำเร็จ'); }
         }
 
         function exportToExcel() {
