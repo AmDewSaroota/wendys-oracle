@@ -2,37 +2,62 @@
 
 ## Current State
 
-**Status**: ZN-MT29 Integration COMPLETE!
-**Date**: 2026-01-24
+**Status**: EcoStove Daemon + SRT Slides Scripting
+**Date**: 2026-02-23
 
 ---
 
-## โปรเจค ZN-MT29 → EcoStove: สำเร็จแล้ว!
+## EcoStove
 
-### สิ่งที่ทำสำเร็จ
-1. ✅ เชื่อมต่อ Tuya API (Singapore Data Center)
-2. ✅ ดึงข้อมูลจากเครื่อง ZN-MT29
-3. ✅ ส่งข้อมูลเข้า Supabase (pollution_logs)
-4. ✅ เว็บ EcoStove แสดงผลได้
+### สำเร็จแล้ว
+1. ✅ Daemon ดึงข้อมูล 2 sensors ทุก 5 นาที (`sync_to_supabase.js`)
+2. ✅ Web dashboard แก้ bug admin tabs ไม่โหลด (premature return)
+3. ✅ Filter dropdown แยก sensor ในตาราง
+4. ✅ CRUD toggle/delete สำหรับ devices, volunteers, subjects
+5. ✅ ลบแท็ปบันทึกข้อมูล (ไม่ใช้แล้ว)
 
-### ไฟล์ที่สร้าง
-- `lab/tuya-ecostove/sync_to_supabase.js` — ดึง Tuya + ส่ง Supabase
-- `lab/tuya-ecostove/fetch_air_quality.js` — ดึง Tuya อย่างเดียว
+### ยังค้าง
+- [ ] Dashboard data boxes เพี้ยน (ไม่ครบ)
+- [ ] PM2 auto-launch สำหรับ daemon
 
-### วิธีใช้
+### วิธีรัน Daemon
 ```bash
 cd lab/tuya-ecostove
-bun sync_to_supabase.js
+node sync_to_supabase.js          # loop ทุก 5 นาที
+node sync_to_supabase.js --once   # ครั้งเดียว
 ```
 
 ---
 
-## ขั้นตอนถัดไป (ถ้าต้องการ)
+## SRT Slides
 
-- [ ] ตั้ง auto-sync ทุก 5 นาที
-- [ ] เพิ่ม device_id ใน Supabase
-- [ ] รองรับหลายเครื่องวัด
+### บทพูด (draft)
+- System Architecture ✅ — ภาษาคน
+- Kiosk Pain Points + Solution ✅
+- Kiosk Admin Pain Points + Solution ✅
+- Mobile App ✅ — ยกระดับ D-ticket
+- Data Flow ✅ — ภาษาคน
+- Timeline ✅ — Gantt chart (`lab/swt-slides/timeline.html`)
+
+### ยังค้าง
+- [ ] แก้สไลด์จริงตามบทพูดใหม่
+- [ ] เช็ค timeline.html พอดีจอหรือยัง
 
 ---
 
-*Updated: 2026-01-24*
+## Reminder (2026-02-20)
+
+**Supabase RLS Fix — EcoStove**
+
+รัน SQL นี้ใน [Supabase SQL Editor](https://supabase.com/dashboard/project/zijybzjstjlqvhmckgor/sql/new):
+
+```sql
+ALTER TABLE public.areas ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can read areas"
+  ON public.areas
+  FOR SELECT
+  USING (true);
+```
+
+*Added: 2026-02-19*

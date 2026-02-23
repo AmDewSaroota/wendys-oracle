@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Timeline — SRT Smart Tourism Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Prompt', sans-serif; background: #f0f2f5; color: #1a3f6f; }
+
+  .slide {
+    width: 1280px; height: 720px;
+    margin: 20px auto;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 40px 50px 30px;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, #1a3f6f, #2e74b5, #3a7ca5, #e67e22, #27ae60);
+  }
+
+  h1 {
+    font-size: 30px; font-weight: 800; color: #1a3f6f;
+    border-left: 5px solid #2e74b5; padding-left: 16px;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 14px; color: #3a7ca5; font-weight: 500;
+    margin-left: 21px; margin-bottom: 24px;
+  }
+
+  /* Layout: label + track */
+  .row { display: flex; align-items: center; }
+  .label-col { width: 190px; flex-shrink: 0; }
+  .track-col { flex: 1; }
+
+  /* Month headers */
+  .month-bar { display: flex; }
+  .month-bar .m {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    padding: 5px 0;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  .month-bar .m:nth-child(odd) { background: rgba(46,116,181,0.03); }
+
+  /* Gantt rows */
+  .gantt-row {
+    display: flex;
+    align-items: center;
+    height: 58px;
+  }
+  .gantt-row:nth-child(even) { background: rgba(0,0,0,0.015); }
+
+  .gantt-label {
+    width: 190px; flex-shrink: 0;
+    padding-right: 12px;
+    text-align: right;
+  }
+  .gantt-label .title {
+    font-size: 13px; font-weight: 600; color: #1a3f6f;
+  }
+  .gantt-label .sub {
+    font-size: 10px; font-weight: 400; color: #94a3b8;
+    margin-top: 1px;
+  }
+
+  .gantt-track {
+    flex: 1; height: 100%;
+    position: relative;
+    display: flex; align-items: center;
+    /* vertical gridlines */
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent calc(8.333% - 0.5px),
+      rgba(0,0,0,0.05) calc(8.333% - 0.5px),
+      rgba(0,0,0,0.05) 8.333%
+    );
+  }
+
+  .gantt-bar {
+    position: absolute;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .bar-req    { background: linear-gradient(135deg, #1a3f6f, #2e74b5); }
+  .bar-design { background: linear-gradient(135deg, #2e74b5, #3a7ca5); }
+  .bar-dev    { background: linear-gradient(135deg, #e67e22, #f39c12); }
+  .bar-test   { background: linear-gradient(135deg, #8e44ad, #9b59b6); }
+  .bar-uat    { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+  .bar-deploy { background: linear-gradient(135deg, #c0392b, #e74c3c); }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #64748b; font-weight: 500;
+  }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* Bottom note */
+  .note {
+    position: absolute;
+    bottom: 24px; left: 50px; right: 50px;
+    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+    border-left: 4px solid #2e74b5;
+    border-radius: 0 10px 10px 0;
+    padding: 12px 18px;
+    font-size: 12.5px;
+    color: #1a3f6f;
+    line-height: 1.5;
+  }
+  .note strong { color: #e67e22; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <h1>Project Timeline</h1>
+  <div class="subtitle">แผนการดำเนินงาน 12 เดือน — ครบทุกฟังก์ชัน</div>
+
+  <!-- Month headers -->
+  <div class="row">
+    <div class="label-col"></div>
+    <div class="track-col">
+      <div class="month-bar">
+        <div class="m">ด.1</div><div class="m">ด.2</div><div class="m">ด.3</div>
+        <div class="m">ด.4</div><div class="m">ด.5</div><div class="m">ด.6</div>
+        <div class="m">ด.7</div><div class="m">ด.8</div><div class="m">ด.9</div>
+        <div class="m">ด.10</div><div class="m">ด.11</div><div class="m">ด.12</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gantt Chart -->
+  <!-- each month = 8.333% -->
+
+  <!-- Row 1: Requirements — month 1-2 -->
+  <div class="gantt-row">
+    <div class="gantt-label">
+      <div class="title">📋 เก็บ Requirement</div>
+      <div class="sub">สำรวจ & วิเคราะห์ความต้องการ</div>
+    </div>
+    <div class="gantt-track">
+      <div class="gantt-bar bar-req" style="left:0%; width:16.67%;">ด.1–2</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Design — month 2-4 -->
+  <div class="gantt-row">
+    <div class="gantt-label">
+      <div class="title">🎨 ออกแบบระบบ</div>
+      <div class="sub">UI/UX, Architecture, Database</div>
+    </div>
+    <div class="gantt-track">
+      <div class="gantt-bar bar-design" style="left:8.33%; width:25%;">ด.2–4</div>
+    </div>
+  </div>
+
+  <!-- Row 3: Development — month 4-9 -->
+  <div class="gantt-row">
+    <div class="gantt-label">
+      <div class="title">⚙️ พัฒนาระบบ</div>
+      <div class="sub">Frontend + Backend + AI + IoT</div>
+    </div>
+    <div class="gantt-track">
+      <div class="gantt-bar bar-dev" style="left:25%; width:50%;">ด.4–9</div>
+    </div>
+  </div>
+
+  <!-- Row 4: Testing — month 7-10 -->
+  <div class="gantt-row">
+    <div class="gantt-label">
+      <div class="title">🧪 ทดสอบระบบ</div>
+      <div class="sub">Unit Test, Integration, Security</div>
+    </div>
+    <div class="gantt-track">
+      <div class="gantt-bar bar-test" style="left:50%; width:33.33%;">ด.7–10</div>
+    </div>
+  </div>
+
+  <!-- Row 5: UAT — month 9-10 -->
+  <div class="gantt-row">
+    <div class="gantt-label">
+      <div class="title">👥 UAT & อบรม</div>
+      <div class="sub">ทดสอบกับผู้ใช้จริง & ฝึกอบรม</div>
+    </div>
+    <div class="gantt-track">
+      <div class="gantt-bar bar-uat" style="left:66.67%; width:16.67%;">ด.9–10</div>
+    </div>
+  </div>
+
+  <!-- Row 6: Deploy — month 11-12 -->
+  <div class="gantt-row">
+    <div class="gantt-label">
+      <div class="title">🚀 ติดตั้ง & Go-live</div>
+      <div class="sub">Deploy + ดูแลหลังเปิดใช้งาน</div>
+    </div>
+    <div class="gantt-track">
+      <div class="gantt-bar bar-deploy" style="left:83.33%; width:16.67%;">ด.11–12</div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#1a3f6f;"></div>Requirement</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3a7ca5;"></div>Design</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e67e22;"></div>Development</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8e44ad;"></div>Testing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#27ae60;"></div>UAT & อบรม</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c0392b;"></div>Go-live</div>
+  </div>
+
+  <!-- Note -->
+  <div class="note">
+    🎯 ทุกฟังก์ชัน (Kiosk, Mobile App, Dashboard, AI Chat, IoT) พัฒนาพร้อมกันในแต่ละขั้นตอน — <strong>เสร็จครบภายใน 12 เดือน</strong> พร้อมเปิดใช้งานจริง
+  </div>
+</div>
+</body>
+</html>

@@ -1,24 +1,33 @@
 /**
- * EcoStove - Sync Tuya → Supabase
- * ดึงข้อมูลจาก ZN-MT29 แล้วส่งเข้า pollution_logs
+ * EcoStove Daemon - Sync Tuya → Supabase (2 sensors)
+ * รันค้างไว้ ลูปดึงข้อมูลทุก 5 นาที
  *
- * วิธีใช้: bun sync_to_supabase.js
+ * วิธีใช้:
+ *   node sync_to_supabase.js          # รันแบบ daemon (ลูปทุก 5 นาที)
+ *   node sync_to_supabase.js --once   # รันครั้งเดียวแล้วจบ
  */
 
-import crypto from 'crypto';
+const crypto = require('crypto');
 
-// ===== Tuya Config =====
+// ===== Config =====
+const INTERVAL_MS = 5 * 60 * 1000; // 5 นาที
+
 const TUYA_ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
 const TUYA_ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const TUYA_DEVICE_ID = 'a3b9c2e4bdfe69ad7ekytn';
 const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
 
-// ===== Supabase Config =====
+const SENSORS = [
+  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)' },
+  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)' },
+];
+
 const SB_URL = 'https://zijybzjstjlqvhmckgor.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA';
 
 // ===== Tuya Functions =====
-function generateSign(method, path, timestamp, accessToken = '', body = '') {
+function generateSign(method, path, timestamp, accessToken, body) {
+  accessToken = accessToken || '';
+  body = body || '';
   const contentHash = crypto.createHash('sha256').update(body).digest('hex');
   const stringToSign = [method.toUpperCase(), contentHash, '', path].join('\n');
   const signStr = TUYA_ACCESS_ID + accessToken + timestamp + stringToSign;
@@ -30,32 +39,21 @@ async function getTuyaToken() {
   const path = '/v1.0/token?grant_type=1';
   const sign = generateSign('GET', path, timestamp);
 
-  const response = await fetch(`${TUYA_BASE_URL}${path}`, {
-    headers: {
-      'client_id': TUYA_ACCESS_ID,
-      'sign': sign,
-      't': timestamp,
-      'sign_method': 'HMAC-SHA256',
-    },
+  const response = await fetch(TUYA_BASE_URL + path, {
+    headers: { client_id: TUYA_ACCESS_ID, sign: sign, t: timestamp, sign_method: 'HMAC-SHA256' },
   });
 
   const data = await response.json();
   return data.success ? data.result.access_token : null;
 }
 
-async function getDeviceStatus(token) {
+async function getDeviceStatus(token, deviceId) {
   const timestamp = Date.now().toString();
-  const path = `/v1.0/devices/${TUYA_DEVICE_ID}/status`;
+  const path = '/v1.0/devices/' + deviceId + '/status';
   const sign = generateSign('GET', path, timestamp, token);
 
-  const response = await fetch(`${TUYA_BASE_URL}${path}`, {
-    headers: {
-      'client_id': TUYA_ACCESS_ID,
-      'access_token': token,
-      'sign': sign,
-      't': timestamp,
-      'sign_method': 'HMAC-SHA256',
-    },
+  const response = await fetch(TUYA_BASE_URL + path, {
+    headers: { client_id: TUYA_ACCESS_ID, access_token: token, sign: sign, t: timestamp, sign_method: 'HMAC-SHA256' },
   });
 
   return response.json();
@@ -63,7 +61,6 @@ async function getDeviceStatus(token) {
 
 function parseReadings(data) {
   if (!data.success) return null;
-
   const readings = {};
   for (const item of data.result || []) {
     readings[item.code] = item.value;
@@ -71,9 +68,16 @@ function parseReadings(data) {
   return readings;
 }
 
+function parseAqi(value) {
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string' && value.startsWith('level_')) {
+    return parseInt(value.replace('level_', '')) || null;
+  }
+  return null;
+}
+
 // ===== Supabase Functions =====
-async function insertPollutionLog(readings) {
-  // Map Tuya readings to pollution_logs columns
+async function insertPollutionLog(readings, deviceId) {
   const record = {
     pm25_value: readings.pm25_value ?? null,
     pm1_value: readings.pm1 ?? null,
@@ -86,17 +90,16 @@ async function insertPollutionLog(readings) {
     tvoc_value: readings.tvoc_value ?? null,
     aqi: parseAqi(readings.air_quality_index),
     data_source: 'sensor',
-    stove_type: 'eco',  // default, can be changed
+    tuya_device_id: deviceId,
+    stove_type: 'eco',
     recorded_at: new Date().toISOString(),
   };
 
-  console.log('📤 Sending to Supabase:', record);
-
-  const response = await fetch(`${SB_URL}/rest/v1/pollution_logs`, {
+  const response = await fetch(SB_URL + '/rest/v1/pollution_logs', {
     method: 'POST',
     headers: {
       'apikey': SB_KEY,
-      'Authorization': `Bearer ${SB_KEY}`,
+      'Authorization': 'Bearer ' + SB_KEY,
       'Content-Type': 'application/json',
       'Prefer': 'return=representation',
     },
@@ -105,64 +108,84 @@ async function insertPollutionLog(readings) {
 
   if (response.ok) {
     const result = await response.json();
-    console.log('✅ Inserted! ID:', result[0]?.id);
-    return result;
+    return result[0];
   } else {
     const error = await response.text();
-    console.error('❌ Error:', response.status, error);
+    console.error('  Error:', response.status, error);
     return null;
   }
 }
 
-function parseAqi(value) {
-  // Convert "level_1", "level_2", etc. to numeric
-  if (typeof value === 'number') return value;
-  if (typeof value === 'string' && value.startsWith('level_')) {
-    return parseInt(value.replace('level_', '')) || null;
+// ===== Sync Round =====
+let roundNumber = 0;
+
+async function syncOnce() {
+  roundNumber++;
+  const time = new Date().toLocaleString('th-TH');
+  console.log('\n--- Round ' + roundNumber + ' | ' + time + ' ---');
+
+  // Get token (fresh each round — Tuya tokens expire after ~2 hours)
+  const token = await getTuyaToken();
+  if (!token) {
+    console.log('FAIL: Cannot get Tuya token');
+    return 0;
   }
-  return null;
+
+  let successCount = 0;
+  for (const sensor of SENSORS) {
+    try {
+      const rawData = await getDeviceStatus(token, sensor.id);
+      const readings = parseReadings(rawData);
+
+      if (!readings) {
+        console.log('  [' + sensor.name + '] offline');
+        continue;
+      }
+
+      console.log('  [' + sensor.name + '] PM2.5:' + readings.pm25_value + ' CO2:' + readings.co2_value + ' T:' + readings.temp_current + ' H:' + readings.humidity_value);
+
+      const result = await insertPollutionLog(readings, sensor.id);
+      if (result) {
+        successCount++;
+      } else {
+        console.log('  [' + sensor.name + '] insert failed');
+      }
+    } catch (err) {
+      console.log('  [' + sensor.name + '] error: ' + err.message);
+    }
+  }
+
+  console.log('  -> ' + successCount + '/' + SENSORS.length + ' OK');
+  return successCount;
 }
 
 // ===== Main =====
+const runOnce = process.argv.includes('--once');
+
 async function main() {
-  console.log('🌬️  EcoStove - Tuya → Supabase Sync');
-  console.log('='.repeat(45));
-  console.log();
+  console.log('EcoStove Daemon');
+  console.log('Sensors: ' + SENSORS.map(s => s.name).join(', '));
+  console.log('Mode: ' + (runOnce ? 'single run' : 'loop every ' + (INTERVAL_MS / 1000) + 's'));
+  console.log('='.repeat(50));
 
-  // Step 1: Get Tuya token
-  console.log('1️⃣  เชื่อมต่อ Tuya...');
-  const token = await getTuyaToken();
-  if (!token) {
-    console.log('❌ ไม่สามารถเชื่อมต่อ Tuya ได้');
-    return;
-  }
-  console.log('✅ เชื่อมต่อ Tuya สำเร็จ');
+  // First sync immediately
+  await syncOnce();
 
-  // Step 2: Get device readings
-  console.log('\n2️⃣  ดึงข้อมูลจากเครื่องวัด...');
-  const rawData = await getDeviceStatus(token);
-  const readings = parseReadings(rawData);
-
-  if (!readings) {
-    console.log('❌ ดึงข้อมูลไม่สำเร็จ');
+  if (runOnce) {
+    console.log('\nDone (--once mode)');
     return;
   }
 
-  console.log('📊 ค่าที่วัดได้:');
-  console.log('   PM2.5:', readings.pm25_value);
-  console.log('   CO2:', readings.co2_value);
-  console.log('   Temp:', readings.temp_current);
-  console.log('   Humidity:', readings.humidity_value);
-
-  // Step 3: Insert to Supabase
-  console.log('\n3️⃣  ส่งข้อมูลเข้า Supabase...');
-  const result = await insertPollutionLog(readings);
-
-  if (result) {
-    console.log('\n✅ สำเร็จ! ข้อมูลถูกบันทึกเข้า pollution_logs แล้ว');
-  } else {
-    console.log('\n❌ ไม่สามารถบันทึกข้อมูลได้');
-  }
+  // Loop
+  console.log('\nNext sync in ' + (INTERVAL_MS / 1000) + ' seconds... (Ctrl+C to stop)');
+  setInterval(async () => {
+    try {
+      await syncOnce();
+      console.log('Next sync in ' + (INTERVAL_MS / 1000) + ' seconds...');
+    } catch (err) {
+      console.log('Round error: ' + err.message);
+    }
+  }, INTERVAL_MS);
 }
 
 main().catch(console.error);
