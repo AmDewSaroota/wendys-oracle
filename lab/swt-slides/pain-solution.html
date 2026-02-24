@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Web App — Pain Points & Solution</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #1a3f6f;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  .slide {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100vw;
+    padding: 48px 64px 60px;
+    position: relative;
+    background: #f0f2f5;
+  }
+  .slide.active { display: flex; }
+
+  /* Corner decoration */
+  .slide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, transparent 50%, #2e74b5 50%, #2e74b5 60%, #5ba3d9 60%, #5ba3d9 70%, #1a3f6f 70%, #1a3f6f 80%, transparent 80%);
+    opacity: 0.5;
+  }
+
+  /* Title with left border */
+  .slide-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 4px;
+  }
+  .slide-title .bar {
+    width: 6px;
+    min-height: 44px;
+    background: #2e74b5;
+    border-radius: 3px;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+  .slide-title h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a3f6f;
+    line-height: 1.2;
+  }
+
+  .slide-subtitle {
+    display: inline-block;
+    background: #1a3f6f;
+    color: #fff;
+    padding: 5px 18px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    margin-left: 22px;
+  }
+
+  .slide-num {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+    font-size: 13px;
+    color: #8e99a4;
+  }
+
+  /* ========== PAIN POINTS ========== */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    width: 100%;
+    flex: 1;
+    align-content: start;
+  }
+  .pain-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 4px solid #c0392b;
+  }
+  .pain-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2;
+    border-radius: 8px;
+  }
+  .pain-content h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1a3f6f;
+    margin-bottom: 3px;
+  }
+  .pain-content p {
+    font-size: 12.5px;
+    color: #5a6a7a;
+    line-height: 1.55;
+  }
+  .pain-source {
+    font-size: 11px;
+    color: #c0392b;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* ========== SOLUTION — Feature + Mockup layout ========== */
+  .solution-layout {
+    display: flex;
+    gap: 32px;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+  .solution-features {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sol-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 4px solid #2e74b5;
+  }
+  .sol-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef4fb;
+    border-radius: 8px;
+  }
+  .sol-text h3 {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #2e74b5;
+    margin-bottom: 2px;
+  }
+  .sol-text p {
+    font-size: 12px;
+    color: #5a6a7a;
+    line-height: 1.45;
+  }
+  .sol-highlight {
+    color: #e67e22;
+    font-weight: 600;
+  }
+
+  /* Phone Mockup */
+  .mockup-area {
+    width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .phone-frame {
+    width: 240px;
+    height: 480px;
+    background: #fff;
+    border-radius: 28px;
+    border: 3px solid #1a3f6f;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(26,63,111,0.15);
+    position: relative;
+  }
+  .phone-notch {
+    width: 100px;
+    height: 22px;
+    background: #1a3f6f;
+    border-radius: 0 0 14px 14px;
+    margin: 0 auto;
+  }
+  .phone-screen {
+    padding: 8px 12px;
+    font-size: 10px;
+    color: #333;
+    height: calc(100% - 22px);
+    overflow: hidden;
+  }
+  .phone-screen .ps-header {
+    background: linear-gradient(135deg, #1a3f6f, #2e74b5);
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+  }
+  .phone-screen .ps-card {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+    border-left: 3px solid #2e74b5;
+  }
+  .phone-screen .ps-card.orange { border-left-color: #e67e22; }
+  .phone-screen .ps-card.green { border-left-color: #27ae60; }
+  .phone-screen .ps-card.red { border-left-color: #c0392b; }
+  .phone-screen .ps-card h4 {
+    font-size: 9px;
+    color: #1a3f6f;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .phone-screen .ps-card p {
+    font-size: 8px;
+    color: #666;
+    line-height: 1.4;
+  }
+  .phone-screen .ps-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 7.5px;
+    font-weight: 600;
+    margin-right: 3px;
+  }
+  .phone-screen .ps-badge.blue { background: #e3f2fd; color: #1565c0; }
+  .phone-screen .ps-badge.green { background: #e8f5e9; color: #2e7d32; }
+  .phone-screen .ps-badge.orange { background: #fff3e0; color: #e65100; }
+  .phone-screen .ps-badge.gold { background: #fff8e1; color: #f57f17; }
+  .phone-screen .ps-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .phone-screen .ps-mini {
+    flex: 1;
+    background: #f0f2f5;
+    border-radius: 4px;
+    padding: 4px 6px;
+    text-align: center;
+  }
+  .phone-screen .ps-mini .num { font-size: 12px; font-weight: 700; color: #1a3f6f; }
+  .phone-screen .ps-mini .label { font-size: 7px; color: #888; }
+  .phone-screen .ps-btn {
+    display: block;
+    background: linear-gradient(135deg, #2e74b5, #1a3f6f);
+    color: #fff;
+    text-align: center;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 9px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .phone-screen .ps-chat {
+    background: #eef4fb;
+    border-radius: 8px 8px 8px 2px;
+    padding: 5px 8px;
+    font-size: 8.5px;
+    color: #1a3f6f;
+    margin-bottom: 4px;
+    max-width: 85%;
+  }
+  .phone-screen .ps-chat.user {
+    background: #1a3f6f;
+    color: #fff;
+    margin-left: auto;
+    border-radius: 8px 8px 2px 8px;
+  }
+  .mockup-label {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #8e99a4;
+    text-align: center;
+  }
+
+  /* ========== COMPARISON TABLE ========== */
+  .compare-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 13px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    flex: 1;
+  }
+  .compare-table thead th {
+    background: #1a3f6f;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+  }
+  .compare-table thead th:first-child { width: 22%; border-radius: 10px 0 0 0; }
+  .compare-table thead th:nth-child(2) { width: 36%; color: #b0c4de; }
+  .compare-table thead th:nth-child(3) { width: 42%; color: #a8e6cf; border-radius: 0 10px 0 0; }
+  .compare-table tbody td {
+    padding: 9px 16px;
+    border-bottom: 1px solid #e8ebef;
+    vertical-align: middle;
+    line-height: 1.5;
+    background: #fff;
+  }
+  .compare-table tbody tr:nth-child(even) td { background: #f8f9fb; }
+  .compare-table tbody tr:last-child td { border-bottom: none; }
+  .compare-table .label-col { color: #1a3f6f; font-weight: 500; }
+  .compare-table .old-col { color: #8e99a4; }
+  .compare-table .new-col { color: #2e74b5; font-weight: 500; }
+  .compare-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #8e99a4;
+    text-align: right;
+  }
+
+  /* ========== DEMO LINKS ========== */
+  .demo-grid {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    flex: 1;
+    align-items: stretch;
+  }
+  .demo-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 4px solid #2e74b5;
+  }
+  .demo-card:nth-child(2) { border-top-color: #e67e22; }
+  .demo-card:nth-child(3) { border-top-color: #27ae60; }
+  .demo-card .demo-icon { font-size: 48px; margin-bottom: 12px; }
+  .demo-card h3 { color: #1a3f6f; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .demo-card p { color: #5a6a7a; font-size: 13px; line-height: 1.5; margin-bottom: 16px; flex: 1; }
+  .demo-card .demo-btn {
+    display: inline-block;
+    background: #2e74b5;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .demo-card .demo-btn:hover { background: #1a3f6f; }
+  .demo-card:nth-child(2) .demo-btn { background: #e67e22; }
+  .demo-card:nth-child(2) .demo-btn:hover { background: #d35400; }
+  .demo-card:nth-child(3) .demo-btn { background: #27ae60; }
+  .demo-card:nth-child(3) .demo-btn:hover { background: #1e8449; }
+
+  /* Demo phone frame (smaller, for inline) */
+  .demo-phone {
+    width: 140px;
+    height: 240px;
+    background: #f8f9fa;
+    border-radius: 16px;
+    border: 2px solid #ddd;
+    overflow: hidden;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .demo-phone .dp-notch {
+    width: 50px;
+    height: 12px;
+    background: #ddd;
+    border-radius: 0 0 8px 8px;
+    margin: 0 auto;
+  }
+  .demo-phone .dp-content {
+    padding: 6px 8px;
+    font-size: 7px;
+    color: #555;
+  }
+  .demo-phone .dp-bar {
+    height: 16px;
+    background: linear-gradient(135deg, #1a3f6f, #2e74b5);
+    border-radius: 4px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 6.5px;
+    font-weight: 600;
+  }
+  .demo-phone .dp-item {
+    background: #fff;
+    border-radius: 4px;
+    padding: 4px 6px;
+    margin-bottom: 3px;
+    box-shadow: 0 0.5px 1px rgba(0,0,0,0.08);
+  }
+  .demo-phone .dp-item h5 { font-size: 6.5px; color: #1a3f6f; margin-bottom: 1px; }
+  .demo-phone .dp-item span { font-size: 6px; color: #999; }
+  .demo-phone .dp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-bottom: 3px;
+  }
+  .demo-phone .dp-chip {
+    background: #eef4fb;
+    border-radius: 3px;
+    padding: 3px 4px;
+    font-size: 6px;
+    text-align: center;
+    color: #2e74b5;
+    font-weight: 500;
+  }
+
+  /* Progress bar */
+  #progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #2e74b5;
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+  #nav-hint {
+    position: fixed;
+    bottom: 16px;
+    left: 30px;
+    font-size: 12px;
+    color: #aab4be;
+    z-index: 100;
+  }
+  .click-left, .click-right {
+    position: fixed;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 50;
+    cursor: pointer;
+  }
+  .click-left { left: 0; }
+  .click-right { right: 0; }
+</style>
+</head>
+<body>
+
+<div class="click-left" onclick="prev()"></div>
+<div class="click-right" onclick="next()"></div>
+<div id="progress-bar"></div>
+<div id="nav-hint">← → Space</div>
+
+<!-- ===== SLIDE 1: Pain Points ===== -->
+<section class="slide" data-slide="1">
+  <div class="slide-title"><div class="bar"></div><h2>Mobile Web App: Pain Points</h2></div>
+  <div class="slide-subtitle">Traveler Experience Gaps</div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">🎫</div>
+      <div class="pain-content">
+        <h3>การเดินทางไม่ได้จบที่การจองตั๋ว</h3>
+        <p>ระบบจองตั๋วปัจจุบันเน้น "การทำธุรกรรม" — ซื้อตั๋วเสร็จก็จบ แต่ผู้โดยสารยังต้องการข้อมูลระหว่างทาง ความช่วยเหลือ และการวางแผนปลายทาง</p>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">📝</div>
+      <div class="pain-content">
+        <h3>ขั้นตอนการจองซับซ้อนเกินไป</h3>
+        <p>ต้องกรอกข้อมูลผู้เดินทางทุกคนก่อน จึงจะทราบว่าที่นั่งว่าง — หากเต็มต้องเริ่มใหม่ทั้งหมด</p>
+        <div class="pain-source">📌 ข้อมูลจากผู้ใช้จริง (Pantip, App Store)</div>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">🔀</div>
+      <div class="pain-content">
+        <h3>เส้นทางเชื่อมต่อต้องหาเอง</h3>
+        <p>หากไม่มีรถไฟตรง ผู้โดยสารต้องค้นหาจุดเปลี่ยนขบวนเองทีละสาย ไม่มีระบบแนะนำเส้นทางเชื่อมต่อผ่านสถานี hub</p>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">⏱️</div>
+      <div class="pain-content">
+        <h3>ข้อมูลสถานะขบวนรถไม่ทันการณ์</h3>
+        <p>ผู้โดยสารพบว่ารถไฟล่าช้าหลายชั่วโมง แต่แอปยังแสดงเวลาตามตารางเดิม — วางแผนต่อไม่ได้</p>
+        <div class="pain-source">📌 ข้อร้องเรียนที่พบบ่อยที่สุด (App Store Reviews)</div>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">🗺️</div>
+      <div class="pain-content">
+        <h3>ข้อมูลท่องเที่ยวแยกจากระบบจอง</h3>
+        <p>ไม่มีการแนะนำกิจกรรม ทัวร์ หรือร้านค้ารอบสถานีปลายทาง — ต้องออกจากแอปไปหาจากแหล่งอื่น</p>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">📊</div>
+      <div class="pain-content">
+        <h3>ผู้บริหารขาด Data-Driven Insights</h3>
+        <p>ไม่มี Dashboard แสดงข้อมูล Conversion Funnel, พฤติกรรมผู้ใช้ หรือความพึงพอใจ เพื่อใช้ตัดสินใจเชิงนโยบาย</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">1 / 5</span>
+</section>
+
+<!-- ===== SLIDE 2: Solution Overview ===== -->
+<section class="slide" data-slide="2">
+  <div class="slide-title"><div class="bar"></div><h2>Mobile Application: The Solution</h2></div>
+  <div class="slide-subtitle">Seamless Journey on Your Hand</div>
+
+  <div class="solution-layout">
+    <div class="solution-features">
+      <div class="sol-card">
+        <div class="sol-icon">🔀</div>
+        <div class="sol-text">
+          <h3>Smart Routing — เชื่อมต่อให้อัตโนมัติ</h3>
+          <p>ค้นหาเส้นทางตรง + เชื่อมต่อผ่านสถานี hub อัตโนมัติ พร้อมแสดง<span class="sol-highlight">เวลารอต่อรถ</span></p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🎫</div>
+        <div class="sol-text">
+          <h3>Availability-First — รู้ก่อน กรอกทีหลัง</h3>
+          <p>แสดง <span class="sol-highlight">"ว่าง/เต็ม" ตั้งแต่ค้นหา</span> เลือกที่นั่งแบบ Interactive</p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">⏱️</div>
+        <div class="sol-text">
+          <h3>Real-time Status — สถานะขบวนรถจริง</h3>
+          <p>ตำแหน่งจริง + ความตรงเวลาเฉลี่ย + <span class="sol-highlight">ระยะล่าช้าจริง</span></p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">📌</div>
+        <div class="sol-text">
+          <h3>Tourism ในแอปเดียว</h3>
+          <p>ทัวร์ตามเส้นทาง — หัวหิน <span class="sol-highlight">฿890</span> สะพานข้ามแม่น้ำแคว <span class="sol-highlight">฿2,490</span></p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🤖</div>
+        <div class="sol-text">
+          <h3>RailBot — AI ผู้ช่วยเดินทาง</h3>
+          <p>ถามได้ตลอดเส้นทาง <span class="sol-highlight">TH / EN</span> — ตาราง, โปรโมชัน, ทัวร์, สถานี</p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🏆</div>
+        <div class="sol-text">
+          <h3>Loyalty System — แรงจูงใจให้กลับมา</h3>
+          <p>สะสมแต้ม <span class="sol-highlight">฿10 = 1 pt</span> → ส่วนลด / อัพเกรด / ตั๋วฟรี — Gold → Platinum</p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🚉</div>
+        <div class="sol-text">
+          <h3>Interactive Station Map — นำทางในสถานี</h3>
+          <p>SVG Map — ชานชาลา ร้านค้า ห้องน้ำ พร้อม<span class="sol-highlight">คำนวณเวลาเดิน</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phone Mockup: Home Screen -->
+    <div class="mockup-area">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ps-header">🚂 SWT — Smart Tourism</div>
+          <div class="ps-row">
+            <div class="ps-mini"><div class="num">🏅</div><div class="label">Gold Member</div></div>
+            <div class="ps-mini"><div class="num">2,450</div><div class="label">คะแนนสะสม</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:3px;margin-bottom:6px;">
+            <div style="background:#eef4fb;border-radius:5px;padding:5px 2px;text-align:center;"><div style="font-size:14px;">🎫</div><div style="font-size:6.5px;color:#1a3f6f;">จองตั๋ว</div></div>
+            <div style="background:#eef4fb;border-radius:5px;padding:5px 2px;text-align:center;"><div style="font-size:14px;">📋</div><div style="font-size:6.5px;color:#1a3f6f;">ตาราง</div></div>
+            <div style="background:#eef4fb;border-radius:5px;padding:5px 2px;text-align:center;"><div style="font-size:14px;">🏖️</div><div style="font-size:6.5px;color:#1a3f6f;">ทัวร์</div></div>
+            <div style="background:#eef4fb;border-radius:5px;padding:5px 2px;text-align:center;"><div style="font-size:14px;">🏆</div><div style="font-size:6.5px;color:#1a3f6f;">รางวัล</div></div>
+          </div>
+          <div class="ps-card">
+            <h4>🔀 กรุงเทพ → เชียงใหม่</h4>
+            <p>ด่วนพิเศษ #9 · 13 ชม. · ชั้น 2 ฿941</p>
+            <div><span class="ps-badge blue">34 ที่ว่าง</span><span class="ps-badge green">ตรงเวลา 85%</span></div>
+          </div>
+          <div class="ps-card orange">
+            <h4>🏖️ ทัวร์หัวหิน — 1 วัน</h4>
+            <p>สถานีรถไฟหัวหิน + ตลาด</p>
+            <div><span class="ps-badge orange">฿890</span><span class="ps-badge gold">⭐ 4.8</span></div>
+          </div>
+          <div class="ps-card green">
+            <h4>🤖 RailBot พร้อมช่วยเหลือ</h4>
+            <p>ถามตาราง โปรโมชัน ทัวร์ ได้ 24 ชม.</p>
+          </div>
+          <div style="display:flex;gap:3px;margin-top:2px;">
+            <div style="flex:1;background:#f0f2f5;border-radius:4px;padding:3px;text-align:center;font-size:8px;">🚉 แผนที่</div>
+            <div style="flex:1;background:#f0f2f5;border-radius:4px;padding:3px;text-align:center;font-size:8px;">📊 สถิติ</div>
+            <div style="flex:1;background:#f0f2f5;border-radius:4px;padding:3px;text-align:center;font-size:8px;">🔔 แจ้งเตือน</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-label">ตัวอย่างหน้า Home</div>
+    </div>
+  </div>
+  <span class="slide-num">2 / 5</span>
+</section>
+
+<!-- ===== SLIDE 3: Feature Mockups ===== -->
+<section class="slide" data-slide="3">
+  <div class="slide-title"><div class="bar"></div><h2>ตัวอย่างหน้าจอแอปพลิเคชัน</h2></div>
+  <div class="slide-subtitle">Key Feature Mockups</div>
+
+  <div style="display:flex;gap:20px;width:100%;flex:1;justify-content:center;align-items:flex-start;">
+
+    <!-- Mockup 1: Smart Routing -->
+    <div style="text-align:center;">
+      <div class="phone-frame" style="width:200px;height:400px;">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ps-header">🔀 ค้นหาเส้นทาง</div>
+          <div class="ps-card">
+            <h4>จาก: กรุงเทพ</h4>
+            <p>ถึง: เชียงใหม่</p>
+          </div>
+          <div style="text-align:center;font-size:8px;color:#2e74b5;font-weight:600;margin:4px 0;">▼ เส้นทางที่พบ 3 รายการ</div>
+          <div class="ps-card">
+            <h4>🚄 ตรง — ด่วนพิเศษ #9</h4>
+            <p>13:05 ชม. · ฿941 ชั้น 2</p>
+            <div><span class="ps-badge green">34 ที่ว่าง</span></div>
+          </div>
+          <div class="ps-card orange">
+            <h4>🔀 เชื่อมต่อผ่าน นครสวรรค์</h4>
+            <p>#7 + #51 · รวม 14:30 ชม.</p>
+            <div><span class="ps-badge orange">รอต่อ 45 นาที</span></div>
+          </div>
+          <div class="ps-card">
+            <h4>🚂 ตรง — รถเร็ว #51</h4>
+            <p>15:20 ชม. · ฿611 ชั้น 2</p>
+            <div><span class="ps-badge blue">12 ที่ว่าง</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-label">Smart Routing<br><small style="color:#2e74b5;">เส้นทางตรง + เชื่อมต่อ hub</small></div>
+    </div>
+
+    <!-- Mockup 2: Booking + Seat -->
+    <div style="text-align:center;">
+      <div class="phone-frame" style="width:200px;height:400px;">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ps-header">🎫 จองตั๋ว & เลือกที่นั่ง</div>
+          <div class="ps-card">
+            <h4>ด่วนพิเศษ #9 · ชั้น 2</h4>
+            <p>กรุงเทพ → เชียงใหม่ · 18:00</p>
+            <div><span class="ps-badge green">34 ที่ว่าง</span><span class="ps-badge blue">ตรงเวลา 85%</span></div>
+          </div>
+          <div style="font-size:8px;font-weight:600;color:#1a3f6f;margin:4px 0;">💺 เลือกที่นั่ง</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:6px;">
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">1A</div>
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">1B</div>
+            <div style="background:#ddd;color:#999;border-radius:3px;padding:4px;text-align:center;font-size:7px;">1C</div>
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">1D</div>
+            <div style="background:#ddd;color:#999;border-radius:3px;padding:4px;text-align:center;font-size:7px;">2A</div>
+            <div style="background:#2e74b5;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:700;">✓2B</div>
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">2C</div>
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">2D</div>
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">3A</div>
+            <div style="background:#ddd;color:#999;border-radius:3px;padding:4px;text-align:center;font-size:7px;">3B</div>
+            <div style="background:#ddd;color:#999;border-radius:3px;padding:4px;text-align:center;font-size:7px;">3C</div>
+            <div style="background:#27ae60;color:#fff;border-radius:3px;padding:4px;text-align:center;font-size:7px;font-weight:600;">3D</div>
+          </div>
+          <div style="display:flex;gap:6px;font-size:7px;margin-bottom:6px;">
+            <span>🟩 ว่าง</span><span>⬜ เต็ม</span><span>🟦 เลือก</span>
+          </div>
+          <div class="ps-card green">
+            <h4>สรุปการจอง</h4>
+            <p>ที่นั่ง 2B · ชั้น 2 · ฿941</p>
+            <div><span class="ps-badge gold">+94 คะแนน</span></div>
+          </div>
+          <div class="ps-btn">ยืนยันการจอง →</div>
+        </div>
+      </div>
+      <div class="mockup-label">Availability-First<br><small style="color:#2e74b5;">เห็นที่ว่างทันที เลือกที่นั่ง</small></div>
+    </div>
+
+    <!-- Mockup 3: RailBot Chat -->
+    <div style="text-align:center;">
+      <div class="phone-frame" style="width:200px;height:400px;">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ps-header">🤖 RailBot</div>
+          <div style="margin-top:6px;">
+            <div class="ps-chat">สวัสดีค่ะ! ฉันคือ RailBot ผู้ช่วยเดินทาง 🚂 ถามอะไรก็ได้เลยค่ะ</div>
+            <div class="ps-chat user">ขบวน #9 วันนี้ตรงเวลาไหม?</div>
+            <div class="ps-chat">ขบวน #9 กรุงเทพ→เชียงใหม่ วันนี้<br>📍 สถานะ: <strong style="color:#27ae60;">กำลังเดินทาง</strong><br>⏱️ ล่าช้า: <strong style="color:#e67e22;">12 นาที</strong><br>📊 ตรงเวลาเฉลี่ย: 85%</div>
+            <div class="ps-chat user">มีทัวร์อะไรที่เชียงใหม่บ้าง?</div>
+            <div class="ps-chat">🏖️ แนะนำทัวร์เชียงใหม่:<br>• สายเหนือ 3 วัน — ฿3,790<br>• อุโมงค์ขุนตาน — ฿1,290<br>จะจองเลยไหมคะ? 😊</div>
+          </div>
+          <div style="display:flex;gap:4px;margin-top:6px;">
+            <div style="flex:1;background:#f0f2f5;border-radius:12px;padding:6px 8px;font-size:8px;color:#888;">พิมพ์ข้อความ...</div>
+            <div style="width:28px;height:28px;background:#2e74b5;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;">↑</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-label">RailBot AI Chat<br><small style="color:#2e74b5;">ถามได้ตลอด TH/EN</small></div>
+    </div>
+
+    <!-- Mockup 4: Rewards -->
+    <div style="text-align:center;">
+      <div class="phone-frame" style="width:200px;height:400px;">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="ps-header">🏆 Rewards</div>
+          <div style="background:linear-gradient(135deg,#c5973e,#d4a843);border-radius:8px;padding:8px;margin:6px 0;color:#fff;text-align:center;">
+            <div style="font-size:8px;opacity:0.8;">สถานะสมาชิก</div>
+            <div style="font-size:16px;font-weight:700;">🏅 GOLD</div>
+            <div style="font-size:9px;">2,450 / 3,000 คะแนน → Platinum</div>
+            <div style="background:rgba(255,255,255,0.3);height:4px;border-radius:2px;margin-top:4px;"><div style="background:#fff;height:4px;border-radius:2px;width:82%;"></div></div>
+          </div>
+          <div style="font-size:8px;font-weight:600;color:#1a3f6f;margin:6px 0 4px;">🎁 แลกรางวัล</div>
+          <div class="ps-card">
+            <h4>🎫 ส่วนลด ฿100</h4>
+            <p>ใช้ 500 คะแนน</p>
+            <div class="ps-btn" style="font-size:7px;padding:3px 8px;margin-top:2px;">แลกรางวัล</div>
+          </div>
+          <div class="ps-card orange">
+            <h4>💺 อัพเกรดที่นั่ง</h4>
+            <p>ใช้ 1,000 คะแนน</p>
+            <div class="ps-btn" style="font-size:7px;padding:3px 8px;margin-top:2px;background:#e67e22;">แลกรางวัล</div>
+          </div>
+          <div class="ps-card green">
+            <h4>🎫 ตั๋วฟรี ชั้น 3</h4>
+            <p>ใช้ 1,500 คะแนน</p>
+            <div class="ps-btn" style="font-size:7px;padding:3px 8px;margin-top:2px;background:#27ae60;">แลกรางวัล</div>
+          </div>
+          <div style="font-size:7px;color:#888;margin-top:4px;text-align:center;">คูปอง: RAIL2026 (20% off) · TOUR150 (฿150 off)</div>
+        </div>
+      </div>
+      <div class="mockup-label">Loyalty / Rewards<br><small style="color:#2e74b5;">Gold → Platinum + คูปอง</small></div>
+    </div>
+  </div>
+  <span class="slide-num">3 / 5</span>
+</section>
+
+<!-- ===== SLIDE 4: Comparison ===== -->
+<section class="slide" data-slide="4">
+  <div class="slide-title"><div class="bar"></div><h2>การยกระดับประสบการณ์ผู้โดยสาร</h2></div>
+  <div class="slide-subtitle">Enhancing the Passenger Experience</div>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>ความต้องการผู้โดยสาร</th>
+        <th>สถานการณ์ปัจจุบัน</th>
+        <th>แพลตฟอร์ม SWT ✦</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="label-col">🔀 ค้นหาเส้นทาง</td>
+        <td class="old-col">เลือกได้เฉพาะเส้นทางตรง</td>
+        <td class="new-col">Smart Routing + เชื่อมต่อผ่าน hub อัตโนมัติ</td>
+      </tr>
+      <tr>
+        <td class="label-col">⚡ ความเร็วในการแสดงผล</td>
+        <td class="old-col">โหลดช้าในช่วงผู้ใช้หนาแน่น</td>
+        <td class="new-col">Edge Computing — แสดงผลเร็วสม่ำเสมอ</td>
+      </tr>
+      <tr>
+        <td class="label-col">💺 สถานะที่นั่ง</td>
+        <td class="old-col">กรอกข้อมูลผู้เดินทางก่อนถึงจะรู้ว่าว่าง</td>
+        <td class="new-col">Availability-First — รู้ทันทีตั้งแต่ค้นหา</td>
+      </tr>
+      <tr>
+        <td class="label-col">⏱️ สถานะขบวนรถ</td>
+        <td class="old-col">อ้างอิงตามตารางเวลาหลัก</td>
+        <td class="new-col">อ้างอิงตำแหน่งจริง (Real-time Tracking)</td>
+      </tr>
+      <tr>
+        <td class="label-col">📌 ข้อมูลท่องเที่ยว</td>
+        <td class="old-col">ต้องหาข้อมูลจากแหล่งอื่น</td>
+        <td class="new-col">Tour Packages จองได้ในแอปเดียว</td>
+      </tr>
+      <tr>
+        <td class="label-col">📱 ช่วยเหลือระหว่างทาง</td>
+        <td class="old-col">โทรสายด่วน 1690</td>
+        <td class="new-col">AI Chatbot (RailBot) ตอบทันที TH/EN</td>
+      </tr>
+      <tr>
+        <td class="label-col">🏆 แรงจูงใจกลับมาใช้</td>
+        <td class="old-col">ไม่มีระบบ Loyalty</td>
+        <td class="new-col">Gold → Platinum + แต้มสะสม + คูปอง</td>
+      </tr>
+      <tr>
+        <td class="label-col">🚉 นำทางในสถานี</td>
+        <td class="old-col">ไม่มีแผนที่สถานี</td>
+        <td class="new-col">Interactive Map + คำนวณระยะทาง/เวลาเดิน</td>
+      </tr>
+      <tr>
+        <td class="label-col">📊 ข้อมูลสำหรับผู้บริหาร</td>
+        <td class="old-col">ไม่มี Analytics Dashboard</td>
+        <td class="new-col">Stats Dashboard — Booking / Revenue / Heatmap / Satisfaction</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="compare-note">✦ SWT — Smart Tourism Platform โดย NDF สำหรับการรถไฟแห่งประเทศไทย</p>
+  <span class="slide-num">4 / 5</span>
+</section>
+
+<!-- ===== SLIDE 5: DEMO Links ===== -->
+<section class="slide" data-slide="5">
+  <div class="slide-title"><div class="bar"></div><h2>ทดลองใช้งานจริง</h2></div>
+  <div class="slide-subtitle">Live Demo</div>
+
+  <div class="demo-grid">
+    <div class="demo-card">
+      <div class="demo-phone">
+        <div class="dp-notch"></div>
+        <div class="dp-content">
+          <div class="dp-bar">🌐 SWT Web Platform</div>
+          <div class="dp-grid">
+            <div class="dp-chip">🎫 จองตั๋ว</div>
+            <div class="dp-chip">📋 ตาราง</div>
+            <div class="dp-chip">🏖️ ทัวร์</div>
+            <div class="dp-chip">🏆 รางวัล</div>
+          </div>
+          <div class="dp-item"><h5>กรุงเทพ → เชียงใหม่</h5><span>ด่วนพิเศษ #9 · ฿941</span></div>
+          <div class="dp-item"><h5>กรุงเทพ → สุราษฎร์</h5><span>ด่วนพิเศษ #43 · ฿832</span></div>
+          <div class="dp-item"><h5>🏖️ ทัวร์หัวหิน</h5><span>1 วัน · ฿890</span></div>
+        </div>
+      </div>
+      <h3>Web Platform</h3>
+      <p>เว็บไซต์หลัก — จองตั๋ว ตาราง ทัวร์ Reward แผนที่สถานี RailBot</p>
+      <a class="demo-btn" href="https://thai-rail-web-repo.vercel.app/" target="_blank">เปิดเว็บ →</a>
+    </div>
+
+    <div class="demo-card">
+      <div class="demo-phone">
+        <div class="dp-notch"></div>
+        <div class="dp-content">
+          <div class="dp-bar" style="background:linear-gradient(135deg,#e67e22,#d35400);">📱 SWT Mobile</div>
+          <div style="text-align:center;margin:6px 0;">
+            <div style="font-size:18px;">🏅</div>
+            <div style="font-size:7px;font-weight:600;color:#e67e22;">Gold · 2,450 pt</div>
+          </div>
+          <div class="dp-item"><h5>🎫 จองตั๋ว</h5><span>เลือกที่นั่ง Interactive</span></div>
+          <div class="dp-item"><h5>🤖 RailBot</h5><span>ถามได้ตลอด TH/EN</span></div>
+          <div class="dp-item"><h5>🚉 แผนที่สถานี</h5><span>นำทาง + เวลาเดิน</span></div>
+        </div>
+      </div>
+      <h3>Mobile App</h3>
+      <p>แอปมือถือ — ออกแบบสำหรับใช้งานระหว่างเดินทาง พร้อม AI Chat</p>
+      <a class="demo-btn" href="https://swt-mobile.vercel.app/" target="_blank">เปิดแอป →</a>
+    </div>
+
+    <div class="demo-card">
+      <div class="demo-phone">
+        <div class="dp-notch"></div>
+        <div class="dp-content">
+          <div class="dp-bar" style="background:linear-gradient(135deg,#27ae60,#1e8449);">📊 SRT Stats</div>
+          <div style="display:flex;gap:3px;margin-bottom:4px;">
+            <div style="flex:1;background:#e8f5e9;border-radius:3px;padding:3px;text-align:center;"><div style="font-size:10px;font-weight:700;color:#27ae60;">281K</div><div style="font-size:5.5px;color:#666;">Bookings</div></div>
+            <div style="flex:1;background:#fff3e0;border-radius:3px;padding:3px;text-align:center;"><div style="font-size:10px;font-weight:700;color:#e67e22;">฿287M</div><div style="font-size:5.5px;color:#666;">Revenue</div></div>
+          </div>
+          <div class="dp-item"><h5>📈 Conversion Funnel</h5><span>Search → Book → Pay</span></div>
+          <div class="dp-item"><h5>🔥 Booking Heatmap</h5><span>Peak 20:00-22:00</span></div>
+          <div class="dp-item"><h5>⭐ Satisfaction</h5><span>4.6/5 (48,620 reviews)</span></div>
+        </div>
+      </div>
+      <h3>Stats Dashboard</h3>
+      <p>Dashboard สำหรับผู้บริหาร — Booking Revenue Heatmap Satisfaction</p>
+      <a class="demo-btn" href="https://srt-stats.vercel.app/" target="_blank">เปิด Dashboard →</a>
+    </div>
+  </div>
+  <span class="slide-num">5 / 5</span>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function show(idx) {
+    if (idx < 0 || idx >= slides.length) return;
+    slides[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    document.getElementById('progress-bar').style.width =
+      ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { e.preventDefault(); show(0); }
+    if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

@@ -96,7 +96,10 @@
       "Bash(git status:*)",
       "Bash(git remote:*)",
       "Bash(git diff:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebFetch(domain:docs.google.com)",
+      "WebFetch",
+      "Task"
     ]
   }
 }
