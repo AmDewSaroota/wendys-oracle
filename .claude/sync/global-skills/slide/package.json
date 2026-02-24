@@ -1,0 +1,19 @@
+{
+  "name": "wendys-slide",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "setup": "npx tsx scripts/setup.ts",
+    "create": "npx tsx scripts/create-slides.ts",
+    "preview": "npx tsx scripts/preview-html.ts"
+  },
+  "dependencies": {
+    "googleapis": "^148.0.0",
+    "@google-cloud/local-auth": "^3.0.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}
