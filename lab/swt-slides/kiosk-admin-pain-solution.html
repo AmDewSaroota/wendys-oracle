@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiosk Admin — Pain Points & Solution</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #1a3f6f;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  .slide {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100vh;
+    width: 100vw;
+    padding: 48px 64px 60px;
+    position: relative;
+    background: #f0f2f5;
+  }
+  .slide.active { display: flex; }
+
+  /* Corner decoration — purple for Kiosk Admin */
+  .slide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, transparent 50%, #7b1fa2 50%, #7b1fa2 60%, #ab47bc 60%, #ab47bc 70%, #4a148c 70%, #4a148c 80%, transparent 80%);
+    opacity: 0.5;
+  }
+
+  /* Title with left border */
+  .slide-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 4px;
+  }
+  .slide-title .bar {
+    width: 6px;
+    min-height: 44px;
+    background: #7b1fa2;
+    border-radius: 3px;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+  .slide-title h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a3f6f;
+    line-height: 1.2;
+  }
+
+  .slide-subtitle {
+    display: inline-block;
+    background: #4a148c;
+    color: #fff;
+    padding: 5px 18px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    margin-left: 22px;
+  }
+
+  .slide-num {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+    font-size: 13px;
+    color: #8e99a4;
+  }
+
+  /* ========== PAIN POINTS ========== */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    width: 100%;
+    flex: 1;
+    align-content: start;
+  }
+  .pain-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 4px solid #c0392b;
+  }
+  .pain-card.highlight {
+    border-left-color: #e65100;
+    background: #fff8f0;
+  }
+  .pain-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2;
+    border-radius: 8px;
+  }
+  .pain-card.highlight .pain-icon {
+    background: #fff3e0;
+  }
+  .pain-content h3 {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #1a3f6f;
+    margin-bottom: 3px;
+  }
+  .pain-content p {
+    font-size: 12.5px;
+    color: #5a6a7a;
+    line-height: 1.55;
+  }
+  .pain-source {
+    font-size: 11px;
+    color: #e65100;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* ========== SOLUTION LAYOUT ========== */
+  .solution-layout {
+    display: flex;
+    gap: 32px;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+  }
+  .solution-features {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .sol-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 13px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border-left: 4px solid #7b1fa2;
+  }
+  .sol-card.featured {
+    border-left-color: #e67e22;
+    background: linear-gradient(135deg, #fefbf6, #fff);
+  }
+  .sol-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3e5f5;
+    border-radius: 8px;
+  }
+  .sol-card.featured .sol-icon {
+    background: #fff3e0;
+  }
+  .sol-text h3 {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #7b1fa2;
+    margin-bottom: 2px;
+  }
+  .sol-card.featured .sol-text h3 {
+    color: #e65100;
+  }
+  .sol-text p {
+    font-size: 12px;
+    color: #5a6a7a;
+    line-height: 1.45;
+  }
+  .sol-highlight {
+    color: #e67e22;
+    font-weight: 600;
+  }
+
+  /* ========== DASHBOARD MOCKUP ========== */
+  .mockup-area {
+    width: 380px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  /* Login screenshot */
+  .login-frame {
+    width: 360px;
+    height: 240px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(74,20,140,0.18);
+    border: 2px solid #7b1fa2;
+    position: relative;
+  }
+  .login-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  .login-frame .frame-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(74,20,140,0.85);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* Role comparison */
+  .role-compare {
+    width: 360px;
+    display: flex;
+    gap: 10px;
+  }
+  .role-box {
+    flex: 1;
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .role-box.super {
+    background: linear-gradient(135deg, #4a148c, #7b1fa2);
+    color: #fff;
+  }
+  .role-box.station {
+    background: linear-gradient(135deg, #1565c0, #1e88e5);
+    color: #fff;
+  }
+  .role-box .role-icon { font-size: 28px; margin-bottom: 4px; }
+  .role-box h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .role-box .role-user {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
+  .role-box ul {
+    list-style: none;
+    text-align: left;
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+  .role-box ul li::before {
+    content: "✓ ";
+    font-weight: 700;
+  }
+  .role-box.station ul li.restricted::before {
+    content: "🔒 ";
+  }
+
+  .mockup-label {
+    font-size: 11px;
+    color: #8e99a4;
+    text-align: center;
+  }
+
+  /* Progress bar */
+  #progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: #7b1fa2;
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+  #nav-hint {
+    position: fixed;
+    bottom: 16px;
+    left: 30px;
+    font-size: 12px;
+    color: #aab4be;
+    z-index: 100;
+  }
+  .click-left, .click-right {
+    position: fixed;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 50;
+    cursor: pointer;
+  }
+  .click-left { left: 0; }
+  .click-right { right: 0; }
+</style>
+</head>
+<body>
+
+<div class="click-left" onclick="prev()"></div>
+<div class="click-right" onclick="next()"></div>
+<div id="progress-bar"></div>
+<div id="nav-hint">← → Space</div>
+
+<!-- ===== SLIDE 1: Pain Points ===== -->
+<section class="slide" data-slide="1">
+  <div class="slide-title"><div class="bar"></div><h2>Kiosk Admin: Pain Points</h2></div>
+  <div class="slide-subtitle">Remote Management Issues</div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">🧑‍🔧</div>
+      <div class="pain-content">
+        <h3>การดูแล Kiosk จำนวนมาก</h3>
+        <p>ตู้ Kiosk กระจายอยู่หลายสถานี แต่ละสถานีมีหลายตู้ — การตรวจสอบสถานะทั้งหมดพร้อมกันเป็นเรื่องยาก</p>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">✏️</div>
+      <div class="pain-content">
+        <h3>การอัพเดทข้อมูล</h3>
+        <p>เสียเวลาและกำลังคนหากต้องลงพื้นที่เพื่อเปลี่ยนประกาศ หรืออัพเดทข้อมูลทีละตู้ ทีละสถานี</p>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">🔧</div>
+      <div class="pain-content">
+        <h3>การซ่อมบำรุง</h3>
+        <p>ไม่ทราบทันทีเมื่อตู้ Offline หรืออุปกรณ์ขัดข้อง — ต้องรอรายงานจากเจ้าหน้าที่สถานี</p>
+      </div>
+    </div>
+
+    <div class="pain-card">
+      <div class="pain-icon">❌</div>
+      <div class="pain-content">
+        <h3>ขาดข้อมูลเชิงลึก</h3>
+        <p>ไม่มีข้อมูลสถิติพฤติกรรมการใช้งาน เช่น คำถามยอดนิยม ช่วงเวลาพีค จำนวนผู้ใช้ต่อตู้</p>
+      </div>
+    </div>
+
+    <div class="pain-card highlight">
+      <div class="pain-icon">👤</div>
+      <div class="pain-content">
+        <h3>ระบบแอดมินเดียวไม่เพียงพอ</h3>
+        <p>เดิมวางแผนแค่แอดมินคนเดียว แต่เมื่อมีหลายสถานี ต้องการ<strong>แบ่งสิทธิ์ตามสถานี</strong> — ผู้ดูแลแต่ละสถานีควรเห็นเฉพาะตู้ของตัวเอง</p>
+        <div class="pain-source">📌 พบระหว่างพัฒนา Demo — ความต้องการใช้งานจริง</div>
+      </div>
+    </div>
+
+    <div class="pain-card highlight">
+      <div class="pain-icon">🎯</div>
+      <div class="pain-content">
+        <h3>การจัดการโฆษณาข้ามสถานี</h3>
+        <p>เจ้าหน้าที่สถานีไม่ควรสร้างโฆษณาที่แสดงในสถานีอื่น — ต้องมีระบบ <strong>Targeting Lock</strong> ตามสิทธิ์ของแต่ละ Role</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">1 / 2</span>
+</section>
+
+<!-- ===== SLIDE 2: The Solution ===== -->
+<section class="slide" data-slide="2">
+  <div class="slide-title"><div class="bar"></div><h2>Kiosk Admin: The Solution</h2></div>
+  <div class="slide-subtitle">Centralized Control & 2-Tier Admin</div>
+
+  <div class="solution-layout">
+    <div class="solution-features">
+      <div class="sol-card">
+        <div class="sol-icon">🗄️</div>
+        <div class="sol-text">
+          <h3>Centralized Content Management</h3>
+          <p>เปลี่ยน Banner, Popup และข่าวสารได้ทันทีจากระบบหลังบ้าน — <span class="sol-highlight">ไม่ต้องลงพื้นที่</span></p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🔃</div>
+        <div class="sol-text">
+          <h3>Real-time Status Monitoring</h3>
+          <p>ตรวจสอบสถานะ <span class="sol-highlight">Online/Offline</span> ของทุกตู้ในระบบ พร้อม Avg Uptime 98%</p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">📊</div>
+        <div class="sol-text">
+          <h3>LiveWalk Heatmap</h3>
+          <p>วิเคราะห์ <span class="sol-highlight">ความหนาแน่นของผู้คน</span> ในสถานีแบบ Real-time ด้วย DeepTrack</p>
+        </div>
+      </div>
+      <div class="sol-card">
+        <div class="sol-icon">🗂️</div>
+        <div class="sol-text">
+          <h3>Advanced Analytics</h3>
+          <p>รายงานสถิติคำถามยอดนิยม ช่วงเวลาการใช้งานสูงสุด <span class="sol-highlight">57,860+ interactions</span></p>
+        </div>
+      </div>
+      <div class="sol-card featured">
+        <div class="sol-icon">🔐</div>
+        <div class="sol-text">
+          <h3>2-Tier Admin System</h3>
+          <p><span class="sol-highlight">Super Admin</span> ควบคุมทุกสถานี — <span class="sol-highlight">Station Admin</span> ดูแลเฉพาะสถานีตัวเอง แบ่งสิทธิ์อัตโนมัติตาม Login</p>
+        </div>
+      </div>
+      <div class="sol-card featured">
+        <div class="sol-icon">🎯</div>
+        <div class="sol-text">
+          <h3>Station-Targeted Ads & Popup</h3>
+          <p>Super Admin เลือก target ได้ทุกสถานี — Station Admin <span class="sol-highlight">Targeting Lock</span> เฉพาะสถานีตัวเอง</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side: Login + Role Comparison -->
+    <div class="mockup-area">
+      <div class="login-frame">
+        <img src="screenshots/kiosk-admin-01-login.png" alt="Admin Portal Login">
+        <div class="frame-label">Admin Portal Login</div>
+      </div>
+
+      <div class="role-compare">
+        <div class="role-box super">
+          <div class="role-icon">👑</div>
+          <h4>Super Admin</h4>
+          <div class="role-user">admin / 1234</div>
+          <ul>
+            <li>เห็นทุกสถานี</li>
+            <li>จัดการ Kiosk ทั้งหมด</li>
+            <li>Target โฆษณาได้อิสระ</li>
+            <li>ดู Analytics ภาพรวม</li>
+          </ul>
+        </div>
+        <div class="role-box station">
+          <div class="role-icon">🏢</div>
+          <h4>Station Admin</h4>
+          <div class="role-user">bangkok / 1234</div>
+          <ul>
+            <li>เห็นเฉพาะสถานีตัวเอง</li>
+            <li>จัดการ Kiosk ของสถานี</li>
+            <li class="restricted">Targeting Lock สถานี</li>
+            <li>ดู Analytics เฉพาะสถานี</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mockup-label">Login เดียว → ระบบแยกสิทธิ์อัตโนมัติ</div>
+    </div>
+  </div>
+  <span class="slide-num">2 / 2</span>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function show(idx) {
+    if (idx < 0 || idx >= slides.length) return;
+    slides[current].classList.remove('active');
+    current = idx;
+    slides[current].classList.add('active');
+    document.getElementById('progress-bar').style.width =
+      ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'Backspace') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { e.preventDefault(); show(0); }
+    if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>
