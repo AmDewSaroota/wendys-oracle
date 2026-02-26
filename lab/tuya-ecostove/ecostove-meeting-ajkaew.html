@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoStove — สรุปคุยกับอาจารย์แก้ว</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #064e3b;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --green-50: #ecfdf5;
+    --orange: #e67e22;
+    --red: #dc2626;
+    --yellow: #f59e0b;
+    --blue: #2563eb;
+    --purple: #7c3aed;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Prompt', sans-serif;
+    background: #111;
+    color: var(--gray-900);
+    overflow: hidden;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  .bg-white { background: #fff; }
+  .bg-green { background: var(--green-dark); color: #fff; }
+  .bg-light { background: var(--green-50); }
+  .bg-gray { background: var(--gray-50); }
+  .bg-gradient {
+    background: linear-gradient(135deg, var(--green-dark) 0%, #0f766e 50%, #115e59 100%);
+    color: #fff;
+  }
+  .bg-warm {
+    background: linear-gradient(135deg, #7c2d12 0%, #9a3412 50%, #c2410c 100%);
+    color: #fff;
+  }
+  .bg-blue {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 50%, #2563eb 100%);
+    color: #fff;
+  }
+
+  .slide-number {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    font-weight: 300;
+  }
+  .bg-green .slide-number,
+  .bg-gradient .slide-number,
+  .bg-warm .slide-number,
+  .bg-blue .slide-number { color: rgba(255,255,255,0.4); }
+
+  h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.3; margin-bottom: 16px; }
+  h2 { font-size: 2rem; font-weight: 600; margin-bottom: 24px; color: var(--green-dark); }
+  .bg-green h2, .bg-gradient h2, .bg-warm h2, .bg-blue h2 { color: #fff; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; color: var(--green-dark); }
+
+  .subtitle { font-size: 1.3rem; font-weight: 300; color: var(--gray-500); margin-bottom: 8px; }
+  .bg-green .subtitle, .bg-gradient .subtitle, .bg-warm .subtitle, .bg-blue .subtitle { color: rgba(255,255,255,0.7); }
+
+  .tag {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green-dark);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .bg-green .tag, .bg-gradient .tag, .bg-warm .tag, .bg-blue .tag { background: rgba(255,255,255,0.15); color: #fff; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  th {
+    background: var(--green-dark);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  th:first-child { border-radius: 10px 0 0 0; }
+  th:last-child { border-radius: 0 10px 0 0; }
+  td { padding: 10px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--gray-50); }
+  tr:last-child td { border-bottom: none; }
+  .table-wrap {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .card-grid { display: grid; gap: 20px; }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 4px solid var(--green);
+  }
+  .card.orange { border-top-color: var(--orange); }
+  .card.blue { border-top-color: var(--blue); }
+  .card.red { border-top-color: var(--red); }
+  .card.yellow { border-top-color: var(--yellow); }
+  .card.purple { border-top-color: var(--purple); }
+
+  .card .icon { font-size: 2rem; margin-bottom: 10px; }
+  .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .card p, .card li { font-size: 0.88rem; color: var(--gray-500); line-height: 1.6; font-weight: 300; }
+  .card ul { list-style: none; padding: 0; }
+  .card li::before { content: '→ '; color: var(--green); font-weight: 500; }
+
+  .big-num { font-size: 3rem; font-weight: 700; color: var(--green-dark); line-height: 1; }
+  .big-num small { font-size: 1rem; font-weight: 300; color: var(--gray-500); display: block; margin-top: 4px; }
+
+  .flow { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+  .flow-step {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    min-width: 120px;
+  }
+  .bg-green .flow-step, .bg-gradient .flow-step, .bg-blue .flow-step { background: rgba(255,255,255,0.1); }
+  .flow-step .icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .flow-step .label { font-size: 0.82rem; font-weight: 400; }
+  .flow-arrow { font-size: 1.5rem; color: var(--green); font-weight: 300; }
+  .bg-green .flow-arrow, .bg-gradient .flow-arrow, .bg-blue .flow-arrow { color: rgba(255,255,255,0.5); }
+
+  .highlight-row { display: flex; gap: 20px; margin-top: 20px; }
+  .highlight-box {
+    flex: 1;
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .bg-green .highlight-box, .bg-gradient .highlight-box, .bg-warm .highlight-box, .bg-blue .highlight-box { background: rgba(255,255,255,0.1); }
+
+  .q-group { margin-bottom: 16px; }
+  .q-group h3 { font-size: 1rem; color: var(--green); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .q-list { list-style: none; padding: 0; }
+  .q-list li {
+    padding: 8px 0 8px 20px;
+    border-left: 3px solid var(--green-light);
+    margin-bottom: 4px;
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--gray-700);
+    line-height: 1.5;
+  }
+  .q-list li strong { font-weight: 500; color: var(--gray-900); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  /* Scenario boxes */
+  .scenario {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+  }
+  .scenario-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .scenario-flow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--gray-500);
+  }
+  .scenario-flow .step {
+    background: var(--green-50);
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-weight: 400;
+  }
+  .scenario-flow .step.warn {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .scenario-flow .step.ok {
+    background: var(--green-light);
+    color: var(--green-dark);
+  }
+  .scenario-flow .step.bad {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  .scenario-flow .arr { color: var(--gray-300); }
+  .scenario-result {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    font-weight: 400;
+    padding: 6px 12px;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  .result-ok { background: var(--green-light); color: var(--green-dark); }
+  .result-warn { background: #fef3c7; color: #92400e; }
+  .result-bad { background: #fee2e2; color: #991b1b; }
+
+  /* Nav */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+  .nav button {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+  }
+  .nav button.active { background: var(--green); width: 28px; border-radius: 5px; }
+
+  .arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.08);
+    color: var(--gray-500);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .arrow:hover { background: rgba(0,0,0,0.15); }
+  .arrow.left { left: 16px; }
+  .arrow.right { right: 16px; }
+
+  @media print {
+    .slide { position: relative; opacity: 1; pointer-events: auto; page-break-after: always; min-height: 100vh; }
+    .nav, .arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ========== SLIDE 1: Cover ========== -->
+<div class="slide bg-gradient active">
+  <div style="text-align:center;">
+    <div style="font-size:4rem; margin-bottom:16px;">🌿</div>
+    <h1>EcoStove Sensor Monitor</h1>
+    <p class="subtitle">สรุปแผนระบบเก็บข้อมูลคุณภาพอากาศ — 10 ครัวเรือน</p>
+    <div style="margin-top:32px; display:flex; justify-content:center; gap:48px;">
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">10</div>
+        <div style="font-size:0.85rem; opacity:0.6;">เซนเซอร์</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">~8,000</div>
+        <div style="font-size:0.85rem; opacity:0.6;">บาท (ทั้งหมด)</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">0</div>
+        <div style="font-size:0.85rem; opacity:0.6;">บาท/เดือน</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">6</div>
+        <div style="font-size:0.85rem; opacity:0.6;">เดือนเก็บข้อมูล</div>
+      </div>
+    </div>
+    <p style="margin-top:40px; font-size:0.85rem; opacity:0.4;">NDF — กุมภาพันธ์ 2026</p>
+  </div>
+  <div class="slide-number">1 / 11</div>
+</div>
+
+<!-- ========== SLIDE 2: System Overview ========== -->
+<div class="slide bg-white">
+  <span class="tag">แจ้ง — ภาพรวมระบบ</span>
+  <h2>ระบบทำงานอย่างไร?</h2>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="icon">📡</div>
+      <div class="label">เซนเซอร์<br>MT13W</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">📶</div>
+      <div class="label">WiFi / Hotspot<br>มือถืออาสา</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">☁️</div>
+      <div class="label">Tuya Cloud<br>(Singapore)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">🖥️</div>
+      <div class="label">Server<br>(Cloud ฟรี)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">🗄️</div>
+      <div class="label">Database<br>(Supabase)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">📊</div>
+      <div class="label">Dashboard<br>อาจารย์ดูผล</div>
+    </div>
+  </div>
+  <div class="card-grid cols-3" style="margin-top:20px;">
+    <div class="card">
+      <div class="icon">📡</div>
+      <h3>วัดได้ 8 ค่า</h3>
+      <ul>
+        <li>PM2.5 / PM10 / PM1 (ฝุ่นละเอียด)</li>
+        <li>CO2 (คาร์บอนไดออกไซด์)</li>
+        <li>HCHO (ฟอร์มาลดีไฮด์)</li>
+        <li>AQI (ดัชนีคุณภาพอากาศ)</li>
+        <li>อุณหภูมิ (°C) + ความชื้น (%RH)</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <div class="icon">🍳</div>
+      <h3>เก็บตามการใช้งานจริง</h3>
+      <ul>
+        <li>ชาวบ้านทำอาหารตามปกติ</li>
+        <li>เปิด-ปิดเตาเองตามสะดวก</li>
+        <li>ไม่ต้องเปลี่ยนพฤติกรรม</li>
+        <li>ระบบเก็บข้อมูลอัตโนมัติ</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <div class="icon">🔄</div>
+      <h3>เปรียบเทียบ 6 เดือน</h3>
+      <ul>
+        <li><strong>3 เดือนแรก</strong> — เตาเดิม</li>
+        <li><strong>3 เดือนหลัง</strong> — EcoStove</li>
+        <li>Dashboard แสดงกราฟเทียบ</li>
+        <li>Export ข้อมูลได้</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-number">2 / 11</div>
+</div>
+
+<!-- ========== SLIDE 3: Sensor & Budget ========== -->
+<div class="slide bg-light">
+  <span class="tag">แจ้ง — เซนเซอร์ & งบประมาณ</span>
+  <h2>เซนเซอร์ MT13W + ค่าใช้จ่ายทั้งหมด</h2>
+  <div class="two-col">
+    <div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>รายการ</th>
+              <th>จำนวน</th>
+              <th>ราคา</th>
+              <th>รวม</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>📡 เซนเซอร์ MT13W</td>
+              <td>9 ตัว</td>
+              <td>800–1,100 ฿</td>
+              <td><strong>7,200–9,900</strong></td>
+            </tr>
+            <tr>
+              <td>📡 สำรอง (ถ้ามีงบ)</td>
+              <td>1–2 ตัว</td>
+              <td>800–1,100 ฿</td>
+              <td><strong>800–2,200</strong></td>
+            </tr>
+            <tr>
+              <td>🔌 สาย USB</td>
+              <td>—</td>
+              <td>—</td>
+              <td><strong>แถมมากับเซนเซอร์</strong></td>
+            </tr>
+            <tr>
+              <td>🔌 Adapter ชาร์จ</td>
+              <td>10</td>
+              <td>~50–100 ฿</td>
+              <td><strong>500–1,000</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="highlight-row" style="margin-top:16px;">
+        <div class="highlight-box" style="border:3px solid var(--green);">
+          <div class="big-num" style="font-size:2.2rem;">~8,500–13,000<small>บาท — ซื้อครั้งเดียว</small></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="icon">✅</div>
+        <h3>ทำไมเลือก MT13W?</h3>
+        <ul>
+          <li>วัดได้ 8 ค่า (PM2.5/PM10/PM1/CO2/HCHO/AQI/°C/%RH)</li>
+          <li>ใช้ Tuya WiFi — ต่อ Cloud ได้เลย</li>
+          <li>ทดสอบแล้ว ค่าแม่นยำ</li>
+          <li>ราคาถูก (~800–1,100 ฿)</li>
+        </ul>
+      </div>
+      <div class="card red">
+        <div class="icon">❌</div>
+        <h3>MT29 (ตัวเดิม) — ไม่ใช้</h3>
+        <ul>
+          <li>Semiconductor sensor — ค่าเพี้ยน</li>
+          <li>ทดสอบเทียบแล้ว ไม่แม่นยำ</li>
+          <li>มีอยู่ 1 ตัว เก็บเป็น backup</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">3 / 11</div>
+</div>
+
+<!-- ========== SLIDE 4: Monthly Cost = 0 ========== -->
+<div class="slide bg-green">
+  <span class="tag">แจ้ง — ค่าใช้จ่ายรายเดือน</span>
+  <h2>หลังติดตั้ง — ค่าใช้จ่ายรายเดือน</h2>
+  <div class="card-grid cols-4">
+    <div class="card">
+      <div class="icon">🖥️</div>
+      <h3>Server</h3>
+      <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
+      <p>Oracle Cloud Free Tier<br>VM ฟรีตลอดชีพ</p>
+    </div>
+    <div class="card">
+      <div class="icon">🗄️</div>
+      <h3>Database</h3>
+      <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
+      <p>Supabase Free<br>500 MB — เก็บ 8 ค่าได้หลายปี</p>
+    </div>
+    <div class="card">
+      <div class="icon">☁️</div>
+      <h3>Tuya API</h3>
+      <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
+      <p>26,000 calls/เดือน<br>ใช้จริง ~14,400 (buffer 45%)</p>
+    </div>
+    <div class="card">
+      <div class="icon">📊</div>
+      <h3>Dashboard</h3>
+      <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
+      <p>อยู่บน Server เดียวกัน<br>เปิดผ่านเว็บได้</p>
+    </div>
+  </div>
+  <div class="highlight-row" style="justify-content:center; margin-top:28px;">
+    <div class="highlight-box" style="max-width:400px; border:3px solid rgba(52,211,153,0.5);">
+      <div class="big-num" style="color:#34d399; font-size:3rem;">0 ฿/เดือน</div>
+      <div style="font-size:0.95rem; opacity:0.7; margin-top:8px;">ค่าดำเนินการหลังติดตั้ง</div>
+    </div>
+  </div>
+  <div class="slide-number">4 / 11</div>
+</div>
+
+<!-- ========== SLIDE 5: Session & Data Collection ========== -->
+<div class="slide bg-white">
+  <span class="tag">แจ้ง — วิธีเก็บข้อมูล</span>
+  <h2>Session Model — เก็บข้อมูลอย่างไร?</h2>
+  <div class="flow" style="margin-bottom:24px;">
+    <div class="flow-step" style="background:var(--green-50);">
+      <div class="icon">🔄</div>
+      <div class="label"><strong>Baseline</strong><br>10 นาที<br><small style="color:var(--gray-500);">เซนเซอร์ stabilize</small></div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--green-50); border:2px solid var(--green);">
+      <div class="icon">📊</div>
+      <div class="label"><strong>Collection</strong><br>2 ชม.<br><small style="color:var(--gray-500);">ดึงทุก 5 นาที</small></div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--gray-50);">
+      <div class="icon">😴</div>
+      <div class="label"><strong>Cooldown</strong><br>พัก 5 ชม.<br><small style="color:var(--gray-500);">ก่อน session ถัดไป</small></div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="background:var(--green-50);">
+      <div class="icon">🔁</div>
+      <div class="label"><strong>Session 2</strong><br>ทำซ้ำอีกรอบ<br><small style="color:var(--gray-500);">สูงสุด 2 ครั้ง/วัน</small></div>
+    </div>
+  </div>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <div class="icon">🍳</div>
+      <h3>ชาวบ้านใช้เตาตามปกติ</h3>
+      <ul>
+        <li>ทำอาหารเมื่อไหร่ก็ได้</li>
+        <li>ไม่ต้องจับเวลา ไม่ต้องแจ้ง</li>
+        <li>ไม่ต้องเปลี่ยนพฤติกรรม</li>
+      </ul>
+      <p style="margin-top:8px; padding:8px 12px; background:#fef3c7; border-radius:8px; font-size:0.82rem; color:#92400e;">
+        <strong>⚠️ ข้อจำกัด:</strong> API ไม่พอเก็บ 24 ชม. → เก็บเป็น session ช่วงเช้า/เย็น<br>
+        ถ้าทำอาหารนอกช่วงเก็บ → ไม่มีข้อมูลรอบนั้น<br>
+        <strong>ต้องคุย อ.แก้ว:</strong> วิธีจัดการเรื่องนี้
+      </p>
+    </div>
+    <div class="card orange">
+      <div class="icon">📅</div>
+      <h3>ตัวอย่างรอบเก็บ</h3>
+      <ul>
+        <li><strong>เช้า</strong> 07:00 – 09:10</li>
+        <li><strong>เย็น</strong> 17:00 – 19:10</li>
+        <li>ตั้งให้ตรงช่วงทำอาหารส่วนใหญ่</li>
+        <li>ปรับเวลาได้ตาม config</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <div class="icon">📈</div>
+      <h3>แผนเก็บ 6 เดือน</h3>
+      <ul>
+        <li><strong>เดือน 1–3:</strong> เตาเดิม (baseline)</li>
+        <li><strong>เดือน 4–6:</strong> EcoStove</li>
+        <li>เทียบค่าก่อน-หลัง</li>
+        <li>ข้อมูลเดียวกัน เตาต่างกัน</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-number">5 / 11</div>
+</div>
+
+<!-- ========== SLIDE 6: Offline Handling ========== -->
+<div class="slide bg-gray">
+  <span class="tag">แจ้ง — Offline Handling</span>
+  <h2>ถ้าเน็ตหลุด / ไฟดับ — ระบบจัดการอย่างไร?</h2>
+  <div class="two-col">
+    <div>
+      <div class="scenario">
+        <div class="scenario-title">✅ สถานการณ์ 1: เน็ตหลุดแป๊บเดียว (&lt;10 นาที)</div>
+        <div class="scenario-flow">
+          <span class="step">กำลังเก็บข้อมูล</span>
+          <span class="arr">→</span>
+          <span class="step warn">เน็ตหลุด 5 นาที</span>
+          <span class="arr">→</span>
+          <span class="step ok">เน็ตกลับมา</span>
+          <span class="arr">→</span>
+          <span class="step ok">ต่อ session เดิม</span>
+        </div>
+        <div class="scenario-result result-ok">ผลลัพธ์: ข้อมูลขาดแค่ช่วงที่หลุด → session สมบูรณ์</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-title">⚠️ สถานการณ์ 2: เน็ตหลุดนาน (&gt;10 นาที)</div>
+        <div class="scenario-flow">
+          <span class="step">กำลังเก็บข้อมูล</span>
+          <span class="arr">→</span>
+          <span class="step bad">เน็ตหลุด 20 นาที</span>
+          <span class="arr">→</span>
+          <span class="step warn">ยกเลิก session</span>
+          <span class="arr">→</span>
+          <span class="step ok">เริ่ม session ใหม่</span>
+        </div>
+        <div class="scenario-result result-warn">ผลลัพธ์: Tag "incomplete" → เริ่มใหม่อัตโนมัติเมื่อเน็ตกลับ</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-title">⚡ สถานการณ์ 3: ไฟดับที่บ้าน</div>
+        <div class="scenario-flow">
+          <span class="step ok">เซนเซอร์มีแบต → ยังทำงาน</span>
+          <span class="arr">→</span>
+          <span class="step bad">แต่เราเตอร์ดับ → เน็ตหลุด</span>
+          <span class="arr">→</span>
+          <span class="step ok">ไฟมา = เราเตอร์กลับ</span>
+        </div>
+        <div class="scenario-result result-warn">ผลลัพธ์: เซนเซอร์ไม่ดับ แต่ส่งข้อมูลไม่ได้ช่วงเราเตอร์ดับ → ข้อมูลเดิมปลอดภัยใน DB</div>
+      </div>
+    </div>
+    <div>
+      <div class="scenario">
+        <div class="scenario-title">📱 สถานการณ์ 4: อาสาลืมเปิด Hotspot</div>
+        <div class="scenario-flow">
+          <span class="step">ถึงเวลาเก็บข้อมูล</span>
+          <span class="arr">→</span>
+          <span class="step bad">ไม่มีเน็ต</span>
+          <span class="arr">→</span>
+          <span class="step warn">ไม่มีข้อมูลรอบนี้</span>
+        </div>
+        <div class="scenario-result result-warn">ผลลัพธ์: ขาดข้อมูลรอบนั้น → LINE แจ้งเตือนอาสา</div>
+      </div>
+      <div class="scenario">
+        <div class="scenario-title">🖥️ สถานการณ์ 5: Server ล่ม</div>
+        <div class="scenario-flow">
+          <span class="step">Server ทำงาน</span>
+          <span class="arr">→</span>
+          <span class="step bad">Server crash</span>
+          <span class="arr">→</span>
+          <span class="step ok">PM2 auto-restart</span>
+        </div>
+        <div class="scenario-result result-ok">ผลลัพธ์: กลับมาอัตโนมัติ — ข้อมูลเดิมปลอดภัยใน DB</div>
+      </div>
+      <div class="card" style="margin-top:16px; border-top-color: var(--blue);">
+        <div class="icon">🛡️</div>
+        <h3>หลักการสำคัญ</h3>
+        <ul>
+          <li><strong>ข้อมูลเดิมไม่มีวันหาย</strong> — เก็บใน DB แยก</li>
+          <li><strong>ระบบกลับมาเอง</strong> — ไม่ต้องแก้ manual</li>
+          <li><strong>ขาดบ้างไม่เป็นไร</strong> — วิเคราะห์จากที่มี</li>
+          <li><strong>มีปัญหาเรื่องระบบ → ติดต่อเรา</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">6 / 11</div>
+</div>
+
+<!-- ========== SLIDE 7: LINE Notifications ========== -->
+<div class="slide bg-blue">
+  <span class="tag">แจ้ง — LINE แจ้งเตือน</span>
+  <h2>ระบบแจ้งเตือนผ่าน LINE</h2>
+  <p class="subtitle" style="margin-bottom:24px;">ใช้ LINE Messaging API (ฟรี 200 ข้อความ/เดือน)</p>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <div class="icon">🏠</div>
+      <h3>กลุ่มตัวอย่าง (ชาวบ้าน)</h3>
+      <p style="color:var(--green); font-weight:500; margin-bottom:8px;">แทบไม่ต้องทำอะไร</p>
+      <ul>
+        <li>ใช้เตาทำอาหารตามปกติ</li>
+        <li>เซนเซอร์เสียบทิ้งไว้</li>
+        <li>บ้านไม่มี WiFi → นัดกับอาสาเอง</li>
+        <li>ถ้าอยากดู → LINE ส่งสรุปรายวัน</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <div class="icon">🙋</div>
+      <h3>อาสาสมัคร</h3>
+      <p style="color:var(--orange); font-weight:500; margin-bottom:8px;">เฉพาะบ้านที่ไม่มี WiFi</p>
+      <ul>
+        <li>นัดเวลากับชาวบ้านเอง</li>
+        <li>ไปเปิด Hotspot ช่วงเก็บข้อมูล</li>
+        <li>LINE แจ้งเตือน + สรุปผลประจำวัน</li>
+        <li>แจ้งถ้าเซนเซอร์ offline นานผิดปกติ</li>
+      </ul>
+    </div>
+    <div class="card purple">
+      <div class="icon">👩‍🏫</div>
+      <h3>อาจารย์</h3>
+      <p style="color:var(--purple); font-weight:500; margin-bottom:8px;">ดูผลผ่าน Dashboard + LINE</p>
+      <ul>
+        <li>สรุปรายวัน/รายสัปดาห์</li>
+        <li>แจ้งเตือนถ้ามีปัญหา</li>
+        <li>ดูข้อมูลเทียบผ่าน Dashboard</li>
+        <li>Export ข้อมูลเมื่อต้องการ</li>
+      </ul>
+    </div>
+  </div>
+  <div class="highlight-row" style="justify-content:center; margin-top:20px;">
+    <div class="highlight-box" style="max-width:700px;">
+      <div style="display:flex; align-items: center; justify-content:center; gap:32px;">
+        <div>
+          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE อาสา</div>
+          <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; margin-top:8px; text-align:left; font-size:0.82rem; color:var(--gray-700);">
+            🔔 <strong>สรุป EcoStove วันนี้</strong><br>
+            บ้าน #3 (คุณสมชาย) — เก็บสำเร็จ ✅<br>
+            บ้าน #7 (คุณสมหญิง) — ไม่มีเน็ต ❌<br>
+            <span style="color:var(--gray-500);">กรุณานัดเวลากับบ้าน #7 ใหม่</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE สรุป</div>
+          <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; margin-top:8px; text-align:left; font-size:0.82rem; color:var(--gray-700);">
+            📊 <strong>สรุปวันนี้</strong> (26 ก.พ.)<br>
+            เก็บสำเร็จ: 8/10 บ้าน ✅<br>
+            ขาด: บ้าน #5, #9 (ไม่มีเน็ต)<br>
+            PM2.5 เฉลี่ย: 42 µg/m³<br>
+            <span style="color:var(--gray-500);">ดูเพิ่มเติมที่ Dashboard</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">7 / 11</div>
+</div>
+
+<!-- ========== SLIDE 8: Dashboard & Approve Workflow ========== -->
+<div class="slide bg-white">
+  <span class="tag">แจ้ง — Dashboard & Approve</span>
+  <h2>Dashboard + ระบบอนุมัติข้อมูล</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="margin-bottom:16px;">📊 หน้า Dashboard หลัก</h3>
+      <div class="card" style="margin-bottom:12px;">
+        <h3>Session Timeline</h3>
+        <ul>
+          <li>ดู session ทั้งหมดแบบ timeline</li>
+          <li>แต่ละบ้าน สถานะ: สำเร็จ / ไม่สมบูรณ์</li>
+          <li>กราฟ PM2.5, CO2, HCHO แบบ real-time</li>
+        </ul>
+      </div>
+      <div class="card orange" style="margin-bottom:12px;">
+        <h3>Daily Summary</h3>
+        <ul>
+          <li>สรุปข้อมูลรายวัน ทั้ง 10 บ้าน</li>
+          <li>ค่าเฉลี่ย / สูงสุด / ต่ำสุด</li>
+          <li>กราฟเทียบ เตาเดิม vs EcoStove</li>
+        </ul>
+      </div>
+      <div class="card blue">
+        <h3>Export & รายงาน</h3>
+        <ul>
+          <li>Export CSV / Excel ตามช่วงเวลา</li>
+          <li>เลือกบ้าน / เลือกค่าที่ต้องการ</li>
+          <li>กราฟพร้อมใช้ในงานวิจัย</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:16px;">✅ ระบบอนุมัติข้อมูล (Approve)</h3>
+      <div class="scenario">
+        <div class="scenario-title">Flow การอนุมัติ</div>
+        <div class="scenario-flow">
+          <span class="step">ระบบเก็บข้อมูลเสร็จ</span>
+          <span class="arr">→</span>
+          <span class="step warn">LINE แจ้ง อ.</span>
+          <span class="arr">→</span>
+          <span class="step ok">อ. เข้า Dashboard</span>
+          <span class="arr">→</span>
+          <span class="step ok">Approve ✅</span>
+        </div>
+      </div>
+      <div class="card purple" style="margin-bottom:12px;">
+        <h3>LINE แจ้งอาจารย์</h3>
+        <ul>
+          <li>ข้อมูลวันนี้พร้อมตรวจ → กดลิงก์เข้า Dashboard</li>
+          <li>เห็นข้อมูลสรุป + กราฟ</li>
+          <li>Approve ทีละวัน หรือ Batch Approve</li>
+        </ul>
+      </div>
+      <div class="card" style="margin-bottom:12px;">
+        <h3>Batch Approve</h3>
+        <ul>
+          <li>ไม่ต้อง approve ทุกวันก็ได้</li>
+          <li>เลือก approve ทีเดียวหลายวัน</li>
+          <li>ข้อมูลที่ผิดปกติ → flag ให้ตรวจสอบ</li>
+        </ul>
+      </div>
+      <div class="card yellow">
+        <h3>Admin Config</h3>
+        <ul>
+          <li>ปรับเวลา session / จำนวนบ้าน</li>
+          <li>เปลี่ยนเซนเซอร์ (map device ID ใหม่)</li>
+          <li>จัดการ users + permissions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">8 / 11</div>
+</div>
+
+<!-- ========== SLIDE 9: Risks ========== -->
+
+<div class="slide bg-white">
+  <span class="tag">แจ้ง — ความเสี่ยง & แผนรับมือ</span>
+  <h2>ความเสี่ยงหลัก</h2>
+  <div class="card-grid cols-2" style="max-width:900px; margin:0 auto;">
+    <div class="card yellow">
+      <div class="icon">📱</div>
+      <h3>อาสาลืมเปิด Hotspot</h3>
+      <p><strong>โอกาส:</strong> สูง &nbsp; <strong>ผลกระทบ:</strong> กลาง</p>
+      <p style="margin-top:8px;">→ LINE แจ้งเตือนอัตโนมัติก่อนเวลาเก็บ<br>→ ข้อมูลขาดแค่ช่วงนั้น ไม่กระทบข้อมูลเดิม</p>
+    </div>
+    <div class="card red">
+      <div class="icon">🔑</div>
+      <h3>Tuya ลบ Account</h3>
+      <p><strong>โอกาส:</strong> ต่ำ &nbsp; <strong>ผลกระทบ:</strong> สูง</p>
+      <p style="margin-top:8px;">→ <strong>ติดต่อทีม NDF — เราจัดการให้</strong><br>→ สร้าง account ใหม่ + แก้ config (~30 นาที)</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔧</div>
+      <h3>เซนเซอร์เสีย</h3>
+      <p><strong>โอกาส:</strong> ต่ำ &nbsp; <strong>ผลกระทบ:</strong> ต่ำ</p>
+      <p style="margin-top:8px;">→ มีตัวสำรอง 1–2 ตัว<br>→ เสียบตัวใหม่ + <strong>ติดต่อ NDF แก้ config</strong> (map device ID ใหม่เข้าบ้านเดิม ~10 นาที)</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>ไฟดับบ้าน / Server ล่ม</h3>
+      <p><strong>โอกาส:</strong> ต่ำ &nbsp; <strong>ผลกระทบ:</strong> ต่ำ</p>
+      <p style="margin-top:8px;">→ เซนเซอร์มีแบต ไม่ดับ แต่เราเตอร์ดับ = เน็ตหลุด<br>→ Server: PM2 auto-restart — ข้อมูลเดิมปลอดภัยใน DB</p>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:20px; padding:12px 24px; background:var(--green-50); border-radius:12px; display:inline-block; margin-left:auto; margin-right:auto; width:fit-content;">
+    <span style="font-size:0.95rem; color:var(--green-dark);">🛡️ <strong>มีปัญหาเรื่องระบบทุกอย่าง → ติดต่อทีม NDF เราดูแลให้</strong></span>
+  </div>
+  <div class="slide-number">9 / 11</div>
+</div>
+
+<!-- ========== SLIDE 9: Questions ========== -->
+<div class="slide bg-warm">
+  <span class="tag">ถาม — ต้องตัดสินใจ</span>
+  <h2>สิ่งที่ต้องตัดสินใจร่วมกัน</h2>
+  <div class="card-grid cols-2">
+    <div class="card">
+      <div class="q-group">
+        <h3>💰 งบประมาณ</h3>
+        <ul class="q-list">
+          <li><strong>งบซื้อเซนเซอร์เท่าไหร่?</strong><br>ต้องซื้อ 9 ตัว + Adapter (~8,500–13,000 ฿)<br>+ สำรอง 1–2 ตัว?</li>
+        </ul>
+      </div>
+      <div class="q-group">
+        <h3>📅 เวลาเริ่มต้น</h3>
+        <ul class="q-list">
+          <li><strong>เริ่มเก็บข้อมูลเมื่อไหร่?</strong><br>ระบบพร้อมเมื่อไหร่ก็เริ่มได้<br>ไม่มี deadline ฝั่งเทคนิค</li>
+        </ul>
+      </div>
+      <div class="q-group">
+        <h3>🍳 วิธีจับช่วงทำอาหาร</h3>
+        <ul class="q-list">
+          <li><strong>เก็บเป็น session เช้า/เย็น — ถ้าทำอาหารนอกช่วง จะทำยังไง?</strong><br>ตัวเลือก: ใช้ข้อมูลที่มี (sampling) / ให้ชาวบ้านแจ้งเวลาทำอาหาร / ดูจากค่า PM2.5 พุ่ง</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <div class="q-group">
+        <h3>👥 อาสาสมัคร & พื้นที่</h3>
+        <ul class="q-list">
+          <li><strong>10 บ้านอยู่ที่ไหน?</strong><br>ในเมือง / ชนบท → กระทบเรื่อง WiFi</li>
+          <li><strong>อาสาสมัครคือใคร?</strong><br>นักศึกษา / ชาวบ้าน → กระทบคู่มือ + training</li>
+          <li><strong>อาสามีมือถือ + เน็ตเองมั้ย?</strong><br>ถ้าไม่มี → ต้องจัดหา SIM ให้</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">10 / 11</div>
+</div>
+
+<!-- ========== SLIDE 10: Next Steps ========== -->
+<div class="slide bg-gradient">
+  <div style="text-align:center;">
+    <div style="font-size:3rem; margin-bottom:16px;">🚀</div>
+    <h2>ขั้นตอนถัดไป</h2>
+    <p class="subtitle" style="max-width:600px; margin:0 auto 32px;">เมื่อพร้อมเริ่ม</p>
+  </div>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <div class="icon">1️⃣</div>
+      <h3>สั่งซื้อเซนเซอร์</h3>
+      <ul>
+        <li>สั่ง MT13W 9 ตัว (+ สำรอง)</li>
+        <li>ซื้อ Adapter แยก 10 ตัว</li>
+        <li>รอของ ~3–7 วัน</li>
+        <li>ทดสอบทุกตัวก่อนติดตั้ง</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <div class="icon">2️⃣</div>
+      <h3>เตรียมระบบ</h3>
+      <ul>
+        <li>ตั้ง Server + Database</li>
+        <li>ปรับ Dashboard + กราฟเทียบ</li>
+        <li>ตั้ง LINE OA แจ้งเตือน</li>
+        <li>ทำคู่มือชาวบ้าน + อาสา</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <div class="icon">3️⃣</div>
+      <h3>ติดตั้ง & เก็บข้อมูล</h3>
+      <ul>
+        <li>ลง sensor 10 บ้าน</li>
+        <li>อบรมอาสาสมัคร</li>
+        <li>3 เดือนแรก — เตาเดิม</li>
+        <li>3 เดือนหลัง — EcoStove</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:32px; text-align:center;">
+    <div style="display:inline-block; background:rgba(255,255,255,0.1); padding:16px 32px; border-radius:14px; font-size:0.95rem; opacity:0.8; line-height:1.8;">
+      ระบบเตรียมพร้อมได้ทุกเมื่อ — เริ่มเมื่ออาจารย์สะดวก<br>
+      <strong>เก็บข้อมูลรวม 6 เดือน</strong> (3 เดือนเตาเก่า + 3 เดือน EcoStove)
+    </div>
+  </div>
+  <div class="slide-number">11 / 11</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<button class="arrow left" onclick="go(-1)">&#8249;</button>
+<button class="arrow right" onclick="go(1)">&#8250;</button>
+<div class="nav" id="nav"></div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+
+const nav = document.getElementById('nav');
+slides.forEach((_, i) => {
+  const btn = document.createElement('button');
+  btn.onclick = () => goTo(i);
+  nav.appendChild(btn);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  updateNav();
+}
+
+function go(dir) { goTo(current + dir); }
+
+function updateNav() {
+  nav.querySelectorAll('button').forEach((btn, i) => {
+    btn.classList.toggle('active', i === current);
+  });
+}
+
+updateNav();
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+});
+
+let touchX = 0;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const diff = touchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) go(diff > 0 ? 1 : -1);
+});
+</script>
+</body>
+</html>
