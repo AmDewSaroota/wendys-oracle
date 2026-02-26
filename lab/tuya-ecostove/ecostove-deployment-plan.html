@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoStove — แผนติดตั้งระบบเก็บข้อมูลเซนเซอร์</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #064e3b;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --green-50: #ecfdf5;
+    --orange: #e67e22;
+    --red: #dc2626;
+    --yellow: #f59e0b;
+    --blue: #2563eb;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Prompt', sans-serif;
+    background: #111;
+    color: var(--gray-900);
+    overflow: hidden;
+  }
+
+  /* ===== Slide Container ===== */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ===== Backgrounds ===== */
+  .bg-white { background: #fff; }
+  .bg-green { background: var(--green-dark); color: #fff; }
+  .bg-light { background: var(--green-50); }
+  .bg-gray { background: var(--gray-50); }
+  .bg-gradient {
+    background: linear-gradient(135deg, var(--green-dark) 0%, #0f766e 50%, #115e59 100%);
+    color: #fff;
+  }
+
+  /* ===== Typography ===== */
+  .slide-number {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    font-weight: 300;
+  }
+  .bg-green .slide-number,
+  .bg-gradient .slide-number { color: rgba(255,255,255,0.4); }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--green-dark);
+  }
+  .bg-green h2, .bg-gradient h2 { color: #fff; }
+
+  h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--green-dark);
+  }
+
+  .subtitle {
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--gray-500);
+    margin-bottom: 8px;
+  }
+  .bg-green .subtitle, .bg-gradient .subtitle { color: rgba(255,255,255,0.7); }
+
+  .tag {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green-dark);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .bg-green .tag { background: rgba(255,255,255,0.15); color: #fff; }
+
+  /* ===== Tables ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  th {
+    background: var(--green-dark);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  th:first-child { border-radius: 10px 0 0 0; }
+  th:last-child { border-radius: 0 10px 0 0; }
+
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td { background: var(--gray-50); }
+  tr:last-child td { border-bottom: none; }
+
+  .table-wrap {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  /* ===== Risk Colors ===== */
+  .risk-low { color: var(--green); font-weight: 500; }
+  .risk-med { color: var(--yellow); font-weight: 500; }
+  .risk-high { color: var(--red); font-weight: 500; }
+
+  /* ===== Cards ===== */
+  .card-grid {
+    display: grid;
+    gap: 20px;
+  }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 4px solid var(--green);
+  }
+  .card.orange { border-top-color: var(--orange); }
+  .card.blue { border-top-color: var(--blue); }
+  .card.red { border-top-color: var(--red); }
+
+  .card .icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+
+  .card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .card p, .card li {
+    font-size: 0.9rem;
+    color: var(--gray-500);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card li::before {
+    content: '→ ';
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ===== Big Number ===== */
+  .big-num {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    line-height: 1;
+  }
+  .big-num small {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--gray-500);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ===== Flow Diagram ===== */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    min-width: 130px;
+  }
+  .bg-green .flow-step { background: rgba(255,255,255,0.1); }
+  .flow-step .icon { font-size: 2rem; margin-bottom: 8px; }
+  .flow-step .label { font-size: 0.85rem; font-weight: 400; }
+  .flow-arrow {
+    font-size: 1.5rem;
+    color: var(--green);
+    font-weight: 300;
+  }
+  .bg-green .flow-arrow { color: rgba(255,255,255,0.5); }
+
+  /* ===== Question List ===== */
+  .q-group {
+    margin-bottom: 20px;
+  }
+  .q-group h3 {
+    font-size: 1rem;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .q-list {
+    list-style: none;
+    padding: 0;
+  }
+  .q-list li {
+    padding: 8px 0 8px 24px;
+    border-left: 3px solid var(--green-light);
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--gray-700);
+    line-height: 1.5;
+  }
+  .q-list li strong {
+    font-weight: 500;
+    color: var(--gray-900);
+  }
+
+  /* ===== Summary Highlight ===== */
+  .highlight-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .highlight-box {
+    flex: 1;
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .bg-green .highlight-box { background: rgba(255,255,255,0.1); }
+
+  /* ===== Nav ===== */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+  .nav button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0;
+  }
+  .nav button.active {
+    background: var(--green);
+    width: 28px;
+    border-radius: 5px;
+  }
+
+  .arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.08);
+    color: var(--gray-500);
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .arrow:hover { background: rgba(0,0,0,0.15); }
+  .arrow.left { left: 16px; }
+  .arrow.right { right: 16px; }
+
+  /* ===== Print ===== */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  @media print {
+    .slide { position: relative; opacity: 1; pointer-events: auto; page-break-after: always; min-height: 100vh; }
+    .nav, .arrow { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ========== SLIDE 1: Cover ========== -->
+<div class="slide bg-gradient active">
+  <div style="text-align:center;">
+    <div style="font-size:4rem; margin-bottom:16px;">🌿</div>
+    <h1>EcoStove Sensor Monitor</h1>
+    <p class="subtitle">แผนติดตั้งระบบเก็บข้อมูลคุณภาพอากาศ — 10 ครัวเรือน</p>
+    <div style="margin-top:32px; display:flex; justify-content:center; gap:40px;">
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">10</div>
+        <div style="font-size:0.85rem; opacity:0.6;">เซนเซอร์</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">0</div>
+        <div style="font-size:0.85rem; opacity:0.6;">บาท/เดือน</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.5rem; font-weight:700;">24/7</div>
+        <div style="font-size:0.85rem; opacity:0.6;">อัตโนมัติ</div>
+      </div>
+    </div>
+    <p style="margin-top:40px; font-size:0.85rem; opacity:0.4;">NDF — กุมภาพันธ์ 2026</p>
+  </div>
+  <div class="slide-number">1 / 9</div>
+</div>
+
+<!-- ========== SLIDE 2: System Overview ========== -->
+<div class="slide bg-white">
+  <span class="tag">ภาพรวมระบบ</span>
+  <h2>ระบบทำงานอย่างไร?</h2>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="icon">📡</div>
+      <div class="label">เซนเซอร์<br>ในบ้าน</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">📱</div>
+      <div class="label">Hotspot<br>อาสาสมัคร</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">☁️</div>
+      <div class="label">Tuya Cloud<br>(Singapore)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">🖥️</div>
+      <div class="label">Server<br>(Auto-Fetch)</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="icon">🗄️</div>
+      <div class="label">Supabase<br>(Database)</div>
+    </div>
+  </div>
+  <div class="card-grid cols-3" style="margin-top:24px;">
+    <div class="card">
+      <div class="icon">⏰</div>
+      <h3>ดึงข้อมูลทุก 5 นาที</h3>
+      <p>อัตโนมัติ ไม่ต้องกดอะไร</p>
+    </div>
+    <div class="card orange">
+      <div class="icon">📱</div>
+      <h3>ไม่ต้องมี WiFi</h3>
+      <p>อาสาสมัครเปิด Hotspot ขณะเก็บข้อมูล</p>
+    </div>
+    <div class="card blue">
+      <div class="icon">💾</div>
+      <h3>บันทึกอัตโนมัติ</h3>
+      <p>PM2.5, CO2, HCHO, อุณหภูมิ, ความชื้น</p>
+    </div>
+  </div>
+  <div class="slide-number">2 / 9</div>
+</div>
+
+<!-- ========== SLIDE 3: Hardware Costs ========== -->
+<div class="slide bg-light">
+  <span class="tag">งบประมาณ</span>
+  <h2>ค่าใช้จ่ายฮาร์ดแวร์ (ซื้อครั้งเดียว)</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>รายการ</th>
+          <th>จำนวน</th>
+          <th>ราคา/ชิ้น</th>
+          <th>รวม</th>
+          <th>หมายเหตุ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>📡 เซนเซอร์ MT13W</td>
+          <td>10</td>
+          <td>~1,500 – 2,500</td>
+          <td><strong>15,000 – 25,000</strong></td>
+          <td>วัด PM2.5 / CO2 / HCHO / Temp / Humidity</td>
+        </tr>
+        <tr>
+          <td>🔌 สาย USB + Adapter</td>
+          <td>10</td>
+          <td>—</td>
+          <td><strong>แถมมากับเซนเซอร์</strong></td>
+          <td>มาพร้อมกล่อง</td>
+        </tr>
+        <tr>
+          <td>📡 เซนเซอร์สำรอง</td>
+          <td>1 – 2</td>
+          <td>~2,000</td>
+          <td><strong>2,000 – 4,000</strong></td>
+          <td>ทดแทนเครื่องเสีย (ถ้ามีงบ)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="highlight-row">
+    <div class="highlight-box">
+      <div class="big-num">~17,000 – 29,000<small>บาท — งบเริ่มต้นทั้งหมด</small></div>
+    </div>
+  </div>
+  <div class="slide-number">3 / 9</div>
+</div>
+
+<!-- ========== SLIDE 4: Monthly Costs ========== -->
+<div class="slide bg-white">
+  <span class="tag">งบประมาณ</span>
+  <h2>ค่าใช้จ่ายรายเดือน</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>รายการ</th>
+          <th>ค่าใช้จ่าย</th>
+          <th>รายละเอียด</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🖥️ Server (Oracle Cloud Free Tier)</td>
+          <td><strong style="color:var(--green);">ฟรี</strong></td>
+          <td>VM ฟรีตลอดชีพ — Singapore region</td>
+        </tr>
+        <tr>
+          <td>🗄️ Supabase (Database)</td>
+          <td><strong style="color:var(--green);">ฟรี</strong></td>
+          <td>Free tier 500 MB — เก็บข้อมูลได้หลายปี</td>
+        </tr>
+        <tr>
+          <td>☁️ Tuya Cloud API</td>
+          <td><strong style="color:var(--green);">ฟรี</strong></td>
+          <td>26,000 calls/เดือน — ใช้จริง ~21,600</td>
+        </tr>
+        <tr>
+          <td>📱 ค่าเน็ตอาสาสมัคร</td>
+          <td><strong style="color:var(--green);">ฟรี *</strong></td>
+          <td>ใช้ Hotspot มือถือ — ข้อมูลน้อยมาก (~1 MB/ครั้ง)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="highlight-row">
+    <div class="highlight-box" style="border:3px solid var(--green);">
+      <div class="big-num" style="color:var(--green);">0 บาท/เดือน<small>ค่าดำเนินการหลังติดตั้ง</small></div>
+    </div>
+  </div>
+  <div class="slide-number">4 / 9</div>
+</div>
+
+<!-- ========== SLIDE 5: Server Options ========== -->
+<div class="slide bg-gray">
+  <span class="tag">ตัวเลือกเซิร์ฟเวอร์</span>
+  <h2>เปรียบเทียบ 3 แบบ</h2>
+  <div class="card-grid cols-3">
+    <div class="card" style="border-top-color:var(--green); position:relative;">
+      <div style="position:absolute; top:-10px; right:16px; background:var(--green); color:#fff; padding:2px 12px; border-radius:10px; font-size:0.75rem;">แนะนำ</div>
+      <div class="icon">☁️</div>
+      <h3>Oracle Cloud Free</h3>
+      <ul>
+        <li>ฟรีตลอดชีพ</li>
+        <li>เสถียร 99.9%</li>
+        <li>Singapore region</li>
+        <li>Auto-restart ด้วย PM2</li>
+      </ul>
+      <div style="margin-top:12px; text-align:center;">
+        <div class="big-num" style="font-size:1.8rem;">0 ฿<small>ต่อเดือน</small></div>
+      </div>
+    </div>
+    <div class="card orange">
+      <div class="icon">🍓</div>
+      <h3>Raspberry Pi</h3>
+      <ul>
+        <li>ซื้อครั้งเดียว ~2,500 ฿</li>
+        <li>วางที่มหาลัย</li>
+        <li>ต้องมี WiFi ที่วาง</li>
+        <li>ไฟดับ = หยุดทำงาน</li>
+      </ul>
+      <div style="margin-top:12px; text-align:center;">
+        <div class="big-num" style="font-size:1.8rem; color:var(--orange);">~2,500 ฿<small>ครั้งเดียว</small></div>
+      </div>
+    </div>
+    <div class="card blue">
+      <div class="icon">💰</div>
+      <h3>Cloud VPS</h3>
+      <ul>
+        <li>Vultr / DigitalOcean</li>
+        <li>เสถียรสุด</li>
+        <li>มี Support</li>
+        <li>มีค่าใช้จ่ายรายเดือน</li>
+      </ul>
+      <div style="margin-top:12px; text-align:center;">
+        <div class="big-num" style="font-size:1.8rem; color:var(--blue);">~140 ฿<small>ต่อเดือน</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">5 / 9</div>
+</div>
+
+<!-- ========== SLIDE 6: Risks ========== -->
+<div class="slide bg-white">
+  <span class="tag">ความเสี่ยง</span>
+  <h2>ความเสี่ยงและแผนรับมือ</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:25%;">ความเสี่ยง</th>
+          <th style="width:10%;">โอกาส</th>
+          <th style="width:10%;">ผลกระทบ</th>
+          <th>แผนรับมือ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🔑 Tuya ลบ account</td>
+          <td><span class="risk-med">กลาง</span></td>
+          <td><span class="risk-high">สูง</span></td>
+          <td>สร้าง account ใหม่ + แก้ config.json (~30 นาที)</td>
+        </tr>
+        <tr>
+          <td>📊 API เกิน limit</td>
+          <td><span class="risk-low">ต่ำ</span></td>
+          <td><span class="risk-med">กลาง</span></td>
+          <td>26,000 calls มี buffer ~4,400 — ปรับลด frequency ได้</td>
+        </tr>
+        <tr>
+          <td>📱 อาสาลืมเปิด Hotspot</td>
+          <td><span class="risk-high">สูง</span></td>
+          <td><span class="risk-med">กลาง</span></td>
+          <td>แจ้งเตือนผ่าน LINE — ข้อมูลขาดแค่ช่วงนั้น</td>
+        </tr>
+        <tr>
+          <td>🔧 เซนเซอร์เสีย</td>
+          <td><span class="risk-low">ต่ำ</span></td>
+          <td><span class="risk-low">ต่ำ</span></td>
+          <td>มีตัวสำรอง 1-2 ตัว</td>
+        </tr>
+        <tr>
+          <td>🖥️ Server ล่ม</td>
+          <td><span class="risk-low">ต่ำมาก</span></td>
+          <td><span class="risk-high">สูง</span></td>
+          <td>PM2 auto-restart + Monitoring alert</td>
+        </tr>
+        <tr>
+          <td>⚡ ไฟดับบ้านอาสา</td>
+          <td><span class="risk-med">กลาง</span></td>
+          <td><span class="risk-low">ต่ำ</span></td>
+          <td>เซนเซอร์กลับมาเองเมื่อมีไฟ ข้อมูลขาดแค่ช่วงนั้น</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="slide-number">6 / 9</div>
+</div>
+
+<!-- ========== SLIDE 7: API Limit ========== -->
+<div class="slide bg-green">
+  <span class="tag">ข้อจำกัด Tuya API</span>
+  <h2>การคำนวณ API Calls</h2>
+  <div class="flow">
+    <div class="flow-step">
+      <div class="icon">📡</div>
+      <div class="label">10 เซนเซอร์</div>
+    </div>
+    <div class="flow-arrow">×</div>
+    <div class="flow-step">
+      <div class="icon">🔄</div>
+      <div class="label">3 calls/ตัว<br><small style="opacity:0.6;">status + readings + token</small></div>
+    </div>
+    <div class="flow-arrow">×</div>
+    <div class="flow-step">
+      <div class="icon">⏰</div>
+      <div class="label">12 ครั้ง/ชม.<br><small style="opacity:0.6;">ทุก 5 นาที</small></div>
+    </div>
+    <div class="flow-arrow">×</div>
+    <div class="flow-step">
+      <div class="icon">🕐</div>
+      <div class="label">3 ชม./วัน<br><small style="opacity:0.6;">2 ช่วง × 1.5 ชม.</small></div>
+    </div>
+    <div class="flow-arrow">×</div>
+    <div class="flow-step">
+      <div class="icon">📅</div>
+      <div class="label">30 วัน</div>
+    </div>
+  </div>
+  <div class="highlight-row" style="justify-content:center; margin-top:24px;">
+    <div class="highlight-box" style="max-width:280px;">
+      <div style="font-size:0.85rem; opacity:0.7;">ใช้จริง</div>
+      <div class="big-num" style="color:#fff; font-size:2.2rem;">~21,600</div>
+      <div style="font-size:0.85rem; opacity:0.5;">calls/เดือน</div>
+    </div>
+    <div class="highlight-box" style="max-width:280px;">
+      <div style="font-size:0.85rem; opacity:0.7;">Free limit</div>
+      <div class="big-num" style="color:#34d399; font-size:2.2rem;">26,000</div>
+      <div style="font-size:0.85rem; opacity:0.5;">calls/เดือน</div>
+    </div>
+    <div class="highlight-box" style="max-width:280px;">
+      <div style="font-size:0.85rem; opacity:0.7;">เหลือ Buffer</div>
+      <div class="big-num" style="color:#fbbf24; font-size:2.2rem;">~4,400</div>
+      <div style="font-size:0.85rem; opacity:0.5;">calls (~17%)</div>
+    </div>
+  </div>
+  <div class="slide-number">7 / 9</div>
+</div>
+
+<!-- ========== SLIDE 8: Questions ========== -->
+<div class="slide bg-white">
+  <span class="tag">ขั้นตอนถัดไป</span>
+  <h2>คำถามสำหรับอาจารย์</h2>
+  <div class="two-col">
+    <div>
+      <div class="q-group">
+        <h3>💰 งบประมาณ & เวลา</h3>
+        <ul class="q-list">
+          <li><strong>งบซื้อเซนเซอร์เท่าไหร่?</strong> — กี่ตัว + สำรองมั้ย</li>
+          <li><strong>เก็บข้อมูลนานแค่ไหน?</strong> — 3, 6, หรือ 12 เดือน?</li>
+          <li><strong>เริ่มเก็บข้อมูลจริงเมื่อไหร่?</strong> — deadline ติดตั้ง</li>
+        </ul>
+      </div>
+      <div class="q-group">
+        <h3>👥 อาสาสมัคร & พื้นที่</h3>
+        <ul class="q-list">
+          <li><strong>10 บ้านอยู่ที่ไหน?</strong> — ในเมือง / ชนบท?</li>
+          <li><strong>อาสาสมัครคือใคร?</strong> — ชาวบ้าน / นักศึกษา?</li>
+          <li><strong>มีมือถือ + เน็ตมั้ย?</strong> — ต้องจัดหา SIM ให้ไหม</li>
+          <li><strong>เก็บข้อมูลวันละกี่ครั้ง?</strong> — เช้า-เย็น? ตลอดวัน?</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="q-group">
+        <h3>📊 ข้อมูล & ผลลัพธ์</h3>
+        <ul class="q-list">
+          <li><strong>ต้องการค่าอะไรบ้าง?</strong> — PM2.5 อย่างเดียว? หรือ CO2 / HCHO ด้วย?</li>
+          <li><strong>ต้อง Dashboard real-time มั้ย?</strong> — หรือ export Excel พอ?</li>
+          <li><strong>เปรียบเทียบอะไร?</strong> — เตาเดิม vs EcoStove?</li>
+        </ul>
+      </div>
+      <div class="q-group">
+        <h3>🔧 เทคนิค</h3>
+        <ul class="q-list">
+          <li><strong>Tuya account ใช้ของใคร?</strong> — อาจารย์ หรือ เราสร้างให้?</li>
+          <li><strong>มีคอมเปิดค้างได้มั้ย?</strong> — ถ้าไม่มี ใช้ Cloud ฟรี</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">8 / 9</div>
+</div>
+
+<!-- ========== SLIDE 9: Maintenance ========== -->
+<div class="slide bg-gradient">
+  <div style="text-align:center;">
+    <div style="font-size:3rem; margin-bottom:16px;">🔧</div>
+    <h2>หลังติดตั้ง — ดูแลยังไง?</h2>
+    <p class="subtitle" style="max-width:600px; margin:0 auto 32px;">ติดตั้งครั้งเดียว ปล่อยทำงานเองได้</p>
+  </div>
+  <div class="card-grid cols-3">
+    <div class="card">
+      <div class="icon">🤖</div>
+      <h3>ทำงานอัตโนมัติ</h3>
+      <ul>
+        <li>PM2 auto-restart</li>
+        <li>Token auto-refresh</li>
+        <li>Data auto-save</li>
+        <li>ไม่ต้องคอยดูแล</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <div class="icon">📞</div>
+      <h3>ต้องยุ่งเมื่อไหร่?</h3>
+      <ul>
+        <li>เพิ่ม/ลบเซนเซอร์</li>
+        <li>Tuya purge account</li>
+        <li>ทั้ง 2 อย่าง: แก้ config<br>ไฟล์เดียว ~30 นาที</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <div class="icon">👩‍🏫</div>
+      <h3>สอนอาจารย์แค่ 2 อย่าง</h3>
+      <ul>
+        <li>ดูข้อมูลผ่าน Dashboard</li>
+        <li>ถ้ามีปัญหา → โทรหาเรา</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-number">9 / 9</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ===== Navigation ===== -->
+<button class="arrow left" onclick="go(-1)">‹</button>
+<button class="arrow right" onclick="go(1)">›</button>
+<div class="nav" id="nav"></div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+
+// Build nav dots
+const nav = document.getElementById('nav');
+slides.forEach((_, i) => {
+  const btn = document.createElement('button');
+  btn.onclick = () => goTo(i);
+  nav.appendChild(btn);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  updateNav();
+}
+
+function go(dir) { goTo(current + dir); }
+
+function updateNav() {
+  nav.querySelectorAll('button').forEach((btn, i) => {
+    btn.classList.toggle('active', i === current);
+  });
+}
+
+updateNav();
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+});
+
+// Touch
+let touchX = 0;
+document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const diff = touchX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) go(diff > 0 ? 1 : -1);
+});
+</script>
+</body>
+</html>

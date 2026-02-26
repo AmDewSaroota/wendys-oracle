@@ -1,0 +1,22 @@
+{
+  "port": 3456,
+  "intervalMinutes": 5,
+  "autoStartCollection": true,
+  "autoOpenBrowser": true,
+
+  "tuya": {
+    "accessId": "YOUR_TUYA_ACCESS_ID",
+    "accessSecret": "YOUR_TUYA_ACCESS_SECRET",
+    "baseUrl": "https://openapi-sg.iotbing.com"
+  },
+
+  "supabase": {
+    "url": "https://YOUR_PROJECT.supabase.co",
+    "anonKey": "YOUR_SUPABASE_ANON_KEY"
+  },
+
+  "devices": [
+    { "id": "TUYA_DEVICE_ID_1", "name": "Sensor #1" },
+    { "id": "TUYA_DEVICE_ID_2", "name": "Sensor #2" }
+  ]
+}

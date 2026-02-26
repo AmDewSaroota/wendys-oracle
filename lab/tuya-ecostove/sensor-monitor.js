@@ -13,26 +13,33 @@
 
 const http = require('http');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { exec } = require('child_process');
 
-// ===== Config =====
-const PORT = 3456;
-const INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+// ===== Load Config =====
+const CONFIG_PATH = path.join(__dirname, 'config.json');
+if (!fs.existsSync(CONFIG_PATH)) {
+  console.error('ERROR: config.json not found!');
+  console.error('Copy config.example.json to config.json and fill in your credentials.');
+  process.exit(1);
+}
+const CONFIG = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
+
+const PORT = CONFIG.port || 3456;
+const INTERVAL_MS = (CONFIG.intervalMinutes || 5) * 60 * 1000;
 
 // Tuya
-const TUYA_ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const TUYA_ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const TUYA_BASE = 'https://openapi-sg.iotbing.com';
+const TUYA_ACCESS_ID = CONFIG.tuya.accessId;
+const TUYA_ACCESS_SECRET = CONFIG.tuya.accessSecret;
+const TUYA_BASE = CONFIG.tuya.baseUrl;
 
 // Supabase
-const SB_URL = 'https://zijybzjstjlqvhmckgor.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA';
+const SB_URL = CONFIG.supabase.url;
+const SB_KEY = CONFIG.supabase.anonKey;
 
 // Devices
-const DEVICES = [
-  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ตัวใหม่)' },
-  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (ตัวเดิม)' },
-];
+const DEVICES = CONFIG.devices;
 
 const LABELS = {
   pm25_value: 'PM 2.5 (µg/m³)',
@@ -735,11 +742,13 @@ server.listen(PORT, () => {
   console.log('=========================================');
 
   // Auto-open browser (Windows)
-  if (!process.env.NO_BROWSER) {
+  if (CONFIG.autoOpenBrowser !== false && !process.env.NO_BROWSER) {
     exec(`start http://localhost:${PORT}`);
   }
 
-  // Auto-start collection immediately
-  console.log('  Auto-starting collection...');
-  startCollection();
+  // Auto-start collection
+  if (CONFIG.autoStartCollection !== false) {
+    console.log('  Auto-starting collection...');
+    startCollection();
+  }
 });
