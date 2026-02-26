@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
       "WebFetch(domain:github.com)",
       "Bash(cmd /c \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)",
