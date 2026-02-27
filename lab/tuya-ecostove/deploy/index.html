@@ -11,13 +11,12 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap');
         :root { --dark-green: #064e3b; --navy: #0f172a; --bg-tint: #f0f7f4; }
         body { font-family: 'Kanit', sans-serif; background-color: var(--bg-tint); color: var(--navy); min-height: 100vh; }
-        .nav-active { border-bottom: 3px solid var(--dark-green); color: var(--dark-green); font-weight: 600; }
-        #map { height: 500px; width: 100%; border-radius: 2rem; z-index: 10; border: 1px solid rgba(15, 23, 42, 0.1); }
+        .nav-active { border-bottom: 3px solid white; color: white; font-weight: 600; }
+        #map, #map-deep { height: 400px; width: 100%; border-radius: 2rem; z-index: 10; border: 1px solid rgba(15, 23, 42, 0.1); }
         .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
         .tab-active { background-color: var(--dark-green); color: white; box-shadow: 0 10px 15px -3px rgba(6, 78, 59, 0.2); }
 
@@ -51,7 +50,6 @@
             z-index: 0;
         }
 
-        /* Legend Style สำหรับแผนที่ */
         .info.legend {
             background: white;
             padding: 12px;
@@ -63,121 +61,150 @@
             border: 1px solid rgba(0,0,0,0.05);
         }
         .legend i {
-            width: 12px;
-            height: 12px;
-            float: left;
-            margin-right: 8px;
-            margin-top: 3px;
-            border-radius: 50%;
+            width: 12px; height: 12px; float: left;
+            margin-right: 8px; margin-top: 3px; border-radius: 50%;
         }
 
         .custom-select { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1.25rem 1.25rem; }
 
-        .stove-option input:checked + label {
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        #stove-old:checked + label {
-            background: linear-gradient(135deg, #ea580c, #c2410c) !important;
-            border-color: #ea580c !important;
-        }
-        #stove-eco:checked + label {
-            background: linear-gradient(135deg, #059669, #047857) !important;
-            border-color: #059669 !important;
-        }
-        .mode-btn-active { background-color: var(--dark-green); color: white; }
-
-        /* Screen reader only - visually hidden but focusable */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Validation shake animation */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-            20%, 40%, 60%, 80% { transform: translateX(8px); }
-        }
-        .shake-error {
-            animation: shake 0.6s ease-in-out;
-        }
-        .field-error {
-            border-color: #ef4444 !important;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
-            background-color: #fef2f2 !important;
-        }
-        .field-error-label {
-            color: #ef4444 !important;
-        }
-        .stove-error .stove-option label {
-            border-color: #ef4444 !important;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
-        }
-
-        /* Sensor fetch animation */
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
             50% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
         }
-        .sensor-fetching {
-            animation: pulse-glow 1.5s infinite;
-        }
-
-        /* Refresh spin animation */
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
+
+        /* AQI Hero */
+        .aqi-good { background: linear-gradient(135deg, #059669, #10b981); }
+        .aqi-moderate { background: linear-gradient(135deg, #d97706, #f59e0b); }
+        .aqi-unhealthy { background: linear-gradient(135deg, #ea580c, #f97316); }
+        .aqi-hazardous { background: linear-gradient(135deg, #dc2626, #ef4444); }
+        .aqi-unknown { background: linear-gradient(135deg, #64748b, #94a3b8); }
+
+        /* Session dots */
+        .session-dot { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+        .dot-done { background: #059669; }
+        .dot-empty { background: #e2e8f0; }
     </style>
 </head>
 <body class="pb-20">
 
-    <nav class="sticky top-0 z-50 glass shadow-sm border-b border-slate-100">
+    <nav class="sticky top-0 z-50 shadow-md" style="background-color: #064e3b;">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-[#064e3b] rounded-xl flex items-center justify-center shadow-lg">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z"/>
-                    </svg>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-inner">
+                    <img src="logo.png" alt="EcoStove" class="w-11 h-11 object-contain">
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-xl font-bold tracking-tight text-navy leading-tight">Biomass Stove: <span class="text-[#064e3b]">Alternative Energy</span></span>
-                    <span class="text-[13px] text-slate-500 font-medium -mt-0.5 tracking-wide">พลังงานทางเลือกเพื่อยกระดับคุณภาพชีวิต</span>
+                    <span class="text-xl font-bold tracking-tight text-white leading-tight">Biomass Stove: <span class="text-emerald-300">Alternative Energy</span></span>
+                    <span class="text-[13px] text-emerald-200/70 font-medium -mt-0.5 tracking-wide">พลังงานทางเลือกเพื่อยกระดับคุณภาพชีวิต</span>
                 </div>
             </div>
 
             <div class="hidden md:flex space-x-10">
-                <button onclick="switchView('viewer')" id="nav-viewer" class="nav-active py-2">สรุปผล</button>
-                <button onclick="promptAdmin()" id="nav-admin" class="text-slate-500 hover:text-[#064e3b] font-medium py-2">จัดการระบบ</button>
+                <button onclick="switchView('basic')" id="nav-basic" class="nav-active py-2 flex items-center gap-1">ข้อมูลเบื้องต้น</button>
+                <button onclick="switchView('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1">📊 ข้อมูล</button>
+                <button onclick="promptAdmin()" id="nav-admin" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1">⚙️ จัดการระบบ</button>
             </div>
 
             <div class="md:hidden">
-                <button onclick="toggleMobileMenu()" class="p-2 text-slate-600 outline-none">
+                <button onclick="toggleMobileMenu()" class="p-2 text-white outline-none">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-b border-slate-100 p-6 shadow-xl space-y-4">
-            <button onclick="switchView('viewer'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-slate-700">สรุปผล</button>
-            <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-[#064e3b] border-t pt-4">จัดการระบบ (Admin)</button>
+        <div id="mobile-menu" class="hidden md:hidden p-6 shadow-xl space-y-4" style="background-color: #043327;">
+            <button onclick="switchView('basic'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100">ข้อมูลเบื้องต้น</button>
+            <button onclick="switchView('deep'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100">📊 ข้อมูล</button>
+            <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-white border-t border-emerald-700 pt-4">⚙️ จัดการระบบ (Admin)</button>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto p-6 md:p-10">
-        <!-- Dashboard View -->
-        <section id="view-viewer" class="space-y-8 animate-in fade-in">
-            <!-- Live Card: Latest Reading -->
-            <div id="live-latest-card" class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] p-6 md:p-8 text-white shadow-2xl shadow-emerald-500/30 relative overflow-hidden">
+
+        <!-- ============================================================ -->
+        <!-- BASIC VIEW — สำหรับชาวบ้าน -->
+        <!-- ============================================================ -->
+        <section id="view-basic" class="space-y-8">
+
+            <!-- 1. Hero AQI Card -->
+            <div id="hero-aqi" class="aqi-unknown rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                 <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+                <div class="relative z-10 text-center">
+                    <div class="text-6xl mb-2" id="hero-aqi-emoji">🌤️</div>
+                    <div class="text-7xl md:text-8xl font-bold mb-2" id="hero-aqi-value">--</div>
+                    <div class="text-2xl font-bold mb-1" id="hero-aqi-label">กำลังโหลด...</div>
+                    <div class="text-lg opacity-80" id="hero-aqi-advice">รอข้อมูลจาก Sensor</div>
+                    <div class="mt-4 text-sm opacity-60" id="hero-aqi-time">--</div>
+                </div>
+            </div>
+
+            <!-- 2. Big Number Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
+                    <div class="ghost-icon">🌫️</div>
+                    <p class="text-sm font-bold text-red-600 uppercase tracking-wider mb-2">PM 2.5</p>
+                    <h3 id="basic-pm25" class="text-4xl md:text-5xl font-bold text-navy relative z-10">--</h3>
+                    <p class="text-sm text-slate-400 mt-1">µg/m³</p>
+                </div>
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
+                    <div class="ghost-icon">💨</div>
+                    <p class="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2">CO2</p>
+                    <h3 id="basic-co2" class="text-4xl md:text-5xl font-bold text-navy relative z-10">--</h3>
+                    <p class="text-sm text-slate-400 mt-1">ppm</p>
+                </div>
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
+                    <div class="ghost-icon">🌡️</div>
+                    <p class="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">อุณหภูมิ / ความชื้น</p>
+                    <h3 class="relative z-10"><span id="basic-temp" class="text-4xl md:text-5xl font-bold text-navy">--</span><span class="text-2xl text-slate-400">°C</span>
+                    <span class="text-2xl text-slate-300 mx-2">/</span>
+                    <span id="basic-humidity" class="text-4xl md:text-5xl font-bold text-navy">--</span><span class="text-2xl text-slate-400">%</span></h3>
+                </div>
+            </div>
+
+            <!-- 3. Before/After Comparison -->
+            <div class="card-styled p-6 md:p-8 rounded-[2.5rem] border-b-4 border-emerald-500">
+                <h4 class="font-bold text-lg text-navy mb-6 text-center">เปรียบเทียบ: เตาเดิม vs EcoStove</h4>
+                <div class="grid grid-cols-3 gap-4 items-center">
+                    <div class="text-center bg-orange-50 rounded-2xl p-5">
+                        <div class="text-3xl mb-2">🪵</div>
+                        <p class="text-sm font-bold text-orange-600">เตาเดิม</p>
+                        <p class="text-3xl md:text-4xl font-bold text-orange-500 mt-2" id="basic-old-pm25">--</p>
+                        <p class="text-xs text-slate-400">PM2.5 เฉลี่ย</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl md:text-5xl font-bold text-emerald-600" id="basic-reduction">--%</div>
+                        <p class="text-sm text-slate-400">ลดลง</p>
+                    </div>
+                    <div class="text-center bg-emerald-50 rounded-2xl p-5">
+                        <div class="text-3xl mb-2">✨</div>
+                        <p class="text-sm font-bold text-emerald-600">EcoStove</p>
+                        <p class="text-3xl md:text-4xl font-bold text-emerald-500 mt-2" id="basic-eco-pm25">--</p>
+                        <p class="text-xs text-slate-400">PM2.5 เฉลี่ย</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Today's Session Progress -->
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-400">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="text-4xl" id="session-progress-emoji">⏳</div>
+                        <div>
+                            <h4 class="font-bold text-lg text-navy">เก็บข้อมูลวันนี้</h4>
+                            <p class="text-slate-400 text-sm" id="session-progress-text">กำลังตรวจสอบ...</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2" id="session-progress-dots"></div>
+                </div>
+            </div>
+
+            <!-- 5. Live Card -->
+            <div id="live-latest-card" class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] p-6 md:p-8 text-white shadow-2xl shadow-emerald-500/30 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                 <div class="relative z-10">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                         <div class="flex items-center gap-3">
@@ -194,34 +221,26 @@
                             <span class="px-3 py-1 bg-white/20 rounded-full text-sm font-bold" id="live-stove-badge">--</span>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
-                            <div class="text-3xl font-bold" id="live-pm25">--</div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
+                            <div class="text-4xl font-bold" id="live-pm25">--</div>
                             <div class="text-emerald-100 text-sm">PM2.5</div>
                         </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
-                            <div class="text-3xl font-bold" id="live-pm10">--</div>
-                            <div class="text-emerald-100 text-sm">PM10</div>
-                        </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
-                            <div class="text-3xl font-bold" id="live-co2">--</div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
+                            <div class="text-4xl font-bold" id="live-co2">--</div>
                             <div class="text-emerald-100 text-sm">CO2</div>
                         </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
-                            <div class="text-3xl font-bold" id="live-temp">--</div>
-                            <div class="text-emerald-100 text-sm">°C</div>
-                        </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
-                            <div class="text-3xl font-bold" id="live-humidity">--</div>
-                            <div class="text-emerald-100 text-sm">%RH</div>
-                        </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-4 text-center">
-                            <div class="text-3xl font-bold" id="live-aqi">--</div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
+                            <div class="text-4xl font-bold" id="live-aqi">--</div>
                             <div class="text-emerald-100 text-sm">AQI</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
+                            <div class="text-4xl font-bold" id="live-temp">--</div>
+                            <div class="text-emerald-100 text-sm">°C</div>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center justify-between text-sm">
-                        <span class="text-emerald-100" id="live-refresh-status">Auto-refresh: ทุก 30 วินาที</span>
+                        <span class="text-emerald-100" id="live-refresh-status">Auto-refresh: ทุก 2 นาที</span>
                         <button onclick="manualRefresh()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl font-bold transition-all flex items-center gap-2">
                             <span id="refresh-icon">🔄</span> Refresh
                         </button>
@@ -229,212 +248,141 @@
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                <div>
-                    <h1 class="text-3xl font-bold text-[#0f172a]">Project Overview</h1>
-                    <p class="text-slate-400 text-sm">ภาพรวมโครงการเตาชีวมวล 9 จังหวัดภาคเหนือ</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex bg-white/50 p-1 rounded-2xl border border-slate-200 shadow-inner">
-                        <button onclick="switchDashboardMode('basic')" id="mode-basic" class="dashboard-mode-btn px-5 py-2 rounded-xl font-bold text-sm bg-[#064e3b] text-white">เบื้องต้น</button>
-                        <button onclick="switchDashboardMode('research')" id="mode-research" class="dashboard-mode-btn px-5 py-2 rounded-xl font-bold text-sm text-slate-500">เชิงลึก</button>
-                    </div>
-                    <div id="province-filters-container" class="w-48"></div>
-                </div>
-            </div>
-
-            <!-- Basic Mode Stats -->
-            <div id="basic-stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="stat-card card-styled p-6 rounded-[2rem]">
-                    <div class="ghost-icon">🌳</div>
-                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">ลด CO2 สะสม (Eco)</p>
-                    <h3 id="stat-trees" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
-                </div>
-                <div class="stat-card card-styled p-6 rounded-[2rem]">
-                    <div class="ghost-icon">📉</div>
-                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">PM 2.5 ลดลง (%)</p>
-                    <h3 id="stat-pm-reduction" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
-                </div>
-                <div class="stat-card card-styled p-6 rounded-[2rem]">
-                    <div class="ghost-icon">💰</div>
-                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">ประหยัดเชื้อเพลิง</p>
-                    <h3 id="stat-money-saved" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
-                </div>
-                <div class="stat-card card-styled p-6 rounded-[2rem]">
-                    <div class="ghost-icon">🏡</div>
-                    <p class="text-[11px] font-bold text-[#064e3b] uppercase mb-2 tracking-wider">กลุ่มตัวอย่าง</p>
-                    <h3 id="stat-families" class="text-2xl font-bold tracking-tight text-navy relative z-10">...</h3>
-                </div>
-            </div>
-
-            <!-- Data Collection Duration -->
-            <div id="basic-duration" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                <div class="card-styled p-4 rounded-2xl border-l-4 border-slate-400">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center">
-                            <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">ระยะเวลาเก็บข้อมูลรวม</p>
-                            <h3 id="stat-duration-all" class="text-lg font-bold text-navy">-- วัน</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-styled p-4 rounded-2xl border-l-4 border-amber-400">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-lg">🪵</div>
-                        <div>
-                            <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider">ระยะเวลาเตาเดิม</p>
-                            <h3 id="stat-duration-old" class="text-lg font-bold text-navy">-- วัน</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-styled p-4 rounded-2xl border-l-4 border-emerald-400">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-lg">✨</div>
-                        <div>
-                            <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">ระยะเวลา EcoStove</p>
-                            <h3 id="stat-duration-eco" class="text-lg font-bold text-navy">-- วัน</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Research Mode Stats (Hidden by default) -->
-            <div id="research-stats" class="hidden space-y-6">
-                <!-- Data Count Info -->
-                <div id="research-data-count" class="text-[13px] text-slate-400 text-right"></div>
-                <!-- Row 1: Primary Metrics -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
-                        <p class="text-[12px] font-bold text-red-600 uppercase tracking-wider">PM 2.5</p>
-                        <h3 id="r-stat-pm25" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                        <p id="r-stat-pm25-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
-                        <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">PM 10</p>
-                        <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                        <p id="r-stat-pm10-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
-                        <p class="text-[12px] font-bold text-yellow-600 uppercase tracking-wider">PM 1.0</p>
-                        <h3 id="r-stat-pm1" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                        <p id="r-stat-pm1-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
-                        <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
-                        <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
-                        <p id="r-stat-co2-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-blue-400">
-                        <p class="text-[12px] font-bold text-blue-600 uppercase tracking-wider">CO</p>
-                        <h3 id="r-stat-co" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
-                        <p id="r-stat-co-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
-                        <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
-                        <h3 id="r-stat-aqi" class="text-xl font-bold text-navy">--</h3>
-                        <p id="r-stat-aqi-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
-                    </div>
-                </div>
-
-                <!-- Row 2: Secondary Metrics -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
-                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">🌡️ อุณหภูมิ</p>
-                        <h3 id="r-stat-temp" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">°C</span></h3>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
-                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">💧 ความชื้น</p>
-                        <h3 id="r-stat-humidity" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">%</span></h3>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
-                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">HCHO</p>
-                        <h3 id="r-stat-hcho" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
-                    </div>
-                    <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
-                        <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">TVOC</p>
-                        <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
-                    </div>
-                </div>
-
-                <!-- Research Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-red-300">
-                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่ม PM (เตาเดิม vs EcoStove)</h4>
-                        <div class="h-[200px]"><canvas id="pmGroupChart"></canvas></div>
-                    </div>
-                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-300">
-                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่มก๊าซ (เตาเดิม vs EcoStove)</h4>
-                        <div class="h-[200px]"><canvas id="gasGroupChart"></canvas></div>
-                    </div>
-                </div>
-
-                <!-- Reduction Summary Table -->
-                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-400">
-                    <h4 class="font-bold text-sm mb-4 text-navy">📊 สรุป % การลดมลพิษ (EcoStove vs เตาเดิม)</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="p-3 text-left font-bold text-navy">พารามิเตอร์</th>
-                                    <th class="p-3 text-center font-bold text-navy">เตาเดิม (เฉลี่ย)</th>
-                                    <th class="p-3 text-center font-bold text-navy">EcoStove (เฉลี่ย)</th>
-                                    <th class="p-3 text-center font-bold text-navy">% ลดลง</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reduction-table-body" class="divide-y">
-                                <tr><td colspan="4" class="p-4 text-center text-slate-400">กำลังโหลดข้อมูล...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Map and sidebar section -->
-            <div id="map-sidebar-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2 card-styled p-2 rounded-[2.5rem] border-bottom-0"><div id="map"></div></div>
-                <!-- Basic mode sidebar -->
-                <div id="basic-sidebar" class="space-y-6">
-                    <div class="bg-[#0f172a] p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border-b-4 border-orange-400">
-                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">🏆</div>
-                        <h4 class="font-bold mb-6 flex items-center gap-2 text-emerald-400">🏆 อากาศดีที่สุด (Eco)</h4>
-                        <div id="province-ranking" class="space-y-4 relative z-10"></div>
-                    </div>
+            <!-- 6. Map + Activity Feed -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 card-styled p-2 rounded-[2.5rem] border-b-0"><div id="map"></div></div>
+                <div class="space-y-6">
                     <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-600">
                         <h4 class="font-bold text-sm mb-4 text-navy">กิจกรรมล่าสุด</h4>
-                        <div id="live-activity-feed" class="space-y-3 max-h-[160px] overflow-y-auto custom-scrollbar"></div>
-                    </div>
-                    <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-slate-200">
-                        <h4 class="font-bold text-sm mb-4 text-navy">เปรียบเทียบมลพิษ</h4>
-                        <div class="h-[150px]"><canvas id="comparisonChart"></canvas></div>
+                        <div id="live-activity-feed" class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar"></div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Research mode: Full width map (hidden by default) -->
-            <div id="research-map-section" class="hidden">
-                <div class="card-styled p-2 rounded-[2.5rem] border-bottom-0"><div id="map-research" style="height: 500px;"></div></div>
+        <!-- ============================================================ -->
+        <!-- DEEP VIEW — สำหรับ อ.แก้ว / นักวิจัย -->
+        <!-- ============================================================ -->
+        <section id="view-deep" class="hidden space-y-8">
+
+            <!-- Header + Filters -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-[#0f172a]">📊 ข้อมูล</h1>
+                    <p class="text-slate-400 text-sm" id="deep-data-count">กำลังโหลดข้อมูล...</p>
+                </div>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <select id="deep-range-filter" onchange="updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
+                        <option value="0">ทั้งหมด</option>
+                        <option value="24">24 ชม.</option>
+                        <option value="72">3 วัน</option>
+                        <option value="168" selected>7 วัน</option>
+                        <option value="720">30 วัน</option>
+                    </select>
+                    <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-sm shadow hover:bg-[#043327] transition-all">📊 Export Excel</button>
+                </div>
             </div>
 
-            <!-- Sensor Comparison Charts -->
+            <!-- Research Stat Cards — Primary -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[12px] font-bold text-red-600 uppercase tracking-wider">PM 2.5</p>
+                    <h3 id="r-stat-pm25" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
+                    <p id="r-stat-pm25-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
+                    <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">PM 10</p>
+                    <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
+                    <p id="r-stat-pm10-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                    <p class="text-[12px] font-bold text-yellow-600 uppercase tracking-wider">PM 1.0</p>
+                    <h3 id="r-stat-pm1" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
+                    <p id="r-stat-pm1-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
+                    <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                    <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
+                    <p id="r-stat-co2-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-blue-400">
+                    <p class="text-[12px] font-bold text-blue-600 uppercase tracking-wider">CO</p>
+                    <h3 id="r-stat-co" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
+                    <p id="r-stat-co-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
+                    <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                    <h3 id="r-stat-aqi" class="text-xl font-bold text-navy">--</h3>
+                    <p id="r-stat-aqi-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                </div>
+            </div>
+
+            <!-- Research Stat Cards — Secondary -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                    <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">🌡️ อุณหภูมิ</p>
+                    <h3 id="r-stat-temp" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">°C</span></h3>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                    <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">💧 ความชื้น</p>
+                    <h3 id="r-stat-humidity" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">%</span></h3>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                    <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">HCHO</p>
+                    <h3 id="r-stat-hcho" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-slate-300">
+                    <p class="text-[12px] font-bold text-slate-500 uppercase tracking-wider">TVOC</p>
+                    <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                </div>
+            </div>
+
+            <!-- PM Group + Gas Group Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-red-300">
+                    <h4 class="font-bold text-sm mb-4 text-navy">กลุ่ม PM (เตาเดิม vs EcoStove)</h4>
+                    <div class="h-[220px]"><canvas id="pmGroupChart"></canvas></div>
+                </div>
+                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-300">
+                    <h4 class="font-bold text-sm mb-4 text-navy">กลุ่มก๊าซ (เตาเดิม vs EcoStove)</h4>
+                    <div class="h-[220px]"><canvas id="gasGroupChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Reduction Summary Table -->
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-400">
+                <h4 class="font-bold text-sm mb-4 text-navy">📊 สรุป % การลดมลพิษ (EcoStove vs เตาเดิม)</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="p-3 text-left font-bold text-navy">พารามิเตอร์</th>
+                                <th class="p-3 text-center font-bold text-navy">เตาเดิม (เฉลี่ย)</th>
+                                <th class="p-3 text-center font-bold text-navy">EcoStove (เฉลี่ย)</th>
+                                <th class="p-3 text-center font-bold text-navy">% ลดลง</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reduction-table-body" class="divide-y">
+                            <tr><td colspan="4" class="p-4 text-center text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Sensor Time-Series Charts -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-400">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div>
-                        <h4 class="font-bold text-lg text-navy flex items-center gap-2">📊 เปรียบเทียบข้อมูล Sensor</h4>
+                        <h4 class="font-bold text-lg text-navy flex items-center gap-2">📈 เปรียบเทียบ Sensor ตามเวลา</h4>
                         <p class="text-slate-400 text-sm" id="sensor-chart-count">กำลังโหลด...</p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <select id="sensor-chart-range" onchange="updateSensorCharts()" class="px-4 py-2 rounded-xl border bg-white text-sm">
-                            <option value="24">24 ชั่วโมงล่าสุด</option>
-                            <option value="72">3 วันล่าสุด</option>
-                            <option value="168" selected>7 วันล่าสุด</option>
-                            <option value="720">30 วันล่าสุด</option>
-                            <option value="0">ทั้งหมด</option>
-                        </select>
-                    </div>
+                    <select id="sensor-chart-range" onchange="updateSensorCharts()" class="px-4 py-2 rounded-xl border bg-white text-sm">
+                        <option value="24">24 ชม.</option>
+                        <option value="72">3 วัน</option>
+                        <option value="168" selected>7 วัน</option>
+                        <option value="720">30 วัน</option>
+                        <option value="0">ทั้งหมด</option>
+                    </select>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white/60 rounded-2xl p-4">
@@ -455,13 +403,83 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Session Timeline -->
+            <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-blue-300 p-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div>
+                        <h4 class="font-bold text-lg text-navy">Session Timeline</h4>
+                        <p class="text-slate-400 text-sm" id="session-count-info">Loading...</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <select id="session-device-filter" onchange="loadSessionsTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                            <option value="all">ทุกเครื่อง</option>
+                            <option value="a3d01864e463e3ede0hf0e">MT13W (ใหม่)</option>
+                            <option value="a3b9c2e4bdfe69ad7ekytn">MT29 (เดิม)</option>
+                        </select>
+                        <select id="session-date-filter" onchange="loadSessionsTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                            <option value="7">7 วันล่าสุด</option>
+                            <option value="30">30 วันล่าสุด</option>
+                            <option value="0">ทั้งหมด</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-[13px] min-w-[800px]">
+                        <thead class="bg-slate-50 border-b">
+                            <tr>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">เริ่ม</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">อุปกรณ์</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">สถานะ</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">ระยะเวลา</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Readings</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg PM2.5</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg CO2</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessions-table-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Daily Summary -->
+            <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-6">
+                <h4 class="font-bold text-lg text-navy mb-4">Daily Summary</h4>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-[13px] min-w-[700px]">
+                        <thead class="bg-slate-50 border-b">
+                            <tr>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">วันที่</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">อุปกรณ์</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Sessions</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Readings</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg PM2.5</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Compliance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-summary-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Compliance Tracker -->
+            <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-purple-300 p-6">
+                <h4 class="font-bold text-lg text-navy mb-4">Compliance Tracker (7 วันล่าสุด)</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="compliance-cards">
+                    <p class="text-slate-400 text-sm col-span-3">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div class="card-styled p-2 rounded-[2.5rem] border-b-0">
+                <div id="map-deep"></div>
+            </div>
         </section>
 
-        <!-- Entry View (removed) -->
-        <section id="view-entry" class="hidden"></section>
-
-        <!-- Admin View -->
-        <section id="view-admin" class="hidden space-y-10 animate-in slide-in-from-bottom-5">
+        <!-- ============================================================ -->
+        <!-- ADMIN VIEW — จัดการระบบ -->
+        <!-- ============================================================ -->
+        <section id="view-admin" class="hidden space-y-10">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 card-styled p-8 rounded-[2.5rem] border-b-4 border-orange-400">
                 <div class="flex items-center gap-4">
                     <div class="w-14 h-14 bg-[#0f172a] rounded-2xl flex items-center justify-center text-white shadow-xl text-2xl">⚙️</div>
@@ -474,15 +492,46 @@
             </div>
 
             <div class="flex bg-white/50 p-1.5 rounded-[1.5rem] w-fit border border-slate-200 shadow-inner overflow-x-auto max-w-full custom-scrollbar">
-                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm tab-active whitespace-nowrap">รออนุมัติ (<span id="count-pending">0</span>)</button>
-                <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">ประวัติกิจกรรม</button>
-                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">ฐานข้อมูล</button>
-                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">เครื่องวัด</button>
-                <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">อาสาสมัคร</button>
+                <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm tab-active whitespace-nowrap">อาสาสมัคร</button>
                 <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">บ้านกลุ่มตัวอย่าง</button>
+                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">เครื่องวัด</button>
+                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">รออนุมัติ (<span id="count-pending">0</span>)</button>
+                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">ข้อมูลจากเซนเซอร์</button>
+                <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap">ประวัติกิจกรรม</button>
             </div>
 
-            <div id="admin-approvals" class="admin-tab-content bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
+            <!-- Tab 1: อาสาสมัคร (default visible) -->
+            <div id="admin-volunteers-container" class="admin-tab-content space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-navy">รายชื่ออาสาสมัคร</h3>
+                    <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มอาสา</button>
+                </div>
+                <div id="volunteers-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+            </div>
+
+            <!-- Tab 2: บ้านกลุ่มตัวอย่าง -->
+            <div id="admin-subjects-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-navy">จัดการกลุ่มตัวอย่าง</h3>
+                    <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มบ้าน</button>
+                </div>
+                <div id="subjects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <!-- Tab 3: เครื่องวัด -->
+            <div id="admin-devices-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-navy">จัดการเครื่องวัด</h3>
+                        <p class="text-slate-500 text-sm">ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor</p>
+                    </div>
+                    <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มเครื่องวัด</button>
+                </div>
+                <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+
+            <!-- Tab 4: รออนุมัติ -->
+            <div id="admin-approvals" class="admin-tab-content hidden bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
                 <table class="w-full text-left text-sm min-w-[900px]">
                     <thead class="bg-slate-50 border-b">
                         <tr><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider">วัน/เวลา</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider">บ้าน</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">เตา</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">PM/CO2</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">รูปภาพ</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center">จัดการ</th></tr>
@@ -491,13 +540,10 @@
                 </table>
             </div>
 
-            <div id="admin-activity" class="admin-tab-content hidden space-y-4">
-                <div id="admin-activity-feed" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
-            </div>
-
+            <!-- Tab 5: ข้อมูลเซนเซอร์ -->
             <div id="admin-data" class="admin-tab-content hidden bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
                 <div class="p-5 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                    <span class="font-bold text-navy">ฐานข้อมูลโครงการ</span>
+                    <span class="font-bold text-navy">ข้อมูลจากเซนเซอร์</span>
                     <div class="flex items-center gap-3">
                         <select id="sensor-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                             <option value="all">ทั้งหมด</option>
@@ -505,7 +551,7 @@
                             <option value="a3b9c2e4bdfe69ad7ekytn">Sensor 2 (ZN-MT29)</option>
                             <option value="manual">บันทึกมือ</option>
                         </select>
-                        <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export Excel</button>
+                        <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar">
@@ -530,35 +576,18 @@
                 </div>
             </div>
 
-            <div id="admin-devices-container" class="admin-tab-content hidden space-y-6">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h3 class="text-2xl font-bold text-navy">จัดการเครื่องวัด</h3>
-                        <p class="text-slate-500 text-sm">ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor</p>
-                    </div>
-                    <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มเครื่องวัด</button>
-                </div>
-                <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-            </div>
-
-            <div id="admin-volunteers-container" class="admin-tab-content hidden space-y-6">
+            <!-- Tab 6: ประวัติกิจกรรม -->
+            <div id="admin-activity" class="admin-tab-content hidden space-y-4">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-2xl font-bold text-navy">รายชื่ออาสาสมัคร</h3>
-                    <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มอาสา</button>
+                    <h3 class="text-2xl font-bold text-navy">ประวัติกิจกรรม Admin</h3>
+                    <button onclick="clearActivityLog()" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ล้าง Log</button>
                 </div>
-                <div id="volunteers-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
-            </div>
-
-            <div id="admin-subjects-container" class="admin-tab-content hidden space-y-6">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-2xl font-bold text-navy">จัดการกลุ่มตัวอย่าง</h3>
-                    <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all">+ เพิ่มบ้าน</button>
-                </div>
-                <div id="subjects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <div id="admin-activity-feed" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
             </div>
         </section>
     </main>
 
+    <!-- Modals -->
     <div id="modal-overlay" class="fixed inset-0 bg-slate-900/85 hidden flex items-center justify-center p-6 z-[100] backdrop-blur-sm">
         <div class="bg-white rounded-[3rem] p-8 md:p-12 max-w-xl w-full relative shadow-2xl overflow-y-auto max-h-[92vh] border border-white/20">
             <button id="modal-close-btn" onclick="closeModal()" class="absolute top-8 right-8 text-slate-400 text-2xl hover:text-navy transition-all p-2">✕</button>
@@ -566,152 +595,77 @@
         </div>
     </div>
 
-    <div id="confirm-overlay" class="fixed inset-0 bg-slate-900/90 hidden flex items-center justify-center p-6 z-[110] backdrop-blur-xl">
-        <div class="bg-white rounded-[2.5rem] p-10 max-w-sm w-full text-center shadow-2xl">
-            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">⚠️</div>
-            <h3 class="text-xl font-bold text-navy mb-2" id="confirm-title">ยืนยัน?</h3>
-            <p class="text-slate-500 text-sm mb-8" id="confirm-desc">การดำเนินการนี้จะไม่สามารถย้อนกลับได้</p>
-            <div class="flex gap-4">
-                <button onclick="closeConfirm()" class="flex-1 py-3 bg-slate-100 rounded-2xl font-bold text-slate-500">ยกเลิก</button>
-                <button id="confirm-execute-btn" class="flex-1 py-3 bg-red-500 text-white rounded-2xl font-bold">ดำเนินการ</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
-        const SUPABASE_FUNCTION_URL = SUPABASE_URL + '/functions/v1/fetch-sensor';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let isAdmin = false, map, charts = {}, allData = [], volunteers = [], subjects = [], devices = [];
-        let currentEntryMode = 'sensor'; // Default to sensor mode now
+        let isAdmin = false, map, mapDeep, charts = {}, allData = [], volunteers = [], subjects = [], devices = [];
+        let allDataWithPending = [];
+        let autoRefreshInterval = null;
+        let currentView = 'basic';
 
-        // ==================== Sensor Fetch Function (disabled - entry removed) ====================
-        async function fetchFromSensor() {
-            return; // Entry form removed
-            const btn = document.getElementById('fetchSensorBtn');
-            const resultDiv = document.getElementById('sensor-result');
-            const errorDiv = document.getElementById('sensor-error');
+        // Known sensors — pre-registered for easy dropdown selection
+        const KNOWN_SENSORS = [
+            { tuyaId: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ตัวใหม่)' },
+            { tuyaId: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (ตัวเดิม)' },
+        ];
 
-            // Get form values
-            const deviceId = document.getElementById('entry-device').value;
-            const subjectId = document.getElementById('entry-subject').value;
-            const volunteerId = document.getElementById('entry-volunteer').value;
-            const stoveTypeEl = document.querySelector('input[name="stove_type"]:checked');
+        // Activity log stored in localStorage
+        let activityLog = JSON.parse(localStorage.getItem('ecostove_activity_log') || '[]');
 
-            // Validation
-            if (!deviceId) {
-                errorDiv.classList.remove('hidden');
-                document.getElementById('sensor-error-text').textContent = 'กรุณาเลือกบ้านที่มีเครื่องวัดก่อน';
-                resultDiv.classList.add('hidden');
-                return;
-            }
-            if (!stoveTypeEl) {
-                errorDiv.classList.remove('hidden');
-                document.getElementById('sensor-error-text').textContent = 'กรุณาเลือกประเภทเตาก่อน';
-                resultDiv.classList.add('hidden');
-                return;
-            }
-
-            const stoveType = stoveTypeEl.value === 'old' ? 'traditional' : 'eco';
-
-            // Show loading
-            btn.disabled = true;
-            btn.innerHTML = '<span class="text-2xl animate-spin">⏳</span><span>กำลังดึงข้อมูล...</span>';
-            btn.classList.add('sensor-fetching');
-            resultDiv.classList.add('hidden');
-            errorDiv.classList.add('hidden');
-
-            try {
-                const response = await fetch(SUPABASE_FUNCTION_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        device_id: deviceId,
-                        stove_type: stoveType,
-                        volunteer_id: volunteerId || null,
-                        subject_id: subjectId || null,
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // Show results
-                    document.getElementById('sensor-pm25').textContent = data.readings.pm25 ?? '--';
-                    document.getElementById('sensor-pm10').textContent = data.readings.pm10 ?? '--';
-                    document.getElementById('sensor-pm1').textContent = data.readings.pm1 ?? '--';
-                    document.getElementById('sensor-co2').textContent = data.readings.co2 ?? '--';
-                    document.getElementById('sensor-temp').textContent = (data.readings.temperature ?? '--') + '°C';
-                    document.getElementById('sensor-humidity').textContent = (data.readings.humidity ?? '--') + '%';
-                    document.getElementById('sensor-timestamp').textContent = new Date().toLocaleTimeString('th-TH');
-                    document.getElementById('sensor-message').textContent = `✅ บันทึกแล้ว (ID: ${data.record_id})`;
-
-                    resultDiv.classList.remove('hidden');
-                    errorDiv.classList.add('hidden');
-
-                    // Refresh dashboard data
-                    loadData();
-                } else {
-                    errorDiv.classList.remove('hidden');
-                    document.getElementById('sensor-error-text').textContent = data.error || 'เกิดข้อผิดพลาดไม่ทราบสาเหตุ';
-                    resultDiv.classList.add('hidden');
-                }
-
-            } catch (err) {
-                errorDiv.classList.remove('hidden');
-                document.getElementById('sensor-error-text').textContent = 'ไม่สามารถเชื่อมต่อได้: ' + err.message;
-                resultDiv.classList.add('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span class="text-2xl">📡</span><span>ดึงค่าจาก Sensor ตอนนี้</span>';
-                btn.classList.remove('sensor-fetching');
-            }
+        function logActivity(action, detail) {
+            const entry = { action, detail, timestamp: new Date().toISOString() };
+            activityLog.unshift(entry);
+            if (activityLog.length > 200) activityLog = activityLog.slice(0, 200);
+            localStorage.setItem('ecostove_activity_log', JSON.stringify(activityLog));
         }
 
-        // ==================== Entry Mode Switching ====================
-        function switchEntryMode(mode) {
-            currentEntryMode = mode;
-            if (!document.getElementById('entry-mode-sensor')) return;
+        const DEVICE_NAMES = {
+            'a3d01864e463e3ede0hf0e': 'MT13W (ใหม่)',
+            'a3b9c2e4bdfe69ad7ekytn': 'MT29 (เดิม)',
+        };
 
-            // Hide all mode sections
-            document.getElementById('entry-mode-sensor').classList.add('hidden');
-            document.getElementById('entry-mode-file').classList.add('hidden');
-            document.getElementById('entry-mode-manual').classList.add('hidden');
-
-            // Reset button styles
-            document.getElementById('mode-btn-sensor').classList.remove('mode-btn-active');
-            document.getElementById('mode-btn-sensor').classList.add('text-slate-500');
-            document.getElementById('mode-btn-file').classList.remove('mode-btn-active');
-            document.getElementById('mode-btn-file').classList.add('text-slate-500');
-            document.getElementById('mode-btn-manual').classList.remove('mode-btn-active');
-            document.getElementById('mode-btn-manual').classList.add('text-slate-500');
-
-            // Show selected mode
-            document.getElementById(`entry-mode-${mode}`).classList.remove('hidden');
-            document.getElementById(`mode-btn-${mode}`).classList.add('mode-btn-active');
-            document.getElementById(`mode-btn-${mode}`).classList.remove('text-slate-500');
-
-            // Update submit button visibility based on mode
-            const submitBtn = document.getElementById('submit-btn');
-            if (mode === 'sensor') {
-                submitBtn.style.display = 'none'; // Sensor mode auto-submits
-            } else {
-                submitBtn.style.display = 'block';
-            }
+        // ==================== AQI Helper ====================
+        function getAqiStatus(aqi) {
+            if (aqi == null || isNaN(aqi)) return { cls: 'aqi-unknown', emoji: '🌤️', label: 'รอข้อมูล', advice: 'กำลังรอค่าจาก Sensor' };
+            if (aqi <= 50) return { cls: 'aqi-good', emoji: '😊', label: 'อากาศดี', advice: 'เปิดหน้าต่างได้สบายๆ' };
+            if (aqi <= 100) return { cls: 'aqi-moderate', emoji: '😐', label: 'อากาศพอใช้', advice: 'คนแพ้ง่ายควรระวัง' };
+            if (aqi <= 150) return { cls: 'aqi-unhealthy', emoji: '😷', label: 'อากาศไม่ดี', advice: 'ควรลดกิจกรรมกลางแจ้ง' };
+            return { cls: 'aqi-hazardous', emoji: '🚨', label: 'อากาศอันตราย', advice: 'ห้ามออกนอกบ้าน!' };
         }
 
-        // ==================== View & Navigation ====================
+        function avg(arr, field) {
+            const valid = arr.filter(d => d[field] != null);
+            if (!valid.length) return null;
+            return valid.reduce((s, d) => s + d[field], 0) / valid.length;
+        }
+
+        function getDeviceName(d) {
+            if (d.tuya_device_id && DEVICE_NAMES[d.tuya_device_id]) return DEVICE_NAMES[d.tuya_device_id];
+            if (d.data_source === 'sensor') return 'sensor';
+            return d.data_source || 'manual';
+        }
+
+        // ==================== Navigation ====================
         function switchView(view) {
+            currentView = view;
             document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`view-${view}`).classList.remove('hidden');
-            document.querySelectorAll('nav button[id^="nav-"]').forEach(b => b.classList.remove('nav-active'));
-            document.getElementById(`nav-${view}`).classList.add('nav-active');
-            if (view === 'viewer') loadData();
-            if (view === 'entry') loadEntryForm();
+            document.querySelectorAll('nav button[id^="nav-"]').forEach(b => {
+                b.classList.remove('nav-active');
+                b.classList.add('text-emerald-200/70');
+                b.classList.remove('text-white');
+            });
+            const navBtn = document.getElementById(`nav-${view}`);
+            if (navBtn) {
+                navBtn.classList.add('nav-active');
+                navBtn.classList.remove('text-emerald-200/70');
+                navBtn.classList.add('text-white');
+            }
+
+            if (view === 'basic') updateBasicView();
+            if (view === 'deep') updateDeepView();
         }
 
         function toggleMobileMenu() {
@@ -737,39 +691,13 @@
                 switchView('admin');
                 loadAdminData();
             } else {
-                alert('รหัสผ่านไม่ถูกต้อง');
+                showToast('รหัสผ่านไม่ถูกต้อง', 'error');
             }
         }
 
         function logoutAdmin() {
             isAdmin = false;
-            switchView('viewer');
-        }
-
-        // ==================== Dashboard Mode ====================
-        function switchDashboardMode(mode) {
-            document.querySelectorAll('.dashboard-mode-btn').forEach(b => {
-                b.classList.remove('bg-[#064e3b]', 'text-white');
-                b.classList.add('text-slate-500');
-            });
-            document.getElementById(`mode-${mode}`).classList.add('bg-[#064e3b]', 'text-white');
-            document.getElementById(`mode-${mode}`).classList.remove('text-slate-500');
-
-            if (mode === 'basic') {
-                document.getElementById('basic-stats').classList.remove('hidden');
-                document.getElementById('basic-duration').classList.remove('hidden');
-                document.getElementById('basic-sidebar').classList.remove('hidden');
-                document.getElementById('map-sidebar-section').classList.remove('hidden');
-                document.getElementById('research-stats').classList.add('hidden');
-                document.getElementById('research-map-section').classList.add('hidden');
-            } else {
-                document.getElementById('basic-stats').classList.add('hidden');
-                document.getElementById('basic-duration').classList.add('hidden');
-                document.getElementById('basic-sidebar').classList.add('hidden');
-                document.getElementById('map-sidebar-section').classList.add('hidden');
-                document.getElementById('research-stats').classList.remove('hidden');
-                document.getElementById('research-map-section').classList.remove('hidden');
-            }
+            switchView('basic');
         }
 
         // ==================== Admin Tabs ====================
@@ -792,6 +720,10 @@
 
             document.getElementById(`tab-btn-${tab}`).classList.add('tab-active');
             document.getElementById(`tab-btn-${tab}`).classList.remove('text-slate-500');
+
+            // Load data for the selected tab
+            if (tab === 'data') updateAllDataTable();
+            if (tab === 'activity') renderAdminActivityFeed();
         }
 
         // ==================== Modal ====================
@@ -803,58 +735,591 @@
             document.getElementById('modal-overlay').classList.add('hidden');
         }
 
-        // ==================== Data Loading ====================
-        let allDataWithPending = []; // รวมทั้ง pending และ approved
-        let autoRefreshInterval = null;
+        // Toast notification (replaces alert)
+        function showToast(message, type = 'success') {
+            const colors = { success: 'bg-emerald-600', error: 'bg-red-600', warning: 'bg-amber-500' };
+            const icons = { success: '✓', error: '✕', warning: '⚠' };
+            const toast = document.createElement('div');
+            toast.className = `fixed top-6 left-1/2 -translate-x-1/2 z-[200] ${colors[type] || colors.success} text-white px-8 py-4 rounded-2xl shadow-2xl font-bold text-sm flex items-center gap-3 animate-fade-in`;
+            toast.innerHTML = `<span class="text-xl">${icons[type] || icons.success}</span> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
+        }
 
+        // Confirm dialog (replaces confirm)
+        function showConfirm(message, onConfirm) {
+            showModal(`
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">⚠️</div>
+                    <h3 class="text-xl font-bold text-navy mb-2">ยืนยันการดำเนินการ</h3>
+                    <p class="text-slate-500">${message}</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50">ยกเลิก</button>
+                    <button id="confirm-action-btn" class="flex-1 py-3 rounded-2xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-lg">ยืนยัน</button>
+                </div>
+            `);
+            document.getElementById('confirm-action-btn').onclick = () => { closeModal(); onConfirm(); };
+        }
+
+        // ==================== Data Loading ====================
         async function loadData() {
             try {
-                // โหลดข้อมูลทั้งหมด (รวม pending)
-                const { data: allRecords, error: allError } = await supabaseClient
+                const { data: allRecords, error } = await supabaseClient
                     .from('pollution_logs')
                     .select('*')
                     .order('recorded_at', { ascending: false });
 
-                if (allError) throw allError;
+                if (error) throw error;
                 allDataWithPending = allRecords || [];
-
-                // กรองเฉพาะ approved สำหรับสถิติ
                 allData = allDataWithPending.filter(d => d.status === 'approved');
 
-                updateDashboard();
-                updateLiveCard();
-                updateSensorCharts();
-                updateAllDataTable();
+                if (currentView === 'basic') updateBasicView();
+                else if (currentView === 'deep') updateDeepView();
             } catch (e) {
                 console.error('Error loading data:', e);
             }
         }
 
-        // ==================== Data Explorer Table ====================
-        const DEVICE_NAMES = {
-            'a3d01864e463e3ede0hf0e': 'MT13W (ใหม่)',
-            'a3b9c2e4bdfe69ad7ekytn': 'MT29 (เดิม)',
-        };
-
-        function getDeviceName(d) {
-            if (d.tuya_device_id && DEVICE_NAMES[d.tuya_device_id]) return DEVICE_NAMES[d.tuya_device_id];
-            if (d.data_source === 'sensor') return 'sensor';
-            return d.data_source || 'manual';
+        // ==================== BASIC VIEW ====================
+        function updateBasicView() {
+            updateHeroAqi();
+            updateBigNumbers();
+            updateBeforeAfter();
+            loadTodaySummary();
+            updateLiveCard();
+            updateActivityFeed();
         }
 
+        function updateHeroAqi() {
+            const latest = allDataWithPending[0];
+            const aqiVal = latest?.aqi;
+            const status = getAqiStatus(aqiVal);
+
+            const hero = document.getElementById('hero-aqi');
+            hero.className = status.cls + ' rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden';
+            document.getElementById('hero-aqi-emoji').textContent = status.emoji;
+            document.getElementById('hero-aqi-value').textContent = aqiVal ?? '--';
+            document.getElementById('hero-aqi-label').textContent = status.label;
+            document.getElementById('hero-aqi-advice').textContent = status.advice;
+            document.getElementById('hero-aqi-time').textContent = latest
+                ? 'อัปเดต: ' + new Date(latest.recorded_at).toLocaleString('th-TH')
+                : '--';
+        }
+
+        function updateBigNumbers() {
+            const latest = allDataWithPending[0];
+            document.getElementById('basic-pm25').textContent = latest?.pm25_value ?? '--';
+            document.getElementById('basic-co2').textContent = latest?.co2_value ?? '--';
+            document.getElementById('basic-temp').textContent = latest?.temperature ?? '--';
+            document.getElementById('basic-humidity').textContent = latest?.humidity ?? '--';
+
+            // Color PM2.5 based on threshold
+            const pm25El = document.getElementById('basic-pm25');
+            const pm = latest?.pm25_value;
+            if (pm != null) {
+                pm25El.className = pm25El.className.replace(/text-(navy|red|orange|emerald)-\d+/g, '');
+                if (pm <= 25) pm25El.classList.add('text-emerald-600');
+                else if (pm <= 50) pm25El.classList.add('text-orange-500');
+                else pm25El.classList.add('text-red-600');
+            }
+        }
+
+        function updateBeforeAfter() {
+            const ecoData = allData.filter(d => d.stove_type === 'eco');
+            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+            const avgEco = avg(ecoData, 'pm25_value');
+            const avgOld = avg(oldData, 'pm25_value');
+
+            document.getElementById('basic-eco-pm25').textContent = avgEco != null ? avgEco.toFixed(1) : '--';
+            document.getElementById('basic-old-pm25').textContent = avgOld != null ? avgOld.toFixed(1) : '--';
+
+            if (avgOld && avgEco && avgOld > 0) {
+                const reduction = ((avgOld - avgEco) / avgOld * 100).toFixed(0);
+                document.getElementById('basic-reduction').textContent = reduction > 0 ? `-${reduction}%` : `+${Math.abs(reduction)}%`;
+            } else {
+                document.getElementById('basic-reduction').textContent = '--%';
+            }
+        }
+
+        async function loadTodaySummary() {
+            try {
+                const today = new Date().toISOString().slice(0, 10);
+                const { data } = await supabaseClient
+                    .from('daily_summaries')
+                    .select('sessions_completed, sessions_incomplete, compliance_status, device_id')
+                    .eq('summary_date', today);
+
+                const totalCompleted = (data || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
+                const totalTarget = (data || []).length > 0 ? data.length * 2 : 4; // 2 sessions per device per day
+
+                const textEl = document.getElementById('session-progress-text');
+                const emojiEl = document.getElementById('session-progress-emoji');
+                const dotsEl = document.getElementById('session-progress-dots');
+
+                textEl.textContent = `สำเร็จ ${totalCompleted} จาก ${totalTarget} ครั้ง`;
+                emojiEl.textContent = totalCompleted >= totalTarget ? '✅' : '⏳';
+
+                let dots = '';
+                for (let i = 0; i < totalTarget; i++) {
+                    dots += `<span class="session-dot ${i < totalCompleted ? 'dot-done' : 'dot-empty'}"></span> `;
+                }
+                dotsEl.innerHTML = dots;
+            } catch (e) {
+                console.error('loadTodaySummary:', e);
+            }
+        }
+
+        function updateLiveCard() {
+            const latest = allDataWithPending[0];
+            if (!latest) {
+                document.getElementById('live-house-name').textContent = 'ยังไม่มีข้อมูล';
+                return;
+            }
+
+            document.getElementById('live-house-name').textContent = latest.tuya_device_id ? getDeviceName(latest) : (latest.house_name || 'ไม่ระบุบ้าน');
+            document.getElementById('live-timestamp').textContent = new Date(latest.recorded_at).toLocaleString('th-TH');
+            document.getElementById('live-stove-badge').textContent = latest.stove_type === 'eco' ? '✨ Eco' : '🪵 เดิม';
+            document.getElementById('live-pm25').textContent = latest.pm25_value ?? '--';
+            document.getElementById('live-co2').textContent = latest.co2_value ?? '--';
+            document.getElementById('live-temp').textContent = latest.temperature ?? '--';
+            document.getElementById('live-aqi').textContent = latest.aqi ?? '--';
+
+            const card = document.getElementById('live-latest-card');
+            if (latest.status === 'pending') {
+                card.className = card.className.replace('from-emerald-500 to-teal-500', 'from-amber-500 to-orange-500').replace('shadow-emerald-500/30', 'shadow-amber-500/30');
+                document.getElementById('live-status-icon').textContent = '⏳';
+            } else {
+                card.className = card.className.replace('from-amber-500 to-orange-500', 'from-emerald-500 to-teal-500').replace('shadow-amber-500/30', 'shadow-emerald-500/30');
+                document.getElementById('live-status-icon').textContent = '📡';
+            }
+        }
+
+        function updateActivityFeed() {
+            const feed = document.getElementById('live-activity-feed');
+            if (!feed) return;
+            const recent = allData.slice(0, 3);
+            feed.innerHTML = recent.map(d => `
+                <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl">
+                    <span class="text-xl">${d.stove_type === 'eco' ? '✨' : '🪵'}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[13px] font-bold text-navy truncate">${d.house_name || getDeviceName(d)}</p>
+                        <p class="text-[11px] text-slate-400">${new Date(d.recorded_at).toLocaleString('th-TH')}</p>
+                    </div>
+                    <span class="text-[13px] font-bold ${(d.pm25_value || 0) < 25 ? 'text-emerald-500' : 'text-orange-500'}">${d.pm25_value || '--'}</span>
+                </div>
+            `).join('') || '<p class="text-slate-400 text-sm">ยังไม่มีข้อมูล</p>';
+        }
+
+        // ==================== DEEP VIEW ====================
+        function updateDeepView() {
+            updateResearchStats();
+            renderGroupCharts();
+            updateReductionTable();
+            updateSensorCharts();
+            loadSessionsTab();
+            loadDailySummaries();
+            loadComplianceTracker();
+
+            const countEl = document.getElementById('deep-data-count');
+            if (countEl) countEl.textContent = `ข้อมูลทั้งหมด: ${allData.length} รายการ (approved)`;
+        }
+
+        function updateResearchStats() {
+            const ecoData = allData.filter(d => d.stove_type === 'eco');
+            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+            const fields = [
+                { id: 'pm25', field: 'pm25_value' },
+                { id: 'pm10', field: 'pm10_value' },
+                { id: 'pm1', field: 'pm1_value' },
+                { id: 'co2', field: 'co2_value' },
+                { id: 'co', field: 'co_value' },
+                { id: 'aqi', field: 'aqi' },
+            ];
+
+            fields.forEach(f => {
+                const ecoAvg = avg(ecoData, f.field);
+                const oldAvg = avg(oldData, f.field);
+                const valEl = document.getElementById(`r-stat-${f.id}`);
+                const changeEl = document.getElementById(`r-stat-${f.id}-change`);
+                if (!valEl) return;
+
+                const unitSpan = valEl.querySelector('span');
+                const unitText = unitSpan ? unitSpan.outerHTML : '';
+                valEl.innerHTML = (ecoAvg != null ? ecoAvg.toFixed(1) : '--') + ' ' + unitText;
+
+                if (changeEl && oldAvg && ecoAvg != null) {
+                    const change = ((oldAvg - ecoAvg) / oldAvg * 100).toFixed(1);
+                    changeEl.textContent = `vs เตาเดิม: ${change > 0 ? '-' : '+'}${Math.abs(change)}%`;
+                    changeEl.className = `text-[12px] ${change > 0 ? 'text-emerald-500' : 'text-red-500'}`;
+                }
+            });
+
+            // Secondary
+            const secFields = [
+                { id: 'temp', field: 'temperature' },
+                { id: 'humidity', field: 'humidity' },
+                { id: 'hcho', field: 'hcho_value' },
+                { id: 'tvoc', field: 'tvoc_value' },
+            ];
+            secFields.forEach(f => {
+                const el = document.getElementById(`r-stat-${f.id}`);
+                if (!el) return;
+                const v = avg(allData, f.field);
+                const unitSpan = el.querySelector('span');
+                const unitText = unitSpan ? unitSpan.outerHTML : '';
+                el.innerHTML = (v != null ? v.toFixed(1) : '--') + ' ' + unitText;
+            });
+        }
+
+        let groupCharts = {};
+        function renderGroupCharts() {
+            const ecoData = allData.filter(d => d.stove_type === 'eco');
+            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+            // PM Group
+            if (groupCharts.pm) groupCharts.pm.destroy();
+            const pmCanvas = document.getElementById('pmGroupChart');
+            if (pmCanvas) {
+                groupCharts.pm = new Chart(pmCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['PM 1.0', 'PM 2.5', 'PM 10'],
+                        datasets: [
+                            {
+                                label: 'เตาเดิม',
+                                data: [avg(oldData, 'pm1_value'), avg(oldData, 'pm25_value'), avg(oldData, 'pm10_value')],
+                                backgroundColor: 'rgba(249,115,22,0.7)',
+                                borderRadius: 6,
+                            },
+                            {
+                                label: 'EcoStove',
+                                data: [avg(ecoData, 'pm1_value'), avg(ecoData, 'pm25_value'), avg(ecoData, 'pm10_value')],
+                                backgroundColor: 'rgba(16,185,129,0.7)',
+                                borderRadius: 6,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } },
+                    },
+                });
+            }
+
+            // Gas Group
+            if (groupCharts.gas) groupCharts.gas.destroy();
+            const gasCanvas = document.getElementById('gasGroupChart');
+            if (gasCanvas) {
+                groupCharts.gas = new Chart(gasCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['CO2', 'CO', 'HCHO', 'TVOC'],
+                        datasets: [
+                            {
+                                label: 'เตาเดิม',
+                                data: [avg(oldData, 'co2_value'), avg(oldData, 'co_value'), avg(oldData, 'hcho_value'), avg(oldData, 'tvoc_value')],
+                                backgroundColor: 'rgba(249,115,22,0.7)',
+                                borderRadius: 6,
+                            },
+                            {
+                                label: 'EcoStove',
+                                data: [avg(ecoData, 'co2_value'), avg(ecoData, 'co_value'), avg(ecoData, 'hcho_value'), avg(ecoData, 'tvoc_value')],
+                                backgroundColor: 'rgba(16,185,129,0.7)',
+                                borderRadius: 6,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } },
+                    },
+                });
+            }
+        }
+
+        function updateReductionTable() {
+            const ecoData = allData.filter(d => d.stove_type === 'eco');
+            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const tbody = document.getElementById('reduction-table-body');
+            if (!tbody) return;
+
+            const params = [
+                { label: 'PM 2.5 (µg/m³)', field: 'pm25_value' },
+                { label: 'PM 10 (µg/m³)', field: 'pm10_value' },
+                { label: 'PM 1.0 (µg/m³)', field: 'pm1_value' },
+                { label: 'CO2 (ppm)', field: 'co2_value' },
+                { label: 'CO (ppm)', field: 'co_value' },
+                { label: 'AQI', field: 'aqi' },
+                { label: 'HCHO (mg/m³)', field: 'hcho_value' },
+                { label: 'TVOC (mg/m³)', field: 'tvoc_value' },
+            ];
+
+            tbody.innerHTML = params.map(p => {
+                const oldAvg = avg(oldData, p.field);
+                const ecoAvg = avg(ecoData, p.field);
+                const pct = oldAvg && ecoAvg != null ? ((oldAvg - ecoAvg) / oldAvg * 100).toFixed(1) : '--';
+                const pctClass = pct !== '--' && pct > 0 ? 'text-emerald-600 font-bold' : pct !== '--' ? 'text-red-500 font-bold' : 'text-slate-400';
+                return `<tr class="hover:bg-slate-50">
+                    <td class="p-3 font-medium">${p.label}</td>
+                    <td class="p-3 text-center text-orange-500">${oldAvg != null ? oldAvg.toFixed(2) : '--'}</td>
+                    <td class="p-3 text-center text-emerald-600">${ecoAvg != null ? ecoAvg.toFixed(2) : '--'}</td>
+                    <td class="p-3 text-center ${pctClass}">${pct !== '--' ? (pct > 0 ? '-' + pct + '%' : '+' + Math.abs(pct) + '%') : '--'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ==================== Sensor Charts ====================
+        let sensorCharts = {};
+        function updateSensorCharts() {
+            const rangeEl = document.getElementById('sensor-chart-range');
+            if (!rangeEl) return;
+            const hours = parseInt(rangeEl.value);
+            const now = new Date();
+
+            let sensorData = allData.filter(d => d.data_source === 'sensor' && d.tuya_device_id);
+            if (hours > 0) {
+                const cutoff = new Date(now.getTime() - hours * 60 * 60 * 1000);
+                sensorData = sensorData.filter(d => new Date(d.recorded_at) >= cutoff);
+            }
+
+            const device1 = sensorData.filter(d => d.tuya_device_id === 'a3d01864e463e3ede0hf0e').reverse();
+            const device2 = sensorData.filter(d => d.tuya_device_id === 'a3b9c2e4bdfe69ad7ekytn').reverse();
+            const totalPoints = device1.length + device2.length;
+
+            const countEl = document.getElementById('sensor-chart-count');
+            if (countEl) countEl.textContent = `Sensor 1: ${device1.length} | Sensor 2: ${device2.length} (รวม ${totalPoints})`;
+
+            const chartConfigs = [
+                { id: 'sensorPm25Chart', field: 'pm25_value' },
+                { id: 'sensorCo2Chart', field: 'co2_value' },
+                { id: 'sensorTempChart', field: 'temperature' },
+                { id: 'sensorAqiChart', field: 'aqi' },
+            ];
+
+            chartConfigs.forEach(cfg => {
+                if (sensorCharts[cfg.id]) sensorCharts[cfg.id].destroy();
+                const canvas = document.getElementById(cfg.id);
+                if (!canvas) return;
+
+                sensorCharts[cfg.id] = new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Sensor 1 (MT13W)',
+                                data: device1.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
+                                borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.1)',
+                                borderWidth: 2, pointRadius: totalPoints > 100 ? 0 : 3, tension: 0.3, fill: false,
+                            },
+                            {
+                                label: 'Sensor 2 (ZN-MT29)',
+                                data: device2.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
+                                borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)',
+                                borderWidth: 2, pointRadius: totalPoints > 100 ? 0 : 3, tension: 0.3, fill: false,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                            tooltip: { callbacks: { title: (items) => items.length ? new Date(items[0].parsed.x).toLocaleString('th-TH') : '' } }
+                        },
+                        scales: {
+                            x: { type: 'time', time: { tooltipFormat: 'dd/MM/yyyy HH:mm' }, ticks: { font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
+                            y: { beginAtZero: true, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        },
+                    },
+                });
+            });
+        }
+
+        // ==================== Sessions ====================
+        async function loadSessionsTab() {
+            const deviceEl = document.getElementById('session-device-filter');
+            const dateEl = document.getElementById('session-date-filter');
+            if (!deviceEl || !dateEl) return;
+
+            const deviceFilter = deviceEl.value;
+            const days = parseInt(dateEl.value);
+
+            let query = supabaseClient.from('sessions').select('*').order('started_at', { ascending: false }).limit(100);
+            if (deviceFilter !== 'all') query = query.eq('device_id', deviceFilter);
+            if (days > 0) {
+                const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+                query = query.gte('started_at', cutoff);
+            }
+
+            const { data: sessions, error } = await query;
+            if (error) { console.error('loadSessionsTab:', error); return; }
+
+            const infoEl = document.getElementById('session-count-info');
+            if (infoEl) infoEl.textContent = sessions.length + ' sessions';
+
+            const statusColors = {
+                'baseline': 'bg-blue-100 text-blue-700', 'collecting': 'bg-yellow-100 text-yellow-700',
+                'complete': 'bg-emerald-100 text-emerald-700', 'incomplete': 'bg-orange-100 text-orange-700',
+                'cancelled': 'bg-red-100 text-red-700',
+            };
+            const statusIcons = { 'baseline': '🔵', 'collecting': '🟡', 'complete': '✅', 'incomplete': '⚠️', 'cancelled': '❌' };
+
+            const tbody = document.getElementById('sessions-table-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = sessions.map(s => {
+                const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) + ' min' : 'In progress...';
+                const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
+                const icon = statusIcons[s.session_status] || '❓';
+                const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
+                return '<tr class="hover:bg-slate-50/50">' +
+                    '<td class="p-3 whitespace-nowrap">' + new Date(s.started_at).toLocaleString('th-TH') + '</td>' +
+                    '<td class="p-3">' + deviceName + '</td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + s.session_status + '</span></td>' +
+                    '<td class="p-3 text-center">' + duration + '</td>' +
+                    '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
+                    '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
+                    '<td class="p-3 text-center">' + (s.avg_co2 != null ? s.avg_co2.toFixed(0) : '-') + '</td>' +
+                    '</tr>';
+            }).join('') || '<tr><td colspan="7" class="p-6 text-center text-slate-400">No sessions yet</td></tr>';
+        }
+
+        async function loadDailySummaries() {
+            const { data, error } = await supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }).limit(30);
+            if (error) { console.error('loadDailySummaries:', error); return; }
+
+            const tbody = document.getElementById('daily-summary-body');
+            if (!tbody) return;
+
+            const complianceColors = { 'complete': 'bg-emerald-100 text-emerald-700', 'partial': 'bg-yellow-100 text-yellow-700', 'missed': 'bg-red-100 text-red-700', 'pending': 'bg-slate-100 text-slate-500' };
+            const complianceIcons = { 'complete': '✅', 'partial': '⚠️', 'missed': '❌', 'pending': '⏳' };
+
+            tbody.innerHTML = (data || []).map(d => {
+                const cColor = complianceColors[d.compliance_status] || 'bg-slate-100';
+                const cIcon = complianceIcons[d.compliance_status] || '';
+                const deviceName = DEVICE_NAMES[d.device_id] || d.device_id;
+                const total = d.sessions_completed + d.sessions_incomplete + d.sessions_cancelled;
+                return '<tr class="hover:bg-slate-50/50">' +
+                    '<td class="p-3">' + d.summary_date + '</td>' +
+                    '<td class="p-3">' + deviceName + '</td>' +
+                    '<td class="p-3 text-center font-bold">' + d.sessions_completed + '/' + total + '</td>' +
+                    '<td class="p-3 text-center">' + d.total_readings + '</td>' +
+                    '<td class="p-3 text-center">' + (d.avg_pm25 != null ? d.avg_pm25.toFixed(1) : '-') + '</td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + cColor + '">' + cIcon + ' ' + d.compliance_status + '</span></td>' +
+                    '</tr>';
+            }).join('') || '<tr><td colspan="6" class="p-6 text-center text-slate-400">No daily summaries yet</td></tr>';
+        }
+
+        async function loadComplianceTracker() {
+            const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+            const { data, error } = await supabaseClient.from('daily_summaries').select('*').gte('summary_date', cutoff);
+            if (error || !data) return;
+
+            const byDevice = {};
+            data.forEach(d => {
+                if (!byDevice[d.device_id]) byDevice[d.device_id] = [];
+                byDevice[d.device_id].push(d);
+            });
+
+            const container = document.getElementById('compliance-cards');
+            if (!container) return;
+
+            const entries = Object.entries(byDevice);
+            if (!entries.length) {
+                container.innerHTML = '<p class="text-slate-400 text-sm col-span-3">No compliance data yet</p>';
+                return;
+            }
+
+            container.innerHTML = entries.map(([deviceId, summaries]) => {
+                const target = summaries.length * 2;
+                const completed = summaries.reduce((s, d) => s + d.sessions_completed, 0);
+                const pct = target > 0 ? Math.round(completed / target * 100) : 0;
+                const deviceName = DEVICE_NAMES[deviceId] || deviceId;
+                const color = pct >= 80 ? 'emerald' : pct >= 50 ? 'amber' : 'red';
+                return '<div class="bg-white/80 rounded-2xl p-5 border-l-4 border-' + color + '-400 shadow-sm">' +
+                    '<p class="font-bold text-navy">' + deviceName + '</p>' +
+                    '<div class="flex items-end gap-2 mt-2">' +
+                        '<span class="text-2xl font-bold text-' + color + '-600">' + pct + '%</span>' +
+                        '<span class="text-[12px] text-slate-400">(' + completed + '/' + target + ' sessions)</span>' +
+                    '</div>' +
+                    '<div class="w-full bg-slate-200 rounded-full h-2 mt-2">' +
+                        '<div class="bg-' + color + '-500 h-2 rounded-full transition-all" style="width:' + pct + '%"></div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        // ==================== Auto Refresh ====================
+        function startAutoRefresh() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            autoRefreshInterval = setInterval(() => {
+                loadData();
+                const statusEl = document.getElementById('live-refresh-status');
+                if (statusEl) statusEl.textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')}`;
+            }, 120000); // ทุก 2 นาที
+        }
+
+        function manualRefresh() {
+            const icon = document.getElementById('refresh-icon');
+            if (icon) { icon.style.animation = 'spin 0.5s linear'; setTimeout(() => icon.style.animation = '', 500); }
+            loadData();
+            const statusEl = document.getElementById('live-refresh-status');
+            if (statusEl) statusEl.textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')}`;
+        }
+
+        // ==================== Admin Activity Feed ====================
+        const ACTION_ICONS = {
+            'อนุมัติ': '✅', 'ไม่อนุมัติ': '❌', 'เพิ่มเครื่องวัด': '📡', 'แก้ไขเครื่องวัด': '🔧',
+            'ลบเครื่องวัด': '🗑️', 'เพิ่มอาสา': '👤', 'ลบอาสา': '🗑️', 'เพิ่มบ้าน': '🏠',
+            'ลบบ้าน': '🗑️', 'Export': '📊', 'เปิดเครื่อง': '🟢', 'ปิดเครื่อง': '🔴',
+        };
+
+        function renderAdminActivityFeed() {
+            const feed = document.getElementById('admin-activity-feed');
+            if (!feed) return;
+            if (activityLog.length === 0) {
+                feed.innerHTML = '<p class="text-slate-400 text-center py-8">ยังไม่มีกิจกรรม</p>';
+                return;
+            }
+            feed.innerHTML = activityLog.slice(0, 50).map(entry => {
+                const icon = ACTION_ICONS[entry.action] || '📋';
+                return `<div class="flex items-center gap-4 p-4 bg-white/70 rounded-2xl border border-slate-100">
+                    <span class="text-2xl">${icon}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[13px] font-bold text-navy truncate">${entry.action}</p>
+                        <p class="text-[11px] text-slate-400">${new Date(entry.timestamp).toLocaleString('th-TH')}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[13px] text-slate-500 truncate max-w-[180px]">${entry.detail || '-'}</p>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function clearActivityLog() {
+            showConfirm('ล้างประวัติกิจกรรมทั้งหมด?', () => {
+                activityLog = [];
+                localStorage.removeItem('ecostove_activity_log');
+                renderAdminActivityFeed();
+                showToast('ล้างประวัติกิจกรรมแล้ว');
+            });
+        }
+
+        // ==================== Data Table ====================
         function updateAllDataTable() {
             const tbody = document.getElementById('all-data-table-body');
             if (!tbody) return;
 
-            // Filter by sensor
             const filterEl = document.getElementById('sensor-filter');
             const filter = filterEl ? filterEl.value : 'all';
             let filtered = allDataWithPending;
-            if (filter === 'manual') {
-                filtered = allDataWithPending.filter(d => d.data_source !== 'sensor');
-            } else if (filter !== 'all') {
-                filtered = allDataWithPending.filter(d => d.tuya_device_id === filter);
-            }
+            if (filter === 'manual') filtered = allDataWithPending.filter(d => d.data_source !== 'sensor');
+            else if (filter !== 'all') filtered = allDataWithPending.filter(d => d.tuya_device_id === filter);
 
             if (filtered.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="11" class="p-6 text-center text-slate-400">ไม่มีข้อมูล</td></tr>';
@@ -865,8 +1330,7 @@
                 const pm25Class = (d.pm25_value || 0) > 35 ? 'text-red-500 font-bold' : 'text-orange-500';
                 const isSensor = d.data_source === 'sensor' && d.tuya_device_id;
                 const srcClass = isSensor ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500';
-                return `
-                <tr class="hover:bg-slate-50">
+                return `<tr class="hover:bg-slate-50">
                     <td class="p-3 text-[13px] whitespace-nowrap">${new Date(d.recorded_at).toLocaleString('th-TH')}</td>
                     <td class="p-3">${d.stove_type === 'eco' ? '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[11px] font-bold">Eco</span>' : '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-[11px] font-bold">เดิม</span>'}</td>
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
@@ -882,305 +1346,10 @@
             }).join('');
         }
 
-        // ==================== Live Card ====================
-        function updateLiveCard() {
-            const latest = allDataWithPending[0]; // ข้อมูลล่าสุด (อาจเป็น pending)
-
-            if (!latest) {
-                document.getElementById('live-house-name').textContent = 'ยังไม่มีข้อมูล';
-                return;
-            }
-
-            document.getElementById('live-house-name').textContent = latest.tuya_device_id ? getDeviceName(latest) : (latest.house_name || 'ไม่ระบุบ้าน');
-            document.getElementById('live-timestamp').textContent = new Date(latest.recorded_at).toLocaleString('th-TH');
-            document.getElementById('live-stove-badge').textContent = latest.stove_type === 'eco' ? '✨ Eco' : '🪵 เดิม';
-
-            document.getElementById('live-pm25').textContent = latest.pm25_value ?? '--';
-            document.getElementById('live-pm10').textContent = latest.pm10_value ?? '--';
-            document.getElementById('live-co2').textContent = latest.co2_value ?? '--';
-            document.getElementById('live-temp').textContent = latest.temperature ?? '--';
-            document.getElementById('live-humidity').textContent = latest.humidity ?? '--';
-            document.getElementById('live-aqi').textContent = latest.aqi ?? '--';
-
-            // เปลี่ยนสี Live Card ตามสถานะ
-            const card = document.getElementById('live-latest-card');
-            if (latest.status === 'pending') {
-                card.className = card.className.replace('from-emerald-500 to-teal-500', 'from-amber-500 to-orange-500');
-                card.className = card.className.replace('shadow-emerald-500/30', 'shadow-amber-500/30');
-                document.getElementById('live-status-icon').textContent = '⏳';
-            } else {
-                card.className = card.className.replace('from-amber-500 to-orange-500', 'from-emerald-500 to-teal-500');
-                card.className = card.className.replace('shadow-amber-500/30', 'shadow-emerald-500/30');
-                document.getElementById('live-status-icon').textContent = '📡';
-            }
-        }
-
-        // ==================== Sensor Comparison Charts ====================
-        let sensorCharts = {};
-
-        function updateSensorCharts() {
-            const hours = parseInt(document.getElementById('sensor-chart-range').value);
-            const now = new Date();
-
-            // กรองข้อมูลตามช่วงเวลา + เฉพาะ sensor data
-            let sensorData = allData.filter(d => d.data_source === 'sensor' && d.tuya_device_id);
-            if (hours > 0) {
-                const cutoff = new Date(now.getTime() - hours * 60 * 60 * 1000);
-                sensorData = sensorData.filter(d => new Date(d.recorded_at) >= cutoff);
-            }
-
-            // แยกตาม device
-            const device1 = sensorData.filter(d => d.tuya_device_id === 'a3d01864e463e3ede0hf0e').reverse();
-            const device2 = sensorData.filter(d => d.tuya_device_id === 'a3b9c2e4bdfe69ad7ekytn').reverse();
-
-            const totalPoints = device1.length + device2.length;
-            document.getElementById('sensor-chart-count').textContent =
-                `Sensor 1: ${device1.length} จุด | Sensor 2: ${device2.length} จุด (รวม ${totalPoints})`;
-
-            const timeFormat = hours <= 24 ? 'HH:mm' : 'dd/MM HH:mm';
-            const fmtLabel = (d) => {
-                const dt = new Date(d.recorded_at);
-                if (hours <= 24) return dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-                return dt.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit' }) + ' ' +
-                       dt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-            };
-
-            const chartConfigs = [
-                { id: 'sensorPm25Chart', field: 'pm25_value', label: 'PM2.5' },
-                { id: 'sensorCo2Chart', field: 'co2_value', label: 'CO2' },
-                { id: 'sensorTempChart', field: 'temperature', label: 'Temp' },
-                { id: 'sensorAqiChart', field: 'aqi', label: 'AQI' },
-            ];
-
-            chartConfigs.forEach(cfg => {
-                if (sensorCharts[cfg.id]) sensorCharts[cfg.id].destroy();
-
-                const canvas = document.getElementById(cfg.id);
-                if (!canvas) return;
-
-                sensorCharts[cfg.id] = new Chart(canvas, {
-                    type: 'line',
-                    data: {
-                        datasets: [
-                            {
-                                label: 'Sensor 1 (MT13W)',
-                                data: device1.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
-                                borderColor: '#f97316',
-                                backgroundColor: 'rgba(249,115,22,0.1)',
-                                borderWidth: 2,
-                                pointRadius: totalPoints > 100 ? 0 : 3,
-                                tension: 0.3,
-                                fill: false,
-                            },
-                            {
-                                label: 'Sensor 2 (ZN-MT29)',
-                                data: device2.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
-                                borderColor: '#3b82f6',
-                                backgroundColor: 'rgba(59,130,246,0.1)',
-                                borderWidth: 2,
-                                pointRadius: totalPoints > 100 ? 0 : 3,
-                                tension: 0.3,
-                                fill: false,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: { mode: 'index', intersect: false },
-                        plugins: {
-                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
-                            tooltip: {
-                                callbacks: {
-                                    title: (items) => {
-                                        if (items.length) return new Date(items[0].parsed.x).toLocaleString('th-TH');
-                                        return '';
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: { tooltipFormat: 'dd/MM/yyyy HH:mm' },
-                                ticks: { font: { size: 10 }, maxTicksLimit: 8 },
-                                grid: { display: false },
-                            },
-                            y: {
-                                beginAtZero: true,
-                                ticks: { font: { size: 10 } },
-                                grid: { color: 'rgba(0,0,0,0.05)' },
-                            },
-                        },
-                    },
-                });
-            });
-        }
-
-        // ==================== Auto Refresh ====================
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(() => {
-                loadData();
-                document.getElementById('live-refresh-status').textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')}`;
-            }, 30000); // ทุก 30 วินาที
-        }
-
-        function manualRefresh() {
-            const icon = document.getElementById('refresh-icon');
-            icon.style.animation = 'spin 0.5s linear';
-            setTimeout(() => icon.style.animation = '', 500);
-
-            loadData();
-            document.getElementById('live-refresh-status').textContent = `อัปเดตล่าสุด: ${new Date().toLocaleTimeString('th-TH')}`;
-        }
-
-        function updateDashboard() {
-            // Basic stats placeholders
-            const ecoData = allData.filter(d => d.stove_type === 'eco');
-            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
-
-            const avgPmEco = ecoData.length ? (ecoData.reduce((s, d) => s + (d.pm25_value || 0), 0) / ecoData.length).toFixed(1) : 0;
-            const avgPmOld = oldData.length ? (oldData.reduce((s, d) => s + (d.pm25_value || 0), 0) / oldData.length).toFixed(1) : 0;
-            const reduction = avgPmOld > 0 ? ((avgPmOld - avgPmEco) / avgPmOld * 100).toFixed(0) : 0;
-
-            document.getElementById('stat-pm-reduction').textContent = reduction > 0 ? `-${reduction}%` : '--';
-            document.getElementById('stat-families').textContent = `${new Set(allData.map(d => d.subject_id)).size} บ้าน`;
-            document.getElementById('stat-trees').textContent = `${(ecoData.length * 0.5).toFixed(1)} kg`;
-            document.getElementById('stat-money-saved').textContent = `${(ecoData.length * 15).toLocaleString()} ฿`;
-
-            // Duration stats
-            if (allData.length > 0) {
-                const dates = allData.map(d => new Date(d.recorded_at).toDateString());
-                const uniqueDates = [...new Set(dates)];
-                document.getElementById('stat-duration-all').textContent = `${uniqueDates.length} วัน`;
-
-                const oldDates = oldData.map(d => new Date(d.recorded_at).toDateString());
-                document.getElementById('stat-duration-old').textContent = `${[...new Set(oldDates)].length} วัน`;
-
-                const ecoDates = ecoData.map(d => new Date(d.recorded_at).toDateString());
-                document.getElementById('stat-duration-eco').textContent = `${[...new Set(ecoDates)].length} วัน`;
-            }
-
-            updateActivityFeed();
-        }
-
-        function updateActivityFeed() {
-            const feed = document.getElementById('live-activity-feed');
-            const recent = allData.slice(0, 5);
-            feed.innerHTML = recent.map(d => `
-                <div class="flex items-center gap-3 p-3 bg-white/50 rounded-xl">
-                    <span class="text-xl">${d.stove_type === 'eco' ? '✨' : '🪵'}</span>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[13px] font-bold text-navy truncate">${d.house_name || 'บ้าน'}</p>
-                        <p class="text-[11px] text-slate-400">${new Date(d.recorded_at).toLocaleString('th-TH')}</p>
-                    </div>
-                    <span class="text-[13px] font-bold ${d.pm25_value < 25 ? 'text-emerald-500' : 'text-orange-500'}">${d.pm25_value || '--'}</span>
-                </div>
-            `).join('');
-        }
-
-        // ==================== Entry Form ====================
-        async function loadEntryForm() {
-            // Entry form removed — no-op
-        }
-
-        function loadVolunteerDevices(volunteerId) {
-            const devSection = document.getElementById('devices-section');
-            const devList = document.getElementById('devices-list-entry');
-
-            if (!volunteerId) {
-                devSection.classList.add('hidden');
-                return;
-            }
-
-            // Get subjects assigned to this volunteer
-            const volSubjects = subjects.filter(s => s.volunteer_id == volunteerId);
-
-            if (volSubjects.length === 0) {
-                devList.innerHTML = '<p class="text-slate-400 text-center p-4">ไม่พบบ้านที่กำหนดให้อาสาสมัครนี้</p>';
-            } else {
-                devList.innerHTML = volSubjects.map(s => {
-                    const dev = devices.find(d => d.subject_id == s.id);
-                    return `
-                        <button type="button" onclick="selectHouse('${s.id}', '${dev?.tuya_device_id || ''}', '${s.house_name}', '${dev?.name || 'ไม่มีเครื่องวัด'}')"
-                            class="p-4 bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all text-left">
-                            <div class="flex items-center gap-3">
-                                <span class="text-2xl">🏠</span>
-                                <div>
-                                    <p class="font-bold text-navy">${s.house_name}</p>
-                                    <p class="text-[12px] text-slate-400">${dev ? `📡 ${dev.name}` : '⚠️ ไม่มีเครื่องวัด'}</p>
-                                </div>
-                            </div>
-                        </button>
-                    `;
-                }).join('');
-            }
-
-            devSection.classList.remove('hidden');
-            document.getElementById('upload-section').classList.add('hidden');
-        }
-
-        function selectHouse(subjectId, deviceId, houseName, deviceName) {
-            document.getElementById('entry-subject').value = subjectId;
-            document.getElementById('entry-device').value = deviceId;
-            document.getElementById('selected-house-name').textContent = houseName;
-            document.getElementById('selected-device-name').textContent = deviceId ? `📡 ${deviceName}` : '⚠️ ไม่มีเครื่องวัด';
-
-            document.getElementById('devices-section').classList.add('hidden');
-            document.getElementById('upload-section').classList.remove('hidden');
-
-            // Reset sensor results
-            document.getElementById('sensor-result').classList.add('hidden');
-            document.getElementById('sensor-error').classList.add('hidden');
-
-            // Set default mode to sensor if device exists
-            if (deviceId) {
-                switchEntryMode('sensor');
-            } else {
-                switchEntryMode('manual');
-            }
-        }
-
-        function resetHouseSelection() {
-            document.getElementById('entry-subject').value = '';
-            document.getElementById('entry-device').value = '';
-            document.getElementById('upload-section').classList.add('hidden');
-            document.getElementById('devices-section').classList.remove('hidden');
-        }
-
-        // ==================== File Upload (existing) ====================
-        function handleDataFileSelect(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            document.getElementById('file-upload-ui').classList.add('hidden');
-            document.getElementById('file-preview-container').classList.remove('hidden');
-            document.getElementById('data-filename').textContent = file.name;
-            document.getElementById('data-filesize').textContent = (file.size / 1024).toFixed(1) + ' KB';
-
-            // Set icon based on file type
-            const ext = file.name.split('.').pop().toLowerCase();
-            const icons = { csv: '📊', json: '📋', sqlite: '🗄️', db: '🗄️' };
-            document.getElementById('file-type-icon').textContent = icons[ext] || '📄';
-        }
-
-        function resetDataFile() {
-            document.getElementById('entry-data-file').value = '';
-            document.getElementById('file-upload-ui').classList.remove('hidden');
-            document.getElementById('file-preview-container').classList.add('hidden');
-            document.getElementById('data-preview-section').classList.add('hidden');
-        }
-
         // ==================== Admin Functions ====================
         async function loadAdminData() {
             try {
-                const { data, error } = await supabaseClient
-                    .from('pollution_logs')
-                    .select('*')
-                    .eq('status', 'pending')
-                    .order('recorded_at', { ascending: false });
-
+                const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false });
                 if (error) throw error;
 
                 const tbody = document.getElementById('pending-logs-table');
@@ -1204,21 +1373,17 @@
                     `).join('');
                 }
 
-                // Load devices
                 const { data: devData } = await supabaseClient.from('devices').select('*, subjects(*)');
                 devices = devData || [];
                 renderDevicesList();
 
-                // Load volunteers
                 const { data: volData } = await supabaseClient.from('volunteers').select('*');
                 volunteers = volData || [];
                 renderVolunteersList();
 
-                // Load subjects
                 const { data: subData } = await supabaseClient.from('subjects').select('*, volunteers(*)');
                 subjects = subData || [];
                 renderSubjectsList();
-
             } catch (e) {
                 console.error('Error loading admin data:', e);
             }
@@ -1226,12 +1391,11 @@
 
         async function approveLog(id) {
             const { error } = await supabaseClient.from('pollution_logs').update({ status: 'approved' }).eq('id', id);
-            if (!error) loadAdminData();
+            if (!error) { logActivity('อนุมัติ', 'ID: ' + id.slice(0, 8)); loadAdminData(); showToast('อนุมัติแล้ว'); }
         }
-
         async function rejectLog(id) {
             const { error } = await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).eq('id', id);
-            if (!error) loadAdminData();
+            if (!error) { logActivity('ไม่อนุมัติ', 'ID: ' + id.slice(0, 8)); loadAdminData(); showToast('ไม่อนุมัติแล้ว'); }
         }
 
         function renderDevicesList() {
@@ -1240,29 +1404,71 @@
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="text-3xl">📡</span>
-                        <div class="flex-1">
-                            <p class="font-bold text-navy">${d.name}</p>
-                            <p class="text-[12px] text-slate-400">${d.tuya_device_id}</p>
-                        </div>
+                        <div class="flex-1"><p class="font-bold text-navy">${d.name}</p><p class="text-[12px] text-slate-400 font-mono">${d.tuya_device_id}</p></div>
                         <div class="flex gap-2">
-                            <button onclick="toggleDevice(${d.id}, ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-emerald-50 text-emerald-500 hover:bg-emerald-100'} transition-all">${d.is_active ? 'ปิด' : 'เปิด'}</button>
-                            <button onclick="deleteDevice(${d.id}, '${d.name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ลบ</button>
+                            <button onclick="showEditDeviceModal('${d.id}', '${d.name}', '${d.tuya_device_id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">แก้ไข</button>
+                            <button onclick="toggleDevice('${d.id}', ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${d.is_active ? 'ปิด' : 'เปิด'}</button>
+                            <button onclick="deleteDevice('${d.id}', '${d.name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ลบ</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">บ้าน: ${d.subjects?.house_name || 'ไม่ได้กำหนด'}</p>
+                    <p class="text-[13px] text-slate-500">บ้าน: ${d.subjects?.full_name || 'ไม่ได้กำหนด'}</p>
                     <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'}">${d.is_active ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
                 </div>
             `).join('') || '<p class="text-slate-400">ยังไม่มีเครื่องวัด</p>';
         }
 
         async function toggleDevice(id, active) {
-            const { error } = await supabaseClient.from('devices').update({ is_active: active }).eq('id', id);
-            if (!error) loadAdminData();
+            const { error } = await supabaseClient.from('devices').update({ is_active: active }).eq('id', String(id));
+            if (!error) { logActivity(active ? 'เปิดเครื่อง' : 'ปิดเครื่อง', 'ID: ' + id.slice(0, 8)); loadAdminData(); }
         }
         async function deleteDevice(id, name) {
-            if (!confirm('ลบเครื่องวัด "' + name + '" ?')) return;
-            const { error } = await supabaseClient.from('devices').delete().eq('id', id);
-            if (!error) loadAdminData();
+            showConfirm('ลบเครื่องวัด "' + name + '" ?', async () => {
+                const { error } = await supabaseClient.from('devices').delete().eq('id', String(id));
+                if (!error) { logActivity('ลบเครื่องวัด', name); loadAdminData(); showToast('ลบเครื่องวัดแล้ว'); }
+            });
+        }
+
+        function showEditDeviceModal(id, name, tuyaId) {
+            const usedIds = devices.filter(d => d.id !== id).map(d => d.tuya_device_id);
+            const sensorOptions = KNOWN_SENSORS.map(s =>
+                `<option value="${s.tuyaId}" ${s.tuyaId === tuyaId ? 'selected' : ''} ${usedIds.includes(s.tuyaId) ? 'disabled' : ''}>${s.name}${usedIds.includes(s.tuyaId) ? ' (ใช้งานอยู่)' : ''}</option>`
+            ).join('');
+            const subjectOptions = subjects.map(s => '<option value="' + s.id + '">' + s.full_name + '</option>').join('');
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-2">สลับ/แก้ไขเครื่องวัด</h3>
+                <p class="text-slate-500 text-sm mb-6">เลือกเซนเซอร์สำรองจากรายการ ไม่ต้องรู้ Device ID</p>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">ชื่อเครื่อง</label>
+                        <input id="edit-device-name" value="${name}" class="w-full p-4 rounded-2xl border">
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">เลือกเซนเซอร์</label>
+                        <select id="edit-device-tuya-id" class="w-full p-4 rounded-2xl border custom-select">
+                            ${sensorOptions}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">เปลี่ยนบ้าน (ถ้าต้องการ)</label>
+                        <select id="edit-device-subject" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">-- ไม่เปลี่ยน --</option>
+                            ${subjectOptions}
+                        </select>
+                    </div>
+                    <button onclick="updateDevice('${id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึกการเปลี่ยนแปลง</button>
+                </div>
+            `);
+        }
+        async function updateDevice(id) {
+            const name = document.getElementById('edit-device-name').value;
+            const tuyaId = document.getElementById('edit-device-tuya-id').value;
+            const subjectId = document.getElementById('edit-device-subject').value;
+            if (!name || !tuyaId) { showToast('กรุณากรอกข้อมูลให้ครบ', 'warning'); return; }
+            const updates = { name, tuya_device_id: tuyaId };
+            if (subjectId) updates.subject_id = subjectId;
+            const { error } = await supabaseClient.from('devices').update(updates).eq('id', String(id));
+            if (!error) { closeModal(); logActivity('แก้ไขเครื่องวัด', name + ' → ' + tuyaId); loadAdminData(); showToast('บันทึกสำเร็จ! sensor-monitor จะใช้ Device ID ใหม่ในรอบถัดไป'); }
+            else { showToast('เกิดข้อผิดพลาด: ' + error.message, 'error'); }
         }
 
         function renderVolunteersList() {
@@ -1270,26 +1476,23 @@
             list.innerHTML = volunteers.map(v => `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">${v.name}</p>
+                        <p class="font-bold text-navy text-lg">${v.full_name}</p>
                         <div class="flex gap-2">
-                            <button onclick="toggleVolunteer(${v.id}, ${!v.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${v.is_active ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-emerald-50 text-emerald-500 hover:bg-emerald-100'} transition-all">${v.is_active ? 'ปิด' : 'เปิด'}</button>
-                            <button onclick="deleteVolunteer(${v.id}, '${v.name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ลบ</button>
+                            <button onclick="deleteVolunteer('${v.id}', '${v.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ลบ</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${v.province || '-'}</p>
-                    <p class="text-[13px] ${v.is_active ? 'text-emerald-500' : 'text-red-500'}">${v.is_active ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
+                    <p class="text-[13px] text-slate-500">${v.phone_contact || '-'}</p>
+                    <p class="text-[13px] text-emerald-500">● ใช้งาน</p>
                 </div>
             `).join('') || '<p class="text-slate-400">ยังไม่มีอาสาสมัคร</p>';
         }
 
-        async function toggleVolunteer(id, active) {
-            const { error } = await supabaseClient.from('volunteers').update({ is_active: active }).eq('id', id);
-            if (!error) loadAdminData();
-        }
+        async function toggleVolunteer(id, active) { const { error } = await supabaseClient.from('volunteers').update({ is_active: active }).eq('id', String(id)); if (!error) loadAdminData(); }
         async function deleteVolunteer(id, name) {
-            if (!confirm('ลบอาสาสมัคร "' + name + '" ?')) return;
-            const { error } = await supabaseClient.from('volunteers').delete().eq('id', id);
-            if (!error) loadAdminData();
+            showConfirm('ลบอาสาสมัคร "' + name + '" ?', async () => {
+                const { error } = await supabaseClient.from('volunteers').delete().eq('id', String(id));
+                if (!error) { logActivity('ลบอาสา', name); loadAdminData(); showToast('ลบอาสาสมัครแล้ว'); }
+            });
         }
 
         function renderSubjectsList() {
@@ -1297,56 +1500,65 @@
             list.innerHTML = subjects.map(s => `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">🏠 ${s.house_name}</p>
+                        <p class="font-bold text-navy text-lg">🏠 ${s.full_name}</p>
                         <div class="flex gap-2">
-                            <button onclick="toggleSubject(${s.id}, ${!s.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${s.is_active ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-emerald-50 text-emerald-500 hover:bg-emerald-100'} transition-all">${s.is_active ? 'ปิด' : 'เปิด'}</button>
-                            <button onclick="deleteSubject(${s.id}, '${s.house_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ลบ</button>
+                            <button onclick="deleteSubject('${s.id}', '${s.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">ลบ</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${s.province || '-'}, ${s.district || '-'}</p>
-                    <p class="text-[13px] text-slate-400">อาสา: ${s.volunteers?.name || 'ไม่ระบุ'}</p>
-                    <p class="text-[13px] ${s.is_active ? 'text-emerald-500' : 'text-red-500'}">${s.is_active ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
+                    <p class="text-[13px] text-slate-500">${s.address || '-'}</p>
+                    <p class="text-[13px] text-slate-400">อาสา: ${s.volunteers?.full_name || 'ไม่ระบุ'}</p>
+                    <p class="text-[13px] ${s.status === 'active' ? 'text-emerald-500' : 'text-red-500'}">${s.status === 'active' ? '● ใช้งาน' : '○ ปิดใช้งาน'}</p>
                 </div>
             `).join('') || '<p class="text-slate-400">ยังไม่มีกลุ่มตัวอย่าง</p>';
         }
 
-        async function toggleSubject(id, active) {
-            const { error } = await supabaseClient.from('subjects').update({ is_active: active }).eq('id', id);
-            if (!error) loadAdminData();
-        }
+        async function toggleSubject(id, active) { const { error } = await supabaseClient.from('subjects').update({ is_active: active }).eq('id', String(id)); if (!error) loadAdminData(); }
         async function deleteSubject(id, name) {
-            if (!confirm('ลบบ้าน "' + name + '" ?')) return;
-            const { error } = await supabaseClient.from('subjects').delete().eq('id', id);
-            if (!error) loadAdminData();
+            showConfirm('ลบบ้าน "' + name + '" ?', async () => {
+                const { error } = await supabaseClient.from('subjects').delete().eq('id', String(id));
+                if (!error) { logActivity('ลบบ้าน', name); loadAdminData(); showToast('ลบบ้านแล้ว'); }
+            });
         }
 
         function showAddDeviceModal() {
+            const usedIds = devices.map(d => d.tuya_device_id);
+            const availableSensors = KNOWN_SENSORS.filter(s => !usedIds.includes(s.tuyaId));
+            const sensorOptions = availableSensors.map(s => `<option value="${s.tuyaId}">${s.name}</option>`).join('');
             showModal(`
-                <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มเครื่องวัดใหม่</h3>
+                <h3 class="text-2xl font-bold text-navy mb-2">เพิ่มเครื่องวัดใหม่</h3>
+                <p class="text-slate-500 text-sm mb-6">เลือกเซนเซอร์จากรายการที่ลงทะเบียนไว้</p>
                 <div class="space-y-4">
-                    <input id="new-device-name" placeholder="ชื่อเครื่อง (เช่น MT29-001)" class="w-full p-4 rounded-2xl border">
-                    <input id="new-device-tuya-id" placeholder="Tuya Device ID" class="w-full p-4 rounded-2xl border">
-                    <select id="new-device-subject" class="w-full p-4 rounded-2xl border">
-                        <option value="">-- เลือกบ้าน --</option>
-                        ${subjects.map(s => `<option value="${s.id}">${s.house_name}</option>`).join('')}
-                    </select>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">เลือกเซนเซอร์</label>
+                        <select id="new-device-sensor" onchange="document.getElementById('new-device-name').value = this.options[this.selectedIndex].text" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">-- เลือกเซนเซอร์ --</option>
+                            ${sensorOptions || '<option value="" disabled>ไม่มีเซนเซอร์ว่าง</option>'}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">ชื่อเครื่อง</label>
+                        <input id="new-device-name" placeholder="ตั้งชื่อ (เช่น บ้านดอยสุเทพ-1)" class="w-full p-4 rounded-2xl border">
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">ติดตั้งที่บ้าน</label>
+                        <select id="new-device-subject" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">-- เลือกบ้าน --</option>
+                            ${subjects.map(s => `<option value="${s.id}">${s.full_name}</option>`).join('')}
+                        </select>
+                    </div>
                     <button onclick="addDevice()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
                 </div>
             `);
         }
-
         async function addDevice() {
+            const tuyaId = document.getElementById('new-device-sensor').value;
             const name = document.getElementById('new-device-name').value;
-            const tuyaId = document.getElementById('new-device-tuya-id').value;
             const subjectId = document.getElementById('new-device-subject').value;
-
-            if (!name || !tuyaId) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
-
-            const { error } = await supabaseClient.from('devices').insert([{
-                name, tuya_device_id: tuyaId, subject_id: subjectId || null, is_active: true
-            }]);
-
-            if (!error) { closeModal(); loadAdminData(); }
+            if (!tuyaId) { showToast('กรุณาเลือกเซนเซอร์', 'warning'); return; }
+            if (!name) { showToast('กรุณากรอกชื่อเครื่อง', 'warning'); return; }
+            const { error } = await supabaseClient.from('devices').insert([{ name, tuya_device_id: tuyaId, subject_id: subjectId || null, is_active: true }]);
+            if (!error) { closeModal(); logActivity('เพิ่มเครื่องวัด', name); loadAdminData(); showToast('เพิ่มเครื่องวัดสำเร็จ'); }
+            else { showToast('เกิดข้อผิดพลาด: ' + error.message, 'error'); }
         }
 
         function showAddVolunteerModal() {
@@ -1354,69 +1566,61 @@
                 <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มอาสาสมัคร</h3>
                 <div class="space-y-4">
                     <input id="new-vol-name" placeholder="ชื่อ-นามสกุล" class="w-full p-4 rounded-2xl border">
-                    <input id="new-vol-province" placeholder="จังหวัด" class="w-full p-4 rounded-2xl border">
                     <input id="new-vol-phone" placeholder="เบอร์โทร" class="w-full p-4 rounded-2xl border">
                     <button onclick="addVolunteer()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
                 </div>
             `);
         }
-
         async function addVolunteer() {
-            const name = document.getElementById('new-vol-name').value;
-            const province = document.getElementById('new-vol-province').value;
+            const fullName = document.getElementById('new-vol-name').value;
             const phone = document.getElementById('new-vol-phone').value;
-
-            if (!name || !province) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
-
-            const { error } = await supabaseClient.from('volunteers').insert([{
-                name, province, phone, is_active: true
-            }]);
-
-            if (!error) { closeModal(); loadAdminData(); }
+            if (!fullName) { showToast('กรุณากรอกชื่อ-นามสกุล', 'warning'); return; }
+            const { error } = await supabaseClient.from('volunteers').insert([{ full_name: fullName, phone_contact: phone || null }]);
+            if (!error) { closeModal(); logActivity('เพิ่มอาสา', fullName); loadAdminData(); showToast('เพิ่มอาสาสมัครสำเร็จ'); }
+            else { showToast('เกิดข้อผิดพลาด: ' + error.message, 'error'); }
         }
 
         function showAddSubjectModal() {
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">เพิ่มบ้านกลุ่มตัวอย่าง</h3>
                 <div class="space-y-4">
-                    <input id="new-sub-name" placeholder="ชื่อบ้าน/รหัส" class="w-full p-4 rounded-2xl border">
-                    <input id="new-sub-province" placeholder="จังหวัด" class="w-full p-4 rounded-2xl border">
-                    <input id="new-sub-district" placeholder="อำเภอ" class="w-full p-4 rounded-2xl border">
+                    <input id="new-sub-name" placeholder="ชื่อบ้าน (เช่น บ้านดอยสุเทพ)" class="w-full p-4 rounded-2xl border">
+                    <input id="new-sub-address" placeholder="ที่อยู่ / ตำบล อำเภอ จังหวัด" class="w-full p-4 rounded-2xl border">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input id="new-sub-lat" placeholder="Latitude (เช่น 18.805)" class="w-full p-4 rounded-2xl border" type="number" step="any">
+                        <input id="new-sub-lng" placeholder="Longitude (เช่น 98.921)" class="w-full p-4 rounded-2xl border" type="number" step="any">
+                    </div>
                     <select id="new-sub-volunteer" class="w-full p-4 rounded-2xl border">
                         <option value="">-- เลือกอาสาสมัคร --</option>
-                        ${volunteers.map(v => `<option value="${v.id}">${v.name}</option>`).join('')}
+                        ${volunteers.map(v => `<option value="${v.id}">${v.full_name}</option>`).join('')}
                     </select>
                     <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">บันทึก</button>
                 </div>
             `);
         }
-
         async function addSubject() {
-            const name = document.getElementById('new-sub-name').value;
-            const province = document.getElementById('new-sub-province').value;
-            const district = document.getElementById('new-sub-district').value;
+            const fullName = document.getElementById('new-sub-name').value;
+            const address = document.getElementById('new-sub-address').value;
+            const lat = document.getElementById('new-sub-lat').value;
+            const lng = document.getElementById('new-sub-lng').value;
             const volunteerId = document.getElementById('new-sub-volunteer').value;
-
-            if (!name || !province) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
-
-            const { error } = await supabaseClient.from('subjects').insert([{
-                house_name: name, province, district, volunteer_id: volunteerId || null, is_active: true
-            }]);
-
-            if (!error) { closeModal(); loadAdminData(); }
+            if (!fullName) { showToast('กรุณากรอกชื่อบ้าน', 'warning'); return; }
+            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active' };
+            if (lat) record.gps_lat = parseFloat(lat);
+            if (lng) record.gps_long = parseFloat(lng);
+            const { error } = await supabaseClient.from('subjects').insert([record]);
+            if (!error) { closeModal(); logActivity('เพิ่มบ้าน', fullName); loadAdminData(); showToast('เพิ่มบ้านสำเร็จ'); }
+            else { showToast('เกิดข้อผิดพลาด: ' + error.message, 'error'); }
         }
 
         function exportToExcel() {
-            if (!allData.length) { alert('ไม่มีข้อมูล'); return; }
+            if (!allData.length) { showToast('ไม่มีข้อมูล', 'warning'); return; }
+            logActivity('Export', allData.length + ' รายการ');
             const ws = XLSX.utils.json_to_sheet(allData.map(d => ({
-                'วันที่': d.recorded_at,
-                'บ้าน': d.house_name,
-                'ประเภทเตา': d.stove_type,
-                'PM2.5': d.pm25_value,
-                'PM10': d.pm10_value,
-                'CO2': d.co2_value,
-                'อุณหภูมิ': d.temperature,
-                'ความชื้น': d.humidity
+                'วันที่': d.recorded_at, 'บ้าน': d.house_name, 'ประเภทเตา': d.stove_type,
+                'PM2.5': d.pm25_value, 'PM10': d.pm10_value, 'PM1': d.pm1_value,
+                'CO2': d.co2_value, 'AQI': d.aqi, 'อุณหภูมิ': d.temperature, 'ความชื้น': d.humidity,
+                'HCHO': d.hcho_value, 'TVOC': d.tvoc_value,
             })));
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Data');
@@ -1427,21 +1631,36 @@
         function initMap() {
             try {
                 map = L.map('map').setView([18.7883, 98.9853], 8);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-            } catch (e) {
-                console.log('Map init skipped');
-            }
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
+            } catch (e) { console.log('Map init skipped'); }
         }
 
-        // (Entry form removed)
+        function initMapDeep() {
+            try {
+                if (mapDeep) return;
+                mapDeep = L.map('map-deep').setView([18.7883, 98.9853], 8);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapDeep);
+            } catch (e) { console.log('Map deep init skipped'); }
+        }
 
         // ==================== Init ====================
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             initMap();
             startAutoRefresh();
+
+            // Lazy init deep map when tab is switched
+            const origSwitch = switchView;
+            const patchedSwitch = function(view) {
+                origSwitch(view);
+                if (view === 'deep') {
+                    setTimeout(() => {
+                        initMapDeep();
+                        if (mapDeep) mapDeep.invalidateSize();
+                    }, 200);
+                }
+            };
+            window.switchView = patchedSwitch;
         });
     </script>
 </body>

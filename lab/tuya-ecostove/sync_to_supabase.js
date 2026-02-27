@@ -92,6 +92,7 @@ async function insertPollutionLog(readings, deviceId) {
     data_source: 'sensor',
     tuya_device_id: deviceId,
     stove_type: 'eco',
+    status: 'pending',
     recorded_at: new Date().toISOString(),
   };
 

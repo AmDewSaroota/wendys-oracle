@@ -4,6 +4,15 @@
   "autoStartCollection": true,
   "autoOpenBrowser": true,
 
+  "session": {
+    "baselineMinutes": 10,
+    "collectionMinutes": 120,
+    "cooldownHours": 5,
+    "offlineToleranceMinutes": 10,
+    "idleScanMinutes": 30,
+    "maxSessionsPerDay": 2
+  },
+
   "tuya": {
     "accessId": "YOUR_TUYA_ACCESS_ID",
     "accessSecret": "YOUR_TUYA_ACCESS_SECRET",
@@ -16,7 +25,7 @@
   },
 
   "devices": [
-    { "id": "TUYA_DEVICE_ID_1", "name": "Sensor #1" },
-    { "id": "TUYA_DEVICE_ID_2", "name": "Sensor #2" }
+    { "id": "TUYA_DEVICE_ID_1", "name": "Sensor #1", "houseId": null },
+    { "id": "TUYA_DEVICE_ID_2", "name": "Sensor #2", "houseId": null }
   ]
 }
