@@ -47,16 +47,27 @@ async function getTuyaToken() {
   return data.success ? data.result.access_token : null;
 }
 
-async function getDeviceStatus(token, deviceId) {
-  const timestamp = Date.now().toString();
-  const path = '/v1.0/devices/' + deviceId + '/status';
-  const sign = generateSign('GET', path, timestamp, token);
+async function getDeviceStatus(token, deviceId, retries) {
+  retries = retries || 3;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const timestamp = Date.now().toString();
+      const path = '/v1.0/devices/' + deviceId + '/status';
+      const sign = generateSign('GET', path, timestamp, token);
 
-  const response = await fetch(TUYA_BASE_URL + path, {
-    headers: { client_id: TUYA_ACCESS_ID, access_token: token, sign: sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-  });
+      const response = await fetch(TUYA_BASE_URL + path, {
+        headers: { client_id: TUYA_ACCESS_ID, access_token: token, sign: sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+      });
 
-  return response.json();
+      return response.json();
+    } catch (err) {
+      if (attempt < retries) {
+        await new Promise(r => setTimeout(r, 3000));
+      } else {
+        throw err;
+      }
+    }
+  }
 }
 
 function parseReadings(data) {
