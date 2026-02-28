@@ -477,16 +477,16 @@
   <h2>หลังติดตั้ง — ค่าใช้จ่ายรายเดือน</h2>
   <div class="card-grid cols-4">
     <div class="card">
-      <div class="icon">🖥️</div>
-      <h3>Server</h3>
+      <div class="icon">⚙️</div>
+      <h3>ดึงข้อมูล</h3>
       <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
-      <p>Oracle Cloud Free Tier<br>VM ฟรีตลอดชีพ</p>
+      <p>GitHub Actions<br>cron ทุก 5 นาที 24/7</p>
     </div>
     <div class="card">
       <div class="icon">🗄️</div>
       <h3>Database</h3>
       <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
-      <p>Supabase Free<br>500 MB — เก็บ 8 ค่าได้หลายปี</p>
+      <p>Supabase 500 MB<br>10 เครื่อง 6 เดือน ใช้แค่ ~80 MB</p>
     </div>
     <div class="card">
       <div class="icon">☁️</div>
@@ -498,13 +498,31 @@
       <div class="icon">📊</div>
       <h3>Dashboard</h3>
       <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
-      <p>อยู่บน Server เดียวกัน<br>เปิดผ่านเว็บได้</p>
+      <p>Vercel<br>เปิดผ่านเว็บได้ทุกที่</p>
     </div>
   </div>
-  <div class="highlight-row" style="justify-content:center; margin-top:28px;">
-    <div class="highlight-box" style="max-width:400px; border:3px solid rgba(52,211,153,0.5);">
-      <div class="big-num" style="color:#34d399; font-size:3rem;">0 ฿/เดือน</div>
-      <div style="font-size:0.95rem; opacity:0.7; margin-top:8px;">ค่าดำเนินการหลังติดตั้ง</div>
+  <div style="margin-top:20px; display:flex; justify-content:center;">
+    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.8rem; opacity:0.8; text-align:center; max-width:500px;">
+      💾 Storage 6 เดือน: ~80 MB จาก 500 MB (16%) — เหลือพอเก็บได้อีก <strong>2+ ปี</strong>
+    </div>
+  </div>
+  <div class="highlight-row" style="justify-content:center; margin-top:28px; gap:24px;">
+    <div class="highlight-box" style="max-width:300px; border:3px solid rgba(52,211,153,0.5);">
+      <div class="big-num" style="color:#34d399; font-size:2.5rem;">0 ฿/เดือน</div>
+      <div style="font-size:0.9rem; opacity:0.7; margin-top:8px;">ค่าระบบ (Server + DB + API + Dashboard)</div>
+    </div>
+    <div class="highlight-box" style="max-width:340px; border:3px solid rgba(255,255,255,0.2);">
+      <div style="font-size:0.9rem; opacity:0.8; margin-bottom:8px;">LINE แจ้งเตือนอาจารย์</div>
+      <div style="display:flex; gap:16px; justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:1.4rem; font-weight:700; color:#34d399;">฿0</div>
+          <div style="font-size:0.75rem; opacity:0.6;">แผน A (ฟรี)<br>~90 msg/เดือน</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:1.4rem; font-weight:700; color:#c4b5fd;">฿400</div>
+          <div style="font-size:0.75rem; opacity:0.6;">แผน B (Light)<br>แจ้งอาสาด้วย</div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="slide-number">4 / 12</div>
@@ -597,11 +615,11 @@
         <div style="margin-top:12px;">
           <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:10px;">
             <span style="background:var(--green-light); color:var(--green-dark); padding:2px 10px; border-radius:8px; font-size:0.8rem; font-weight:600; white-space:nowrap;">ชั้น 1</span>
-            <div style="font-size:0.85rem; color:var(--gray-700);"><strong>LINE เตือนชาวบ้านเช้า</strong><br>"อย่าลืมเปิดเซนเซอร์ตอนทำอาหารนะคะ 🍳"</div>
+            <div style="font-size:0.85rem; color:var(--gray-700);"><strong>LINE แจ้งอาจารย์เช้า</strong><br>"บ้าน #3, #7 ยังไม่เปิดเซนเซอร์" → อาจารย์โทร/ส่งข้อความตามอาสาเอง</div>
           </div>
           <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:10px;">
             <span style="background:#fef3c7; color:#92400e; padding:2px 10px; border-radius:8px; font-size:0.8rem; font-weight:600; white-space:nowrap;">ชั้น 2</span>
-            <div style="font-size:0.85rem; color:var(--gray-700);"><strong>Midday nudge</strong><br>เที่ยงยังไม่มีข้อมูล → "เปิดเซนเซอร์ตอนทำอาหารเย็นก็ได้นะคะ"</div>
+            <div style="font-size:0.85rem; color:var(--gray-700);"><strong>LINE สรุปเย็น</strong><br>สรุปว่าบ้านไหนเก็บได้/ไม่ได้ → อาจารย์ติดตามต่อ</div>
           </div>
           <div style="display:flex; align-items:flex-start; gap:12px;">
             <span style="background:#fee2e2; color:#991b1b; padding:2px 10px; border-radius:8px; font-size:0.8rem; font-weight:600; white-space:nowrap;">ชั้น 3</span>
@@ -736,66 +754,78 @@
   <div class="slide-number">7 / 12</div>
 </div>
 
-<!-- ========== SLIDE 7: LINE Notifications ========== -->
+<!-- ========== SLIDE 8: LINE Notifications — 2 Plans ========== -->
 <div class="slide bg-blue">
   <span class="tag">แจ้ง — LINE แจ้งเตือน</span>
-  <h2>ระบบแจ้งเตือนผ่าน LINE</h2>
-  <p class="subtitle" style="margin-bottom:24px;">ใช้ LINE Messaging API (ฟรี 200 ข้อความ/เดือน)</p>
-  <div class="card-grid cols-3">
-    <div class="card">
-      <div class="icon">🏠</div>
-      <h3>กลุ่มตัวอย่าง (ชาวบ้าน)</h3>
-      <p style="color:var(--green); font-weight:500; margin-bottom:8px;">แทบไม่ต้องทำอะไร</p>
-      <ul>
-        <li>ใช้เตาทำอาหารตามปกติ</li>
-        <li>เซนเซอร์เสียบทิ้งไว้</li>
-        <li>บ้านไม่มี WiFi → นัดกับอาสาเอง</li>
-        <li>ถ้าอยากดู → LINE ส่งสรุปรายวัน</li>
-      </ul>
+  <h2>ระบบแจ้งเตือนผ่าน LINE — 2 แผน</h2>
+  <p class="subtitle" style="margin-bottom:20px;">LINE OA ตัวเดียว — ส่งข้อความเฉพาะคนได้ (push) ไม่ต้องแยกช่อง</p>
+  <div class="two-col">
+    <div>
+      <div class="card" style="border-top-color: var(--green);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 style="margin:0; color:var(--green-dark);">แผน A: ฟรี</h3>
+          <span style="font-size:1.5rem; font-weight:700; color:var(--green);">฿0/เดือน</span>
+        </div>
+        <p style="margin-bottom:12px; font-size:0.82rem; color:var(--gray-500);">ฟรี 200 ข้อความ/เดือน — ใช้จริง ~90</p>
+        <div class="table-wrap">
+          <table style="font-size:0.82rem;">
+            <thead><tr><th>ข้อความ</th><th>ถึง</th><th>/เดือน</th></tr></thead>
+            <tbody>
+              <tr><td>🌅 เช้า — บ้านไหนยังไม่เปิด</td><td>อาจารย์</td><td style="text-align:center;">30</td></tr>
+              <tr><td>🌆 เย็น — สรุปรายวัน</td><td>อาจารย์</td><td style="text-align:center;">30</td></tr>
+              <tr><td>✅ แจ้งเมื่อครบทุกบ้าน</td><td>อาจารย์</td><td style="text-align:center;">~30</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px; padding:8px 12px; background:var(--green-50); border-radius:8px; font-size:0.82rem; color:var(--green-dark);">
+          ✅ <strong>พอสำหรับเฟสแรก</strong> — อาจารย์โทร/ส่งข้อความตามอาสาเอง
+        </div>
+      </div>
     </div>
-    <div class="card orange">
-      <div class="icon">🙋</div>
-      <h3>อาสาสมัคร</h3>
-      <p style="color:var(--orange); font-weight:500; margin-bottom:8px;">เฉพาะบ้านที่ไม่มี WiFi</p>
-      <ul>
-        <li>นัดเวลากับชาวบ้านเอง</li>
-        <li>ไปเปิด Hotspot ช่วงเก็บข้อมูล</li>
-        <li>LINE แจ้งเตือน + สรุปผลประจำวัน</li>
-        <li>แจ้งถ้าเซนเซอร์ offline นานผิดปกติ</li>
-      </ul>
-    </div>
-    <div class="card purple">
-      <div class="icon">👩‍🏫</div>
-      <h3>อาจารย์</h3>
-      <p style="color:var(--purple); font-weight:500; margin-bottom:8px;">ดูผลผ่าน Dashboard + LINE</p>
-      <ul>
-        <li>สรุปรายวัน/รายสัปดาห์</li>
-        <li>แจ้งเตือนถ้ามีปัญหา</li>
-        <li>ดูข้อมูลเทียบผ่าน Dashboard</li>
-        <li>Export ข้อมูลเมื่อต้องการ</li>
-      </ul>
+    <div>
+      <div class="card" style="border-top-color: var(--purple);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 style="margin:0; color:var(--green-dark);">แผน B: Light</h3>
+          <span style="font-size:1.5rem; font-weight:700; color:var(--purple);">฿400/เดือน</span>
+        </div>
+        <p style="margin-bottom:12px; font-size:0.82rem; color:var(--gray-500);">5,000 ข้อความ/เดือน — ใช้จริง ~750</p>
+        <div class="table-wrap">
+          <table style="font-size:0.82rem;">
+            <thead><tr><th>ข้อความ</th><th>ถึง</th><th>/เดือน</th></tr></thead>
+            <tbody>
+              <tr><td>🌅 เช้า — บ้านไหนยังไม่เปิด</td><td>อาจารย์</td><td style="text-align:center;">30</td></tr>
+              <tr><td>🌆 เย็น — สรุปรายวัน</td><td>อาจารย์</td><td style="text-align:center;">30</td></tr>
+              <tr><td>📡 เซนเซอร์เปิด — แจ้งทีละบ้าน</td><td>อาจารย์ + อาสา</td><td style="text-align:center;">~600</td></tr>
+              <tr><td>⚠️ เน็ตหลุด / ค่าผิดปกติ</td><td>อาจารย์</td><td style="text-align:center;">~90</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:12px; padding:8px 12px; background:#f3e8ff; border-radius:8px; font-size:0.82rem; color:#5b21b6;">
+          🔔 <strong>แจ้งอาสาอัตโนมัติ</strong> — ลดภาระอาจารย์ในการติดตาม
+        </div>
+      </div>
     </div>
   </div>
-  <div class="highlight-row" style="justify-content:center; margin-top:20px;">
-    <div class="highlight-box" style="max-width:700px;">
-      <div style="display:flex; align-items: center; justify-content:center; gap:32px;">
+  <div class="highlight-row" style="justify-content:center; margin-top:16px;">
+    <div class="highlight-box" style="max-width:720px;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:32px;">
         <div>
-          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE อาสา</div>
+          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE เช้า (อาจารย์)</div>
           <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; margin-top:8px; text-align:left; font-size:0.82rem; color:var(--gray-700);">
-            🔔 <strong>สรุป EcoStove วันนี้</strong><br>
-            บ้าน #3 (คุณสมชาย) — เก็บสำเร็จ ✅<br>
-            บ้าน #7 (คุณสมหญิง) — ไม่มีเน็ต ❌<br>
-            <span style="color:var(--gray-500);">กรุณานัดเวลากับบ้าน #7 ใหม่</span>
+            🌅 <strong>EcoStove เช้านี้</strong> (28 ก.พ.)<br>
+            ยังไม่เปิด: บ้าน #3, #7<br>
+            เปิดแล้ว: 8/10 บ้าน ✅<br>
+            <span style="color:var(--gray-500);">กรุณาติดต่ออาสาช่วยเช็คค่ะ</span>
           </div>
         </div>
         <div>
-          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE สรุป</div>
+          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE เย็น (อาจารย์)</div>
           <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; margin-top:8px; text-align:left; font-size:0.82rem; color:var(--gray-700);">
-            📊 <strong>สรุปวันนี้</strong> (26 ก.พ.)<br>
+            📊 <strong>สรุปวันนี้</strong> (28 ก.พ.)<br>
             เก็บสำเร็จ: 8/10 บ้าน ✅<br>
-            ขาด: บ้าน #5, #9 (ไม่มีเน็ต)<br>
+            ขาด: บ้าน #3, #7<br>
             PM2.5 เฉลี่ย: 42 µg/m³<br>
-            <span style="color:var(--gray-500);">ดูเพิ่มเติมที่ Dashboard</span>
+            <span style="color:var(--gray-500);">มี 8 sessions รออนุมัติ</span>
           </div>
         </div>
       </div>

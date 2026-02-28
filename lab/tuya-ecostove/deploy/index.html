@@ -76,6 +76,20 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; z-index: 300;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 16px;
+        }
+        .loading-spinner {
+            width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #10b981; border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        .loading-text { color: #fff; font-weight: 600; font-size: 0.95rem; }
+
         /* AQI Hero */
         .aqi-good { background: linear-gradient(135deg, #059669, #10b981); }
         .aqi-moderate { background: linear-gradient(135deg, #d97706, #f59e0b); }
@@ -439,15 +453,15 @@
             <!-- Daily Summary -->
             <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-6">
                 <h4 class="font-bold text-lg text-navy mb-4" data-i18n="daily.title">สรุปรายวัน</h4>
-                <div class="bg-slate-50 rounded-2xl p-4 mb-4 text-[12px] text-slate-600 border border-slate-200">
-                    <p class="font-bold text-navy mb-2" data-i18n="daily.legend.title">หมายเหตุ — สถานะความสมบูรณ์:</p>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-2 py-1 rounded-lg bg-emerald-100 text-emerald-700 font-bold" data-i18n="compliance.complete">✅ ครบ</span> <span data-i18n="daily.legend.complete">เก็บข้อมูลครบตามเป้า</span>
-                        <span class="px-2 py-1 rounded-lg bg-yellow-100 text-yellow-700 font-bold" data-i18n="compliance.partial">⚠️ บางส่วน</span> <span data-i18n="daily.legend.partial">เก็บได้บางส่วน</span>
-                        <span class="px-2 py-1 rounded-lg bg-red-100 text-red-700 font-bold" data-i18n="compliance.missed">❌ ขาด</span> <span data-i18n="daily.legend.missed">ไม่ได้เก็บข้อมูล</span>
-                        <span class="px-2 py-1 rounded-lg bg-slate-100 text-slate-500 font-bold" data-i18n="compliance.pending">⏳ รอ</span> <span data-i18n="daily.legend.pending">รอการเก็บข้อมูล</span>
+                <details class="mb-4 text-[11px] text-slate-400">
+                    <summary class="cursor-pointer hover:text-slate-600 select-none" data-i18n="daily.legend.title">หมายเหตุ — สถานะความสมบูรณ์</summary>
+                    <div class="flex flex-wrap gap-2 mt-2 pl-1">
+                        <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold" data-i18n="compliance.complete">✅ ครบ</span> <span data-i18n="daily.legend.complete">เก็บข้อมูลครบตามเป้า</span>
+                        <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold" data-i18n="compliance.partial">⚠️ บางส่วน</span> <span data-i18n="daily.legend.partial">เก็บได้บางส่วน</span>
+                        <span class="px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-bold" data-i18n="compliance.missed">❌ ขาด</span> <span data-i18n="daily.legend.missed">ไม่ได้เก็บข้อมูล</span>
+                        <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-bold" data-i18n="compliance.pending">⏳ รอ</span> <span data-i18n="daily.legend.pending">รอการเก็บข้อมูล</span>
                     </div>
-                </div>
+                </details>
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-[13px] min-w-[700px]">
                         <thead class="bg-slate-50 border-b">
@@ -540,14 +554,18 @@
                 </div>
             </div>
 
-            <!-- Tab 4: รออนุมัติ -->
-            <div id="admin-approvals" class="admin-tab-content hidden bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
-                <table class="w-full text-left text-sm min-w-[900px]">
-                    <thead class="bg-slate-50 border-b">
-                        <tr><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider" data-i18n="approval.datetime">วัน/เวลา</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider" data-i18n="approval.house">บ้าน</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center" data-i18n="approval.stove">เตา</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center" data-i18n="approval.values">PM/CO2</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center" data-i18n="approval.photo">รูปภาพ</th><th class="p-6 font-bold text-navy uppercase text-[13px] tracking-wider text-center" data-i18n="approval.actions">จัดการ</th></tr>
-                    </thead>
-                    <tbody id="pending-logs-table" class="divide-y"></tbody>
-                </table>
+            <!-- Tab 4: รออนุมัติ (Session-based) -->
+            <div id="admin-approvals" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-navy">รออนุมัติข้อมูล</h3>
+                        <p class="text-slate-500 text-sm" id="approval-summary-text">กำลังโหลด...</p>
+                    </div>
+                    <button onclick="batchApproveAll()" id="btn-approve-all" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition-all hidden">
+                        ✓ อนุมัติทั้งหมด
+                    </button>
+                </div>
+                <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
             <!-- Tab 5: ข้อมูลเซนเซอร์ -->
@@ -928,7 +946,7 @@
         let activityLog = JSON.parse(localStorage.getItem('ecostove_activity_log') || '[]');
 
         function logActivity(action, detail) {
-            const entry = { action, detail, timestamp: new Date().toISOString() };
+            const entry = { action, detail, user: currentAdmin || '-', timestamp: new Date().toISOString() };
             activityLog.unshift(entry);
             if (activityLog.length > 200) activityLog = activityLog.slice(0, 200);
             localStorage.setItem('ecostove_activity_log', JSON.stringify(activityLog));
@@ -1008,7 +1026,7 @@
                 currentAdmin = name;
                 closeModal();
                 switchView('admin');
-                loadAdminData();
+                loadAdminData(!adminLoaded);
                 logActivity('เข้าสู่ระบบ', name);
                 const adminHeader = document.getElementById('admin-user-name');
                 if (adminHeader) adminHeader.textContent = name;
@@ -1060,6 +1078,18 @@
         }
 
         // Toast notification (replaces alert)
+        function showLoading(message = 'กำลังดำเนินการ...') {
+            const el = document.createElement('div');
+            el.id = 'loading-overlay';
+            el.className = 'loading-overlay';
+            el.innerHTML = `<div class="loading-spinner"></div><div class="loading-text">${message}</div>`;
+            document.body.appendChild(el);
+        }
+        function hideLoading() {
+            const el = document.getElementById('loading-overlay');
+            if (el) el.remove();
+        }
+
         function showToast(message, type = 'success') {
             const colors = { success: 'bg-emerald-600', error: 'bg-red-600', warning: 'bg-amber-500' };
             const icons = { success: '✓', error: '✕', warning: '⚠' };
@@ -1087,7 +1117,9 @@
         }
 
         // ==================== Data Loading ====================
-        async function loadData() {
+        let dataLoaded = false;
+        async function loadData(showSpinner) {
+            if (showSpinner) showLoading('กำลังโหลดข้อมูล...');
             try {
                 const { data: allRecords, error } = await supabaseClient
                     .from('pollution_logs')
@@ -1097,11 +1129,14 @@
                 if (error) throw error;
                 allDataWithPending = allRecords || [];
                 allData = allDataWithPending.filter(d => d.status === 'approved');
+                dataLoaded = true;
 
                 if (currentView === 'basic') updateBasicView();
                 else if (currentView === 'deep') updateDeepView();
             } catch (e) {
                 console.error('Error loading data:', e);
+            } finally {
+                if (showSpinner) hideLoading();
             }
         }
 
@@ -1502,6 +1537,7 @@
                 'cancelled': 'bg-red-100 text-red-700',
             };
             const statusIcons = { 'baseline': '🔵', 'collecting': '🟡', 'complete': '✅', 'incomplete': '⚠️', 'cancelled': '❌' };
+            const statusThai = { 'baseline': 'ตั้งต้น', 'collecting': 'กำลังเก็บ', 'complete': 'ครบ', 'incomplete': 'ไม่ครบ', 'cancelled': 'ยกเลิก' };
 
             const tbody = document.getElementById('sessions-table-body');
             if (!tbody) return;
@@ -1510,11 +1546,12 @@
                 const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) + ' min' : t('session.in.progress');
                 const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
                 const icon = statusIcons[s.session_status] || '❓';
+                const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
                 const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
                 return '<tr class="hover:bg-slate-50/50">' +
                     '<td class="p-3 whitespace-nowrap">' + new Date(s.started_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td>' +
                     '<td class="p-3">' + deviceName + '</td>' +
-                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + s.session_status + '</span></td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span></td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -1624,11 +1661,12 @@
             }
             feed.innerHTML = activityLog.slice(0, 50).map(entry => {
                 const icon = ACTION_ICONS[entry.action] || '📋';
+                const userName = entry.user || '-';
                 return `<div class="flex items-center gap-4 p-4 bg-white/70 rounded-2xl border border-slate-100">
                     <span class="text-2xl">${icon}</span>
                     <div class="flex-1 min-w-0">
                         <p class="text-[13px] font-bold text-navy truncate">${entry.action}</p>
-                        <p class="text-[11px] text-slate-400">${new Date(entry.timestamp).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
+                        <p class="text-[11px] text-slate-400">👤 ${userName} · ${new Date(entry.timestamp).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[13px] text-slate-500 truncate max-w-[180px]">${entry.detail || '-'}</p>
@@ -1683,30 +1721,105 @@
         }
 
         // ==================== Admin Functions ====================
-        async function loadAdminData() {
+        let adminLoaded = false;
+        async function loadAdminData(showSpinner) {
+            if (showSpinner) showLoading('กำลังโหลดข้อมูล Admin...');
             try {
                 const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false });
                 if (error) throw error;
 
-                const tbody = document.getElementById('pending-logs-table');
                 document.getElementById('count-pending').textContent = data?.length || 0;
 
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">' + t('approval.no.data') + '</td></tr>';
+                // Group by device + date = "session"
+                const sessionMap = {};
+                (data || []).forEach(d => {
+                    const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
+                    const key = `${d.tuya_device_id || 'unknown'}__${date}`;
+                    if (!sessionMap[key]) {
+                        sessionMap[key] = { device: d.tuya_device_id, stoveType: d.stove_type, date, logs: [], ids: [] };
+                    }
+                    sessionMap[key].logs.push(d);
+                    sessionMap[key].ids.push(d.id);
+                });
+
+                const sessions = Object.values(sessionMap);
+                const container = document.getElementById('pending-sessions-list');
+                const summaryEl = document.getElementById('approval-summary-text');
+                const btnAll = document.getElementById('btn-approve-all');
+
+                if (sessions.length === 0) {
+                    container.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400 text-lg">' + t('approval.no.data') + '</div>';
+                    summaryEl.textContent = 'ไม่มีข้อมูลรออนุมัติ';
+                    btnAll.classList.add('hidden');
                 } else {
-                    tbody.innerHTML = data.map(d => `
-                        <tr class="hover:bg-slate-50">
-                            <td class="p-4">${new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</td>
-                            <td class="p-4">${d.house_name || '-'}</td>
-                            <td class="p-4 text-center">${d.stove_type === 'eco' ? t('live.eco') : t('live.old')}</td>
-                            <td class="p-4 text-center">${d.pm25_value || '-'} / ${d.co2_value || '-'}</td>
-                            <td class="p-4 text-center">${d.photo_url ? '📷' : '-'}</td>
-                            <td class="p-4 text-center">
-                                <button onclick="approveLog('${d.id}')" class="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-xl font-bold text-[12px] mr-2">${t('approval.approve')}</button>
-                                <button onclick="rejectLog('${d.id}')" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl font-bold text-[12px]">${t('approval.reject')}</button>
-                            </td>
-                        </tr>
-                    `).join('');
+                    summaryEl.textContent = `${data.length} รายการ ใน ${sessions.length} เซสชัน`;
+                    btnAll.classList.remove('hidden');
+
+                    container.innerHTML = sessions.map(s => {
+                        const avgPM = Math.round(s.logs.reduce((sum, l) => sum + (l.pm25_value || 0), 0) / s.logs.length);
+                        const avgCO2 = Math.round(s.logs.reduce((sum, l) => sum + (l.co2_value || 0), 0) / s.logs.length);
+                        const avgTemp = (s.logs.reduce((sum, l) => sum + (l.temperature || 0), 0) / s.logs.length).toFixed(1);
+                        const sensorName = s.device === 'a3d01864e463e3ede0hf0e' ? 'MT13W' : s.device === 'a3b9c2e4bdfe69ad7ekytn' ? 'MT29' : s.device?.slice(0, 8);
+                        const stoveLabel = s.stoveType === 'eco' ? '🟢 เตาประหยัด' : '🔴 เตาเดิม';
+                        const sKey = 'ps_' + s.device.slice(-6) + '_' + s.date.replace(/-/g,'');
+                        window[sKey] = s.ids;
+
+                        // Session status: check if still collecting or done
+                        const expected = 20;
+                        const pct = Math.min(100, Math.round(s.logs.length / expected * 100));
+                        const isComplete = s.logs.length >= 10;
+                        const latestLog = s.logs[0]; // already sorted desc
+                        const lastTime = latestLog ? new Date(latestLog.recorded_at) : null;
+                        const minutesAgo = lastTime ? Math.round((Date.now() - lastTime.getTime()) / 60000) : 999;
+                        const isStillCollecting = minutesAgo < 10; // ข้อมูลล่าสุดไม่เกิน 10 นาที = ยังเก็บอยู่
+
+                        let statusBadge, borderColor, statusMsg;
+                        if (isComplete) {
+                            statusBadge = `<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-sm">✓ ${s.logs.length} ครบ</span>`;
+                            borderColor = 'border-emerald-400';
+                            statusMsg = '';
+                        } else if (isStillCollecting) {
+                            statusBadge = `<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-600 font-bold text-sm animate-pulse">🔄 ${s.logs.length}/${expected} กำลังเก็บ</span>`;
+                            borderColor = 'border-blue-400';
+                            statusMsg = '<p class="text-sm text-blue-500 mb-3 bg-blue-50 px-3 py-2 rounded-lg">กำลังเก็บข้อมูล — อัปเดตล่าสุด ' + minutesAgo + ' นาทีที่แล้ว</p>';
+                        } else {
+                            statusBadge = `<span class="px-3 py-1 rounded-full bg-red-100 text-red-600 font-bold text-sm">⚠ ${s.logs.length}/${expected} ไม่ครบ</span>`;
+                            borderColor = 'border-red-400';
+                            const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + ' ชม.' : minutesAgo + ' นาที';
+                            statusMsg = '<p class="text-sm text-red-500 mb-3 bg-red-50 px-3 py-2 rounded-lg">หยุดเก็บแล้ว — ข้อมูลล่าสุด ' + agoText + 'ที่แล้ว</p>';
+                        }
+
+                        return `
+                        <div class="card-styled p-6 rounded-2xl border-l-4 ${borderColor}">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <p class="font-bold text-navy text-lg">📡 ${sensorName}</p>
+                                    <p class="text-sm text-slate-400">${s.date} | ${stoveLabel}</p>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                            ${statusMsg}
+                            <div class="w-full bg-slate-100 rounded-full h-2 mb-4"><div class="h-2 rounded-full ${isComplete ? 'bg-emerald-500' : 'bg-red-400'}" style="width:${pct}%"></div></div>
+                            <div class="grid grid-cols-3 gap-3 mb-5">
+                                <div class="text-center p-3 bg-blue-50 rounded-xl">
+                                    <p class="text-[11px] text-slate-400 font-bold">PM2.5</p>
+                                    <p class="text-xl font-bold text-blue-600">${avgPM}</p>
+                                </div>
+                                <div class="text-center p-3 bg-orange-50 rounded-xl">
+                                    <p class="text-[11px] text-slate-400 font-bold">CO2</p>
+                                    <p class="text-xl font-bold text-orange-600">${avgCO2}</p>
+                                </div>
+                                <div class="text-center p-3 bg-red-50 rounded-xl">
+                                    <p class="text-[11px] text-slate-400 font-bold">Temp</p>
+                                    <p class="text-xl font-bold text-red-500">${avgTemp}°</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="approveSession(window.${sKey})" class="flex-1 px-4 py-3 bg-emerald-100 text-emerald-700 rounded-xl font-bold text-sm hover:bg-emerald-200 transition-all">✓ อนุมัติเซสชัน</button>
+                                <button onclick="rejectSession(window.${sKey})" class="px-4 py-3 bg-red-100 text-red-500 rounded-xl font-bold text-sm hover:bg-red-200 transition-all">✗</button>
+                            </div>
+                        </div>`;
+                    }).join('');
                 }
 
                 const { data: devData } = await supabaseClient.from('devices').select('*, subjects(*)');
@@ -1721,18 +1834,49 @@
                 const { data: subData } = await supabaseClient.from('subjects').select('*, volunteers(*)');
                 subjects = subData || [];
                 renderSubjectsList();
+                adminLoaded = true;
             } catch (e) {
                 console.error('Error loading admin data:', e);
+            } finally {
+                if (showSpinner) hideLoading();
             }
         }
 
-        async function approveLog(id) {
-            const { error } = await supabaseClient.from('pollution_logs').update({ status: 'approved' }).eq('id', id);
-            if (!error) { logActivity(t('approval.approved'), 'ID: ' + id.slice(0, 8)); loadAdminData(); showToast(t('approval.approved')); }
+        async function approveSession(ids) {
+            showLoading('กำลังอนุมัติ ' + ids.length + ' รายการ...');
+            try {
+                await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
+                logActivity('อนุมัติเซสชัน', ids.length + ' รายการ');
+                await Promise.all([loadAdminData(), loadData()]);
+                showToast('อนุมัติ ' + ids.length + ' รายการ');
+            } catch (e) {
+                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+            } finally { hideLoading(); }
         }
-        async function rejectLog(id) {
-            const { error } = await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).eq('id', id);
-            if (!error) { logActivity(t('approval.rejected'), 'ID: ' + id.slice(0, 8)); loadAdminData(); showToast(t('approval.rejected')); }
+        async function rejectSession(ids) {
+            showLoading('กำลังดำเนินการ...');
+            try {
+                await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).in('id', ids);
+                logActivity('ปฏิเสธเซสชัน', ids.length + ' รายการ');
+                await Promise.all([loadAdminData(), loadData()]);
+                showToast('ปฏิเสธ ' + ids.length + ' รายการ');
+            } catch (e) {
+                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+            } finally { hideLoading(); }
+        }
+        async function batchApproveAll() {
+            showLoading('กำลังอนุมัติทั้งหมด...');
+            try {
+                const { data } = await supabaseClient.from('pollution_logs').select('id').eq('status', 'pending');
+                if (!data || data.length === 0) { hideLoading(); return; }
+                const ids = data.map(d => d.id);
+                await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
+                logActivity('อนุมัติทั้งหมด', data.length + ' รายการ');
+                await Promise.all([loadAdminData(), loadData()]);
+                showToast('อนุมัติทั้งหมด ' + data.length + ' รายการ');
+            } catch (e) {
+                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+            } finally { hideLoading(); }
         }
 
         function renderDevicesList() {
@@ -2039,16 +2183,24 @@
 
         function exportToExcel() {
             if (!allData.length) { showToast(t('export.no.data'), 'warning'); return; }
-            logActivity('Export', allData.length + ' records');
-            const ws = XLSX.utils.json_to_sheet(allData.map(d => ({
-                [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
-                'PM2.5': d.pm25_value, 'PM10': d.pm10_value, 'PM1': d.pm1_value,
-                'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
-                'HCHO': d.hcho_value, 'TVOC': d.tvoc_value,
-            })));
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Data');
-            XLSX.writeFile(wb, `ecostove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showLoading('กำลังสร้างไฟล์ Excel...');
+            setTimeout(() => {
+                try {
+                    logActivity('Export', allData.length + ' records');
+                    const ws = XLSX.utils.json_to_sheet(allData.map(d => ({
+                        [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
+                        'PM2.5': d.pm25_value, 'PM10': d.pm10_value, 'PM1': d.pm1_value,
+                        'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
+                        'HCHO': d.hcho_value,
+                    })));
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+                    XLSX.writeFile(wb, `ecostove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
+                    showToast('Export สำเร็จ ' + allData.length + ' รายการ');
+                } catch (e) {
+                    showToast('Export ผิดพลาด: ' + e.message, 'error');
+                } finally { hideLoading(); }
+            }, 50);
         }
 
         // ==================== Map ====================
@@ -2062,7 +2214,7 @@
 
         async function loadBasicMapMarkers() {
             if (!map) return;
-            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status').not('gps_lat', 'is', null).not('gps_long', 'is', null);
+            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, stove_type').not('gps_lat', 'is', null).not('gps_long', 'is', null);
             if (error || !data || !data.length) return;
             const bounds = [];
             data.forEach(s => {
@@ -2071,7 +2223,8 @@
                 if (isNaN(lat) || isNaN(lng)) return;
                 bounds.push([lat, lng]);
                 const icon = s.status === 'active' ? '🟢' : '🔵';
-                L.marker([lat, lng]).addTo(map).bindPopup('<b>' + icon + ' ' + s.full_name + '</b>');
+                const stoveLabel = s.stove_type === 'eco' ? 'EcoStove' : s.stove_type === 'old' ? 'เตาเดิม' : (s.stove_type || '-');
+                L.marker([lat, lng]).addTo(map).bindPopup('<b>' + icon + ' ' + s.full_name + '</b><br>เตา: ' + stoveLabel);
             });
             if (bounds.length) map.fitBounds(bounds, { padding: [30, 30] });
         }
@@ -2087,7 +2240,7 @@
 
         async function loadSubjectMarkers() {
             if (!mapDeep) return;
-            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status').not('gps_lat', 'is', null).not('gps_long', 'is', null);
+            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, stove_type, connectivity_mode, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null);
             if (error || !data || !data.length) return;
             const bounds = [];
             data.forEach(s => {
@@ -2096,16 +2249,25 @@
                 if (isNaN(lat) || isNaN(lng)) return;
                 bounds.push([lat, lng]);
                 const icon = s.status === 'active' ? '🟢' : '🔵';
-                L.marker([lat, lng]).addTo(mapDeep).bindPopup('<b>' + icon + ' ' + s.full_name + '</b><br>สถานะ: ' + (s.status || '-'));
+                const stoveLabel = s.stove_type === 'eco' ? 'EcoStove' : s.stove_type === 'old' ? 'เตาเดิม' : (s.stove_type || '-');
+                const wifiLabel = s.connectivity_mode === 'wifi' ? '📶 WiFi' : '📱 Hotspot';
+                const volunteer = s.volunteers?.full_name || '-';
+                const popup = '<b>' + icon + ' ' + s.full_name + '</b>' +
+                    '<br>เตา: ' + stoveLabel +
+                    '<br>เชื่อมต่อ: ' + wifiLabel +
+                    '<br>อาสา: ' + volunteer;
+                L.marker([lat, lng]).addTo(mapDeep).bindPopup(popup);
             });
             if (bounds.length) mapDeep.fitBounds(bounds, { padding: [30, 30] });
         }
 
         // ==================== Init ====================
         document.addEventListener('DOMContentLoaded', async function() {
+            showLoading('กำลังโหลดข้อมูล...');
             applyLang();
             await loadRegisteredSensors();
-            loadData();
+            await loadData();
+            hideLoading();
             initMap();
             startAutoRefresh();
 
