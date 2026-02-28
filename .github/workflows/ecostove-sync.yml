@@ -1,0 +1,32 @@
+name: EcoStove Sensor Sync
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: lab/tuya-ecostove
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: lab/tuya-ecostove
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run sync
+        env:
+          TUYA_ACCESS_ID: ${{ secrets.TUYA_ACCESS_ID }}
+          TUYA_ACCESS_SECRET: ${{ secrets.TUYA_ACCESS_SECRET }}
+          SUPABASE_URL: ${{ secrets.ECOSTOVE_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.ECOSTOVE_SUPABASE_KEY }}
+        run: node sync_to_supabase.js --once

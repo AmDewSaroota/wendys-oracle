@@ -12,17 +12,17 @@ const crypto = require('crypto');
 // ===== Config =====
 const INTERVAL_MS = 5 * 60 * 1000; // 5 นาที
 
-const TUYA_ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const TUYA_ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
+const TUYA_ACCESS_ID     = process.env.TUYA_ACCESS_ID     || '7dudg9tg3cwvrf8dx9na';
+const TUYA_ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET || 'f51fa230ddf343478ae5616c52b51111';
+const TUYA_BASE_URL      = 'https://openapi-sg.iotbing.com';
 
 const SENSORS = [
-  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)' },
-  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)' },
+  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old' },
+  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)', stoveType: 'eco' },
 ];
 
-const SB_URL = 'https://zijybzjstjlqvhmckgor.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA';
+const SB_URL = process.env.SUPABASE_URL || 'https://zijybzjstjlqvhmckgor.supabase.co';
+const SB_KEY = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA';
 
 // ===== Tuya Functions =====
 function generateSign(method, path, timestamp, accessToken, body) {
@@ -77,7 +77,7 @@ function parseAqi(value) {
 }
 
 // ===== Supabase Functions =====
-async function insertPollutionLog(readings, deviceId) {
+async function insertPollutionLog(readings, deviceId, stoveType) {
   const record = {
     pm25_value: readings.pm25_value ?? null,
     pm1_value: readings.pm1 ?? null,
@@ -91,7 +91,7 @@ async function insertPollutionLog(readings, deviceId) {
     aqi: parseAqi(readings.air_quality_index),
     data_source: 'sensor',
     tuya_device_id: deviceId,
-    stove_type: 'eco',
+    stove_type: stoveType || 'eco',
     status: 'pending',
     recorded_at: new Date().toISOString(),
   };
@@ -145,7 +145,7 @@ async function syncOnce() {
 
       console.log('  [' + sensor.name + '] PM2.5:' + readings.pm25_value + ' CO2:' + readings.co2_value + ' T:' + readings.temp_current + ' H:' + readings.humidity_value);
 
-      const result = await insertPollutionLog(readings, sensor.id);
+      const result = await insertPollutionLog(readings, sensor.id, sensor.stoveType);
       if (result) {
         successCount++;
       } else {
