@@ -133,7 +133,9 @@ async function syncOnce() {
   }
 
   let successCount = 0;
-  for (const sensor of SENSORS) {
+  for (let i = 0; i < SENSORS.length; i++) {
+    if (i > 0) await new Promise(r => setTimeout(r, 2000)); // 2s delay between sensors
+    const sensor = SENSORS[i];
     try {
       const rawData = await getDeviceStatus(token, sensor.id);
       const readings = parseReadings(rawData);
