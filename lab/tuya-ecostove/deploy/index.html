@@ -117,7 +117,7 @@
 
             <div class="hidden md:flex space-x-10">
                 <button onclick="switchView('basic')" id="nav-basic" class="nav-active py-2 flex items-center gap-1" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
-                <button onclick="switchView('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.deep">📊 ข้อมูล</button>
+                <button onclick="switchView('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.deep">📊 ข้อมูลเชิงลึก</button>
                 <button onclick="promptAdmin()" id="nav-admin" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.admin">⚙️ จัดการระบบ</button>
                 <button onclick="toggleLang()" class="ml-4 px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-xl text-white text-sm font-bold transition-all flex items-center gap-1.5">🌐 <span class="lang-toggle-text">EN</span></button>
             </div>
@@ -130,7 +130,7 @@
         </div>
         <div id="mobile-menu" class="hidden md:hidden p-6 shadow-xl space-y-4" style="background-color: #043327;">
             <button onclick="switchView('basic'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
-            <button onclick="switchView('deep'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.deep">📊 ข้อมูล</button>
+            <button onclick="switchView('deep'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.deep">📊 ข้อมูลเชิงลึก</button>
             <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-white border-t border-emerald-700 pt-4" data-i18n="nav.admin.mobile">⚙️ จัดการระบบ (Admin)</button>
             <button onclick="toggleLang()" class="block w-full text-left font-medium py-2 text-emerald-100 border-t border-emerald-700 pt-4 flex items-center gap-2">🌐 <span class="lang-toggle-text">EN</span></button>
         </div>
@@ -285,7 +285,7 @@
             <!-- Header + Filters -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 class="text-3xl font-bold text-[#0f172a]" data-i18n="deep.title">📊 ข้อมูล</h1>
+                    <h1 class="text-3xl font-bold text-[#0f172a]" data-i18n="deep.title">📊 ข้อมูลเชิงลึก</h1>
                     <p class="text-slate-400 text-sm" id="deep-data-count" data-i18n="deep.loading">กำลังโหลดข้อมูล...</p>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
@@ -443,7 +443,6 @@
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Readings</th>
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg PM2.5</th>
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg CO2</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">กราฟ</th>
                             </tr>
                         </thead>
                         <tbody id="sessions-table-body" class="divide-y"></tbody>
@@ -566,7 +565,7 @@
                         ✓ อนุมัติทั้งหมด
                     </button>
                 </div>
-                <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
             <!-- Tab 5: ข้อมูลเซนเซอร์ -->
@@ -578,7 +577,6 @@
                             <option value="all" data-i18n="filter.all">ทั้งหมด</option>
                             <option value="a3d01864e463e3ede0hf0e">Sensor 1 (MT13W)</option>
                             <option value="a3b9c2e4bdfe69ad7ekytn">Sensor 2 (ZN-MT29)</option>
-                            <option value="manual" data-i18n="data.manual">บันทึกมือ</option>
                         </select>
                         <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
                     </div>
@@ -644,7 +642,7 @@
             'page.brand.alt': { th: 'พลังงานทางเลือก', en: 'Alternative Energy' },
             // Nav
             'nav.basic': { th: 'ข้อมูลเบื้องต้น', en: 'Overview' },
-            'nav.deep': { th: '📊 ข้อมูล', en: '📊 Data' },
+            'nav.deep': { th: '📊 ข้อมูลเชิงลึก', en: '📊 Data' },
             'nav.admin': { th: '⚙️ จัดการระบบ', en: '⚙️ Admin' },
             'nav.admin.mobile': { th: '⚙️ จัดการระบบ (Admin)', en: '⚙️ Admin Panel' },
             // AQI
@@ -670,7 +668,7 @@
             'compare.old': { th: 'เตาเดิม', en: 'Traditional' },
             'compare.eco': { th: 'EcoStove', en: 'EcoStove' },
             'compare.avg.pm25': { th: 'PM2.5 เฉลี่ย', en: 'Avg PM2.5' },
-            'compare.reduction': { th: 'ลดลง', en: 'Reduced' },
+            'compare.reduction': { th: 'ต่างกัน', en: 'Difference' },
             // Session progress
             'session.title': { th: 'เก็บข้อมูลวันนี้', en: "Today's Collection" },
             'session.checking': { th: 'กำลังตรวจสอบ...', en: 'Checking...' },
@@ -696,7 +694,7 @@
             'time.hours.ago': { th: ' ชั่วโมงที่แล้ว', en: ' hr ago' },
             'time.days.ago': { th: ' วันที่แล้ว', en: ' days ago' },
             // Deep view
-            'deep.title': { th: '📊 ข้อมูล', en: '📊 Data' },
+            'deep.title': { th: '📊 ข้อมูลเชิงลึก', en: '📊 Data' },
             'deep.loading': { th: 'กำลังโหลดข้อมูล...', en: 'Loading data...' },
             'deep.count': { th: 'ข้อมูลทั้งหมด: {0} รายการ (approved)', en: 'Total: {0} records (approved)' },
             // Filters
@@ -720,7 +718,7 @@
             'reduction.param': { th: 'พารามิเตอร์', en: 'Parameter' },
             'reduction.old.avg': { th: 'เตาเดิม (เฉลี่ย)', en: 'Traditional (avg)' },
             'reduction.eco.avg': { th: 'EcoStove (เฉลี่ย)', en: 'EcoStove (avg)' },
-            'reduction.pct': { th: '% ลดลง', en: '% Reduced' },
+            'reduction.pct': { th: '% ต่างกัน', en: '% Diff' },
             'reduction.loading': { th: 'กำลังโหลดข้อมูล...', en: 'Loading...' },
             // Sensor charts
             'sensor.compare': { th: '📈 เปรียบเทียบ Sensor ตามเวลา', en: '📈 Sensor Comparison Over Time' },
@@ -1538,18 +1536,22 @@
                 'cancelled': 'bg-red-100 text-red-700',
             };
             const statusIcons = { 'baseline': '🔵', 'collecting': '🟡', 'complete': '✅', 'incomplete': '⚠️', 'cancelled': '❌' };
-            const statusThai = { 'baseline': 'ตั้งต้น', 'collecting': 'กำลังเก็บ', 'complete': 'ครบ', 'incomplete': 'ไม่ครบ', 'cancelled': 'ยกเลิก' };
+            const statusThai = { 'baseline': 'เตรียมเก็บข้อมูล', 'collecting': 'กำลังเก็บ', 'complete': 'ครบ', 'incomplete': 'ไม่ครบ', 'cancelled': 'ยกเลิก' };
 
             const tbody = document.getElementById('sessions-table-body');
             if (!tbody) return;
 
+            let prevDateStr = null, dateIdx = 0;
             tbody.innerHTML = sessions.map(s => {
                 const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) + ' min' : t('session.in.progress');
                 const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
                 const icon = statusIcons[s.session_status] || '❓';
                 const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
                 const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
-                return '<tr class="hover:bg-slate-50/50">' +
+                const thisDate = s.started_at ? s.started_at.slice(0, 10) : '';
+                if (thisDate !== prevDateStr) { dateIdx++; prevDateStr = thisDate; }
+                const rowBg = dateIdx % 2 === 0 ? '' : 'bg-slate-50/60';
+                return '<tr class="hover:bg-slate-100/60 ' + rowBg + '">' +
                     '<td class="p-3 whitespace-nowrap">' + new Date(s.started_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td>' +
                     '<td class="p-3">' + deviceName + '</td>' +
                     '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span></td>' +
@@ -1557,7 +1559,6 @@
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_co2 != null ? s.avg_co2.toFixed(0) : '-') + '</td>' +
-                    '<td class="p-3 text-center"><button onclick="showSessionChart(\'' + s.id + '\',\'' + deviceName.replace(/'/g,"\\'") + '\',\'' + s.started_at + '\')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[12px] font-semibold transition">📈 กราฟ</button></td>' +
                     '</tr>';
             }).join('') || '<tr><td colspan="7" class="p-6 text-center text-slate-400">' + t('session.no.data') + '</td></tr>';
         }
@@ -1758,67 +1759,97 @@
                     btnAll.classList.remove('hidden');
 
                     container.innerHTML = sessions.map(s => {
-                        const avgPM = Math.round(s.logs.reduce((sum, l) => sum + (l.pm25_value || 0), 0) / s.logs.length);
-                        const avgCO2 = Math.round(s.logs.reduce((sum, l) => sum + (l.co2_value || 0), 0) / s.logs.length);
-                        const avgTemp = (s.logs.reduce((sum, l) => sum + (l.temperature || 0), 0) / s.logs.length).toFixed(1);
                         const sensorName = s.device === 'a3d01864e463e3ede0hf0e' ? 'MT13W' : s.device === 'a3b9c2e4bdfe69ad7ekytn' ? 'MT29' : s.device?.slice(0, 8);
-                        const stoveLabel = s.stoveType === 'eco' ? '🟢 เตาประหยัด' : '🔴 เตาเดิม';
+                        const houseName = DEVICE_NAMES[s.device] || sensorName;
+                        const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
                         const sKey = 'ps_' + s.device.slice(-6) + '_' + s.date.replace(/-/g,'');
                         window[sKey] = s.ids;
+                        window[sKey + '_logs'] = s.logs;
+                        window[sKey + '_label'] = houseName + ' · ' + sensorName;
 
-                        // Session status: check if still collecting or done
-                        const expected = 20;
-                        const pct = Math.min(100, Math.round(s.logs.length / expected * 100));
-                        const isComplete = s.logs.length >= 10;
-                        const latestLog = s.logs[0]; // already sorted desc
-                        const lastTime = latestLog ? new Date(latestLog.recorded_at) : null;
+                        // Sort logs ascending for time range display
+                        const sortedLogs = [...s.logs].sort((a, b) => a.recorded_at < b.recorded_at ? -1 : 1);
+                        const firstLog = sortedLogs[0];
+                        const lastLog = sortedLogs[sortedLogs.length - 1];
+                        const fmtTime = ts => new Date(ts).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                        const timeStart = firstLog ? fmtTime(firstLog.recorded_at) : '--';
+                        const timeEnd = lastLog ? fmtTime(lastLog.recorded_at) : '--';
+                        window[sKey + '_range'] = timeStart + '–' + timeEnd + ' น. ' + s.date;
+
+                        // Stats
+                        const pm25s = s.logs.map(l => l.pm25_value).filter(v => v != null);
+                        const co2s = s.logs.map(l => l.co2_value).filter(v => v != null);
+                        const avgPM = pm25s.length ? (pm25s.reduce((a, b) => a + b, 0) / pm25s.length).toFixed(1) : '-';
+                        const avgCO2 = co2s.length ? Math.round(co2s.reduce((a, b) => a + b, 0) / co2s.length) : '-';
+                        const peakPM = pm25s.length ? Math.max(...pm25s) : null;
+                        const peakCO2 = co2s.length ? Math.max(...co2s) : null;
+                        const peakPMLog = peakPM != null ? s.logs.find(l => l.pm25_value === peakPM) : null;
+                        const peakCO2Log = peakCO2 != null ? s.logs.find(l => l.co2_value === peakCO2) : null;
+                        const peakPMTime = peakPMLog ? fmtTime(peakPMLog.recorded_at) : '';
+                        const peakCO2Time = peakCO2Log ? fmtTime(peakCO2Log.recorded_at) : '';
+
+                        // Session status
+                        const lastTime = lastLog ? new Date(lastLog.recorded_at) : null;
                         const minutesAgo = lastTime ? Math.round((Date.now() - lastTime.getTime()) / 60000) : 999;
-                        const isStillCollecting = minutesAgo < 10; // ข้อมูลล่าสุดไม่เกิน 10 นาที = ยังเก็บอยู่
+                        const isStillCollecting = minutesAgo < 10;
+                        const isComplete = s.logs.length >= 10 && !isStillCollecting;
 
-                        let statusBadge, borderColor, statusMsg;
-                        if (isComplete) {
-                            statusBadge = `<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-sm">✓ ${s.logs.length} ครบ</span>`;
-                            borderColor = 'border-emerald-400';
-                            statusMsg = '';
-                        } else if (isStillCollecting) {
-                            statusBadge = `<span class="px-3 py-1 rounded-full bg-blue-100 text-blue-600 font-bold text-sm animate-pulse">🔄 ${s.logs.length}/${expected} กำลังเก็บ</span>`;
+                        let statusBadge, borderColor, statusNote;
+                        if (isStillCollecting) {
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs animate-pulse">🔄 กำลังเก็บ</span>';
                             borderColor = 'border-blue-400';
-                            statusMsg = '<p class="text-sm text-blue-500 mb-3 bg-blue-50 px-3 py-2 rounded-lg">กำลังเก็บข้อมูล — อัปเดตล่าสุด ' + minutesAgo + ' นาทีที่แล้ว</p>';
+                            statusNote = '';
+                        } else if (isComplete) {
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">✅ เก็บเสร็จ</span>';
+                            borderColor = 'border-emerald-400';
+                            statusNote = '';
                         } else {
-                            statusBadge = `<span class="px-3 py-1 rounded-full bg-red-100 text-red-600 font-bold text-sm">⚠ ${s.logs.length}/${expected} ไม่ครบ</span>`;
-                            borderColor = 'border-red-400';
                             const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + ' ชม.' : minutesAgo + ' นาที';
-                            statusMsg = '<p class="text-sm text-red-500 mb-3 bg-red-50 px-3 py-2 rounded-lg">หยุดเก็บแล้ว — ข้อมูลล่าสุด ' + agoText + 'ที่แล้ว</p>';
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">⚠️ หยุดเก็บ</span>';
+                            borderColor = 'border-red-400';
+                            statusNote = '<div class="text-[11px] text-red-400 bg-red-50 rounded-lg px-3 py-1.5">หยุดเก็บ — ข้อมูลล่าสุด ' + timeEnd + ' น. (' + agoText + 'ที่แล้ว)</div>';
                         }
 
                         return `
-                        <div class="card-styled p-6 rounded-2xl border-l-4 ${borderColor}">
-                            <div class="flex justify-between items-start mb-3">
+                        <div class="card-styled p-5 rounded-2xl border-l-4 ${borderColor} flex flex-col gap-3">
+                            <div class="flex items-start justify-between gap-2">
                                 <div>
-                                    <p class="font-bold text-navy text-lg">📡 ${sensorName}</p>
-                                    <p class="text-sm text-slate-400">${s.date} | ${stoveLabel}</p>
+                                    <p class="font-bold text-navy text-base leading-tight">🏠 ${houseName}</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">📡 ${sensorName} · ${stoveLabel}</p>
                                 </div>
                                 ${statusBadge}
                             </div>
-                            ${statusMsg}
-                            <div class="w-full bg-slate-100 rounded-full h-2 mb-4"><div class="h-2 rounded-full ${isComplete ? 'bg-emerald-500' : 'bg-red-400'}" style="width:${pct}%"></div></div>
-                            <div class="grid grid-cols-3 gap-3 mb-5">
-                                <div class="text-center p-3 bg-blue-50 rounded-xl">
-                                    <p class="text-[11px] text-slate-400 font-bold">PM2.5</p>
-                                    <p class="text-xl font-bold text-blue-600">${avgPM}</p>
+                            <div class="flex items-center gap-2 bg-slate-50 rounded-xl px-3 py-2">
+                                <span class="text-navy font-bold text-sm">${timeStart} – ${timeEnd} น.</span>
+                                <span class="text-slate-300">|</span>
+                                <span class="text-slate-400 text-xs">${s.date}</span>
+                                <span class="ml-auto text-slate-500 text-xs font-medium">${s.logs.length} รายการ</span>
+                            </div>
+                            ${statusNote}
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="bg-orange-50 rounded-xl px-3 py-2">
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">PM2.5 พีค</div>
+                                    <div class="text-base font-bold text-orange-600">${peakPM != null ? peakPM.toFixed(1) : '-'} <span class="text-[10px] font-normal text-orange-300">µg/m³</span></div>
+                                    <div class="text-[10px] text-slate-400">${peakPMTime ? peakPMTime + ' น.' : '-'}</div>
                                 </div>
-                                <div class="text-center p-3 bg-orange-50 rounded-xl">
-                                    <p class="text-[11px] text-slate-400 font-bold">CO2</p>
-                                    <p class="text-xl font-bold text-orange-600">${avgCO2}</p>
+                                <div class="bg-orange-50/50 rounded-xl px-3 py-2">
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">PM2.5 เฉลี่ย</div>
+                                    <div class="text-base font-bold text-orange-400">${avgPM} <span class="text-[10px] font-normal text-orange-200">µg/m³</span></div>
                                 </div>
-                                <div class="text-center p-3 bg-red-50 rounded-xl">
-                                    <p class="text-[11px] text-slate-400 font-bold">Temp</p>
-                                    <p class="text-xl font-bold text-red-500">${avgTemp}°</p>
+                                <div class="bg-blue-50 rounded-xl px-3 py-2">
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">CO2 พีค</div>
+                                    <div class="text-base font-bold text-blue-600">${peakCO2 != null ? peakCO2 : '-'} <span class="text-[10px] font-normal text-blue-300">ppm</span></div>
+                                    <div class="text-[10px] text-slate-400">${peakCO2Time ? peakCO2Time + ' น.' : '-'}</div>
+                                </div>
+                                <div class="bg-blue-50/50 rounded-xl px-3 py-2">
+                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">CO2 เฉลี่ย</div>
+                                    <div class="text-base font-bold text-blue-400">${avgCO2} <span class="text-[10px] font-normal text-blue-200">ppm</span></div>
                                 </div>
                             </div>
-                            <div class="flex gap-3">
-                                <button onclick="approveSession(window.${sKey})" class="flex-1 px-4 py-3 bg-emerald-100 text-emerald-700 rounded-xl font-bold text-sm hover:bg-emerald-200 transition-all">✓ อนุมัติเซสชัน</button>
-                                <button onclick="rejectSession(window.${sKey})" class="px-4 py-3 bg-red-100 text-red-500 rounded-xl font-bold text-sm hover:bg-red-200 transition-all">✗</button>
+                            <div class="flex gap-2">
+                                <button onclick="showLogsChart('${sKey}')" class="flex-none px-3 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all">📊 ดูรายละเอียด</button>
+                                <button onclick="approveSession(window.${sKey})" ${isStillCollecting ? 'disabled title="กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน"' : ''} class="flex-1 px-3 py-2 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">✓ อนุมัติ</button>
+                                <button onclick="rejectSession(window.${sKey})" ${isStillCollecting ? 'disabled title="กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน"' : ''} class="px-3 py-2 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
                         </div>`;
                     }).join('');
@@ -2049,6 +2080,7 @@
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
                 const { error } = await supabaseClient.from('volunteers').delete().eq('id', String(id));
                 if (!error) { logActivity(t('dev.delete'), name); loadAdminData(); showToast(t('vol.deleted')); }
+                else { showToast('ลบไม่ได้: ' + error.message, 'error'); }
             });
         }
 
@@ -2077,6 +2109,7 @@
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
                 const { error } = await supabaseClient.from('subjects').delete().eq('id', String(id));
                 if (!error) { logActivity(t('dev.delete'), name); loadAdminData(); showToast(t('sub.deleted')); }
+                else { showToast('ลบไม่ได้: ' + error.message, 'error'); }
             });
         }
 
@@ -2175,7 +2208,7 @@
             const connectivity = document.getElementById('new-sub-connectivity').value;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
             const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active' };
-            if (connectivity) record.connectivity = connectivity;
+            if (connectivity) record.connectivity_mode = connectivity;
             if (lat) record.gps_lat = parseFloat(lat);
             if (lng) record.gps_long = parseFloat(lng);
             const { error } = await supabaseClient.from('subjects').insert([record]);
@@ -2183,13 +2216,12 @@
             else { showToast(t('common.error') + error.message, 'error'); }
         }
 
-        function exportToExcel() {
-            if (!allData.length) { showToast(t('export.no.data'), 'warning'); return; }
+        function doExport(data) {
             showLoading('กำลังสร้างไฟล์ Excel...');
             setTimeout(() => {
                 try {
-                    logActivity('Export', allData.length + ' records');
-                    const ws = XLSX.utils.json_to_sheet(allData.map(d => ({
+                    logActivity('Export', data.length + ' records');
+                    const ws = XLSX.utils.json_to_sheet(data.map(d => ({
                         [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
                         'PM2.5': d.pm25_value, 'PM10': d.pm10_value, 'PM1': d.pm1_value,
                         'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
@@ -2198,11 +2230,37 @@
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Data');
                     XLSX.writeFile(wb, `ecostove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
-                    showToast('Export สำเร็จ ' + allData.length + ' รายการ');
+                    showToast('Export สำเร็จ ' + data.length + ' รายการ');
                 } catch (e) {
                     showToast('Export ผิดพลาด: ' + e.message, 'error');
                 } finally { hideLoading(); }
             }, 50);
+        }
+
+
+        function exportToExcel() {
+            if (!allData.length) { showToast(t('export.no.data'), 'warning'); return; }
+            const filterEl = document.getElementById('sensor-filter');
+            const filterVal = filterEl ? filterEl.value : 'all';
+            if (filterVal && filterVal !== 'all') {
+                const sensorName = filterEl.options[filterEl.selectedIndex]?.text || filterVal;
+                const filteredData = allData.filter(d => d.tuya_device_id === filterVal);
+                showModal(`
+                    <div class="text-center py-4">
+                        <div class="text-4xl mb-3">📊</div>
+                        <h3 class="text-xl font-bold text-navy mb-2">Export Excel</h3>
+                        <p class="text-slate-500 text-sm mb-6">ตอนนี้กำลัง filter <b>${sensorName}</b> อยู่<br><span class="text-slate-400">${filteredData.length} รายการ จากทั้งหมด ${allData.length} รายการ</span></p>
+                        <div class="flex flex-col gap-3">
+                            <button onclick="doExport(window._exportFilteredData); closeModal()" class="w-full px-5 py-3 bg-[#064e3b] text-white rounded-xl font-bold text-sm hover:bg-[#043327] transition">Export เฉพาะ ${sensorName}<br><span class="font-normal text-xs opacity-70">${filteredData.length} รายการ</span></button>
+                            <button onclick="doExport(allData); closeModal()" class="w-full px-5 py-3 bg-slate-100 text-navy rounded-xl font-bold text-sm hover:bg-slate-200 transition">Export ทั้งหมด<br><span class="font-normal text-xs text-slate-400">${allData.length} รายการ</span></button>
+                            <button onclick="closeModal()" class="w-full px-4 py-2 text-slate-400 text-sm hover:text-slate-600 transition">ยกเลิก</button>
+                        </div>
+                    </div>
+                `);
+                window._exportFilteredData = filteredData;
+            } else {
+                doExport(allData);
+            }
         }
 
         // ==================== Map ====================
@@ -2217,7 +2275,11 @@
         async function loadBasicMapMarkers() {
             if (!map) return;
             const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, stove_type').not('gps_lat', 'is', null).not('gps_long', 'is', null);
-            if (error || !data || !data.length) return;
+            if (error || !data || !data.length) {
+                const noGpsIcon = L.divIcon({ html: '<div style="background:white;padding:8px 14px;border-radius:10px;font-size:12px;color:#64748b;box-shadow:0 2px 8px rgba(0,0,0,0.15);white-space:nowrap;border:1px solid #e2e8f0">📍 ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา</div>', iconAnchor: [140, 20], iconSize: [280, 40] });
+                L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(map);
+                return;
+            }
             const bounds = [];
             data.forEach(s => {
                 const lat = parseFloat(s.gps_lat);
@@ -2243,7 +2305,11 @@
         async function loadSubjectMarkers() {
             if (!mapDeep) return;
             const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, stove_type, connectivity_mode, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null);
-            if (error || !data || !data.length) return;
+            if (error || !data || !data.length) {
+                const noGpsIcon = L.divIcon({ html: '<div style="background:white;padding:8px 14px;border-radius:10px;font-size:12px;color:#64748b;box-shadow:0 2px 8px rgba(0,0,0,0.15);white-space:nowrap;border:1px solid #e2e8f0">📍 ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา</div>', iconAnchor: [140, 20], iconSize: [280, 40] });
+                L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(mapDeep);
+                return;
+            }
             const bounds = [];
             data.forEach(s => {
                 const lat = parseFloat(s.gps_lat);
@@ -2383,7 +2449,79 @@
                     interaction: { mode: 'index', intersect: false },
                     plugins: { legend: { position: 'top' } },
                     scales: {
-                        x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, grid: { display: false } },
+                        x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
+                        y: { position: 'left', title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function showLogsChart(sKey) {
+            const logs = window[sKey + '_logs'];
+            if (!logs || logs.length === 0) { alert('ไม่มีข้อมูล'); return; }
+            const deviceName = window[sKey + '_label'] || sKey;
+            const timeRange = window[sKey + '_range'] || '';
+
+            const modal = document.getElementById('session-chart-modal');
+            modal.style.display = 'flex';
+            document.getElementById('session-modal-title').textContent = '📊 ' + deviceName;
+            document.getElementById('session-modal-sub').textContent = timeRange;
+            document.getElementById('session-chart-loading').style.display = 'none';
+
+            if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
+
+            const sortedLogs = [...logs].sort((a, b) => a.recorded_at < b.recorded_at ? -1 : 1);
+            const pm25s = sortedLogs.map(l => l.pm25_value).filter(v => v != null);
+            const co2s = sortedLogs.map(l => l.co2_value).filter(v => v != null);
+            const peakPM = pm25s.length ? Math.max(...pm25s) : null;
+            const peakCO2 = co2s.length ? Math.max(...co2s) : null;
+            const avgPM = pm25s.length ? (pm25s.reduce((a, b) => a + b, 0) / pm25s.length).toFixed(1) : '-';
+            const avgCO2 = co2s.length ? Math.round(co2s.reduce((a, b) => a + b, 0) / co2s.length) : '-';
+
+            const statsHtml = [
+                { label: 'PM2.5 พีค', value: peakPM != null ? peakPM.toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
+                { label: 'PM2.5 เฉลี่ย', value: avgPM + ' µg/m³', color: 'text-orange-400' },
+                { label: 'CO2 พีค', value: peakCO2 != null ? peakCO2 + ' ppm' : '-', color: 'text-blue-600' },
+            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[11px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
+            document.getElementById('session-modal-stats').innerHTML = statsHtml;
+
+            const ctx = document.getElementById('session-detail-chart').getContext('2d');
+            _sessionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedLogs.map(l => new Date(l.recorded_at)),
+                    datasets: [
+                        {
+                            label: 'PM2.5 (µg/m³)',
+                            data: sortedLogs.map(l => l.pm25_value),
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249,115,22,0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: sortedLogs.map(l => l.pm25_value === peakPM ? 7 : 3),
+                            pointBackgroundColor: sortedLogs.map(l => l.pm25_value === peakPM ? '#dc2626' : '#f97316'),
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: 'CO2 (ppm)',
+                            data: sortedLogs.map(l => l.co2_value),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59,130,246,0.05)',
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: sortedLogs.map(l => l.co2_value === peakCO2 ? 7 : 3),
+                            pointBackgroundColor: sortedLogs.map(l => l.co2_value === peakCO2 ? '#1d4ed8' : '#3b82f6'),
+                            yAxisID: 'y2',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
                         y: { position: 'left', title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
                     }
