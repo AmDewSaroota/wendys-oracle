@@ -118,8 +118,8 @@
             <div class="hidden md:flex space-x-10">
                 <button onclick="switchView('basic')" id="nav-basic" class="nav-active py-2 flex items-center gap-1" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
                 <button onclick="switchView('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.deep">📊 ข้อมูลเชิงลึก</button>
-                <button onclick="promptAdmin()" id="nav-admin" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.admin">⚙️ จัดการระบบ</button>
-                <button onclick="toggleLang()" class="ml-4 px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-xl text-white text-sm font-bold transition-all flex items-center gap-1.5">🌐 <span class="lang-toggle-text">EN</span></button>
+                <button onclick="promptAdmin()" id="nav-admin" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1.5" data-i18n="nav.admin"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>จัดการระบบ</button>
+                <button onclick="toggleLang()" class="ml-4 px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-xl text-white text-sm font-bold transition-all"><span class="lang-toggle-text">EN</span></button>
             </div>
 
             <div class="md:hidden">
@@ -131,8 +131,8 @@
         <div id="mobile-menu" class="hidden md:hidden p-6 shadow-xl space-y-4" style="background-color: #043327;">
             <button onclick="switchView('basic'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
             <button onclick="switchView('deep'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.deep">📊 ข้อมูลเชิงลึก</button>
-            <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-white border-t border-emerald-700 pt-4" data-i18n="nav.admin.mobile">⚙️ จัดการระบบ (Admin)</button>
-            <button onclick="toggleLang()" class="block w-full text-left font-medium py-2 text-emerald-100 border-t border-emerald-700 pt-4 flex items-center gap-2">🌐 <span class="lang-toggle-text">EN</span></button>
+            <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-white border-t border-emerald-700 pt-4" data-i18n="nav.admin.mobile">จัดการระบบ (Admin)</button>
+            <button onclick="toggleLang()" class="block w-full text-left font-medium py-2 text-emerald-100 border-t border-emerald-700 pt-4"><span class="lang-toggle-text">EN</span></button>
         </div>
     </nav>
 
@@ -499,7 +499,7 @@
         <section id="view-admin" class="hidden space-y-10">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6 card-styled p-8 rounded-[2.5rem] border-b-4 border-orange-400">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 bg-[#0f172a] rounded-2xl flex items-center justify-center text-white shadow-xl text-2xl">⚙️</div>
+                    <div class="w-14 h-14 bg-[#0f172a] rounded-2xl flex items-center justify-center text-white shadow-xl"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
                     <div>
                         <h2 class="text-2xl font-bold text-navy"><span data-i18n="admin.title">Admin Control</span> <span id="admin-user-name" class="text-lg text-emerald-600"></span></h2>
                         <p class="text-slate-500 text-sm" data-i18n="admin.subtitle">การตรวจสอบและติดตามกิจกรรมโครงการ</p>
@@ -643,8 +643,8 @@
             // Nav
             'nav.basic': { th: 'ข้อมูลเบื้องต้น', en: 'Overview' },
             'nav.deep': { th: '📊 ข้อมูลเชิงลึก', en: '📊 Data' },
-            'nav.admin': { th: '⚙️ จัดการระบบ', en: '⚙️ Admin' },
-            'nav.admin.mobile': { th: '⚙️ จัดการระบบ (Admin)', en: '⚙️ Admin Panel' },
+            'nav.admin': { th: 'จัดการระบบ', en: 'Admin' },
+            'nav.admin.mobile': { th: 'จัดการระบบ (Admin)', en: 'Admin Panel' },
             // AQI
             'aqi.loading': { th: 'กำลังโหลด...', en: 'Loading...' },
             'aqi.waiting': { th: 'รอข้อมูลจาก Sensor', en: 'Waiting for Sensor data' },
@@ -780,6 +780,8 @@
             'vol.deleted': { th: 'ลบอาสาสมัครแล้ว', en: 'Volunteer deleted' },
             'vol.added': { th: 'เพิ่มอาสาสมัครสำเร็จ', en: 'Volunteer added' },
             'vol.name.required': { th: 'กรุณากรอกชื่อ-นามสกุล', en: 'Please enter full name' },
+            'vol.edit': { th: 'แก้ไขอาสาสมัคร', en: 'Edit Volunteer' },
+            'vol.saved': { th: 'บันทึกอาสาสมัครแล้ว', en: 'Volunteer saved' },
             // Subjects
             'sub.manage': { th: 'จัดการกลุ่มตัวอย่าง', en: 'Manage Subject Houses' },
             'sub.add': { th: '+ เพิ่มบ้าน', en: '+ Add House' },
@@ -795,6 +797,8 @@
             'sub.deleted': { th: 'ลบบ้านแล้ว', en: 'House deleted' },
             'sub.added': { th: 'เพิ่มบ้านสำเร็จ', en: 'House added' },
             'sub.name.required': { th: 'กรุณากรอกชื่อบ้าน', en: 'Please enter house name' },
+            'sub.edit': { th: 'แก้ไขบ้านกลุ่มตัวอย่าง', en: 'Edit Subject House' },
+            'sub.saved': { th: 'บันทึกบ้านแล้ว', en: 'House saved' },
             'sub.connectivity': { th: 'การเชื่อมต่อ', en: 'Connectivity' },
             'sub.wifi': { th: '📶 WiFi', en: '📶 WiFi' },
             'sub.hotspot': { th: '📱 Hotspot', en: '📱 Hotspot' },
@@ -1541,26 +1545,48 @@
             const tbody = document.getElementById('sessions-table-body');
             if (!tbody) return;
 
-            let prevDateStr = null, dateIdx = 0;
-            tbody.innerHTML = sessions.map(s => {
+            // Pre-compute session number per day per device (sessions are desc, so reverse count)
+            const sessionCounters = {};
+            const sessionNums = [];
+            // First pass: count sessions per day+device in chronological order
+            const sorted = [...sessions].reverse();
+            sorted.forEach(s => {
+                const dateKey = (s.started_at ? s.started_at.slice(0, 10) : '') + '|' + s.device_id;
+                sessionCounters[dateKey] = (sessionCounters[dateKey] || 0) + 1;
+                sessionNums.push({ id: s.id, num: sessionCounters[dateKey] });
+            });
+            const numMap = {};
+            sessionNums.forEach(sn => { numMap[sn.id] = sn.num; });
+
+            let prevDateStr = null;
+            const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
+            const rows = [];
+            sessions.forEach(s => {
+                const thisDate = s.started_at ? s.started_at.slice(0, 10) : '';
+                if (thisDate !== prevDateStr) {
+                    prevDateStr = thisDate;
+                    const dateLabel = new Date(s.started_at).toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    rows.push('<tr class="bg-slate-100"><td colspan="7" class="px-3 py-2 font-semibold text-slate-600 text-sm border-b-2 border-slate-300">' + dateLabel + '</td></tr>');
+                }
                 const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) + ' min' : t('session.in.progress');
                 const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
                 const icon = statusIcons[s.session_status] || '❓';
                 const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
                 const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
-                const thisDate = s.started_at ? s.started_at.slice(0, 10) : '';
-                if (thisDate !== prevDateStr) { dateIdx++; prevDateStr = thisDate; }
-                const rowBg = dateIdx % 2 === 0 ? '' : 'bg-slate-50/60';
-                return '<tr class="hover:bg-slate-100/60 ' + rowBg + '">' +
-                    '<td class="p-3 whitespace-nowrap">' + new Date(s.started_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td>' +
-                    '<td class="p-3">' + deviceName + '</td>' +
+                const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const sessNum = numMap[s.id] || '';
+                const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
+                rows.push('<tr class="hover:bg-blue-50/50">' +
+                    '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
+                    '<td class="p-3">' + deviceName + sessLabel + '</td>' +
                     '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span></td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_co2 != null ? s.avg_co2.toFixed(0) : '-') + '</td>' +
-                    '</tr>';
-            }).join('') || '<tr><td colspan="7" class="p-6 text-center text-slate-400">' + t('session.no.data') + '</td></tr>';
+                    '</tr>');
+            });
+            tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="7" class="p-6 text-center text-slate-400">' + t('session.no.data') + '</td></tr>';
         }
 
         async function loadDailySummaries() {
@@ -1898,15 +1924,57 @@
             } finally { hideLoading(); }
         }
         async function batchApproveAll() {
+            // Check for still-collecting sessions first
+            const { data: activeSessions } = await supabaseClient
+                .from('sessions')
+                .select('id, device_id, readings_count, started_at')
+                .eq('session_status', 'collecting');
+
+            const { data: pendingLogs } = await supabaseClient
+                .from('pollution_logs')
+                .select('id')
+                .eq('status', 'pending');
+
+            if (!pendingLogs || pendingLogs.length === 0) {
+                showToast('ไม่มีข้อมูลรออนุมัติ'); return;
+            }
+
+            let msg = 'อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?';
+            if (activeSessions && activeSessions.length > 0) {
+                const names = activeSessions.map(s => {
+                    const name = DEVICE_NAMES[s.device_id] || s.device_id.slice(0, 8);
+                    return name + ' (' + (s.readings_count || 0) + ' readings)';
+                }).join(', ');
+                msg = '⚠️ ยังมี ' + activeSessions.length + ' เซสชันที่กำลังเก็บข้อมูลอยู่:\n'
+                    + names + '\n\n'
+                    + 'ถ้ากดตกลง จะหยุดเซสชันเหล่านี้แล้วอนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ\n\nดำเนินการ?';
+            }
+
+            if (!confirm(msg)) return;
+
             showLoading('กำลังอนุมัติทั้งหมด...');
             try {
-                const { data } = await supabaseClient.from('pollution_logs').select('id').eq('status', 'pending');
-                if (!data || data.length === 0) { hideLoading(); return; }
-                const ids = data.map(d => d.id);
+                // Close active sessions first
+                if (activeSessions && activeSessions.length > 0) {
+                    for (const s of activeSessions) {
+                        const age = Math.round((Date.now() - new Date(s.started_at).getTime()) / 60000);
+                        await supabaseClient.from('sessions').update({
+                            session_status: s.readings_count >= 3 ? 'complete' : 'incomplete',
+                            ended_at: new Date().toISOString(),
+                            collection_ended_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString(),
+                        }).eq('id', s.id);
+                    }
+                    logActivity('หยุดเซสชัน', activeSessions.length + ' เซสชัน');
+                }
+
+                // Approve all pending logs
+                const ids = pendingLogs.map(d => d.id);
                 await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
-                logActivity('อนุมัติทั้งหมด', data.length + ' รายการ');
+                logActivity('อนุมัติทั้งหมด', pendingLogs.length + ' รายการ');
                 await Promise.all([loadAdminData(), loadData()]);
-                showToast('อนุมัติทั้งหมด ' + data.length + ' รายการ');
+                showToast('อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ' +
+                    (activeSessions?.length ? ' (หยุด ' + activeSessions.length + ' เซสชัน)' : ''));
             } catch (e) {
                 showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
             } finally { hideLoading(); }
@@ -2066,16 +2134,34 @@
                     <div class="flex items-center justify-between mb-2">
                         <p class="font-bold text-navy text-lg">${v.full_name}</p>
                         <div class="flex gap-2">
+                            <button onclick="showEditVolunteerModal('${v.id}', '${v.full_name.replace(/'/g, "\\'")}', '${(v.phone_contact || '').replace(/'/g, "\\'")}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
                             <button onclick="deleteVolunteer('${v.id}', '${v.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${v.phone_contact || '-'}</p>
+                    <p class="text-[13px] text-slate-500">📞 ${v.phone_contact || '-'}</p>
                     <p class="text-[13px] text-emerald-500">${t('vol.active')}</p>
                 </div>
             `).join('') || '<p class="text-slate-400">' + t('vol.no.data') + '</p>';
         }
 
-        async function toggleVolunteer(id, active) { const { error } = await supabaseClient.from('volunteers').update({ is_active: active }).eq('id', String(id)); if (!error) loadAdminData(); }
+        function showEditVolunteerModal(id, name, phone) {
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">${t('vol.edit')}</h3>
+                <div class="space-y-4">
+                    <input id="edit-vol-name" value="${name}" placeholder="${t('vol.name')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-vol-phone" value="${phone}" placeholder="${t('vol.phone')}" class="w-full p-4 rounded-2xl border">
+                    <button onclick="saveVolunteer('${id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
+                </div>
+            `);
+        }
+        async function saveVolunteer(id) {
+            const fullName = document.getElementById('edit-vol-name').value;
+            const phone = document.getElementById('edit-vol-phone').value;
+            if (!fullName) { showToast(t('vol.name.required'), 'warning'); return; }
+            const { error } = await supabaseClient.from('volunteers').update({ full_name: fullName, phone_contact: phone || null }).eq('id', String(id));
+            if (!error) { closeModal(); loadAdminData(); showToast(t('vol.saved')); }
+            else { showToast(t('common.error') + error.message, 'error'); }
+        }
         async function deleteVolunteer(id, name) {
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
                 const { error } = await supabaseClient.from('volunteers').delete().eq('id', String(id));
@@ -2091,6 +2177,8 @@
                     <div class="flex items-center justify-between mb-2">
                         <p class="font-bold text-navy text-lg">🏠 ${s.full_name}</p>
                         <div class="flex gap-2">
+                            <button onclick="showEditSubjectModal('${s.id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
+                            <button onclick="toggleSubjectStatus('${s.id}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${s.status === 'active' ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>
                             <button onclick="deleteSubject('${s.id}', '${s.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
@@ -2104,7 +2192,51 @@
             `).join('') || '<p class="text-slate-400">' + t('sub.no.data') + '</p>';
         }
 
-        async function toggleSubject(id, active) { const { error } = await supabaseClient.from('subjects').update({ is_active: active }).eq('id', String(id)); if (!error) loadAdminData(); }
+        function showEditSubjectModal(id) {
+            const s = subjects.find(x => String(x.id) === String(id));
+            if (!s) return;
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">${t('sub.edit')}</h3>
+                <div class="space-y-4">
+                    <input id="edit-sub-name" value="${s.full_name || ''}" placeholder="${t('sub.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-sub-address" value="${s.address || ''}" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input id="edit-sub-lat" value="${s.gps_lat || ''}" placeholder="Latitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
+                        <input id="edit-sub-lng" value="${s.gps_long || ''}" placeholder="Longitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
+                    </div>
+                    <select id="edit-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
+                        <option value="">${t('sub.select.vol')}</option>
+                        ${volunteers.map(v => `<option value="${v.id}" ${String(v.id) === String(s.volunteer_id) ? 'selected' : ''}>${v.full_name}</option>`).join('')}
+                    </select>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
+                        <select id="edit-sub-connectivity" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">${t('sub.select.conn')}</option>
+                            <option value="wifi" ${s.connectivity === 'wifi' ? 'selected' : ''}>${t('sub.wifi')}</option>
+                            <option value="hotspot" ${s.connectivity === 'hotspot' ? 'selected' : ''}>${t('sub.hotspot')}</option>
+                        </select>
+                    </div>
+                    <button onclick="saveSubject('${s.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
+                </div>
+            `);
+        }
+        async function saveSubject(id) {
+            const fullName = document.getElementById('edit-sub-name').value;
+            const address = document.getElementById('edit-sub-address').value;
+            const lat = document.getElementById('edit-sub-lat').value;
+            const lng = document.getElementById('edit-sub-lng').value;
+            const volunteerId = document.getElementById('edit-sub-volunteer').value;
+            const connectivity = document.getElementById('edit-sub-connectivity').value;
+            if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
+            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: connectivity || null };
+            const { error } = await supabaseClient.from('subjects').update(record).eq('id', String(id));
+            if (!error) { closeModal(); loadAdminData(); showToast(t('sub.saved')); }
+            else { showToast(t('common.error') + error.message, 'error'); }
+        }
+        async function toggleSubjectStatus(id, newStatus) {
+            const { error } = await supabaseClient.from('subjects').update({ status: newStatus }).eq('id', String(id));
+            if (!error) loadAdminData();
+        }
         async function deleteSubject(id, name) {
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
                 const { error } = await supabaseClient.from('subjects').delete().eq('id', String(id));
@@ -2208,7 +2340,7 @@
             const connectivity = document.getElementById('new-sub-connectivity').value;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
             const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active' };
-            if (connectivity) record.connectivity_mode = connectivity;
+            if (connectivity) record.connectivity = connectivity;
             if (lat) record.gps_lat = parseFloat(lat);
             if (lng) record.gps_long = parseFloat(lng);
             const { error } = await supabaseClient.from('subjects').insert([record]);
@@ -2274,7 +2406,7 @@
 
         async function loadBasicMapMarkers() {
             if (!map) return;
-            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, stove_type').not('gps_lat', 'is', null).not('gps_long', 'is', null);
+            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, connectivity').not('gps_lat', 'is', null).not('gps_long', 'is', null);
             if (error || !data || !data.length) {
                 const noGpsIcon = L.divIcon({ html: '<div style="background:white;padding:8px 14px;border-radius:10px;font-size:12px;color:#64748b;box-shadow:0 2px 8px rgba(0,0,0,0.15);white-space:nowrap;border:1px solid #e2e8f0">📍 ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา</div>', iconAnchor: [140, 20], iconSize: [280, 40] });
                 L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(map);
@@ -2287,8 +2419,8 @@
                 if (isNaN(lat) || isNaN(lng)) return;
                 bounds.push([lat, lng]);
                 const icon = s.status === 'active' ? '🟢' : '🔵';
-                const stoveLabel = s.stove_type === 'eco' ? 'EcoStove' : s.stove_type === 'old' ? 'เตาเดิม' : (s.stove_type || '-');
-                L.marker([lat, lng]).addTo(map).bindPopup('<b>' + icon + ' ' + s.full_name + '</b><br>เตา: ' + stoveLabel);
+                const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : '📱 Hotspot';
+                L.marker([lat, lng]).addTo(map).bindPopup('<b>' + icon + ' ' + s.full_name + '</b><br>' + connLabel);
             });
             if (bounds.length) map.fitBounds(bounds, { padding: [30, 30] });
         }
@@ -2304,7 +2436,7 @@
 
         async function loadSubjectMarkers() {
             if (!mapDeep) return;
-            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, stove_type, connectivity_mode, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null);
+            const { data, error } = await supabaseClient.from('subjects').select('full_name, gps_lat, gps_long, status, connectivity, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null);
             if (error || !data || !data.length) {
                 const noGpsIcon = L.divIcon({ html: '<div style="background:white;padding:8px 14px;border-radius:10px;font-size:12px;color:#64748b;box-shadow:0 2px 8px rgba(0,0,0,0.15);white-space:nowrap;border:1px solid #e2e8f0">📍 ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา</div>', iconAnchor: [140, 20], iconSize: [280, 40] });
                 L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(mapDeep);
@@ -2317,11 +2449,9 @@
                 if (isNaN(lat) || isNaN(lng)) return;
                 bounds.push([lat, lng]);
                 const icon = s.status === 'active' ? '🟢' : '🔵';
-                const stoveLabel = s.stove_type === 'eco' ? 'EcoStove' : s.stove_type === 'old' ? 'เตาเดิม' : (s.stove_type || '-');
-                const wifiLabel = s.connectivity_mode === 'wifi' ? '📶 WiFi' : '📱 Hotspot';
+                const wifiLabel = s.connectivity === 'wifi' ? '📶 WiFi' : '📱 Hotspot';
                 const volunteer = s.volunteers?.full_name || '-';
                 const popup = '<b>' + icon + ' ' + s.full_name + '</b>' +
-                    '<br>เตา: ' + stoveLabel +
                     '<br>เชื่อมต่อ: ' + wifiLabel +
                     '<br>อาสา: ' + volunteer;
                 L.marker([lat, lng]).addTo(mapDeep).bindPopup(popup);

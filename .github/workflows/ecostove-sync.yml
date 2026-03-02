@@ -1,8 +1,8 @@
-name: EcoStove Sensor Sync
+name: EcoStove Sensor Sync (disabled — moved to Vercel /api/sync + cron-job.org)
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'
+  # schedule:
+  #   - cron: '*/15 * * * *'
   workflow_dispatch:
 
 defaults:
