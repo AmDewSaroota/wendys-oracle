@@ -443,6 +443,7 @@
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Readings</th>
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg PM2.5</th>
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg CO2</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">กราฟ</th>
                             </tr>
                         </thead>
                         <tbody id="sessions-table-body" class="divide-y"></tbody>
@@ -1556,6 +1557,7 @@
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_co2 != null ? s.avg_co2.toFixed(0) : '-') + '</td>' +
+                    '<td class="p-3 text-center"><button onclick="showSessionChart(\'' + s.id + '\',\'' + deviceName.replace(/'/g,"\\'") + '\',\'' + s.started_at + '\')" class="px-3 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-[12px] font-semibold transition">📈 กราฟ</button></td>' +
                     '</tr>';
             }).join('') || '<tr><td colspan="7" class="p-6 text-center text-slate-400">' + t('session.no.data') + '</td></tr>';
         }
@@ -2284,6 +2286,115 @@
             };
             window.switchView = patchedSwitch;
         });
+    </script>
+
+    <!-- Session Chart Modal -->
+    <div id="session-chart-modal" style="display:none" class="fixed inset-0 z-50 flex items-center justify-center p-4" onclick="if(event.target===this)closeSessionModal()">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 id="session-modal-title" class="font-bold text-lg text-navy">Session Detail</h3>
+                    <p id="session-modal-sub" class="text-slate-400 text-sm mt-0.5"></p>
+                </div>
+                <button onclick="closeSessionModal()" class="text-slate-400 hover:text-slate-700 text-2xl leading-none">&times;</button>
+            </div>
+            <!-- Stats row -->
+            <div id="session-modal-stats" class="grid grid-cols-3 gap-3 mb-5"></div>
+            <!-- Chart -->
+            <div class="relative bg-slate-50 rounded-2xl p-4">
+                <canvas id="session-detail-chart" height="200"></canvas>
+                <div id="session-chart-loading" class="absolute inset-0 flex items-center justify-center text-slate-400 text-sm rounded-2xl bg-slate-50">⏳ กำลังโหลด...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let _sessionChartInstance = null;
+
+        async function showSessionChart(sessionId, deviceName, startedAt) {
+            // Show modal
+            const modal = document.getElementById('session-chart-modal');
+            modal.style.display = 'flex';
+            document.getElementById('session-modal-title').textContent = '📊 ' + deviceName;
+            document.getElementById('session-modal-sub').textContent = new Date(startedAt).toLocaleString('th-TH');
+            document.getElementById('session-modal-stats').innerHTML = '';
+            document.getElementById('session-chart-loading').style.display = 'flex';
+
+            // Destroy old chart
+            if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
+
+            // Fetch logs for this session
+            const { data: logs, error } = await supabaseClient
+                .from('pollution_logs')
+                .select('recorded_at, pm25_value, co2_value, temperature, humidity')
+                .eq('session_id', sessionId)
+                .order('recorded_at', { ascending: true });
+
+            if (error || !logs || logs.length === 0) {
+                document.getElementById('session-chart-loading').textContent = '⚠️ ไม่มีข้อมูล readings ใน session นี้';
+                return;
+            }
+
+            document.getElementById('session-chart-loading').style.display = 'none';
+
+            // Stats
+            const pm25s = logs.map(l => l.pm25_value).filter(v => v != null);
+            const co2s = logs.map(l => l.co2_value).filter(v => v != null);
+            const statsHtml = [
+                { label: 'PM2.5 สูงสุด', value: pm25s.length ? Math.max(...pm25s).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
+                { label: 'PM2.5 เฉลี่ย', value: pm25s.length ? (pm25s.reduce((a,b)=>a+b,0)/pm25s.length).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-400' },
+                { label: 'CO2 สูงสุด', value: co2s.length ? Math.max(...co2s) + ' ppm' : '-', color: 'text-blue-600' },
+            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[11px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
+            document.getElementById('session-modal-stats').innerHTML = statsHtml;
+
+            // Render chart
+            const labels = logs.map(l => new Date(l.recorded_at));
+            const ctx = document.getElementById('session-detail-chart').getContext('2d');
+            _sessionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'PM2.5 (µg/m³)',
+                            data: logs.map(l => l.pm25_value),
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249,115,22,0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: 'CO2 (ppm)',
+                            data: logs.map(l => l.co2_value),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59,130,246,0.05)',
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            yAxisID: 'y2',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top' } },
+                    scales: {
+                        x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, grid: { display: false } },
+                        y: { position: 'left', title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function closeSessionModal() {
+            document.getElementById('session-chart-modal').style.display = 'none';
+            if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
+        }
     </script>
 </body>
 </html>
