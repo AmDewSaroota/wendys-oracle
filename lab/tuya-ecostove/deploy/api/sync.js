@@ -162,9 +162,10 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
 
 async function closeSession(sbUrl, sbKey, session) {
   // Query pollution_logs for this device during the session period
+  const startedAt = encodeURIComponent(session.started_at);
   const logs = await fetch(
     sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
-    '&recorded_at=gte.' + session.started_at +
+    '&recorded_at=gte.' + startedAt +
     '&select=pm25_value,pm10_value,co2_value,temperature,humidity',
     { headers: sbHeaders(sbKey) }
   );
@@ -199,6 +200,62 @@ async function closeSession(sbUrl, sbKey, session) {
     headers: sbHeaders(sbKey),
     body: JSON.stringify(update),
   });
+
+  // Update daily summary after closing session
+  await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+}
+
+async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const res = await fetch(
+      sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
+      '&started_at=gte.' + today + 'T00:00:00Z&started_at=lt.' + today + 'T23:59:59Z',
+      { headers: sbHeaders(sbKey) }
+    );
+    if (!res.ok) return;
+    const sessions = await res.json();
+
+    const completed = sessions.filter(s => s.session_status === 'complete');
+    const incomplete = sessions.filter(s => s.session_status === 'incomplete');
+    const cancelled = sessions.filter(s => s.session_status === 'cancelled');
+    const totalReadings = completed.reduce((sum, s) => sum + (s.readings_count || 0), 0);
+
+    const avgOf = (arr, key) => {
+      const vals = arr.map(s => s[key]).filter(v => v != null);
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+
+    let compliance = 'pending';
+    if (completed.length >= 2) compliance = 'complete';
+    else if (completed.length === 1) compliance = 'partial';
+
+    const summary = {
+      summary_date: today,
+      device_id: deviceId,
+      sessions_completed: completed.length,
+      sessions_incomplete: incomplete.length,
+      sessions_cancelled: cancelled.length,
+      total_readings: totalReadings,
+      avg_pm25: avgOf(completed, 'avg_pm25'),
+      max_pm25: completed.length ? Math.max(...completed.map(c => c.max_pm25).filter(v => v != null)) : null,
+      min_pm25: completed.length ? Math.min(...completed.map(c => c.min_pm25).filter(v => v != null)) : null,
+      avg_co2: avgOf(completed, 'avg_co2'),
+      avg_temperature: avgOf(completed, 'avg_temperature'),
+      avg_humidity: avgOf(completed, 'avg_humidity'),
+      compliance_status: compliance,
+      stove_type: stoveType || 'eco',
+      updated_at: new Date().toISOString(),
+    };
+
+    await fetch(sbUrl + '/rest/v1/daily_summaries', {
+      method: 'POST',
+      headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal,resolution=merge-duplicates' },
+      body: JSON.stringify(summary),
+    });
+  } catch (e) {
+    // non-critical — don't break the sync
+  }
 }
 
 async function manageSession(sbUrl, sbKey, deviceId, stoveType) {
