@@ -479,14 +479,6 @@
                 </div>
             </div>
 
-            <!-- Compliance Tracker -->
-            <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-purple-300 p-6">
-                <h4 class="font-bold text-lg text-navy mb-4" data-i18n="compliance.title">ความสมบูรณ์ของข้อมูล (7 วันล่าสุด)</h4>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="compliance-cards">
-                    <p class="text-slate-400 text-sm col-span-3">กำลังโหลด...</p>
-                </div>
-            </div>
-
             <!-- Map -->
             <div class="card-styled p-2 rounded-[2.5rem] border-b-0">
                 <div id="map-deep"></div>
@@ -745,13 +737,6 @@
             'daily.legend.partial': { th: 'เก็บได้บางส่วน', en: 'Partial collection' },
             'daily.legend.missed': { th: 'ไม่ได้เก็บข้อมูล', en: 'Data not collected' },
             'daily.legend.pending': { th: 'รอการเก็บข้อมูล', en: 'Pending collection' },
-            // Compliance
-            'compliance.title': { th: 'ความสมบูรณ์ของข้อมูล (7 วันล่าสุด)', en: 'Data Compliance (Last 7 Days)' },
-            'compliance.no.data': { th: 'ยังไม่มีข้อมูลการปฏิบัติตาม', en: 'No compliance data yet' },
-            'compliance.complete': { th: 'ครบ', en: 'Complete' },
-            'compliance.partial': { th: 'บางส่วน', en: 'Partial' },
-            'compliance.missed': { th: 'ขาด', en: 'Missed' },
-            'compliance.pending': { th: 'รอ', en: 'Pending' },
             // Admin
             'admin.title': { th: 'Admin Control', en: 'Admin Control' },
             'admin.subtitle': { th: 'การตรวจสอบและติดตามกิจกรรมโครงการ', en: 'Project monitoring and activity tracking' },
@@ -1296,7 +1281,6 @@
             updateSensorCharts();
             loadSessionsTab();
             loadDailySummaries();
-            loadComplianceTracker();
 
             const countEl = document.getElementById('deep-data-count');
             if (countEl) countEl.textContent = t('deep.count', allData.length);
@@ -1617,45 +1601,6 @@
             }).join('') || '<tr><td colspan="6" class="p-6 text-center text-slate-400">' + t('daily.no.data') + '</td></tr>';
         }
 
-        async function loadComplianceTracker() {
-            const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-            const { data, error } = await supabaseClient.from('daily_summaries').select('*').gte('summary_date', cutoff);
-            if (error || !data) return;
-
-            const byDevice = {};
-            data.forEach(d => {
-                if (!byDevice[d.device_id]) byDevice[d.device_id] = [];
-                byDevice[d.device_id].push(d);
-            });
-
-            const container = document.getElementById('compliance-cards');
-            if (!container) return;
-
-            const entries = Object.entries(byDevice);
-            if (!entries.length) {
-                container.innerHTML = '<p class="text-slate-400 text-sm col-span-3">' + t('compliance.no.data') + '</p>';
-                return;
-            }
-
-            container.innerHTML = entries.map(([deviceId, summaries]) => {
-                const target = summaries.length * 2;
-                const completed = summaries.reduce((s, d) => s + d.sessions_completed, 0);
-                const pct = target > 0 ? Math.round(completed / target * 100) : 0;
-                const deviceName = DEVICE_NAMES[deviceId] || deviceId;
-                const color = pct >= 80 ? 'emerald' : pct >= 50 ? 'amber' : 'red';
-                return '<div class="bg-white/80 rounded-2xl p-5 border-l-4 border-' + color + '-400 shadow-sm">' +
-                    '<p class="font-bold text-navy">' + deviceName + '</p>' +
-                    '<div class="flex items-end gap-2 mt-2">' +
-                        '<span class="text-2xl font-bold text-' + color + '-600">' + pct + '%</span>' +
-                        '<span class="text-[12px] text-slate-400">(' + completed + '/' + target + ' sessions)</span>' +
-                    '</div>' +
-                    '<div class="w-full bg-slate-200 rounded-full h-2 mt-2">' +
-                        '<div class="bg-' + color + '-500 h-2 rounded-full transition-all" style="width:' + pct + '%"></div>' +
-                    '</div>' +
-                '</div>';
-            }).join('');
-        }
-
         // ==================== Auto Refresh ====================
         function startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
@@ -1675,11 +1620,26 @@
         }
 
         // ==================== Admin Activity Feed ====================
-        const ACTION_ICONS = {
-            'อนุมัติ': '✅', 'ไม่อนุมัติ': '❌', 'เพิ่มเครื่องวัด': '📡', 'แก้ไขเครื่องวัด': '🔧',
-            'ลบเครื่องวัด': '🗑️', 'เพิ่มอาสา': '👤', 'ลบอาสา': '🗑️', 'เพิ่มบ้าน': '🏠',
-            'ลบบ้าน': '🗑️', 'Export': '📊', 'เปิดเครื่อง': '🟢', 'ปิดเครื่อง': '🔴',
-        };
+        function getActionStyle(action) {
+            const a = action || '';
+            const al = a.toLowerCase();
+            if (a.includes('เข้าสู่ระบบ') || al.includes('login')) return { icon: '🔑', bg: 'bg-blue-50 border-blue-200' };
+            if (a.includes('ออกจากระบบ') || al.includes('logout')) return { icon: '🚪', bg: 'bg-slate-50 border-slate-200' };
+            if (a.includes('อนุมัติทั้งหมด') || al.includes('approve all')) return { icon: '🎉', bg: 'bg-emerald-50 border-emerald-200' };
+            if (a.includes('อนุมัติ') || al.includes('approv')) return { icon: '✅', bg: 'bg-emerald-50 border-emerald-200' };
+            if (a.includes('ปฏิเสธ') || al.includes('reject')) return { icon: '🚫', bg: 'bg-red-50 border-red-200' };
+            if (a.includes('หยุดเซสชัน') || al.includes('stop')) return { icon: '⏹️', bg: 'bg-orange-50 border-orange-200' };
+            if (a.includes('เปิดเครื่อง')) return { icon: '🟢', bg: 'bg-green-50 border-green-200' };
+            if (a.includes('ปิดเครื่อง')) return { icon: '🔴', bg: 'bg-red-50 border-red-200' };
+            if (a.includes('ลงทะเบียน') || al.includes('register')) return { icon: '📡', bg: 'bg-indigo-50 border-indigo-200' };
+            if (a.includes('เพิ่มเครื่องวัด') || al.includes('add device')) return { icon: '📡', bg: 'bg-indigo-50 border-indigo-200' };
+            if (a.includes('เพิ่มอาสา') || al.includes('volunteer')) return { icon: '👤', bg: 'bg-purple-50 border-purple-200' };
+            if (a.includes('เพิ่มบ้าน') || al.includes('house')) return { icon: '🏠', bg: 'bg-amber-50 border-amber-200' };
+            if (a.includes('แก้ไข') || al.includes('edit')) return { icon: '✏️', bg: 'bg-sky-50 border-sky-200' };
+            if (a.includes('ลบ') || al.includes('delet')) return { icon: '🗑️', bg: 'bg-red-50 border-red-200' };
+            if (al.includes('export')) return { icon: '📊', bg: 'bg-cyan-50 border-cyan-200' };
+            return { icon: '📋', bg: 'bg-slate-50 border-slate-200' };
+        }
 
         function renderAdminActivityFeed() {
             const feed = document.getElementById('admin-activity-feed');
@@ -1689,13 +1649,13 @@
                 return;
             }
             feed.innerHTML = activityLog.slice(0, 50).map(entry => {
-                const icon = ACTION_ICONS[entry.action] || '📋';
+                const style = getActionStyle(entry.action);
                 const userName = entry.user || '-';
-                return `<div class="flex items-center gap-4 p-4 bg-white/70 rounded-2xl border border-slate-100">
-                    <span class="text-2xl">${icon}</span>
+                return `<div class="flex items-center gap-4 p-4 ${style.bg} rounded-2xl border">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0">${style.icon}</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-[13px] font-bold text-navy truncate">${entry.action}</p>
-                        <p class="text-[11px] text-slate-400">👤 ${userName} · ${new Date(entry.timestamp).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
+                        <p class="text-[11px] text-slate-400">${userName} · ${new Date(entry.timestamp).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[13px] text-slate-500 truncate max-w-[180px]">${entry.detail || '-'}</p>
@@ -1759,19 +1719,33 @@
 
                 document.getElementById('count-pending').textContent = data?.length || 0;
 
-                // Group by device + date = "session"
-                const sessionMap = {};
+                // Group by device + date, then split by time gaps > 30 min
+                const deviceDateMap = {};
                 (data || []).forEach(d => {
                     const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
                     const key = `${d.tuya_device_id || 'unknown'}__${date}`;
-                    if (!sessionMap[key]) {
-                        sessionMap[key] = { device: d.tuya_device_id, stoveType: d.stove_type, date, logs: [], ids: [] };
-                    }
-                    sessionMap[key].logs.push(d);
-                    sessionMap[key].ids.push(d.id);
+                    if (!deviceDateMap[key]) deviceDateMap[key] = [];
+                    deviceDateMap[key].push(d);
                 });
 
-                const sessions = Object.values(sessionMap);
+                const sessions = [];
+                for (const [key, logs] of Object.entries(deviceDateMap)) {
+                    const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
+                    let cur = { device: sorted[0].tuya_device_id, stoveType: sorted[0].stove_type, date: key.split('__')[1], logs: [sorted[0]], ids: [sorted[0].id] };
+                    for (let i = 1; i < sorted.length; i++) {
+                        const gap = (new Date(sorted[i].recorded_at) - new Date(sorted[i-1].recorded_at)) / 60000;
+                        if (gap > 30) {
+                            sessions.push(cur);
+                            cur = { device: sorted[i].tuya_device_id, stoveType: sorted[i].stove_type, date: key.split('__')[1], logs: [sorted[i]], ids: [sorted[i].id] };
+                        } else {
+                            cur.logs.push(sorted[i]);
+                            cur.ids.push(sorted[i].id);
+                        }
+                    }
+                    sessions.push(cur);
+                }
+                // Sort sessions: newest first
+                sessions.sort((a, b) => new Date(b.logs[0].recorded_at) - new Date(a.logs[0].recorded_at));
                 const container = document.getElementById('pending-sessions-list');
                 const summaryEl = document.getElementById('approval-summary-text');
                 const btnAll = document.getElementById('btn-approve-all');

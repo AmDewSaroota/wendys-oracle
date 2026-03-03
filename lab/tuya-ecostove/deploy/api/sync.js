@@ -14,6 +14,7 @@ const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
 const SESSION_GAP_MINUTES = 30; // gap > 30 min = close old session, start new
 const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
 const SESSION_COOLDOWN_MINUTES = 300; // 5hr cooldown before next session
+const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
 
 const SENSORS = [
   { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old' },
@@ -42,6 +43,17 @@ async function getTuyaToken(accessId, secret) {
   return data.success ? data.result.access_token : null;
 }
 
+async function getDeviceInfo(accessId, secret, token, deviceId) {
+  const timestamp = Date.now().toString();
+  const path = '/v1.0/devices/' + deviceId;
+  const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
+
+  const res = await fetch(TUYA_BASE_URL + path, {
+    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+  });
+  return res.json();
+}
+
 async function getDeviceStatus(accessId, secret, token, deviceId) {
   const timestamp = Date.now().toString();
   const path = '/v1.0/devices/' + deviceId + '/status';
@@ -62,12 +74,23 @@ function parseReadings(data) {
   return readings;
 }
 
-function parseAqi(value) {
-  if (typeof value === 'number') return value;
-  if (typeof value === 'string' && value.startsWith('level_')) {
-    return parseInt(value.replace('level_', '')) || null;
+// Calculate AQI from PM2.5 using US EPA breakpoints
+function calculateAqiFromPm25(pm25) {
+  if (pm25 == null || isNaN(pm25) || pm25 < 0) return null;
+  const bp = [
+    { lo: 0,     hi: 12.0,   aqiLo: 0,   aqiHi: 50 },
+    { lo: 12.1,  hi: 35.4,   aqiLo: 51,  aqiHi: 100 },
+    { lo: 35.5,  hi: 55.4,   aqiLo: 101, aqiHi: 150 },
+    { lo: 55.5,  hi: 150.4,  aqiLo: 151, aqiHi: 200 },
+    { lo: 150.5, hi: 250.4,  aqiLo: 201, aqiHi: 300 },
+    { lo: 250.5, hi: 500.4,  aqiLo: 301, aqiHi: 500 },
+  ];
+  for (const b of bp) {
+    if (pm25 >= b.lo && pm25 <= b.hi) {
+      return Math.round((b.aqiHi - b.aqiLo) / (b.hi - b.lo) * (pm25 - b.lo) + b.aqiLo);
+    }
   }
-  return null;
+  return pm25 > 500.4 ? 500 : null;
 }
 
 // ===== Supabase helpers =====
@@ -90,7 +113,7 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType) {
     humidity: readings.humidity_value ?? null,
     hcho_value: readings.ch2o_value ?? null,
     tvoc_value: readings.tvoc_value ?? null,
-    aqi: parseAqi(readings.air_quality_index),
+    aqi: calculateAqiFromPm25(readings.pm25_value),
     data_source: 'sensor',
     tuya_device_id: deviceId,
     stove_type: stoveType || 'eco',
@@ -112,6 +135,18 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType) {
 }
 
 // ===== Session Management =====
+async function getSessionCountToday(sbUrl, sbKey, deviceId) {
+  const today = new Date().toISOString().slice(0, 10);
+  const res = await fetch(
+    sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
+    '&started_at=gte.' + today + 'T00:00:00Z&select=id',
+    { headers: sbHeaders(sbKey) }
+  );
+  if (!res.ok) return 0;
+  const data = await res.json();
+  return data.length;
+}
+
 async function getActiveSession(sbUrl, sbKey, deviceId) {
   const res = await fetch(
     sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId + '&session_status=eq.collecting&order=started_at.desc&limit=1',
@@ -276,14 +311,9 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType) {
         await updateSessionCount(sbUrl, sbKey, active.id, (active.readings_count || 0) + 1);
         return { action: 'continued', sessionId: active.id };
       } else {
-        // Gap too long — close old, check cooldown before starting new
+        // Gap too long — close old, enter cooldown (just closed = full cooldown)
         await closeSession(sbUrl, sbKey, active);
-        const cooldownLeft = SESSION_COOLDOWN_MINUTES - ((Date.now() - new Date(active.started_at).getTime()) / 60000);
-        if (cooldownLeft > 0) {
-          return { action: 'cooldown (after close)', minutesLeft: Math.round(cooldownLeft) };
-        }
-        const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType);
-        return { action: 'new (gap)', sessionId: newSession?.id };
+        return { action: 'cooldown (after close)', minutesLeft: SESSION_COOLDOWN_MINUTES };
       }
     } else {
       // No active session — check cooldown from last closed session
@@ -293,6 +323,11 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType) {
         if (sinceEnded < SESSION_COOLDOWN_MINUTES) {
           return { action: 'cooldown', minutesLeft: Math.round(SESSION_COOLDOWN_MINUTES - sinceEnded) };
         }
+      }
+      // Daily limit check
+      const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
+      if (countToday >= MAX_SESSIONS_PER_DAY) {
+        return { action: 'daily-limit', sessionsToday: countToday };
       }
       const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType);
       return { action: 'new', sessionId: newSession?.id };
@@ -326,31 +361,35 @@ module.exports = async function handler(req, res) {
   const results = [];
 
   try {
-    // Pre-check: skip Tuya calls if ALL sensors are in cooldown
-    let allCooldown = true;
+    // Pre-check: skip Tuya calls if ALL sensors are idle (cooldown or daily limit)
+    let allIdle = true;
     for (const sensor of SENSORS) {
       const active = await getActiveSession(sbUrl, sbKey, sensor.id);
       if (active) {
-        allCooldown = false; // has active session — need to continue
+        allIdle = false; // has active session — need to continue
         break;
       }
+      // Check daily limit first
+      const todayCount = await getSessionCountToday(sbUrl, sbKey, sensor.id);
+      if (todayCount >= MAX_SESSIONS_PER_DAY) continue; // this sensor is done for the day
+      // Check cooldown
       const last = await getLastClosedSession(sbUrl, sbKey, sensor.id);
       if (!last || !last.ended_at) {
-        allCooldown = false; // no history — allow new session
+        allIdle = false; // no history — allow new session
         break;
       }
       const sinceEnded = (Date.now() - new Date(last.ended_at).getTime()) / 60000;
       if (sinceEnded >= SESSION_COOLDOWN_MINUTES) {
-        allCooldown = false; // cooldown passed — allow new session
+        allIdle = false; // cooldown passed — allow new session
         break;
       }
     }
 
-    if (allCooldown) {
+    if (allIdle) {
       return res.status(200).json({
         success: true,
         synced: '0/' + SENSORS.length,
-        skipped: 'all sensors in cooldown',
+        skipped: 'all sensors idle (cooldown or daily limit reached)',
         time: new Date().toISOString(),
       });
     }
@@ -365,16 +404,31 @@ module.exports = async function handler(req, res) {
       const sensor = SENSORS[i];
 
       try {
+        // Check session state FIRST — skip Tuya API call if cooldown/cutoff
+        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType);
+        const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit'];
+
+        if (skipActions.includes(session.action)) {
+          results.push({ sensor: sensor.name, status: 'skipped', reason: session.action, session });
+          continue;
+        }
+
+        // Check if device is actually online (not just cached)
+        const deviceInfo = await getDeviceInfo(accessId, accessSecret, token, sensor.id);
+        if (!deviceInfo.success || !deviceInfo.result || !deviceInfo.result.online) {
+          results.push({ sensor: sensor.name, status: 'offline', online: false });
+          continue;
+        }
+
         const rawData = await getDeviceStatus(accessId, accessSecret, token, sensor.id);
         const readings = parseReadings(rawData);
 
         if (!readings) {
-          results.push({ sensor: sensor.name, status: 'offline' });
+          results.push({ sensor: sensor.name, status: 'no_data' });
           continue;
         }
 
         const inserted = await insertLog(sbUrl, sbKey, readings, sensor.id, sensor.stoveType);
-        const session = inserted ? await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType) : null;
 
         results.push({
           sensor: sensor.name,
