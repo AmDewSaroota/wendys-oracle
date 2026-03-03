@@ -312,11 +312,6 @@
                     <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
                     <p id="r-stat-pm10-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาเดิม: --%</p>
                 </div>
-                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
-                    <p class="text-[12px] font-bold text-yellow-600 uppercase tracking-wider">PM 1.0</p>
-                    <h3 id="r-stat-pm1" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm1-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาเดิม: --%</p>
-                </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
                     <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider" data-i18n="card.co2">CO2</p>
                     <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
@@ -453,15 +448,11 @@
             <!-- Daily Summary -->
             <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-6">
                 <h4 class="font-bold text-lg text-navy mb-4" data-i18n="daily.title">สรุปรายวัน</h4>
-                <details class="mb-4 text-[11px] text-slate-400">
-                    <summary class="cursor-pointer hover:text-slate-600 select-none" data-i18n="daily.legend.title">หมายเหตุ — สถานะความสมบูรณ์</summary>
-                    <div class="flex flex-wrap gap-2 mt-2 pl-1">
-                        <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold" data-i18n="compliance.complete">✅ ครบ</span> <span data-i18n="daily.legend.complete">เก็บข้อมูลครบตามเป้า</span>
-                        <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold" data-i18n="compliance.partial">⚠️ บางส่วน</span> <span data-i18n="daily.legend.partial">เก็บได้บางส่วน</span>
-                        <span class="px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-bold" data-i18n="compliance.missed">❌ ขาด</span> <span data-i18n="daily.legend.missed">ไม่ได้เก็บข้อมูล</span>
-                        <span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-bold" data-i18n="compliance.pending">⏳ รอ</span> <span data-i18n="daily.legend.pending">รอการเก็บข้อมูล</span>
-                    </div>
-                </details>
+                <div class="mb-4 text-[11px] text-slate-400 flex flex-wrap gap-2">
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold">✅ ครบ 2/2</span>
+                    <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold">⚠️ ได้ 1/2</span>
+                    <span class="px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-bold">❌ ไม่มีข้อมูล</span>
+                </div>
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-[13px] min-w-[700px]">
                         <thead class="bg-slate-50 border-b">
@@ -581,7 +572,6 @@
                                 <th class="p-3" data-i18n="data.stove">เตา</th>
                                 <th class="p-3 text-center text-orange-500">PM2.5</th>
                                 <th class="p-3 text-center text-orange-400">PM10</th>
-                                <th class="p-3 text-center text-orange-300">PM1</th>
                                 <th class="p-3 text-center text-slate-500">CO2</th>
                                 <th class="p-3 text-center text-blue-500">AQI</th>
                                 <th class="p-3 text-center text-red-400">°C</th>
@@ -732,11 +722,7 @@
             'daily.device': { th: 'อุปกรณ์', en: 'Device' },
             'daily.status': { th: 'สถานะ', en: 'Status' },
             'daily.no.data': { th: 'ยังไม่มีสรุปรายวัน', en: 'No daily summaries yet' },
-            'daily.legend.title': { th: 'หมายเหตุ — สถานะความสมบูรณ์:', en: 'Note — Compliance Status:' },
-            'daily.legend.complete': { th: 'เก็บข้อมูลครบตามเป้า', en: 'Data collection complete' },
-            'daily.legend.partial': { th: 'เก็บได้บางส่วน', en: 'Partial collection' },
-            'daily.legend.missed': { th: 'ไม่ได้เก็บข้อมูล', en: 'Data not collected' },
-            'daily.legend.pending': { th: 'รอการเก็บข้อมูล', en: 'Pending collection' },
+            'daily.legend.title': { th: 'หมายเหตุ — จำนวน session:', en: 'Note — Session count:' },
             // Admin
             'admin.title': { th: 'Admin Control', en: 'Admin Control' },
             'admin.subtitle': { th: 'การตรวจสอบและติดตามกิจกรรมโครงการ', en: 'Project monitoring and activity tracking' },
@@ -1195,7 +1181,7 @@
                 const today = new Date().toISOString().slice(0, 10);
                 const { data } = await supabaseClient
                     .from('daily_summaries')
-                    .select('sessions_completed, sessions_incomplete, compliance_status, device_id')
+                    .select('sessions_completed, sessions_incomplete, device_id')
                     .eq('summary_date', today);
 
                 const totalCompleted = (data || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
@@ -1293,7 +1279,6 @@
             const fields = [
                 { id: 'pm25', field: 'pm25_value' },
                 { id: 'pm10', field: 'pm10_value' },
-                { id: 'pm1', field: 'pm1_value' },
                 { id: 'co2', field: 'co2_value' },
                 { id: 'aqi', field: 'aqi' },
             ];
@@ -1344,17 +1329,17 @@
                 groupCharts.pm = new Chart(pmCanvas, {
                     type: 'bar',
                     data: {
-                        labels: ['PM 1.0', 'PM 2.5', 'PM 10'],
+                        labels: ['PM 2.5', 'PM 10'],
                         datasets: [
                             {
                                 label: t('chart.old'),
-                                data: [avg(oldData, 'pm1_value'), avg(oldData, 'pm25_value'), avg(oldData, 'pm10_value')],
+                                data: [avg(oldData, 'pm25_value'), avg(oldData, 'pm10_value')],
                                 backgroundColor: 'rgba(249,115,22,0.7)',
                                 borderRadius: 6,
                             },
                             {
                                 label: 'EcoStove',
-                                data: [avg(ecoData, 'pm1_value'), avg(ecoData, 'pm25_value'), avg(ecoData, 'pm10_value')],
+                                data: [avg(ecoData, 'pm25_value'), avg(ecoData, 'pm10_value')],
                                 backgroundColor: 'rgba(16,185,129,0.7)',
                                 borderRadius: 6,
                             },
@@ -1409,7 +1394,6 @@
             const params = [
                 { label: 'PM 2.5 (µg/m³)', field: 'pm25_value' },
                 { label: 'PM 10 (µg/m³)', field: 'pm10_value' },
-                { label: 'PM 1.0 (µg/m³)', field: 'pm1_value' },
                 { label: 'CO2 (ppm)', field: 'co2_value' },
                 { label: 'AQI', field: 'aqi' },
                 { label: 'HCHO (mg/m³)', field: 'hcho_value' },
@@ -1580,23 +1564,20 @@
             const tbody = document.getElementById('daily-summary-body');
             if (!tbody) return;
 
-            const complianceColors = { 'complete': 'bg-emerald-100 text-emerald-700', 'partial': 'bg-yellow-100 text-yellow-700', 'missed': 'bg-red-100 text-red-700', 'pending': 'bg-slate-100 text-slate-500' };
-            const complianceIcons = { 'complete': '✅', 'partial': '⚠️', 'missed': '❌', 'pending': '⏳' };
-            const complianceThai = { 'complete': t('compliance.complete'), 'partial': t('compliance.partial'), 'missed': t('compliance.missed'), 'pending': t('compliance.pending') };
-
             tbody.innerHTML = (data || []).map(d => {
-                const cColor = complianceColors[d.compliance_status] || 'bg-slate-100';
-                const cIcon = complianceIcons[d.compliance_status] || '';
-                const cText = complianceThai[d.compliance_status] || d.compliance_status;
                 const deviceName = DEVICE_NAMES[d.device_id] || d.device_id;
-                const total = d.sessions_completed + d.sessions_incomplete + d.sessions_cancelled;
+                const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
+                const completed = d.sessions_completed || 0;
+                const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-500';
+                const statusIcon = completed >= 2 ? '✅' : completed >= 1 ? '⚠️' : '❌';
+                const statusText = completed >= 2 ? 'ครบ' : completed >= 1 ? completed + '/2' : 'ไม่มี';
                 return '<tr class="hover:bg-slate-50/50">' +
                     '<td class="p-3">' + d.summary_date + '</td>' +
                     '<td class="p-3">' + deviceName + '</td>' +
-                    '<td class="p-3 text-center font-bold">' + d.sessions_completed + '/' + total + '</td>' +
-                    '<td class="p-3 text-center">' + d.total_readings + '</td>' +
+                    '<td class="p-3 text-center font-bold">' + completed + '/' + total + '</td>' +
+                    '<td class="p-3 text-center">' + (d.total_readings || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (d.avg_pm25 != null ? d.avg_pm25.toFixed(1) : '-') + '</td>' +
-                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + cColor + '">' + cIcon + ' ' + cText + '</span></td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + statusColor + '">' + statusIcon + ' ' + statusText + '</span></td>' +
                     '</tr>';
             }).join('') || '<tr><td colspan="6" class="p-6 text-center text-slate-400">' + t('daily.no.data') + '</td></tr>';
         }
@@ -1698,7 +1679,6 @@
                     <td class="p-3">${d.stove_type === 'eco' ? '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[11px] font-bold">Eco</span>' : '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-[11px] font-bold">เดิม</span>'}</td>
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
                     <td class="p-3 text-center text-orange-400">${d.pm10_value ?? '-'}</td>
-                    <td class="p-3 text-center text-orange-300">${d.pm1_value ?? '-'}</td>
                     <td class="p-3 text-center text-slate-600">${d.co2_value ?? '-'}</td>
                     <td class="p-3 text-center text-blue-500">${d.aqi ?? '-'}</td>
                     <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
@@ -2329,7 +2309,7 @@
                     logActivity('Export', data.length + ' records');
                     const ws = XLSX.utils.json_to_sheet(data.map(d => ({
                         [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
-                        'PM2.5': d.pm25_value, 'PM10': d.pm10_value, 'PM1': d.pm1_value,
+                        'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
                         'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
                         'HCHO': d.hcho_value,
                     })));

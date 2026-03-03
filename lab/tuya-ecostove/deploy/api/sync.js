@@ -105,7 +105,6 @@ function sbHeaders(sbKey) {
 async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType) {
   const record = {
     pm25_value: readings.pm25_value ?? null,
-    pm1_value: readings.pm1 ?? null,
     pm10_value: readings.pm10 ?? null,
     co2_value: readings.co2_value ?? null,
     co_value: readings.co_value ?? null,

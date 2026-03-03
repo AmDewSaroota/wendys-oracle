@@ -363,9 +363,9 @@
   <div class="card-grid cols-3" style="margin-top:20px;">
     <div class="card">
       <div class="icon">📡</div>
-      <h3>วัดได้ 8 ค่า</h3>
+      <h3>วัดได้ 7 ค่า</h3>
       <ul>
-        <li>PM2.5 / PM10 / PM1 (ฝุ่นละเอียด)</li>
+        <li>PM2.5 / PM10 (ฝุ่นละเอียด)</li>
         <li>CO2 (คาร์บอนไดออกไซด์)</li>
         <li>HCHO (ฟอร์มาลดีไฮด์)</li>
         <li>AQI (ดัชนีคุณภาพอากาศ)</li>
@@ -451,7 +451,7 @@
         <div class="icon">✅</div>
         <h3>ทำไมเลือก MT13W?</h3>
         <ul>
-          <li>วัดได้ 8 ค่า (PM2.5/PM10/PM1/CO2/HCHO/AQI/°C/%RH)</li>
+          <li>วัดได้ 7 ค่า (PM2.5/PM10/CO2/HCHO/AQI/°C/%RH)</li>
           <li>ใช้ Tuya WiFi — ต่อ Cloud ได้เลย</li>
           <li>ทดสอบแล้ว ค่าแม่นยำ</li>
           <li>ราคาถูก (~800–1,100 ฿)</li>
@@ -570,12 +570,12 @@
     </div>
     <div class="card orange">
       <div class="icon">📅</div>
-      <h3>ตัวอย่างรอบเก็บ</h3>
+      <h3>เก็บกี่โมงก็ได้ — วันละ 2 รอบ</h3>
       <ul>
-        <li><strong>เช้า</strong> 07:00 – 09:10</li>
-        <li><strong>เย็น</strong> 17:00 – 19:10</li>
-        <li>ตั้งให้ตรงช่วงทำอาหารส่วนใหญ่</li>
-        <li>ปรับเวลาได้ตาม config</li>
+        <li>ชาวบ้านเปิดเซนเซอร์เมื่อไหร่ก็ได้</li>
+        <li>ระบบเริ่ม session อัตโนมัติเมื่อ detect</li>
+        <li>ไม่กำหนดเวลาตายตัว — ตามสะดวก</li>
+        <li>สูงสุด <strong>2 session/วัน</strong> ต่อ 1 เครื่อง</li>
       </ul>
     </div>
     <div class="card blue">
@@ -623,7 +623,7 @@
           </div>
           <div style="display:flex; align-items:flex-start; gap:12px;">
             <span style="background:#fee2e2; color:#991b1b; padding:2px 10px; border-radius:8px; font-size:0.8rem; font-weight:600; white-space:nowrap;">ชั้น 3</span>
-            <div style="font-size:0.85rem; color:var(--gray-700);"><strong>Dashboard + Weekly report</strong><br>สรุปแต่ละบ้านเก็บได้กี่วัน → อาจารย์ดูและติดตามผ่าน Dashboard</div>
+            <div style="font-size:0.85rem; color:var(--gray-700);"><strong>Dashboard + Weekly report</strong><br>สรุปแต่ละบ้านเก็บได้กี่วัน → บ้านไหนลืมเปิดบ่อย → <strong>อาสา/อาจารย์เข้าเช็คที่บ้าน</strong></div>
           </div>
         </div>
       </div>
@@ -702,7 +702,7 @@
           <span class="arr">→</span>
           <span class="step ok">เริ่ม session ใหม่</span>
         </div>
-        <div class="scenario-result result-warn">ผลลัพธ์: Tag "incomplete" → เริ่มใหม่อัตโนมัติเมื่อเน็ตกลับ</div>
+        <div class="scenario-result result-warn">ผลลัพธ์: Tag "incomplete" → <strong>ไม่นับเป็น 1 ใน 2 โควต้า</strong> → เริ่ม session ใหม่ได้เมื่อเน็ตกลับ</div>
       </div>
       <div class="scenario">
         <div class="scenario-title">⚡ สถานการณ์ 3: ไฟดับที่บ้าน</div>
@@ -711,7 +711,7 @@
           <span class="arr">→</span>
           <span class="step bad">แต่เราเตอร์ดับ → เน็ตหลุด</span>
           <span class="arr">→</span>
-          <span class="step ok">ไฟมา = เราเตอร์กลับ</span>
+          <span class="step ok">ไฟมา = เราเตอร์กลับมาทำงาน</span>
         </div>
         <div class="scenario-result result-warn">ผลลัพธ์: เซนเซอร์ไม่ดับ แต่ส่งข้อมูลไม่ได้ช่วงเราเตอร์ดับ → ข้อมูลเดิมปลอดภัยใน DB</div>
       </div>
@@ -726,7 +726,7 @@
           <span class="arr">→</span>
           <span class="step warn">ไม่มีข้อมูลรอบนี้</span>
         </div>
-        <div class="scenario-result result-warn">ผลลัพธ์: ขาดข้อมูลรอบนั้น → LINE แจ้งเตือนอาสา</div>
+        <div class="scenario-result result-warn">ผลลัพธ์: ขาดข้อมูลรอบนั้น → LINE แจ้งเตือนอาสา <span style="font-size:0.75rem; opacity:0.8;">(ฟีเจอร์นี้ต้องอัพเป็น Light Plan ฿400/เดือน)</span></div>
       </div>
       <div class="scenario">
         <div class="scenario-title">🖥️ สถานการณ์ 5: Server ล่ม</div>
@@ -790,9 +790,8 @@
     <div>
       <div class="card" style="border-top-color: var(--green); margin-bottom:16px;">
         <div class="icon">💡</div>
-        <h3>หลักการ: ไม่ส่ง reminder</h3>
+        <h3>หลักการ: ส่งแค่สรุป</h3>
         <ul>
-          <li>ไม่ส่งข้อความบอกให้เปิดเซนเซอร์</li>
           <li>ส่งแค่ <strong>สรุปสถานะ</strong> 2 รอบ/วัน</li>
           <li>อ.แก้วตัดสินใจติดตามอาสาเอง</li>
           <li>ไม่รบกวนอาสาโดยไม่จำเป็น</li>
@@ -814,25 +813,23 @@
     </div>
   </div>
   <div class="highlight-row" style="justify-content:center; margin-top:16px;">
-    <div class="highlight-box" style="max-width:720px;">
-      <div style="display:flex; align-items:center; justify-content:center; gap:32px;">
-        <div>
-          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE เที่ยง</div>
-          <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; margin-top:8px; text-align:left; font-size:0.82rem; color:var(--gray-700);">
-            📊 <strong>สรุปเก็บข้อมูลเช้า</strong> (3 มีนาคม)<br><br>
-            ✅ MT13W (ตัวใหม่) — เก็บแล้ว (24 รายการ, PM2.5 เฉลี่ย 13.8)<br>
-            ❌ MT29 (ตัวเดิม) — ยังไม่ได้เปิดเซนเซอร์<br><br>
-            <span style="color:var(--gray-500);">กรุณาแจ้งเตือนบ้านที่ยังไม่เปิดเซนเซอร์ค่ะ</span>
+    <div class="highlight-box" style="max-width:780px; padding:16px 20px;">
+      <div style="display:flex; align-items:flex-start; justify-content:center; gap:20px;">
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:0.8rem; opacity:0.7; margin-bottom:6px;">ตัวอย่าง LINE เที่ยง</div>
+          <div style="background:var(--green-50); border-radius:10px; padding:10px 14px; text-align:left; font-size:0.75rem; color:var(--gray-700); line-height:1.6;">
+            📊 <strong>สรุปเช้า</strong> (3 มี.ค.)<br>
+            ✅ MT13W — เก็บแล้ว (24 รายการ)<br>
+            ❌ MT29 — ยังไม่เปิด
           </div>
         </div>
-        <div>
-          <div style="font-size:0.85rem; opacity:0.7;">ตัวอย่าง LINE 2 ทุ่ม</div>
-          <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; margin-top:8px; text-align:left; font-size:0.82rem; color:var(--gray-700);">
-            📊 <strong>สรุปเก็บข้อมูลประจำวัน</strong> (3 มีนาคม)<br><br>
-            ✅ MT13W — ครบ 2/2 เซสชัน (48 รายการ, PM2.5 13.8)<br>
-            ⚠️ MT29 — 1/2 เซสชัน (ขาด 1 เซสชัน)<br><br>
-            รวม: 72 รายการ จาก 3 เซสชัน<br>
-            <span style="color:var(--gray-500);">มี 72 รายการรออนุมัติ<br>กรุณาเข้า Dashboard เพื่ออนุมัติข้อมูลค่ะ</span>
+        <div style="flex:1; min-width:0;">
+          <div style="font-size:0.8rem; opacity:0.7; margin-bottom:6px;">ตัวอย่าง LINE 2 ทุ่ม</div>
+          <div style="background:var(--green-50); border-radius:10px; padding:10px 14px; text-align:left; font-size:0.75rem; color:var(--gray-700); line-height:1.6;">
+            📊 <strong>สรุปวัน</strong> (3 มี.ค.)<br>
+            ✅ MT13W — ครบ 2/2 (48 รายการ)<br>
+            ⚠️ MT29 — 1/2 (ขาด 1)<br>
+            รวม 72 รายการ รออนุมัติ
           </div>
         </div>
       </div>
@@ -869,7 +866,7 @@
         <ul>
           <li>Export CSV / Excel ตามช่วงเวลา</li>
           <li>เลือกบ้าน / เลือกค่าที่ต้องการ</li>
-          <li>กราฟพร้อมใช้ในงานวิจัย</li>
+          <li>นำข้อมูลไปสร้างกราฟในงานวิจัยได้</li>
         </ul>
       </div>
     </div>
@@ -900,13 +897,11 @@
         <ul>
           <li>ไม่ต้อง approve ทุกวันก็ได้</li>
           <li>เลือก approve ทีเดียวหลายวัน</li>
-          <li>ข้อมูลที่ผิดปกติ → flag ให้ตรวจสอบ</li>
         </ul>
       </div>
       <div class="card yellow">
         <h3>Admin Config</h3>
         <ul>
-          <li>ปรับเวลา session / จำนวนบ้าน</li>
           <li>เปลี่ยนเซนเซอร์ (map device ID ใหม่)</li>
           <li>จัดการ users + permissions</li>
         </ul>
@@ -932,7 +927,7 @@
       <div class="icon">🔑</div>
       <h3>Tuya ลบ Account</h3>
       <p><strong>โอกาส:</strong> ต่ำ &nbsp; <strong>ผลกระทบ:</strong> สูง</p>
-      <p style="margin-top:8px;">→ <strong>ติดต่อทีม NDF — เราจัดการให้</strong><br>→ สร้าง account ใหม่ + แก้ config (~30 นาที)</p>
+      <p style="margin-top:8px;">→ <strong>ติดต่อทีม NDF — เราจัดการให้</strong><br>→ สร้าง account ใหม่ + แก้ config</p>
     </div>
     <div class="card">
       <div class="icon">🔧</div>
@@ -991,7 +986,7 @@
       </ul>
     </div>
   </div>
-  <div class="card-grid cols-3" style="margin-top:16px;">
+  <div class="card-grid cols-2" style="margin-top:16px;">
     <div class="card" style="border-top-color: var(--purple);">
       <div class="icon">🗄️</div>
       <h3>Database</h3>
@@ -999,15 +994,6 @@
         <li>Supabase — pollution_logs, sessions, daily_summaries</li>
         <li>ข้อมูลจริงจากเซนเซอร์ 2 ตัว</li>
         <li>Admin panel จัดการ อาสา/บ้าน/เครื่อง</li>
-      </ul>
-    </div>
-    <div class="card" style="border-top-color: var(--yellow);">
-      <div class="icon">🧹</div>
-      <h3>Data Cleaning</h3>
-      <ul>
-        <li>ลบข้อมูลทดสอบก่อน มี.ค.</li>
-        <li>ลบค่า HCHO outlier (&gt;50)</li>
-        <li>EcoStove ค่าต่ำกว่าเตาเดิม ✅</li>
       </ul>
     </div>
     <div class="card" style="border-top-color: var(--green);">
@@ -1036,12 +1022,6 @@
         </ul>
       </div>
       <div class="q-group">
-        <h3>📅 เวลาเริ่มต้น</h3>
-        <ul class="q-list">
-          <li><strong>เริ่มเก็บข้อมูลเมื่อไหร่?</strong><br>ระบบพร้อมเมื่อไหร่ก็เริ่มได้<br>ไม่มี deadline ฝั่งเทคนิค</li>
-        </ul>
-      </div>
-      <div class="q-group">
         <h3>🍳 Compliance & วิธีจับช่วงทำอาหาร</h3>
         <ul class="q-list">
           <li><strong>แผนที่เสนอ:</strong> ชาวบ้านเปิด/ปิดเซนเซอร์เอง + LINE เตือน 2 รอบ/วัน + Weekly report<br>บ้านไม่มีเน็ต → อาสาช่วยปล่อย Hotspot<br>เป้า compliance 70–80% → เพียงพอทางสถิติ<br><strong>อาจารย์เห็นด้วยไหม?</strong> หรือต้องการวิธีอื่น?</li>
@@ -1067,7 +1047,7 @@
   <div style="text-align:center;">
     <div style="font-size:3rem; margin-bottom:16px;">🚀</div>
     <h2>ขั้นตอนถัดไป</h2>
-    <p class="subtitle" style="max-width:600px; margin:0 auto 32px;">ระบบพร้อมแล้ว — เหลือแค่ขยายจำนวนเซนเซอร์</p>
+    <p class="subtitle" style="max-width:600px; margin:0 auto 32px;">ระบบพร้อม ~85% — เหลือซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง</p>
   </div>
   <div class="card-grid cols-3">
     <div class="card" style="border-top-color: var(--green); opacity:0.7;">
@@ -1107,7 +1087,7 @@
   </div>
   <div style="margin-top:32px; text-align:center;">
     <div style="display:inline-block; background:rgba(255,255,255,0.1); padding:16px 32px; border-radius:14px; font-size:0.95rem; opacity:0.8; line-height:1.8;">
-      ระบบพร้อมแล้ว — เหลือแค่สั่งซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง<br>
+      ระบบพร้อม ~85% — เหลือซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง + ทำคู่มือ<br>
       <strong>เก็บข้อมูลรวม 6 เดือน</strong> (3 เดือนเตาเก่า + 3 เดือน EcoStove)
     </div>
   </div>
