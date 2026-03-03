@@ -561,7 +561,6 @@
                             <option value="a3d01864e463e3ede0hf0e">Sensor 1 (MT13W)</option>
                             <option value="a3b9c2e4bdfe69ad7ekytn">Sensor 2 (ZN-MT29)</option>
                         </select>
-                        <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar">
@@ -969,6 +968,7 @@
                 navBtn.classList.add('text-white');
             }
 
+            window.scrollTo(0, 0);
             if (view === 'basic') updateBasicView();
             if (view === 'deep') updateDeepView();
         }
