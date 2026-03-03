@@ -168,9 +168,11 @@ async function getLastClosedSession(sbUrl, sbKey, deviceId) {
 }
 
 async function createSession(sbUrl, sbKey, deviceId, stoveType) {
+  const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
   const record = {
     device_id: deviceId,
     session_status: 'collecting',
+    session_number: countToday + 1,
     stove_type: stoveType || 'eco',
     started_at: new Date().toISOString(),
     readings_count: 1,
@@ -196,48 +198,70 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
 }
 
 async function closeSession(sbUrl, sbKey, session) {
-  // Query pollution_logs for this device during the session period
-  const startedAt = encodeURIComponent(session.started_at);
-  const logs = await fetch(
-    sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
-    '&recorded_at=gte.' + startedAt +
-    '&select=pm25_value,pm10_value,co2_value,temperature,humidity',
-    { headers: sbHeaders(sbKey) }
-  );
-  if (!logs.ok) return;
-  const data = await logs.json();
+  try {
+    // Query pollution_logs for this device during the session period
+    const startedAt = encodeURIComponent(session.started_at);
+    const logs = await fetch(
+      sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
+      '&recorded_at=gte.' + startedAt +
+      '&select=pm25_value,pm10_value,co2_value,temperature,humidity',
+      { headers: sbHeaders(sbKey) }
+    );
+    if (!logs.ok) {
+      console.error('closeSession: failed to fetch logs for session ' + session.id + ', status=' + logs.status);
+      // Still close the session even if we can't compute averages
+      await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + session.id, {
+        method: 'PATCH', headers: sbHeaders(sbKey),
+        body: JSON.stringify({ session_status: 'incomplete', ended_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
+      });
+      await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+      return;
+    }
+    const data = await logs.json();
 
-  // Compute aggregates
-  const vals = (field) => data.map(d => d[field]).filter(v => v != null);
-  const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+    // Compute aggregates
+    const vals = (field) => data.map(d => d[field]).filter(v => v != null);
+    const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
 
-  const pm25s = vals('pm25_value');
-  const co2s = vals('co2_value');
-  const temps = vals('temperature');
-  const hums = vals('humidity');
+    const pm25s = vals('pm25_value');
+    const co2s = vals('co2_value');
+    const temps = vals('temperature');
+    const hums = vals('humidity');
 
-  const update = {
-    session_status: data.length >= 3 ? 'complete' : 'incomplete',
-    ended_at: new Date().toISOString(),
-    collection_ended_at: new Date().toISOString(),
-    readings_count: data.length,
-    avg_pm25: avg(pm25s),
-    max_pm25: pm25s.length ? Math.max(...pm25s) : null,
-    min_pm25: pm25s.length ? Math.min(...pm25s) : null,
-    avg_co2: avg(co2s),
-    avg_temperature: avg(temps),
-    avg_humidity: avg(hums),
-    updated_at: new Date().toISOString(),
-  };
+    const update = {
+      session_status: data.length >= 3 ? 'complete' : 'incomplete',
+      ended_at: new Date().toISOString(),
+      collection_ended_at: new Date().toISOString(),
+      readings_count: data.length,
+      avg_pm25: avg(pm25s),
+      max_pm25: pm25s.length ? Math.max(...pm25s) : null,
+      min_pm25: pm25s.length ? Math.min(...pm25s) : null,
+      avg_co2: avg(co2s),
+      avg_temperature: avg(temps),
+      avg_humidity: avg(hums),
+      updated_at: new Date().toISOString(),
+    };
 
-  await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + session.id, {
-    method: 'PATCH',
-    headers: sbHeaders(sbKey),
-    body: JSON.stringify(update),
-  });
+    const patchRes = await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + session.id, {
+      method: 'PATCH', headers: sbHeaders(sbKey), body: JSON.stringify(update),
+    });
+    if (!patchRes.ok) {
+      console.error('closeSession: failed to patch session ' + session.id + ', status=' + patchRes.status);
+    }
 
-  // Update daily summary after closing session
-  await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+    // Update daily summary after closing session
+    await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+  } catch (err) {
+    console.error('closeSession error for session ' + session.id + ':', err.message);
+    // Attempt to at least mark session as incomplete + update daily summary
+    try {
+      await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + session.id, {
+        method: 'PATCH', headers: sbHeaders(sbKey),
+        body: JSON.stringify({ session_status: 'incomplete', ended_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
+      });
+      await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+    } catch (_) {}
+  }
 }
 
 async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
@@ -261,10 +285,6 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
       return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
     };
 
-    let compliance = 'pending';
-    if (completed.length >= 2) compliance = 'complete';
-    else if (completed.length === 1) compliance = 'partial';
-
     const summary = {
       summary_date: today,
       device_id: deviceId,
@@ -278,7 +298,6 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
       avg_co2: avgOf(completed, 'avg_co2'),
       avg_temperature: avgOf(completed, 'avg_temperature'),
       avg_humidity: avgOf(completed, 'avg_humidity'),
-      compliance_status: compliance,
       stove_type: stoveType || 'eco',
       updated_at: new Date().toISOString(),
     };
@@ -442,6 +461,13 @@ module.exports = async function handler(req, res) {
       } catch (err) {
         results.push({ sensor: sensor.name, status: 'error', message: err.message });
       }
+    }
+
+    // Always recalculate daily summaries — even if closeSession failed
+    for (const sensor of SENSORS) {
+      try {
+        await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType);
+      } catch (_) {}
     }
 
     const ok = results.filter(r => r.status === 'ok').length;
