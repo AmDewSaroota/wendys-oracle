@@ -1928,6 +1928,14 @@
                 .select('id, device_id, readings_count, started_at')
                 .eq('session_status', 'collecting');
 
+            // Check for incomplete sessions
+            const { data: incompleteSessions } = await supabaseClient
+                .from('sessions')
+                .select('id, device_id, readings_count, started_at, ended_at')
+                .eq('session_status', 'incomplete')
+                .order('started_at', { ascending: false })
+                .limit(20);
+
             const { data: pendingLogs } = await supabaseClient
                 .from('pollution_logs')
                 .select('id')
@@ -1937,15 +1945,32 @@
                 showToast('ไม่มีข้อมูลรออนุมัติ'); return;
             }
 
-            let msg = 'อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?';
+            let warnings = [];
+
             if (activeSessions && activeSessions.length > 0) {
                 const names = activeSessions.map(s => {
                     const name = DEVICE_NAMES[s.device_id] || s.device_id.slice(0, 8);
-                    return name + ' (' + (s.readings_count || 0) + ' readings)';
-                }).join(', ');
-                msg = '⚠️ ยังมี ' + activeSessions.length + ' เซสชันที่กำลังเก็บข้อมูลอยู่:\n'
-                    + names + '\n\n'
-                    + 'ถ้ากดตกลง จะหยุดเซสชันเหล่านี้แล้วอนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ\n\nดำเนินการ?';
+                    return '  • ' + name + ' (' + (s.readings_count || 0) + ' readings)';
+                }).join('\n');
+                warnings.push('⚠️ ยังมี ' + activeSessions.length + ' เซสชันที่กำลังเก็บข้อมูลอยู่:\n' + names
+                    + '\n→ ถ้ากดตกลง จะหยุดเซสชันเหล่านี้ก่อนอนุมัติ');
+            }
+
+            if (incompleteSessions && incompleteSessions.length > 0) {
+                const names = incompleteSessions.map(s => {
+                    const name = DEVICE_NAMES[s.device_id] || s.device_id.slice(0, 8);
+                    const date = s.started_at ? new Date(s.started_at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : '?';
+                    return '  • ' + name + ' — ' + date + ' (' + (s.readings_count || 0) + ' readings)';
+                }).join('\n');
+                warnings.push('⚠️ มี ' + incompleteSessions.length + ' เซสชันที่ข้อมูลไม่สมบูรณ์:\n' + names
+                    + '\n→ ข้อมูลจากเซสชันเหล่านี้จะถูกอนุมัติด้วย');
+            }
+
+            let msg;
+            if (warnings.length > 0) {
+                msg = warnings.join('\n\n') + '\n\nอนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?\n\nดำเนินการ?';
+            } else {
+                msg = 'อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?';
             }
 
             if (!confirm(msg)) return;

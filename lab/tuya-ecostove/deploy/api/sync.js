@@ -322,13 +322,19 @@ async function closeSession(sbUrl, sbKey, session) {
 async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
   try {
     const today = new Date().toISOString().slice(0, 10);
+    // Use PostgREST and() operator to avoid duplicate param name issue
+    const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().slice(0, 10);
     const res = await fetch(
       sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
-      '&started_at=gte.' + today + 'T00:00:00Z&started_at=lt.' + today + 'T23:59:59Z',
+      '&and=(started_at.gte.' + today + 'T00:00:00Z,started_at.lt.' + tomorrow + 'T00:00:00Z)',
       { headers: sbHeaders(sbKey) }
     );
-    if (!res.ok) return;
+    if (!res.ok) {
+      console.error('upsertDailySummary: query failed for ' + deviceId + ', status=' + res.status);
+      return;
+    }
     const sessions = await res.json();
+    console.log('upsertDailySummary: ' + deviceId + ' found ' + sessions.length + ' sessions, completed=' + sessions.filter(s => s.session_status === 'complete').length);
 
     const completed = sessions.filter(s => s.session_status === 'complete');
     const incomplete = sessions.filter(s => s.session_status === 'incomplete');
