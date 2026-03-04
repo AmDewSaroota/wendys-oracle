@@ -498,6 +498,18 @@
                 <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.activity">ประวัติกิจกรรม</button>
             </div>
 
+            <!-- API Quota Usage -->
+            <div id="api-quota-bar" class="hidden bg-white/70 rounded-2xl p-4 border border-slate-200 shadow-sm">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-bold text-slate-600">Tuya API Usage (เดือนนี้)</span>
+                    <span id="api-quota-text" class="text-sm font-bold text-emerald-700">0 / 24,000</span>
+                </div>
+                <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                    <div id="api-quota-fill" class="h-full rounded-full transition-all duration-500 bg-emerald-500" style="width: 0%"></div>
+                </div>
+                <p id="api-quota-warning" class="text-xs text-slate-400 mt-1"></p>
+            </div>
+
             <!-- Tab 1: อาสาสมัคร (default visible) -->
             <div id="admin-volunteers-container" class="admin-tab-content space-y-6">
                 <div class="flex justify-between items-center">
@@ -1567,9 +1579,9 @@
                 const deviceName = DEVICE_NAMES[d.device_id] || d.device_id;
                 const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
                 const completed = d.sessions_completed || 0;
-                const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-500';
-                const statusIcon = completed >= 2 ? '✅' : completed >= 1 ? '⚠️' : '❌';
-                const statusText = completed >= 2 ? 'ครบ' : completed >= 1 ? completed + '/2' : 'ไม่มี';
+                const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : total > 0 ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500';
+                const statusIcon = completed >= 2 ? '✅' : completed >= 1 ? '⚠️' : total > 0 ? '⚠️' : '⏸️';
+                const statusText = completed >= 2 ? 'ครบ' : completed >= 1 ? completed + '/2' : total > 0 ? 'ไม่ครบ' : 'ไม่ได้เปิดเซนเซอร์';
                 return '<tr class="hover:bg-slate-50/50">' +
                     '<td class="p-3">' + d.summary_date + '</td>' +
                     '<td class="p-3">' + deviceName + '</td>' +
@@ -1690,8 +1702,41 @@
 
         // ==================== Admin Functions ====================
         let adminLoaded = false;
+        async function loadApiQuota() {
+            try {
+                const month = new Date().toISOString().slice(0, 7);
+                const { data, error } = await supabaseClient.from('api_quota').select('*').eq('month', month).limit(1);
+                if (error || !data) return; // table may not exist
+                const bar = document.getElementById('api-quota-bar');
+                const textEl = document.getElementById('api-quota-text');
+                const fillEl = document.getElementById('api-quota-fill');
+                const warnEl = document.getElementById('api-quota-warning');
+                if (!bar) return;
+                bar.classList.remove('hidden');
+                const used = data.length > 0 ? data[0].tuya_calls : 0;
+                const limit = 24000;
+                const pct = Math.min(Math.round(used / limit * 100), 100);
+                textEl.textContent = used.toLocaleString() + ' / ' + limit.toLocaleString() + ' (' + pct + '%)';
+                fillEl.style.width = pct + '%';
+                if (pct >= 95) {
+                    fillEl.className = 'h-full rounded-full transition-all duration-500 bg-red-500';
+                    warnEl.textContent = 'เกิน limit! ระบบหยุดเก็บข้อมูลอัตโนมัติ — รอเดือนหน้า';
+                    warnEl.className = 'text-xs text-red-600 mt-1 font-bold';
+                } else if (pct >= 80) {
+                    fillEl.className = 'h-full rounded-full transition-all duration-500 bg-amber-500';
+                    warnEl.textContent = 'ใกล้ limit แล้ว — เหลือ ' + (limit - used).toLocaleString() + ' calls';
+                    warnEl.className = 'text-xs text-amber-600 mt-1 font-bold';
+                } else {
+                    fillEl.className = 'h-full rounded-full transition-all duration-500 bg-emerald-500';
+                    warnEl.textContent = 'ปกติ — เหลือ ' + (limit - used).toLocaleString() + ' calls';
+                    warnEl.className = 'text-xs text-slate-400 mt-1';
+                }
+            } catch (_) {} // graceful — table might not exist
+        }
+
         async function loadAdminData(showSpinner) {
             if (showSpinner) showLoading('กำลังโหลดข้อมูล Admin...');
+            loadApiQuota();
             try {
                 const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false });
                 if (error) throw error;
@@ -2301,51 +2346,92 @@
             else { showToast(t('common.error') + error.message, 'error'); }
         }
 
+        function exportDataRows(data) {
+            return data.map(d => ({
+                [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
+                'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
+                'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
+                'HCHO': d.hcho_value,
+            }));
+        }
+
         function doExport(data) {
             showLoading('กำลังสร้างไฟล์ Excel...');
             setTimeout(() => {
                 try {
-                    logActivity('Export', data.length + ' records');
-                    const ws = XLSX.utils.json_to_sheet(data.map(d => ({
-                        [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
-                        'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
-                        'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
-                        'HCHO': d.hcho_value,
-                    })));
+                    logActivity('Export Excel', data.length + ' records');
+                    const ws = XLSX.utils.json_to_sheet(exportDataRows(data));
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Data');
                     XLSX.writeFile(wb, `ecostove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
-                    showToast('Export สำเร็จ ' + data.length + ' รายการ');
+                    showToast('Export Excel สำเร็จ ' + data.length + ' รายการ');
                 } catch (e) {
                     showToast('Export ผิดพลาด: ' + e.message, 'error');
                 } finally { hideLoading(); }
             }, 50);
         }
 
+        function doExportCSV(data) {
+            showLoading('กำลังสร้างไฟล์ CSV...');
+            setTimeout(() => {
+                try {
+                    logActivity('Export CSV', data.length + ' records');
+                    const rows = exportDataRows(data);
+                    if (!rows.length) { showToast(t('export.no.data'), 'warning'); hideLoading(); return; }
+                    const headers = Object.keys(rows[0]);
+                    const escapeCsv = (val) => {
+                        if (val == null) return '';
+                        const str = String(val);
+                        return str.includes(',') || str.includes('"') || str.includes('\n') ? '"' + str.replace(/"/g, '""') + '"' : str;
+                    };
+                    const csvLines = [headers.map(escapeCsv).join(',')];
+                    for (const row of rows) {
+                        csvLines.push(headers.map(h => escapeCsv(row[h])).join(','));
+                    }
+                    const BOM = '\uFEFF';
+                    const blob = new Blob([BOM + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `ecostove_data_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    showToast('Export CSV สำเร็จ ' + data.length + ' รายการ');
+                } catch (e) {
+                    showToast('Export ผิดพลาด: ' + e.message, 'error');
+                } finally { hideLoading(); }
+            }, 50);
+        }
 
         function exportToExcel() {
             if (!allData.length) { showToast(t('export.no.data'), 'warning'); return; }
             const filterEl = document.getElementById('sensor-filter');
             const filterVal = filterEl ? filterEl.value : 'all';
-            if (filterVal && filterVal !== 'all') {
-                const sensorName = filterEl.options[filterEl.selectedIndex]?.text || filterVal;
-                const filteredData = allData.filter(d => d.tuya_device_id === filterVal);
-                showModal(`
-                    <div class="text-center py-4">
-                        <div class="text-4xl mb-3">📊</div>
-                        <h3 class="text-xl font-bold text-navy mb-2">Export Excel</h3>
-                        <p class="text-slate-500 text-sm mb-6">ตอนนี้กำลัง filter <b>${sensorName}</b> อยู่<br><span class="text-slate-400">${filteredData.length} รายการ จากทั้งหมด ${allData.length} รายการ</span></p>
-                        <div class="flex flex-col gap-3">
-                            <button onclick="doExport(window._exportFilteredData); closeModal()" class="w-full px-5 py-3 bg-[#064e3b] text-white rounded-xl font-bold text-sm hover:bg-[#043327] transition">Export เฉพาะ ${sensorName}<br><span class="font-normal text-xs opacity-70">${filteredData.length} รายการ</span></button>
-                            <button onclick="doExport(allData); closeModal()" class="w-full px-5 py-3 bg-slate-100 text-navy rounded-xl font-bold text-sm hover:bg-slate-200 transition">Export ทั้งหมด<br><span class="font-normal text-xs text-slate-400">${allData.length} รายการ</span></button>
-                            <button onclick="closeModal()" class="w-full px-4 py-2 text-slate-400 text-sm hover:text-slate-600 transition">ยกเลิก</button>
+            const isFiltered = filterVal && filterVal !== 'all';
+            const sensorName = isFiltered ? (filterEl.options[filterEl.selectedIndex]?.text || filterVal) : '';
+            const filteredData = isFiltered ? allData.filter(d => d.tuya_device_id === filterVal) : allData;
+            const dataLabel = isFiltered ? filteredData.length + ' รายการ (เฉพาะ ' + sensorName + ')' : allData.length + ' รายการ (ทั้งหมด)';
+
+            showModal(`
+                <div class="text-center py-4">
+                    <div class="text-4xl mb-3">📊</div>
+                    <h3 class="text-xl font-bold text-navy mb-2">Export ข้อมูล</h3>
+                    <p class="text-slate-500 text-sm mb-6">${dataLabel}</p>
+                    ${isFiltered ? `<p class="text-slate-400 text-xs mb-4">filter: <b>${sensorName}</b> · ${filteredData.length} จาก ${allData.length} รายการ</p>` : ''}
+                    <div class="flex flex-col gap-3">
+                        <div class="flex gap-3">
+                            <button onclick="doExport(window._exportData); closeModal()" class="flex-1 px-5 py-3 bg-[#064e3b] text-white rounded-xl font-bold text-sm hover:bg-[#043327] transition">📊 Excel (.xlsx)</button>
+                            <button onclick="doExportCSV(window._exportData); closeModal()" class="flex-1 px-5 py-3 bg-[#1e40af] text-white rounded-xl font-bold text-sm hover:bg-[#1e3a8a] transition">📄 CSV (.csv)</button>
                         </div>
+                        ${isFiltered ? `<button onclick="window._exportData = allData; doExport(allData); closeModal()" class="w-full px-5 py-3 bg-slate-100 text-navy rounded-xl font-bold text-sm hover:bg-slate-200 transition">📊 Excel ทั้งหมด (${allData.length} รายการ)</button>
+                        <button onclick="window._exportData = allData; doExportCSV(allData); closeModal()" class="w-full px-5 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-100 transition">📄 CSV ทั้งหมด (${allData.length} รายการ)</button>` : ''}
+                        <button onclick="closeModal()" class="w-full px-4 py-2 text-slate-400 text-sm hover:text-slate-600 transition">ยกเลิก</button>
                     </div>
-                `);
-                window._exportFilteredData = filteredData;
-            } else {
-                doExport(allData);
-            }
+                </div>
+            `);
+            window._exportData = isFiltered ? filteredData : allData;
         }
 
         // ==================== Map ====================

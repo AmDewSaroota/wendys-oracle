@@ -389,7 +389,7 @@
         <li><strong>3 เดือนแรก</strong> — เตาเดิม</li>
         <li><strong>3 เดือนหลัง</strong> — EcoStove</li>
         <li>Dashboard แสดงกราฟเทียบ</li>
-        <li>Export ข้อมูลได้</li>
+        <li>Export Excel / CSV ได้</li>
       </ul>
     </div>
   </div>
@@ -398,10 +398,11 @@
 
 <!-- ========== SLIDE 3: Sensor & Budget ========== -->
 <div class="slide bg-light">
-  <span class="tag">แจ้ง — เซนเซอร์ & งบประมาณ</span>
-  <h2>เซนเซอร์ MT13W + ค่าใช้จ่ายทั้งหมด</h2>
+  <span class="tag">แจ้ง — งบประมาณ</span>
+  <h2>ประมาณการค่าใช้จ่ายทั้งหมด</h2>
   <div class="two-col">
     <div>
+      <h3 style="margin-bottom:12px;">🛒 ค่าอุปกรณ์ (ซื้อครั้งเดียว)</h3>
       <div class="table-wrap">
         <table>
           <thead>
@@ -447,23 +448,23 @@
       </div>
     </div>
     <div>
-      <div class="card" style="margin-bottom:16px;">
+      <div class="card" style="margin-bottom:12px; border-top-color: var(--green);">
         <div class="icon">✅</div>
-        <h3>ทำไมเลือก MT13W?</h3>
+        <h3>ค่าระบบรายเดือน (10 เครื่อง)</h3>
         <ul>
-          <li>วัดได้ 7 ค่า (PM2.5/PM10/CO2/HCHO/AQI/°C/%RH)</li>
-          <li>ใช้ Tuya WiFi — ต่อ Cloud ได้เลย</li>
-          <li>ทดสอบแล้ว ค่าแม่นยำ</li>
-          <li>ราคาถูก (~800–1,100 ฿)</li>
+          <li>Server + Database + Dashboard → <strong>ฟรี</strong></li>
+          <li>Tuya Cloud API → <strong>ฟรี</strong> (26,000 calls/เดือน)</li>
+          <li>LINE OA แผนฟรี → <strong>0 ฿</strong> (200 msg/เดือน)</li>
         </ul>
+        <div style="margin-top:8px; font-size:1.1rem; font-weight:700; color:var(--green);">รวม 0 ฿/เดือน</div>
       </div>
-      <div class="card red">
-        <div class="icon">❌</div>
-        <h3>MT29 (ตัวเดิม) — ไม่ใช้</h3>
+      <div class="card" style="margin-bottom:12px; border-top-color: var(--purple);">
+        <div class="icon">➕</div>
+        <h3>Option เสริม (ถ้าต้องการ)</h3>
         <ul>
-          <li>Semiconductor sensor — ค่าเพี้ยน</li>
-          <li>ทดสอบเทียบแล้ว ไม่แม่นยำ</li>
-          <li>มีอยู่ 1 ตัว เก็บเป็น backup</li>
+          <li>LINE OA แจ้งอาสาด้วย → <strong>~400 ฿/เดือน</strong> (แผน Light)</li>
+          <li>เกิน 10 เครื่อง → ซื้อเซนเซอร์เพิ่ม ตัวละ ~800–1,100 ฿</li>
+          <li>เกิน 10 เครื่อง → อาจเกิน Tuya API ฟรี (26,000 calls/เดือน)<br>→ <strong>ต้องติดต่อ Tuya สอบถามราคา (จ่ายรายปี)</strong></li>
         </ul>
       </div>
     </div>
@@ -474,7 +475,7 @@
 <!-- ========== SLIDE 4: Monthly Cost = 0 ========== -->
 <div class="slide bg-green">
   <span class="tag">แจ้ง — ค่าใช้จ่ายรายเดือน</span>
-  <h2>หลังติดตั้ง — ค่าใช้จ่ายรายเดือน</h2>
+  <h2>หลังติดตั้ง — ค่าใช้จ่ายรายเดือน <span style="font-size:0.7em; font-weight:400; opacity:0.7;">(กรณี 10 เครื่อง)</span></h2>
   <div class="card-grid cols-4">
     <div class="card">
       <div class="icon">⚙️</div>
@@ -513,16 +514,8 @@
     </div>
     <div class="highlight-box" style="max-width:340px; border:3px solid rgba(255,255,255,0.2);">
       <div style="font-size:0.9rem; opacity:0.8; margin-bottom:8px;">LINE แจ้งเตือนอาจารย์</div>
-      <div style="display:flex; gap:16px; justify-content:center;">
-        <div style="text-align:center;">
-          <div style="font-size:1.4rem; font-weight:700; color:#34d399;">฿0</div>
-          <div style="font-size:0.75rem; opacity:0.6;">แผน A (ฟรี)<br>~90 msg/เดือน</div>
-        </div>
-        <div style="text-align:center;">
-          <div style="font-size:1.4rem; font-weight:700; color:#c4b5fd;">฿400</div>
-          <div style="font-size:0.75rem; opacity:0.6;">แผน B (Light)<br>แจ้งอาสาด้วย</div>
-        </div>
-      </div>
+      <div style="font-size:1.4rem; font-weight:700; color:#34d399;">฿0</div>
+      <div style="font-size:0.75rem; opacity:0.6;">ใช้แผนฟรี — ดูรายละเอียดใน Slide 8</div>
     </div>
   </div>
   <div class="slide-number">4 / 13</div>
@@ -638,7 +631,7 @@
           <span class="arr">→</span>
           <span class="step ok">ข้อมูลไหลเข้า Cloud</span>
         </div>
-        <div class="scenario-result result-warn">อาสานัดเวลากับชาวบ้านเอง — ไม่ใช่ระบบสั่ง</div>
+        <div class="scenario-result result-warn">อาสานัดเวลากับชาวบ้านเอง</div>
       </div>
     </div>
     <div>
@@ -655,7 +648,7 @@
             <div style="font-size:0.78rem; color:var(--gray-500);">เป้าหมาย<br><small>~2,500–2,900 sessions</small></div>
           </div>
         </div>
-        <p style="font-size:0.82rem; color:var(--gray-500);">เพียงพอทางสถิติสำหรับ field study — ไม่จำเป็นต้อง 100%<br>session ที่ขาด → จด metadata ว่าขาดเพราะอะไร</p>
+        <p style="font-size:0.82rem; color:var(--gray-500);">เพียงพอทางสถิติสำหรับ field study — ไม่จำเป็นต้อง 100%<br>session ที่ขาด → บันทึกไว้ว่าขาดเพราะอะไร</p>
       </div>
       <div class="card purple">
         <div class="icon">💡</div>
@@ -864,7 +857,7 @@
       <div class="card blue">
         <h3>Export & รายงาน</h3>
         <ul>
-          <li>Export CSV / Excel ตามช่วงเวลา</li>
+          <li>Export Excel / CSV ตามช่วงเวลา</li>
           <li>เลือกบ้าน / เลือกค่าที่ต้องการ</li>
           <li>นำข้อมูลไปสร้างกราฟในงานวิจัยได้</li>
         </ul>
@@ -960,7 +953,7 @@
         <li><strong>LIVE</strong> — biomassstove.vercel.app</li>
         <li>3 มุมมอง: ชาวบ้าน / นักวิจัย / Admin</li>
         <li>กราฟ real-time, เทียบเตาเดิม vs EcoStove</li>
-        <li>Export CSV ได้</li>
+        <li>Export Excel / CSV ได้</li>
         <li>ระบบอนุมัติข้อมูล (Approve/Reject)</li>
       </ul>
     </div>
@@ -1037,7 +1030,23 @@
           <li><strong>อาสาต้องมีมือถือ + เน็ต</strong><br>เพราะระบบแจ้งเตือนทั้งหมดผ่าน LINE</li>
         </ul>
       </div>
+      <div class="q-group">
+        <h3>📩 LINE สรุปผล — รูปแบบ & เวลา</h3>
+        <ul class="q-list">
+          <li><strong>ตอนนี้เราตั้งไว้:</strong> ส่งสรุป 2 รอบ/วัน<br>🕛 เที่ยง — สรุป session เช้า (บ้านไหนเก็บแล้ว/ยัง)<br>🕗 2 ทุ่ม — สรุป session เย็น</li>
+          <li><strong>อาจารย์โอเคกับ 2 รอบ/วันไหม?</strong><br>หรืออยากให้สรุปรอบเดียวตอนค่ำ?</li>
+          <li><strong>ข้อมูลที่ส่งสรุป อยากได้อะไรบ้าง?</strong><br>เช่น จำนวนบ้านที่เก็บได้, ค่าเฉลี่ย, บ้านที่ขาด, ค่าผิดปกติ</li>
+        </ul>
+      </div>
     </div>
+  </div>
+  <div style="text-align:center; margin-top:24px;">
+    <a href="https://biomassstove.vercel.app" target="_blank"
+       style="display:inline-block; background:rgba(255,255,255,0.2); color:#fff; padding:14px 32px; border-radius:12px; text-decoration:none; font-size:1.1rem; font-weight:500; border:2px solid rgba(255,255,255,0.3); transition:all 0.3s;"
+       onmouseover="this.style.background='rgba(255,255,255,0.35)'"
+       onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+      📊 เปิด Dashboard ดูตัวอย่าง →
+    </a>
   </div>
   <div class="slide-number">12 / 13</div>
 </div>

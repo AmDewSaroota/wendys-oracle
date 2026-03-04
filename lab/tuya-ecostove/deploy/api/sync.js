@@ -15,11 +15,28 @@ const SESSION_GAP_MINUTES = 30; // gap > 30 min = close old session, start new
 const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
 const SESSION_COOLDOWN_MINUTES = 300; // 5hr cooldown before next session
 const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
+const MONTHLY_API_LIMIT = 24000; // 26,000 minus 2,000 buffer
 
 const SENSORS = [
   { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old' },
   { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)', stoveType: 'eco' },
 ];
+
+// ===== Token Cache (in-memory, survives Vercel warm starts) =====
+let _cachedToken = null;
+let _tokenExpiresAt = 0;
+
+async function getCachedToken(accessId, secret) {
+  if (_cachedToken && Date.now() < _tokenExpiresAt) {
+    return { token: _cachedToken, cached: true };
+  }
+  const token = await getTuyaToken(accessId, secret);
+  if (token) {
+    _cachedToken = token;
+    _tokenExpiresAt = Date.now() + 7000 * 1000; // ~1h56m (2hr minus 4min buffer)
+  }
+  return { token, cached: false };
+}
 
 // ===== Tuya =====
 function generateSign(accessId, secret, method, path, timestamp, accessToken, body) {
@@ -72,6 +89,45 @@ function parseReadings(data) {
     readings[item.code] = item.value;
   }
   return readings;
+}
+
+// ===== Tuya Batch API (reduces N calls → 1 call) =====
+async function getBatchDeviceInfo(accessId, secret, token, deviceIds) {
+  const timestamp = Date.now().toString();
+  const path = '/v1.0/iot-03/devices?device_ids=' + deviceIds.join(',');
+  const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
+
+  const res = await fetch(TUYA_BASE_URL + path, {
+    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+  });
+  const data = await res.json();
+  if (!data.success) return {};
+  const map = {};
+  for (const device of (data.result && data.result.list || [])) {
+    map[device.id] = device;
+  }
+  return map;
+}
+
+async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
+  const timestamp = Date.now().toString();
+  const path = '/v1.0/iot-03/devices/status?device_ids=' + deviceIds.join(',');
+  const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
+
+  const res = await fetch(TUYA_BASE_URL + path, {
+    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+  });
+  const data = await res.json();
+  if (!data.success) return {};
+  const map = {};
+  for (const device of (data.result || [])) {
+    const readings = {};
+    for (const item of (device.status || [])) {
+      readings[item.code] = item.value;
+    }
+    map[device.id] = readings;
+  }
+  return map;
 }
 
 // Calculate AQI from PM2.5 using US EPA breakpoints
@@ -311,7 +367,40 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
   }
 }
 
-async function manageSession(sbUrl, sbKey, deviceId, stoveType) {
+// ===== API Quota Tracking =====
+async function getMonthlyQuota(sbUrl, sbKey) {
+  try {
+    const month = new Date().toISOString().slice(0, 7); // '2026-03'
+    const res = await fetch(
+      sbUrl + '/rest/v1/api_quota?month=eq.' + month + '&limit=1',
+      { headers: sbHeaders(sbKey) }
+    );
+    if (!res.ok) return null; // table may not exist yet
+    const data = await res.json();
+    return data.length > 0 ? data[0] : { month, tuya_calls: 0 };
+  } catch (_) {
+    return null; // graceful fallback
+  }
+}
+
+async function updateMonthlyQuota(sbUrl, sbKey, callsToAdd) {
+  if (callsToAdd <= 0) return;
+  try {
+    const month = new Date().toISOString().slice(0, 7);
+    const current = await getMonthlyQuota(sbUrl, sbKey);
+    if (!current) return; // table doesn't exist, skip
+    const newTotal = (current.tuya_calls || 0) + callsToAdd;
+    await fetch(sbUrl + '/rest/v1/api_quota', {
+      method: 'POST',
+      headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal,resolution=merge-duplicates' },
+      body: JSON.stringify({ month, tuya_calls: newTotal, updated_at: new Date().toISOString() }),
+    });
+  } catch (_) {
+    // non-critical
+  }
+}
+
+async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline) {
   try {
     const active = await getActiveSession(sbUrl, sbKey, deviceId);
 
@@ -324,14 +413,17 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType) {
         // Session reached 2h10m — close, do NOT start new
         await closeSession(sbUrl, sbKey, active);
         return { action: 'auto-cutoff', sessionId: active.id, minutes: Math.round(sessionAge) };
-      } else if (minutesAgo < SESSION_GAP_MINUTES) {
-        // Continue session
-        await updateSessionCount(sbUrl, sbKey, active.id, (active.readings_count || 0) + 1);
-        return { action: 'continued', sessionId: active.id };
-      } else {
-        // Gap too long — close old, enter cooldown (just closed = full cooldown)
+      } else if (minutesAgo >= SESSION_GAP_MINUTES) {
+        // Gap too long — close old, enter cooldown
         await closeSession(sbUrl, sbKey, active);
         return { action: 'cooldown (after close)', minutesLeft: SESSION_COOLDOWN_MINUTES };
+      } else if (!isOnline) {
+        // Device offline mid-session — skip this tick, don't inflate readings_count
+        return { action: 'device-offline', sessionId: active.id };
+      } else {
+        // Continue session — device is online and within time window
+        await updateSessionCount(sbUrl, sbKey, active.id, (active.readings_count || 0) + 1);
+        return { action: 'continued', sessionId: active.id };
       }
     } else {
       // No active session — check cooldown from last closed session
@@ -346,6 +438,10 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType) {
       const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
       if (countToday >= MAX_SESSIONS_PER_DAY) {
         return { action: 'daily-limit', sessionsToday: countToday };
+      }
+      // Online check — don't create phantom session if device is offline
+      if (!isOnline) {
+        return { action: 'device-offline' };
       }
       const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType);
       return { action: 'new', sessionId: newSession?.id };
@@ -377,70 +473,123 @@ module.exports = async function handler(req, res) {
   }
 
   const results = [];
+  let tuyaCalls = 0;
 
   try {
-    // Pre-check: skip Tuya calls if ALL sensors are idle (cooldown or daily limit)
-    let allIdle = true;
+    // ===== Phase 1: Supabase pre-checks (0 Tuya calls) =====
+    // Determine which sensors actually need Tuya data
+    const sensorsNeedingTuya = [];
+
     for (const sensor of SENSORS) {
-      const active = await getActiveSession(sbUrl, sbKey, sensor.id);
-      if (active) {
-        allIdle = false; // has active session — need to continue
-        break;
-      }
-      // Check daily limit first
-      const todayCount = await getSessionCountToday(sbUrl, sbKey, sensor.id);
-      if (todayCount >= MAX_SESSIONS_PER_DAY) continue; // this sensor is done for the day
-      // Check cooldown
-      const last = await getLastClosedSession(sbUrl, sbKey, sensor.id);
-      if (!last || !last.ended_at) {
-        allIdle = false; // no history — allow new session
-        break;
-      }
-      const sinceEnded = (Date.now() - new Date(last.ended_at).getTime()) / 60000;
-      if (sinceEnded >= SESSION_COOLDOWN_MINUTES) {
-        allIdle = false; // cooldown passed — allow new session
-        break;
+      try {
+        const active = await getActiveSession(sbUrl, sbKey, sensor.id);
+
+        if (active) {
+          const sessionAge = (Date.now() - new Date(active.started_at).getTime()) / 60000;
+          const lastUpdate = new Date(active.updated_at || active.started_at);
+          const minutesAgo = (Date.now() - lastUpdate.getTime()) / 60000;
+
+          if (sessionAge >= SESSION_MAX_MINUTES) {
+            await closeSession(sbUrl, sbKey, active);
+            results.push({ sensor: sensor.name, status: 'skipped', reason: 'auto-cutoff', session: { action: 'auto-cutoff', sessionId: active.id, minutes: Math.round(sessionAge) } });
+            continue;
+          }
+          if (minutesAgo >= SESSION_GAP_MINUTES) {
+            await closeSession(sbUrl, sbKey, active);
+            results.push({ sensor: sensor.name, status: 'skipped', reason: 'gap-close', session: { action: 'cooldown (after close)' } });
+            continue;
+          }
+          // Active session within time window — needs Tuya data
+          sensorsNeedingTuya.push(sensor);
+        } else {
+          const last = await getLastClosedSession(sbUrl, sbKey, sensor.id);
+          if (last && last.ended_at) {
+            const sinceEnded = (Date.now() - new Date(last.ended_at).getTime()) / 60000;
+            if (sinceEnded < SESSION_COOLDOWN_MINUTES) {
+              results.push({ sensor: sensor.name, status: 'skipped', reason: 'cooldown', session: { action: 'cooldown', minutesLeft: Math.round(SESSION_COOLDOWN_MINUTES - sinceEnded) } });
+              continue;
+            }
+          }
+          const countToday = await getSessionCountToday(sbUrl, sbKey, sensor.id);
+          if (countToday >= MAX_SESSIONS_PER_DAY) {
+            results.push({ sensor: sensor.name, status: 'skipped', reason: 'daily-limit', session: { action: 'daily-limit', sessionsToday: countToday } });
+            continue;
+          }
+          // Not in cooldown, not at limit — needs Tuya data
+          sensorsNeedingTuya.push(sensor);
+        }
+      } catch (err) {
+        results.push({ sensor: sensor.name, status: 'error', message: err.message });
       }
     }
 
-    if (allIdle) {
+    // ===== Phase 2: Early exit if no sensor needs Tuya (0 Tuya calls) =====
+    if (sensorsNeedingTuya.length === 0) {
+      for (const sensor of SENSORS) {
+        try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType); } catch (_) {}
+      }
       return res.status(200).json({
         success: true,
         synced: '0/' + SENSORS.length,
-        skipped: 'all sensors idle (cooldown or daily limit reached)',
+        skipped: 'all sensors idle',
+        time: new Date().toISOString(),
+        tuya_calls: 0,
+        results,
+      });
+    }
+
+    // ===== Phase 2.5: Check monthly API quota =====
+    const quota = await getMonthlyQuota(sbUrl, sbKey);
+    if (quota && quota.tuya_calls >= MONTHLY_API_LIMIT) {
+      return res.status(200).json({
+        success: true,
+        synced: '0/' + SENSORS.length,
+        skipped: 'monthly API quota exceeded (' + quota.tuya_calls + '/' + MONTHLY_API_LIMIT + ')',
+        quota_exceeded: true,
+        tuya_calls: 0,
         time: new Date().toISOString(),
       });
     }
 
-    const token = await getTuyaToken(accessId, accessSecret);
+    // ===== Phase 3: Get Tuya token (cached = 0 calls, fresh = 1 call) =====
+    const { token, cached: tokenCached } = await getCachedToken(accessId, accessSecret);
     if (!token) {
       return res.status(502).json({ error: 'Cannot get Tuya token' });
     }
+    if (!tokenCached) tuyaCalls++;
 
-    for (let i = 0; i < SENSORS.length; i++) {
-      if (i > 0) await new Promise(r => setTimeout(r, 1000));
-      const sensor = SENSORS[i];
+    // ===== Phase 4: Batch device info — online check (1 Tuya call) =====
+    const needingIds = sensorsNeedingTuya.map(s => s.id);
+    const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds);
+    tuyaCalls++;
 
+    // ===== Phase 5: Batch device status — ONLY if any sensor is online (0 or 1 call) =====
+    const onlineSensors = sensorsNeedingTuya.filter(s => {
+      const info = deviceInfoMap[s.id];
+      return info && info.online;
+    });
+
+    let deviceStatusMap = {};
+    if (onlineSensors.length > 0) {
+      const onlineIds = onlineSensors.map(s => s.id);
+      deviceStatusMap = await getBatchDeviceStatus(accessId, accessSecret, token, onlineIds);
+      tuyaCalls++;
+    }
+
+    // ===== Phase 6: Process each sensor with batch results =====
+    for (const sensor of sensorsNeedingTuya) {
       try {
-        // Check session state FIRST — skip Tuya API call if cooldown/cutoff
-        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType);
-        const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit'];
+        const isOnline = deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online;
+
+        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline);
+        const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
 
         if (skipActions.includes(session.action)) {
-          results.push({ sensor: sensor.name, status: 'skipped', reason: session.action, session });
+          results.push({ sensor: sensor.name, status: session.action === 'device-offline' ? 'offline' : 'skipped', reason: session.action, session });
           continue;
         }
 
-        // Check if device is actually online (not just cached)
-        const deviceInfo = await getDeviceInfo(accessId, accessSecret, token, sensor.id);
-        if (!deviceInfo.success || !deviceInfo.result || !deviceInfo.result.online) {
-          results.push({ sensor: sensor.name, status: 'offline', online: false });
-          continue;
-        }
-
-        const rawData = await getDeviceStatus(accessId, accessSecret, token, sensor.id);
-        const readings = parseReadings(rawData);
-
+        const readings = deviceStatusMap[sensor.id];
         if (!readings) {
           results.push({ sensor: sensor.name, status: 'no_data' });
           continue;
@@ -462,18 +611,22 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // Always recalculate daily summaries — even if closeSession failed
+    // Always recalculate daily summaries
     for (const sensor of SENSORS) {
-      try {
-        await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType);
-      } catch (_) {}
+      try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType); } catch (_) {}
     }
 
+    // Track API usage for this month
+    await updateMonthlyQuota(sbUrl, sbKey, tuyaCalls);
+
     const ok = results.filter(r => r.status === 'ok').length;
+    const quotaAfter = quota ? (quota.tuya_calls || 0) + tuyaCalls : null;
     return res.status(200).json({
       success: true,
       synced: ok + '/' + SENSORS.length,
       time: new Date().toISOString(),
+      tuya_calls: tuyaCalls,
+      quota: quotaAfter !== null ? { used: quotaAfter, limit: MONTHLY_API_LIMIT, pct: Math.round(quotaAfter / MONTHLY_API_LIMIT * 100) } : null,
       results,
     });
   } catch (err) {
