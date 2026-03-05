@@ -430,19 +430,10 @@
                         <p class="text-slate-400 text-sm" id="session-count-info" data-i18n="common.loading">Loading...</p>
                     </div>
                     <div class="flex flex-wrap gap-3 items-center">
-                        <div class="flex bg-white/70 p-1 rounded-xl border">
-                            <button onclick="setSessionViewMode('daily')" id="session-view-daily" class="px-3 py-1.5 rounded-lg text-[12px] font-bold bg-blue-600 text-white" data-i18n="session.view.daily">รายวัน</button>
-                            <button onclick="setSessionViewMode('session')" id="session-view-session" class="px-3 py-1.5 rounded-lg text-[12px] font-bold text-slate-400" data-i18n="session.view.session">รายเซสชัน</button>
-                        </div>
                         <select id="session-device-filter" onchange="loadSessionsTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                             <option value="all" data-i18n="session.all.devices">ทุกเครื่อง</option>
                             <option value="a3d01864e463e3ede0hf0e">MT13W (ใหม่)</option>
                             <option value="a3b9c2e4bdfe69ad7ekytn">MT29 (เดิม)</option>
-                        </select>
-                        <select id="session-date-filter" onchange="loadSessionsTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="7" data-i18n="session.last.7d">7 วันล่าสุด</option>
-                            <option value="30" data-i18n="session.last.30d">30 วันล่าสุด</option>
-                            <option value="0" data-i18n="filter.all">ทั้งหมด</option>
                         </select>
                     </div>
                 </div>
@@ -846,6 +837,10 @@
             'sub.connectivity': { th: 'การเชื่อมต่อ', en: 'Connectivity' },
             'sub.wifi': { th: '📶 WiFi', en: '📶 WiFi' },
             'sub.hotspot': { th: '📱 Hotspot', en: '📱 Hotspot' },
+            'sub.has.sensor': { th: '📡 มีเซนเซอร์', en: '📡 Has Sensor' },
+            'sub.stove.only': { th: '🏠 เตาอย่างเดียว', en: '🏠 Stove Only' },
+            'sub.sensor': { th: 'เซนเซอร์', en: 'Sensor' },
+            'sub.no.sensor': { th: '— ไม่มีเซนเซอร์ —', en: '— No Sensor —' },
             'sub.select.conn': { th: '-- เลือกการเชื่อมต่อ --', en: '-- Select Connectivity --' },
             // Devices
             'dev.manage': { th: 'จัดการเครื่องวัด', en: 'Manage Devices' },
@@ -1744,28 +1739,16 @@
         }
 
         // ==================== Sessions ====================
-        let sessionViewMode = 'daily';
-        function setSessionViewMode(mode) {
-            sessionViewMode = mode;
-            document.getElementById('session-view-daily').className = mode === 'daily' ? 'px-3 py-1.5 rounded-lg text-[12px] font-bold bg-blue-600 text-white' : 'px-3 py-1.5 rounded-lg text-[12px] font-bold text-slate-400';
-            document.getElementById('session-view-session').className = mode === 'session' ? 'px-3 py-1.5 rounded-lg text-[12px] font-bold bg-blue-600 text-white' : 'px-3 py-1.5 rounded-lg text-[12px] font-bold text-slate-400';
-            loadSessionsTab();
-        }
-
         async function loadSessionsTab() {
             const deviceEl = document.getElementById('session-device-filter');
-            const dateEl = document.getElementById('session-date-filter');
-            if (!deviceEl || !dateEl) return;
+            if (!deviceEl) return;
 
             const deviceFilter = deviceEl.value;
-            const days = parseInt(dateEl.value);
 
-            let query = supabaseClient.from('sessions').select('*').order('started_at', { ascending: false }).limit(100);
+            // Fetch recent sessions (last 30 days to find latest day)
+            const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+            let query = supabaseClient.from('sessions').select('*').order('started_at', { ascending: false }).gte('started_at', cutoff).limit(100);
             if (deviceFilter !== 'all') query = query.eq('device_id', deviceFilter);
-            if (days > 0) {
-                const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
-                query = query.gte('started_at', cutoff);
-            }
 
             const { data: sessions, error } = await query;
             if (error) { console.error('loadSessionsTab:', error); return; }
@@ -1787,112 +1770,61 @@
             const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
             const rows = [];
 
-            if (sessionViewMode === 'daily') {
-                // Daily aggregation mode
-                const byDate = {};
-                sessions.forEach(s => {
-                    const date = s.started_at ? s.started_at.slice(0, 10) : 'unknown';
-                    if (!byDate[date]) byDate[date] = [];
-                    byDate[date].push(s);
-                });
+            // Filter to latest day only
+            let latestDate = null;
+            sessions.forEach(s => {
+                const date = s.started_at ? s.started_at.slice(0, 10) : '';
+                if (!latestDate || date > latestDate) latestDate = date;
+            });
+            const todaySessions = latestDate ? sessions.filter(s => s.started_at && s.started_at.slice(0, 10) === latestDate) : [];
 
-                // Update table headers for daily mode
-                const thead = tbody.closest('table').querySelector('thead tr');
-                if (thead) thead.innerHTML =
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="daily.date">' + t('daily.date') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="daily.device">' + t('daily.device') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="daily.sessions">' + t('daily.sessions') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="daily.readings">' + t('daily.readings') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">PM2.5</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">CO2</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="daily.status">' + t('daily.status') + '</th>';
-
-                Object.entries(byDate).sort((a, b) => b[0].localeCompare(a[0])).forEach(([date, dateSessions]) => {
-                    // Group by device within this date
-                    const byDevice = {};
-                    dateSessions.forEach(s => {
-                        if (!byDevice[s.device_id]) byDevice[s.device_id] = [];
-                        byDevice[s.device_id].push(s);
-                    });
-
-                    const dateLabel = new Date(date + 'T00:00:00').toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
-
-                    Object.entries(byDevice).forEach(([deviceId, devSessions]) => {
-                        const completed = devSessions.filter(s => s.session_status === 'complete').length;
-                        const total = devSessions.length;
-                        const totalReadings = devSessions.reduce((sum, s) => sum + (s.readings_count || 0), 0);
-                        const pm25Vals = devSessions.map(s => s.avg_pm25).filter(v => v != null);
-                        const co2Vals = devSessions.map(s => s.avg_co2).filter(v => v != null);
-                        const avgPm25 = pm25Vals.length ? (pm25Vals.reduce((a, b) => a + b, 0) / pm25Vals.length).toFixed(1) : '-';
-                        const avgCo2 = co2Vals.length ? (co2Vals.reduce((a, b) => a + b, 0) / co2Vals.length).toFixed(0) : '-';
-                        const deviceName = DEVICE_NAMES[deviceId] || deviceId;
-                        const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : 'bg-orange-100 text-orange-700';
-                        const statusIcon = completed >= 2 ? '✅' : completed >= 1 ? '⚠️' : '❌';
-                        const statusText = completed >= 2 ? t('daily.complete') : completed + '/' + total;
-
-                        rows.push('<tr class="hover:bg-blue-50/50">' +
-                            '<td class="p-3 whitespace-nowrap font-medium">' + dateLabel + '</td>' +
-                            '<td class="p-3">' + deviceName + '</td>' +
-                            '<td class="p-3 text-center font-bold">' + completed + '/' + total + '</td>' +
-                            '<td class="p-3 text-center">' + totalReadings + '</td>' +
-                            '<td class="p-3 text-center">' + avgPm25 + '</td>' +
-                            '<td class="p-3 text-center">' + avgCo2 + '</td>' +
-                            '<td class="p-3 text-center"><span class="px-2 py-0.5 rounded-lg text-[11px] font-bold ' + statusColor + '">' + statusIcon + ' ' + statusText + '</span></td>' +
-                            '</tr>');
-                    });
-                });
-            } else {
-                // Session detail mode (original)
-                // Restore table headers for session mode
-                const thead = tbody.closest('table').querySelector('thead tr');
-                if (thead) thead.innerHTML =
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="session.start">' + t('session.start') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="session.device">' + t('session.device') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.status">' + t('session.status') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.duration">' + t('session.duration') + '</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Readings</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg PM2.5</th>' +
-                    '<th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg CO2</th>';
-
-                // Pre-compute session number per day per device
-                const sessionCounters = {};
-                const sessionNums = [];
-                const sorted = [...sessions].reverse();
-                sorted.forEach(s => {
-                    const dateKey = (s.started_at ? s.started_at.slice(0, 10) : '') + '|' + s.device_id;
-                    sessionCounters[dateKey] = (sessionCounters[dateKey] || 0) + 1;
-                    sessionNums.push({ id: s.id, num: sessionCounters[dateKey] });
-                });
-                const numMap = {};
-                sessionNums.forEach(sn => { numMap[sn.id] = sn.num; });
-
-                let prevDateStr = null;
-                sessions.forEach(s => {
-                    const thisDate = s.started_at ? s.started_at.slice(0, 10) : '';
-                    if (thisDate !== prevDateStr) {
-                        prevDateStr = thisDate;
-                        const dateLabel = new Date(s.started_at).toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                        rows.push('<tr class="bg-slate-100"><td colspan="7" class="px-3 py-2 font-semibold text-slate-600 text-sm border-b-2 border-slate-300">' + dateLabel + '</td></tr>');
-                    }
-                    const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) + ' min' : t('session.in.progress');
-                    const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
-                    const icon = statusIcons[s.session_status] || '❓';
-                    const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
-                    const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
-                    const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    const sessNum = numMap[s.id] || '';
-                    const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
-                    rows.push('<tr class="hover:bg-blue-50/50">' +
-                        '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
-                        '<td class="p-3">' + deviceName + sessLabel + '</td>' +
-                        '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span></td>' +
-                        '<td class="p-3 text-center">' + duration + '</td>' +
-                        '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
-                        '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
-                        '<td class="p-3 text-center">' + (s.avg_co2 != null ? s.avg_co2.toFixed(0) : '-') + '</td>' +
-                        '</tr>');
-                });
+            // Update info text
+            if (infoEl && latestDate) {
+                const uniqueDevices = new Set(todaySessions.map(s => s.device_id));
+                const dateLabel = new Date(latestDate + 'T00:00:00').toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
+                infoEl.textContent = dateLabel + ' — ' + todaySessions.length + (currentLang === 'th' ? ' เซสชัน' : ' sessions') + ' (' + uniqueDevices.size + (currentLang === 'th' ? ' บ้าน)' : ' houses)');
+            } else if (infoEl) {
+                infoEl.textContent = currentLang === 'th' ? 'ไม่มีข้อมูล' : 'No data';
             }
+
+            // Pre-compute session number per device
+            const sessionCounters = {};
+            const sessionNums = [];
+            const sorted = [...todaySessions].reverse();
+            sorted.forEach(s => {
+                const key = s.device_id;
+                sessionCounters[key] = (sessionCounters[key] || 0) + 1;
+                sessionNums.push({ id: s.id, num: sessionCounters[key] });
+            });
+            const numMap = {};
+            sessionNums.forEach(sn => { numMap[sn.id] = sn.num; });
+
+            // Date header
+            if (latestDate) {
+                const dateLabel = new Date(latestDate + 'T00:00:00').toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                rows.push('<tr class="bg-slate-100"><td colspan="7" class="px-3 py-2 font-semibold text-slate-600 text-sm border-b-2 border-slate-300">' + dateLabel + '</td></tr>');
+            }
+
+            todaySessions.forEach(s => {
+                const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) + ' min' : t('session.in.progress');
+                const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
+                const icon = statusIcons[s.session_status] || '❓';
+                const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
+                const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
+                const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const sessNum = numMap[s.id] || '';
+                const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
+                rows.push('<tr class="hover:bg-blue-50/50">' +
+                    '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
+                    '<td class="p-3">' + deviceName + sessLabel + '</td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span></td>' +
+                    '<td class="p-3 text-center">' + duration + '</td>' +
+                    '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
+                    '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
+                    '<td class="p-3 text-center">' + (s.avg_co2 != null ? s.avg_co2.toFixed(0) : '-') + '</td>' +
+                    '</tr>');
+            });
+
             tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="7" class="p-6 text-center text-slate-400">' + t('session.no.data') + '</td></tr>';
         }
 
@@ -2517,7 +2449,16 @@
 
         function renderSubjectsList() {
             const list = document.getElementById('subjects-list');
-            list.innerHTML = subjects.map(s => `
+            // Find assigned devices for each subject and available (unassigned) devices
+            const unassignedDevices = devices.filter(d => !d.subject_id);
+
+            list.innerHTML = subjects.map(s => {
+                const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
+                const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>' +
+                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
+                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + d.name + '</option>').join('');
+
+                return `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center justify-between mb-2">
                         <p class="font-bold text-navy text-lg">🏠 ${s.full_name}</p>
@@ -2529,12 +2470,19 @@
                     </div>
                     <p class="text-[13px] text-slate-500">${s.address || '-'}</p>
                     <p class="text-[13px] text-slate-400">${t('sub.volunteer')}${s.volunteers?.full_name || t('sub.unassigned')}</p>
-                    <div class="flex items-center gap-2 mt-1">
+                    <div class="flex items-center gap-2 mt-2 flex-wrap">
                         <p class="text-[13px] ${s.status === 'active' ? 'text-emerald-500' : 'text-red-500'}">${s.status === 'active' ? t('sub.active') : t('sub.inactive')}</p>
                         ${s.connectivity ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : ''}
+                        <button onclick="toggleSensor('${s.id}', ${!s.has_sensor})" class="text-[11px] px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-all ${s.has_sensor ? 'bg-teal-50 text-teal-600' : 'bg-slate-100 text-slate-400'}">${s.has_sensor ? t('sub.has.sensor') : t('sub.stove.only')}</button>
                     </div>
-                </div>
-            `).join('') || '<p class="text-slate-400">' + t('sub.no.data') + '</p>';
+                    <div class="mt-3 pt-3 border-t border-slate-100">
+                        <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.sensor')}</label>
+                        <select onchange="assignSensorToHouse('${s.id}', this.value, '${assignedDevice?.id || ''}')" class="w-full p-3 rounded-xl border text-[13px] font-medium bg-white custom-select ${assignedDevice ? 'border-teal-200 bg-teal-50/30' : ''}">
+                            ${sensorOptions}
+                        </select>
+                    </div>
+                </div>`;
+            }).join('') || '<p class="text-slate-400">' + t('sub.no.data') + '</p>';
         }
 
         function showEditSubjectModal(id) {
@@ -2561,6 +2509,10 @@
                             <option value="hotspot" ${s.connectivity === 'hotspot' ? 'selected' : ''}>${t('sub.hotspot')}</option>
                         </select>
                     </div>
+                    <label class="flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:bg-teal-50/50 transition-all">
+                        <input type="checkbox" id="edit-sub-sensor" ${s.has_sensor ? 'checked' : ''} class="w-5 h-5 rounded accent-teal-600">
+                        <span class="font-bold text-navy">${t('sub.has.sensor')}</span>
+                    </label>
                     <button onclick="saveSubject('${s.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
@@ -2572,8 +2524,9 @@
             const lng = document.getElementById('edit-sub-lng').value;
             const volunteerId = document.getElementById('edit-sub-volunteer').value;
             const connectivity = document.getElementById('edit-sub-connectivity').value;
+            const hasSensor = document.getElementById('edit-sub-sensor').checked;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
-            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: connectivity || null };
+            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: connectivity || null, has_sensor: hasSensor };
             const { error } = await supabaseClient.from('subjects').update(record).eq('id', String(id));
             if (!error) { closeModal(); loadAdminData(); showToast(t('sub.saved')); }
             else { showToast(t('common.error') + error.message, 'error'); }
@@ -2581,6 +2534,21 @@
         async function toggleSubjectStatus(id, newStatus) {
             const { error } = await supabaseClient.from('subjects').update({ status: newStatus }).eq('id', String(id));
             if (!error) loadAdminData();
+        }
+        async function toggleSensor(id, hasSensor) {
+            const { error } = await supabaseClient.from('subjects').update({ has_sensor: hasSensor }).eq('id', String(id));
+            if (!error) loadAdminData();
+        }
+        async function assignSensorToHouse(subjectId, newDeviceId, oldDeviceId) {
+            // 1. Unassign old device from this house
+            if (oldDeviceId) {
+                await supabaseClient.from('devices').update({ subject_id: null }).eq('id', String(oldDeviceId));
+            }
+            // 2. Assign new device to this house
+            if (newDeviceId) {
+                await supabaseClient.from('devices').update({ subject_id: subjectId }).eq('id', String(newDeviceId));
+            }
+            loadAdminData();
         }
         async function deleteSubject(id, name) {
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
@@ -2672,6 +2640,10 @@
                             <option value="hotspot">${t('sub.hotspot')}</option>
                         </select>
                     </div>
+                    <label class="flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:bg-teal-50/50 transition-all">
+                        <input type="checkbox" id="new-sub-sensor" class="w-5 h-5 rounded accent-teal-600">
+                        <span class="font-bold text-navy">${t('sub.has.sensor')}</span>
+                    </label>
                     <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
@@ -2683,8 +2655,9 @@
             const lng = document.getElementById('new-sub-lng').value;
             const volunteerId = document.getElementById('new-sub-volunteer').value;
             const connectivity = document.getElementById('new-sub-connectivity').value;
+            const hasSensor = document.getElementById('new-sub-sensor').checked;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
-            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active' };
+            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active', has_sensor: hasSensor };
             if (connectivity) record.connectivity = connectivity;
             if (lat) record.gps_lat = parseFloat(lat);
             if (lng) record.gps_long = parseFloat(lng);
@@ -2792,10 +2765,10 @@
 
         async function loadBasicMapMarkers() {
             if (!map) return;
-            // Load subjects + check which have devices (sensors)
+            // Load subjects + devices with name for popup
             const [subRes, devRes] = await Promise.all([
-                supabaseClient.from('subjects').select('id, full_name, gps_lat, gps_long, status, connectivity').not('gps_lat', 'is', null).not('gps_long', 'is', null),
-                supabaseClient.from('devices').select('subject_id').not('subject_id', 'is', null),
+                supabaseClient.from('subjects').select('id, full_name, gps_lat, gps_long, status, connectivity, has_sensor').not('gps_lat', 'is', null).not('gps_long', 'is', null),
+                supabaseClient.from('devices').select('subject_id, name').not('subject_id', 'is', null),
             ]);
             const data = subRes.data;
             if (subRes.error || !data || !data.length) {
@@ -2803,7 +2776,9 @@
                 L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(map);
                 return;
             }
-            const sensorSubjectIds = new Set((devRes.data || []).map(d => d.subject_id));
+            // Map subject_id → device name
+            const sensorMap = {};
+            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = d.name; });
             const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
             const bounds = [];
             let sensorCount = 0, stoveCount = 0;
@@ -2812,16 +2787,25 @@
                 const lng = parseFloat(s.gps_long);
                 if (isNaN(lat) || isNaN(lng)) return;
                 bounds.push([lat, lng]);
-                const hasSensor = sensorSubjectIds.has(s.id);
+                const deviceName = sensorMap[s.id];
+                const hasSensor = !!deviceName;
                 if (hasSensor) {
                     sensorCount++;
                     const icon = L.divIcon({ html: '<div style="background:#10b981;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">📡</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
-                    const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : '📱 Hotspot';
-                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup('<b>📡 ' + s.full_name + '</b><br>' + connLabel + '<br><span class="text-emerald-600 font-bold">' + t('map.sensor.active') + '</span>'));
+                    const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : s.connectivity === 'hotspot' ? '📱 Hotspot' : '';
+                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
+                        '<b>📡 ' + s.full_name + '</b>' +
+                        '<br><span style="color:#10b981;font-weight:bold">🔧 ' + deviceName + '</span>' +
+                        (connLabel ? '<br>' + connLabel : '') +
+                        '<br><span style="color:#10b981">✅ ' + t('sub.has.sensor') + ' + ' + t('map.stove.installed') + '</span>'
+                    ));
                 } else {
                     stoveCount++;
                     const icon = L.divIcon({ html: '<div style="background:#f97316;width:12px;height:12px;border-radius:50%;border:1.5px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>', iconSize: [12, 12], iconAnchor: [6, 6], className: '' });
-                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup('<b>🏠 ' + s.full_name + '</b><br>' + t('map.stove.installed')));
+                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
+                        '<b>🏠 ' + s.full_name + '</b>' +
+                        '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>'
+                    ));
                 }
             });
             map.addLayer(cluster);
@@ -2853,8 +2837,8 @@
         async function loadSubjectMarkers() {
             if (!mapDeep) return;
             const [subRes, devRes] = await Promise.all([
-                supabaseClient.from('subjects').select('id, full_name, gps_lat, gps_long, status, connectivity, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null),
-                supabaseClient.from('devices').select('subject_id').not('subject_id', 'is', null),
+                supabaseClient.from('subjects').select('id, full_name, gps_lat, gps_long, status, connectivity, has_sensor, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null),
+                supabaseClient.from('devices').select('subject_id, name').not('subject_id', 'is', null),
             ]);
             const data = subRes.data;
             if (subRes.error || !data || !data.length) {
@@ -2862,7 +2846,8 @@
                 L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(mapDeep);
                 return;
             }
-            const sensorSubjectIds = new Set((devRes.data || []).map(d => d.subject_id));
+            const sensorMap = {};
+            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = d.name; });
             const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
             const bounds = [];
             data.forEach(s => {
@@ -2870,15 +2855,26 @@
                 const lng = parseFloat(s.gps_long);
                 if (isNaN(lat) || isNaN(lng)) return;
                 bounds.push([lat, lng]);
-                const hasSensor = sensorSubjectIds.has(s.id);
-                const wifiLabel = s.connectivity === 'wifi' ? '📶 WiFi' : '📱 Hotspot';
+                const deviceName = sensorMap[s.id];
+                const hasSensor = !!deviceName;
+                const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : s.connectivity === 'hotspot' ? '📱 Hotspot' : '';
                 const volunteer = s.volunteers?.full_name || '-';
                 if (hasSensor) {
                     const icon = L.divIcon({ html: '<div style="background:#10b981;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">📡</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
-                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup('<b>📡 ' + s.full_name + '</b><br>' + t('map.connectivity') + ': ' + wifiLabel + '<br>' + t('map.volunteer') + ': ' + volunteer));
+                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
+                        '<b>📡 ' + s.full_name + '</b>' +
+                        '<br><span style="color:#10b981;font-weight:bold">🔧 ' + deviceName + '</span>' +
+                        (connLabel ? '<br>' + connLabel : '') +
+                        '<br>' + t('map.volunteer') + ': ' + volunteer +
+                        '<br><span style="color:#10b981">✅ ' + t('sub.has.sensor') + ' + ' + t('map.stove.installed') + '</span>'
+                    ));
                 } else {
                     const icon = L.divIcon({ html: '<div style="background:#f97316;width:12px;height:12px;border-radius:50%;border:1.5px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>', iconSize: [12, 12], iconAnchor: [6, 6], className: '' });
-                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup('<b>🏠 ' + s.full_name + '</b><br>' + t('map.stove.installed')));
+                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
+                        '<b>🏠 ' + s.full_name + '</b>' +
+                        '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>' +
+                        '<br>' + t('map.volunteer') + ': ' + volunteer
+                    ));
                 }
             });
             mapDeep.addLayer(cluster);
