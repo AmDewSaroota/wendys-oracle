@@ -18,8 +18,8 @@ const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
 const MONTHLY_API_LIMIT = 24000; // 26,000 minus 2,000 buffer
 
 const SENSORS = [
-  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old' },
-  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)', stoveType: 'eco' },
+  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old', houseId: 19 },
+  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)', stoveType: 'eco', houseId: 20 },
 ];
 
 // ===== Token Cache (in-memory, survives Vercel warm starts) =====
@@ -222,13 +222,14 @@ async function getLastClosedSession(sbUrl, sbKey, deviceId) {
   return data.length > 0 ? data[0] : null;
 }
 
-async function createSession(sbUrl, sbKey, deviceId, stoveType) {
+async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId) {
   const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
   const record = {
     device_id: deviceId,
     session_status: 'collecting',
     session_number: countToday + 1,
     stove_type: stoveType || 'eco',
+    house_id: houseId || null,
     started_at: new Date().toISOString(),
     readings_count: 1,
   };
@@ -406,7 +407,7 @@ async function updateMonthlyQuota(sbUrl, sbKey, callsToAdd) {
   }
 }
 
-async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline) {
+async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId) {
   try {
     const active = await getActiveSession(sbUrl, sbKey, deviceId);
 
@@ -449,7 +450,7 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline) {
       if (!isOnline) {
         return { action: 'device-offline' };
       }
-      const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType);
+      const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType, houseId);
       return { action: 'new', sessionId: newSession?.id };
     }
   } catch (err) {
@@ -587,7 +588,7 @@ module.exports = async function handler(req, res) {
       try {
         const isOnline = deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online;
 
-        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline);
+        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId);
         const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
 
         if (skipActions.includes(session.action)) {

@@ -443,8 +443,8 @@
                 </div>
             </div>
 
-            <!-- Daily Summary -->
-            <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-6">
+            <!-- Daily Summary (hidden — data not accurate yet, will fix later) -->
+            <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-6" style="display:none">
                 <h4 class="font-bold text-lg text-navy mb-4" data-i18n="daily.title">สรุปรายวัน</h4>
                 <div class="mb-4 text-[11px] text-slate-400 flex flex-wrap gap-2">
                     <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold">✅ ครบ 2/2</span>
@@ -940,6 +940,7 @@
             'a3d01864e463e3ede0hf0e': 'MT13W-01',
             'a3b9c2e4bdfe69ad7ekytn': 'MT29-01',
         };
+        let HOUSE_NAMES = {};
 
         // ==================== AQI Helper ====================
         function getAqiStatus(aqi) {
@@ -1085,6 +1086,29 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
         }
 
+        // Approve modal (full-screen, replaces browser confirm for batch approve)
+        function showApproveModal(count, warnings) {
+            return new Promise(resolve => {
+                const warningHtml = warnings.length > 0
+                    ? '<div class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl text-left text-sm text-amber-800">' + warnings.map(w => '<div class="mb-2 whitespace-pre-line">' + w.replace(/\n/g, '<br>') + '</div>').join('') + '</div>'
+                    : '';
+                showModal(`
+                    <div class="text-center mb-6">
+                        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">✅</div>
+                        <h3 class="text-2xl font-bold text-navy mb-2">อนุมัติข้อมูล</h3>
+                        <p class="text-slate-500 text-lg">ทั้งหมด <strong class="text-navy">${count}</strong> รายการ</p>
+                    </div>
+                    ${warningHtml}
+                    <div class="flex gap-3 mt-6">
+                        <button id="approve-cancel-btn" class="flex-1 py-4 rounded-2xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50 text-lg">ยกเลิก</button>
+                        <button id="approve-confirm-btn" class="flex-1 py-4 rounded-2xl bg-emerald-500 text-white font-bold hover:bg-emerald-600 shadow-lg text-lg">อนุมัติทั้งหมด</button>
+                    </div>
+                `);
+                document.getElementById('approve-cancel-btn').onclick = () => { closeModal(); resolve(false); };
+                document.getElementById('approve-confirm-btn').onclick = () => { closeModal(); resolve(true); };
+            });
+        }
+
         // Confirm dialog (replaces confirm)
         function showConfirm(message, onConfirm) {
             showModal(`
@@ -1115,6 +1139,12 @@
                 allDataWithPending = allRecords || [];
                 allData = allDataWithPending.filter(d => d.status === 'approved');
                 dataLoaded = true;
+
+                // Load house names from devices → subjects
+                try {
+                    const { data: devs } = await supabaseClient.from('devices').select('tuya_device_id, subjects(full_name)');
+                    if (devs) devs.forEach(d => { if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name; });
+                } catch (_) {}
 
                 if (currentView === 'basic') updateBasicView();
                 else if (currentView === 'deep') updateDeepView();
@@ -1221,7 +1251,7 @@
                 return;
             }
 
-            document.getElementById('live-house-name').textContent = latest.tuya_device_id ? getDeviceName(latest) : (latest.house_name || t('activity.no.house'));
+            document.getElementById('live-house-name').textContent = HOUSE_NAMES[latest.tuya_device_id] || getDeviceName(latest);
             document.getElementById('live-timestamp').textContent = new Date(latest.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US');
             document.getElementById('live-stove-badge').textContent = latest.stove_type === 'eco' ? t('live.eco') : t('live.old');
             document.getElementById('live-pm25').textContent = latest.pm25_value ?? '--';
@@ -1255,7 +1285,7 @@
             const recent = allData.slice(0, 5);
             feed.innerHTML = recent.map(d => {
                 const sensorName = getDeviceName(d);
-                const houseName = d.house_name || t('activity.no.house');
+                const houseName = HOUSE_NAMES[d.tuya_device_id] || t('activity.no.house');
                 const timeAgo = getTimeAgo(d.recorded_at);
                 const pm25Color = (d.pm25_value || 0) < 25 ? 'text-emerald-500' : (d.pm25_value || 0) < 50 ? 'text-amber-500' : 'text-red-500';
                 return '<div class="p-3 bg-white/50 rounded-xl">' +
@@ -1966,14 +1996,8 @@
                     + '\n→ ข้อมูลจากเซสชันเหล่านี้จะถูกอนุมัติด้วย');
             }
 
-            let msg;
-            if (warnings.length > 0) {
-                msg = warnings.join('\n\n') + '\n\nอนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?\n\nดำเนินการ?';
-            } else {
-                msg = 'อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?';
-            }
-
-            if (!confirm(msg)) return;
+            const confirmed = await showApproveModal(pendingLogs.length, warnings);
+            if (!confirmed) return;
 
             showLoading('กำลังอนุมัติทั้งหมด...');
             try {

@@ -308,10 +308,6 @@
         <div style="font-size:0.85rem; opacity:0.6;">เซนเซอร์</div>
       </div>
       <div style="text-align:center;">
-        <div style="font-size:2.5rem; font-weight:700;">~8,000</div>
-        <div style="font-size:0.85rem; opacity:0.6;">บาท (ทั้งหมด)</div>
-      </div>
-      <div style="text-align:center;">
         <div style="font-size:2.5rem; font-weight:700;">0</div>
         <div style="font-size:0.85rem; opacity:0.6;">บาท/เดือน</div>
       </div>
@@ -377,7 +373,7 @@
       <h3>เก็บตามการใช้งานจริง</h3>
       <ul>
         <li>ชาวบ้านทำอาหารตามปกติ</li>
-        <li>เปิด-ปิดเตาเองตามสะดวก</li>
+        <li>เปิด-ปิด Sensor เองตามสะดวก</li>
         <li>ไม่ต้องเปลี่ยนพฤติกรรม</li>
         <li>ระบบเก็บข้อมูลอัตโนมัติ</li>
       </ul>
@@ -454,7 +450,7 @@
         <ul>
           <li>Server + Database + Dashboard → <strong>ฟรี</strong></li>
           <li>Tuya Cloud API → <strong>ฟรี</strong> (26,000 calls/เดือน)</li>
-          <li>LINE OA แผนฟรี → <strong>0 ฿</strong> (200 msg/เดือน)</li>
+          <li>LINE OA แผนฟรี → <strong>0 ฿</strong> (300 msg/เดือน)</li>
         </ul>
         <div style="margin-top:8px; font-size:1.1rem; font-weight:700; color:var(--green);">รวม 0 ฿/เดือน</div>
       </div>
@@ -462,7 +458,8 @@
         <div class="icon">➕</div>
         <h3>Option เสริม (ถ้าต้องการ)</h3>
         <ul>
-          <li>LINE OA แจ้งอาสาด้วย → <strong>~400 ฿/เดือน</strong> (แผน Light)</li>
+          <li>LINE OA แจ้งอาสาด้วย → <strong>1,280 ฿/เดือน</strong> (แผน Basic, 15,000 msg)</li>
+          <li>โดเมน .org → <strong>~350–500 ฿/ปี</strong> (~$10–15/year)</li>
           <li>เกิน 10 เครื่อง → ซื้อเซนเซอร์เพิ่ม ตัวละ ~800–1,100 ฿</li>
           <li>เกิน 10 เครื่อง → อาจเกิน Tuya API ฟรี (26,000 calls/เดือน)<br>→ <strong>ต้องติดต่อ Tuya สอบถามราคา (จ่ายรายปี)</strong></li>
         </ul>
@@ -481,7 +478,7 @@
       <div class="icon">⚙️</div>
       <h3>ดึงข้อมูล</h3>
       <p style="font-size:1.4rem; font-weight:700; color:var(--green); margin:8px 0;">ฟรี</p>
-      <p>Vercel Cron<br>ดึงทุก 5 นาที (เฉพาะเวลา session)</p>
+      <p>Cron อัตโนมัติ<br>ดึงทุก 5 นาที (เฉพาะเวลา session)</p>
     </div>
     <div class="card">
       <div class="icon">🗄️</div>
@@ -555,11 +552,6 @@
         <li>ไม่ต้องจับเวลา ไม่ต้องแจ้ง</li>
         <li>ไม่ต้องเปลี่ยนพฤติกรรม</li>
       </ul>
-      <p style="margin-top:8px; padding:8px 12px; background:#fef3c7; border-radius:8px; font-size:0.82rem; color:#92400e;">
-        <strong>⚠️ ข้อจำกัด:</strong> API ไม่พอเก็บ 24 ชม. → เก็บเป็น session<br>
-        ถ้าทำอาหารนอกช่วงเก็บ → ไม่มีข้อมูลรอบนั้น<br>
-        <strong>→ มีแผนรับมือแล้ว</strong> ดูหน้าถัดไป
-      </p>
     </div>
     <div class="card orange">
       <div class="icon">📅</div>
@@ -719,16 +711,16 @@
           <span class="arr">→</span>
           <span class="step warn">ไม่มีข้อมูลรอบนี้</span>
         </div>
-        <div class="scenario-result result-warn">ผลลัพธ์: ขาดข้อมูลรอบนั้น → LINE แจ้งเตือนอาสา <span style="font-size:0.75rem; opacity:0.8;">(ฟีเจอร์นี้ต้องอัพเป็น Light Plan ฿400/เดือน)</span></div>
+        <div class="scenario-result result-warn">ผลลัพธ์: ขาดข้อมูลรอบนั้น → LINE แจ้งสรุปให้อ.แก้ว → อ.แก้วติดตามอาสาเอง</div>
       </div>
       <div class="scenario">
         <div class="scenario-title">🖥️ สถานการณ์ 5: Server ล่ม</div>
         <div class="scenario-flow">
-          <span class="step">Vercel Cron ทำงาน</span>
+          <span class="step">cron-job.org ยิง API</span>
           <span class="arr">→</span>
-          <span class="step bad">Cron ล้มเหลว</span>
+          <span class="step bad">Vercel function ล้มเหลว</span>
           <span class="arr">→</span>
-          <span class="step ok">Vercel retry อัตโนมัติ</span>
+          <span class="step ok">cron-job.org ยิงใหม่รอบถัดไป</span>
         </div>
         <div class="scenario-result result-ok">ผลลัพธ์: Serverless = ไม่มี server ล่ม — ข้อมูลเดิมปลอดภัยใน DB</div>
       </div>
@@ -751,7 +743,7 @@
 <div class="slide bg-blue">
   <span class="tag">✅ ทำแล้ว — LINE แจ้งเตือน</span>
   <h2>ระบบแจ้งเตือนผ่าน LINE OA</h2>
-  <p class="subtitle" style="margin-bottom:20px;">ใช้แผนฟรี (200 msg/เดือน) — Broadcast ให้ทุกคนที่ Add OA · Deploy แล้วบน Vercel</p>
+  <p class="subtitle" style="margin-bottom:20px;">ใช้แผนฟรี (300 msg/เดือน) — Broadcast ให้ทุกคนที่ Add OA · Deploy แล้ว: line-oa-inky.vercel.app</p>
   <div class="two-col">
     <div>
       <div class="card" style="border-top-color: var(--blue);">
@@ -790,17 +782,16 @@
           <li>ไม่รบกวนอาสาโดยไม่จำเป็น</li>
         </ul>
         <div style="margin-top:12px; padding:8px 12px; background:var(--green-50); border-radius:8px; font-size:0.82rem; color:var(--green-dark);">
-          ✅ <strong>ใช้แผนฟรีพอ</strong> — ~60 msg/เดือน จาก 200 ที่มี
+          ✅ <strong>Broadcast สรุปให้อ.แก้ว</strong> — 60 msg/เดือน (แผนฟรี 300 msg เหลือเฟือ)
         </div>
       </div>
       <div class="card yellow">
-        <div class="icon">🔮</div>
-        <h3>อนาคต (ถ้าต้องการ)</h3>
+        <div class="icon">📲</div>
+        <h3>ถ้าอยากแจ้งอาสาอัตโนมัติด้วย</h3>
         <ul>
-          <li>อัพเป็น Light Plan (฿400/เดือน, 5,000 msg)</li>
-          <li>แจ้งเตือนอาสาทีละคนได้</li>
-          <li>แจ้งเมื่อค่าผิดปกติ</li>
-          <li>Weekly report อัตโนมัติ</li>
+          <li>Push เตือนเฉพาะบ้านที่ยังไม่เปิดเซนเซอร์</li>
+          <li>miss ≤3 บ้าน/รอบ → ~240 msg → ✅ แผนฟรีพอ</li>
+          <li>miss 5+ บ้าน/รอบ → 360+ msg → ❌ ต้องอัพ Basic (1,280 ฿/เดือน)</li>
         </ul>
       </div>
     </div>
@@ -890,6 +881,7 @@
         <ul>
           <li>ไม่ต้อง approve ทุกวันก็ได้</li>
           <li>เลือก approve ทีเดียวหลายวัน</li>
+          <li>มีแจ้งเตือน เมื่อมีข้อมูลไม่สมบูรณ์ ก่อนจะกด Approve</li>
         </ul>
       </div>
       <div class="card yellow">
@@ -975,7 +967,7 @@
         <li>สรุปเที่ยง — ใครเก็บแล้ว/ยังไม่เก็บ</li>
         <li>สรุป 2 ทุ่ม — ครบ/ไม่ครบ + รออนุมัติ</li>
         <li>Broadcast ให้ทุกคนที่ Add OA</li>
-        <li>ใช้แผนฟรี (200 msg/เดือน)</li>
+        <li>ใช้แผนฟรี (300 msg/เดือน)</li>
       </ul>
     </div>
   </div>
@@ -993,7 +985,7 @@
       <div class="icon">🔄</div>
       <h3>Deployment</h3>
       <ul>
-        <li>Vercel Cron ดึงข้อมูลอัตโนมัติ</li>
+        <li>Cron ดึงข้อมูลอัตโนมัติทุก 5 นาที</li>
         <li>Vercel Serverless — ไม่ต้องดูแล server</li>
         <li>ค่าใช้จ่าย = <strong>0 บาท/เดือน</strong></li>
       </ul>
@@ -1026,7 +1018,7 @@
         <h3>👥 กลุ่มตัวอย่าง & อาสา</h3>
         <ul class="q-list">
           <li><strong>กลุ่มตัวอย่าง แบ่ง 2 กลุ่ม:</strong><br>บ้านมีเน็ต → เซนเซอร์ส่งข้อมูลเองอัตโนมัติ<br>บ้านไม่มีเน็ต → อาสาช่วยปล่อย Hotspot ให้</li>
-          <li><strong>คู่มือ:</strong> ออกแบบให้ใช้ได้ทั้งคนทั่วไปและนักศึกษา — เตรียมให้พร้อม</li>
+          <!-- คู่มือ: ออกแบบให้ใช้ได้ทั้งคนทั่วไปและนักศึกษา — ยังไม่แสดงในสไลด์ แต่ต้องทำ -->
           <li><strong>อาสาต้องมีมือถือ + เน็ต</strong><br>เพราะระบบแจ้งเตือนทั้งหมดผ่าน LINE</li>
         </ul>
       </div>
@@ -1056,7 +1048,7 @@
   <div style="text-align:center;">
     <div style="font-size:3rem; margin-bottom:16px;">🚀</div>
     <h2>ขั้นตอนถัดไป</h2>
-    <p class="subtitle" style="max-width:600px; margin:0 auto 32px;">ระบบพร้อม ~85% — เหลือซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง</p>
+    <p class="subtitle" style="max-width:600px; margin:0 auto 32px;">ระบบพร้อม ~90% — เหลือตั้ง Cron LINE + ซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง</p>
   </div>
   <div class="card-grid cols-3">
     <div class="card" style="border-top-color: var(--green); opacity:0.7;">
@@ -1065,7 +1057,7 @@
       <ul>
         <li style="text-decoration:line-through;">ตั้ง Server + Database</li>
         <li style="text-decoration:line-through;">Dashboard 3 มุมมอง</li>
-        <li style="text-decoration:line-through;">LINE OA สรุปเที่ยง+2ทุ่ม</li>
+        <li style="text-decoration:line-through;">LINE OA สรุปเที่ยง+2ทุ่ม (Deploy แล้ว)</li>
         <li style="text-decoration:line-through;">Session management + API limit</li>
         <li style="text-decoration:line-through;">ระบบอนุมัติข้อมูล</li>
         <li style="text-decoration:line-through;">Data cleaning + ทดสอบเซนเซอร์</li>
@@ -1096,7 +1088,7 @@
   </div>
   <div style="margin-top:32px; text-align:center;">
     <div style="display:inline-block; background:rgba(255,255,255,0.1); padding:16px 32px; border-radius:14px; font-size:0.95rem; opacity:0.8; line-height:1.8;">
-      ระบบพร้อม ~85% — เหลือซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง + ทำคู่มือ<br>
+      ระบบพร้อม ~90% — เหลือตั้ง Cron LINE + ซื้อเซนเซอร์ + ลงพื้นที่ติดตั้ง + ทำคู่มือ<br>
       <strong>เก็บข้อมูลรวม 6 เดือน</strong> (3 เดือนเตาเก่า + 3 เดือน EcoStove)
     </div>
   </div>
