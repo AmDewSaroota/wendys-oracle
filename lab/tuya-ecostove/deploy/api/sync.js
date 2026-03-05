@@ -16,6 +16,7 @@ const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
 const SESSION_COOLDOWN_MINUTES = 300; // 5hr cooldown before next session
 const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
 const MONTHLY_API_LIMIT = 24000; // 26,000 minus 2,000 buffer
+const BASELINE_MINUTES = 10; // baseline phase duration (~2 readings at 5min interval)
 
 const SENSORS = [
   { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old', houseId: 19 },
@@ -204,7 +205,7 @@ async function getSessionCountToday(sbUrl, sbKey, deviceId) {
 
 async function getActiveSession(sbUrl, sbKey, deviceId) {
   const res = await fetch(
-    sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId + '&session_status=eq.collecting&order=started_at.desc&limit=1',
+    sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId + '&session_status=in.(baseline,collecting)&order=started_at.desc&limit=1',
     { headers: sbHeaders(sbKey) }
   );
   if (!res.ok) return null;
@@ -226,7 +227,7 @@ async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId) {
   const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
   const record = {
     device_id: deviceId,
-    session_status: 'collecting',
+    session_status: 'baseline',
     session_number: countToday + 1,
     stove_type: stoveType || 'eco',
     house_id: houseId || null,
@@ -285,7 +286,7 @@ async function closeSession(sbUrl, sbKey, session) {
     const hums = vals('humidity');
 
     const update = {
-      session_status: data.length >= 3 ? 'complete' : 'incomplete',
+      session_status: data.length >= 26 ? 'complete' : 'incomplete',
       ended_at: new Date().toISOString(),
       collection_ended_at: new Date().toISOString(),
       readings_count: data.length,
@@ -347,9 +348,12 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
       return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
     };
 
+    const houseId = sessions.length > 0 ? sessions[0].house_id : null;
+
     const summary = {
       summary_date: today,
       device_id: deviceId,
+      house_id: houseId,
       sessions_completed: completed.length,
       sessions_incomplete: incomplete.length,
       sessions_cancelled: cancelled.length,
@@ -364,13 +368,17 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
       updated_at: new Date().toISOString(),
     };
 
-    await fetch(sbUrl + '/rest/v1/daily_summaries', {
+    const upsertRes = await fetch(sbUrl + '/rest/v1/daily_summaries?on_conflict=summary_date,device_id', {
       method: 'POST',
       headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal,resolution=merge-duplicates' },
       body: JSON.stringify(summary),
     });
+    if (!upsertRes.ok) {
+      const errText = await upsertRes.text();
+      console.error('upsertDailySummary: POST failed for ' + deviceId + ', status=' + upsertRes.status + ', body=' + errText);
+    }
   } catch (e) {
-    // non-critical — don't break the sync
+    console.error('upsertDailySummary: exception for ' + deviceId + ':', e.message || e);
   }
 }
 
@@ -427,10 +435,35 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
       } else if (!isOnline) {
         // Device offline mid-session — skip this tick, don't inflate readings_count
         return { action: 'device-offline', sessionId: active.id };
+      } else if (active.session_status === 'baseline' && sessionAge >= BASELINE_MINUTES) {
+        // Baseline phase complete — compute baseline averages and transition to collecting
+        const baselineRes = await fetch(
+          sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + active.id + '&order=recorded_at.asc',
+          { headers: sbHeaders(sbKey) }
+        );
+        const baselineLogs = baselineRes.ok ? await baselineRes.json() : [];
+        const blAvg = (arr, field) => { const vals = arr.map(r => r[field]).filter(v => v != null); return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null; };
+        const update = {
+          session_status: 'collecting',
+          baseline_ended_at: new Date().toISOString(),
+          baseline_avg_pm25: blAvg(baselineLogs, 'pm25_value'),
+          baseline_avg_co2: blAvg(baselineLogs, 'co2_value'),
+          baseline_avg_temperature: blAvg(baselineLogs, 'temperature'),
+          baseline_avg_humidity: blAvg(baselineLogs, 'humidity'),
+          baseline_readings_count: baselineLogs.length,
+          readings_count: (active.readings_count || 0) + 1,
+          updated_at: new Date().toISOString(),
+        };
+        await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + active.id, {
+          method: 'PATCH', headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal' },
+          body: JSON.stringify(update),
+        });
+        console.log('Baseline ended for session ' + active.id + ': pm25=' + update.baseline_avg_pm25 + ', co2=' + update.baseline_avg_co2 + ', readings=' + baselineLogs.length);
+        return { action: 'baseline-ended', sessionId: active.id, baselineReadings: baselineLogs.length };
       } else {
-        // Continue session — device is online and within time window
+        // Continue session (baseline or collecting) — device is online and within time window
         await updateSessionCount(sbUrl, sbKey, active.id, (active.readings_count || 0) + 1);
-        return { action: 'continued', sessionId: active.id };
+        return { action: active.session_status === 'baseline' ? 'baseline' : 'continued', sessionId: active.id };
       }
     } else {
       // No active session — check cooldown from last closed session
