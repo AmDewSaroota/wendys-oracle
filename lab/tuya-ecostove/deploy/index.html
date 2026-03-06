@@ -1326,8 +1326,16 @@
 
         let currentAdmin = '';
 
-        function promptAdmin() {
+        async function promptAdmin() {
             if (isAdmin) { switchView('admin'); return; }
+            // Check if session is being restored (race condition fix)
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session) {
+                    await checkAdminRole(session.user);
+                    if (isAdmin) { switchView('admin'); loadAdminData(!adminLoaded); return; }
+                }
+            } catch (_) {}
             showModal(`
                 <div class="text-center mb-8"><div class="w-20 h-20 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">🔐</div>
                 <h3 class="text-2xl font-bold text-navy">${t('admin.login')}</h3></div>
@@ -1415,12 +1423,9 @@
             if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
             try {
-                // Clear stale localStorage tokens (don't call signOut — it triggers onAuthStateChange race)
-                clearSupabaseSession();
-
-                // signInWithPassword with 10s timeout
+                // signInWithPassword with 15s timeout (increased from 10s)
                 const loginPromise = supabaseClient.auth.signInWithPassword({ email, password: pwd });
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Login timeout')), 10000));
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Login timeout')), 15000));
                 const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
 
                 if (error) {
@@ -2180,7 +2185,7 @@
             const sensorIds = [...new Set(sensorData.map(d => d.tuya_device_id))];
             const sensorGroups = sensorIds.map(id => ({
                 id,
-                name: DEVICE_NAMES[id] || id.slice(-6),
+                name: DEVICE_NAMES[id] || (id || 'unknown').slice(-6),
                 data: sensorData.filter(d => d.tuya_device_id === id).reverse(),
             }));
             const totalPoints = sensorGroups.reduce((sum, g) => sum + g.data.length, 0);
@@ -2560,7 +2565,7 @@
                         const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
                         const houseName = DEVICE_NAMES[s.device] || sensorName;
                         const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
-                        const sKey = 'ps_' + s.device.slice(-6) + '_' + s.date.replace(/-/g,'');
+                        const sKey = 'ps_' + (s.device || 'unknown').slice(-6) + '_' + s.date.replace(/-/g,'');
                         window[sKey] = s.ids;
                         window[sKey + '_logs'] = s.logs;
                         window[sKey + '_label'] = houseName + ' · ' + sensorName;
@@ -2728,7 +2733,7 @@
 
             if (activeSessions && activeSessions.length > 0) {
                 const names = activeSessions.map(s => {
-                    const name = DEVICE_NAMES[s.device_id] || s.device_id.slice(0, 8);
+                    const name = DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
                     return '  • ' + name + ' (' + (s.readings_count || 0) + ' readings)';
                 }).join('\n');
                 warnings.push('⚠️ ยังมี ' + activeSessions.length + ' เซสชันที่กำลังเก็บข้อมูลอยู่:\n' + names
@@ -2737,7 +2742,7 @@
 
             if (incompleteSessions && incompleteSessions.length > 0) {
                 const names = incompleteSessions.map(s => {
-                    const name = DEVICE_NAMES[s.device_id] || s.device_id.slice(0, 8);
+                    const name = DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
                     const date = s.started_at ? new Date(s.started_at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : '?';
                     return '  • ' + name + ' — ' + date + ' (' + (s.readings_count || 0) + ' readings)';
                 }).join('\n');
@@ -2797,7 +2802,7 @@
 
         async function toggleDevice(id, active) {
             const { error } = await supabaseClient.from('devices').update({ is_active: active }).eq('id', String(id));
-            if (!error) { logActivity(active ? 'เปิดเครื่อง' : 'ปิดเครื่อง', 'ID: ' + id.slice(0, 8)); loadAdminData(); }
+            if (!error) { logActivity(active ? 'เปิดเครื่อง' : 'ปิดเครื่อง', 'ID: ' + (id || 'unknown').slice(0, 8)); loadAdminData(); }
         }
         async function deleteDevice(id, name) {
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
@@ -2860,7 +2865,7 @@
                 closeModal();
                 await loadRegisteredSensors();
                 renderRegisteredSensors();
-                logActivity(t('reg.btn'), name + ' (' + tuyaId.slice(0, 8) + '...)');
+                logActivity(t('reg.btn'), name + ' (' + (tuyaId || 'unknown').slice(0, 8) + '...)');
                 showToast(t('reg.success'));
             } else {
                 if (error.code === '23505') showToast(t('reg.duplicate'), 'warning');
