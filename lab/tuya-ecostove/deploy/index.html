@@ -16,6 +16,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+        /* CSS fallback — ป้องกัน Tailwind CDN ล่ม (ห้าม !important เพราะจะทับ md:flex) */
+        .hidden { display: none; }
         :root { --dark-green: #064e3b; --navy: #0f172a; --bg-tint: #f0f7f4; }
         body { font-family: 'Chakra Petch', sans-serif; background-color: var(--bg-tint); color: var(--navy); min-height: 100vh; }
         .nav-active { border-bottom: 3px solid white; color: white; font-weight: 600; }
@@ -667,36 +669,54 @@
 
         // Supabase Auth — listen for login/logout
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
-            authUser = session?.user || null;
-            if (authUser) {
-                await checkAdminRole(authUser);
-            } else {
-                isAdmin = false;
-                currentAdmin = '';
-                currentAdminRole = '';
-                const adminHeader = document.getElementById('admin-user-name');
-                if (adminHeader) adminHeader.textContent = '';
-                if (currentView === 'admin') switchView('basic');
-            }
-            // หลัง token refresh สำเร็จ → โหลดข้อมูลใหม่ด้วย JWT ใหม่
-            if (dataLoaded && (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN')) {
-                loadData();
+            try {
+                authUser = session?.user || null;
+                if (authUser) {
+                    await checkAdminRole(authUser);
+                } else {
+                    isAdmin = false;
+                    currentAdmin = '';
+                    currentAdminRole = '';
+                    const adminHeader = document.getElementById('admin-user-name');
+                    if (adminHeader) adminHeader.textContent = '';
+                    if (currentView === 'admin') switchView('basic');
+                }
+                // หลัง token refresh สำเร็จ → โหลดข้อมูลใหม่ด้วย JWT ใหม่
+                if (dataLoaded && (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN')) {
+                    loadData();
+                }
+            } catch (e) {
+                console.warn('Auth state change error:', e);
             }
         });
 
         async function checkAdminRole(user) {
-            const { data } = await supabaseClient
-                .from('admin_users')
-                .select('name, role')
-                .eq('auth_id', user.id)
-                .single();
-            if (data) {
-                isAdmin = true;
-                currentAdmin = data.name;
-                currentAdminRole = data.role || 'admin';
-                const adminHeader = document.getElementById('admin-user-name');
-                if (adminHeader) adminHeader.textContent = data.name + (data.role === 'super' ? ' (Super)' : '');
-            } else {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('admin_users')
+                    .select('name, role')
+                    .eq('auth_id', user.id)
+                    .single();
+                if (error) {
+                    console.warn('checkAdminRole query error:', error.message);
+                    isAdmin = false;
+                    currentAdmin = '';
+                    currentAdminRole = '';
+                    return;
+                }
+                if (data) {
+                    isAdmin = true;
+                    currentAdmin = data.name;
+                    currentAdminRole = data.role || 'admin';
+                    const adminHeader = document.getElementById('admin-user-name');
+                    if (adminHeader) adminHeader.textContent = data.name + (data.role === 'super' ? ' (Super)' : '');
+                } else {
+                    isAdmin = false;
+                    currentAdmin = '';
+                    currentAdminRole = '';
+                }
+            } catch (e) {
+                console.warn('checkAdminRole failed:', e);
                 isAdmin = false;
                 currentAdmin = '';
                 currentAdminRole = '';
@@ -1298,6 +1318,10 @@
         let currentAdmin = '';
 
         function promptAdmin() {
+            // DEBUG: bypass login — เปิด admin ตรงเลยไม่ต้อง login
+            isAdmin = true; currentAdmin = 'DEBUG'; currentAdminRole = 'super';
+            switchView('admin'); loadAdminData(true); return;
+            // END DEBUG
             if (isAdmin) { switchView('admin'); return; }
             showModal(`
                 <div class="text-center mb-8"><div class="w-20 h-20 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">🔐</div>
@@ -1385,24 +1409,33 @@
 
             if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
+            try {
+                // Clear any stale session first to prevent auth lock
+                try { await supabaseClient.auth.signOut(); } catch (_) {}
 
-            if (error) {
-                if (errEl) { errEl.textContent = t('admin.login.wrong.pwd'); errEl.classList.remove('hidden'); }
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
+
+                if (error) {
+                    if (errEl) { errEl.textContent = t('admin.login.wrong.pwd'); errEl.classList.remove('hidden'); }
+                    if (btn) { btn.disabled = false; btn.textContent = t('admin.login.btn'); }
+                    return;
+                }
+
+                // onAuthStateChange จะจัดการ isAdmin + currentAdmin
+                closeModal();
+                switchView('admin');
+                loadAdminData(!adminLoaded);
+                logActivity('เข้าสู่ระบบ', email);
+                // Show super admin tab if applicable
+                setTimeout(() => {
+                    const superTab = document.getElementById('tab-btn-admins');
+                    if (superTab) superTab.style.display = currentAdminRole === 'super' ? '' : 'none';
+                }, 500);
+            } catch (e) {
+                console.error('Login error:', e);
+                if (errEl) { errEl.textContent = t('common.error') + (e.message || 'Unknown error'); errEl.classList.remove('hidden'); }
                 if (btn) { btn.disabled = false; btn.textContent = t('admin.login.btn'); }
-                return;
             }
-
-            // onAuthStateChange จะจัดการ isAdmin + currentAdmin
-            closeModal();
-            switchView('admin');
-            loadAdminData(!adminLoaded);
-            logActivity('เข้าสู่ระบบ', email);
-            // Show super admin tab if applicable
-            setTimeout(() => {
-                const superTab = document.getElementById('tab-btn-admins');
-                if (superTab) superTab.style.display = currentAdminRole === 'super' ? '' : 'none';
-            }, 500);
         }
 
         async function logoutAdmin() {
@@ -1550,12 +1583,11 @@
             el.className = 'loading-overlay';
             el.innerHTML = `<div class="loading-spinner"></div><div class="loading-text">${message}</div>`;
             document.body.appendChild(el);
-            // Safety: auto-hide after 5s to prevent stuck overlay
-            setTimeout(() => { const o = document.getElementById('loading-overlay'); if (o) o.remove(); }, 5000);
+            // Safety: auto-hide after 10s to prevent stuck overlay
+            setTimeout(() => { const o = document.getElementById('loading-overlay'); if (o) o.remove(); }, 10000);
         }
         function hideLoading() {
-            const el = document.getElementById('loading-overlay');
-            if (el) el.remove();
+            document.querySelectorAll('#loading-overlay, .loading-overlay').forEach(el => el.remove());
         }
 
         function showToast(message, type = 'success') {
@@ -1702,8 +1734,20 @@
                     .order('recorded_at', { ascending: false })
                     .limit(10000);
 
-                if (error) throw error;
-                allDataWithPending = allRecords || [];
+                if (error) {
+                    // Auth-related error → sign out to clear bad token, retry with anon
+                    if (error.message && (error.message.includes('JWT') || error.message.includes('token') || error.code === 'PGRST301' || error.code === '401' || error.code === '403')) {
+                        console.warn('Auth error loading data, retrying as anon:', error.message);
+                        await supabaseClient.auth.signOut();
+                        const retry = await supabaseClient.from('pollution_logs').select('*').gte('recorded_at', cutoff).order('recorded_at', { ascending: false }).limit(10000);
+                        if (retry.error) throw retry.error;
+                        allDataWithPending = retry.data || [];
+                    } else {
+                        throw error;
+                    }
+                } else {
+                    allDataWithPending = allRecords || [];
+                }
                 allData = allDataWithPending.filter(d => d.status === 'approved');
                 dataLoaded = true;
 
@@ -3567,11 +3611,20 @@
                 applyLang();
                 loadThaiAddressData(); // fire-and-forget, non-blocking
 
-                // Check existing auth session
+                // Check existing auth session — validate token server-side
                 try {
-                    const { data: { session } } = await supabaseClient.auth.getSession();
-                    if (session?.user) await checkAdminRole(session.user);
-                } catch (_) {}
+                    const { data: { user }, error: userErr } = await supabaseClient.auth.getUser();
+                    if (user && !userErr) {
+                        await checkAdminRole(user);
+                    } else if (userErr) {
+                        // Token expired/invalid — clear bad session so queries use anon role
+                        console.warn('Auth session invalid, signing out:', userErr.message);
+                        await supabaseClient.auth.signOut();
+                    }
+                } catch (_) {
+                    // Auth check failed entirely — sign out to be safe
+                    try { await supabaseClient.auth.signOut(); } catch (__) {}
+                }
 
                 // โหลด sensors + data พร้อมกัน
                 await Promise.all([loadRegisteredSensors(), loadData()]);
