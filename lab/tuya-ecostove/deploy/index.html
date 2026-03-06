@@ -656,6 +656,16 @@
     <script>
         const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
+        // Save and clear auth tokens BEFORE creating client to prevent SDK blocking on stale refresh
+        let _savedAuthTokens = null;
+        try {
+            const storageKey = 'sb-' + SUPABASE_URL.split('//')[1].split('.')[0] + '-auth-token';
+            const raw = localStorage.getItem(storageKey);
+            if (raw) {
+                _savedAuthTokens = JSON.parse(raw);
+                localStorage.removeItem(storageKey);
+            }
+        } catch (_) {}
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Helper: force-clear Supabase session from localStorage (fallback when signOut fails)
@@ -1327,12 +1337,14 @@
         let currentAdmin = '';
 
         async function promptAdmin() {
-            if (isAdmin) { switchView('admin'); return; }
-            // Check if session is being restored (race condition fix)
+            if (isAdmin) { switchView('admin'); loadAdminData(!adminLoaded); return; }
+            // Try restoring session with 3s timeout — if blocked by SDK refresh, fall through to login modal
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
+                const sessionPromise = supabaseClient.auth.getSession();
+                const timeout = new Promise(r => setTimeout(() => r({ data: { session: null } }), 3000));
+                const { data: { session } } = await Promise.race([sessionPromise, timeout]);
                 if (session) {
-                    await checkAdminRole(session.user);
+                    await Promise.race([checkAdminRole(session.user), new Promise(r => setTimeout(r, 3000))]);
                     if (isAdmin) { switchView('admin'); loadAdminData(!adminLoaded); return; }
                 }
             } catch (_) {}
@@ -3626,26 +3638,24 @@
                 applyLang();
                 loadThaiAddressData(); // fire-and-forget, non-blocking
 
-                // Check existing auth session — refresh token before any query
-                try {
-                    const { data: refreshData, error: refreshErr } = await supabaseClient.auth.refreshSession();
-                    if (refreshData?.session?.user && !refreshErr) {
-                        // Token refreshed successfully — use new session
-                        await checkAdminRole(refreshData.session.user);
-                    } else if (refreshErr) {
-                        // Refresh failed — token too old or invalid
-                        console.warn('Session refresh failed, clearing:', refreshErr.message);
-                        try { await supabaseClient.auth.signOut(); } catch (_) {}
-                        clearSupabaseSession(); // force-clear localStorage as fallback
-                    }
-                } catch (_) {
-                    // Auth check failed entirely — clear everything
-                    try { await supabaseClient.auth.signOut(); } catch (__) {}
-                    clearSupabaseSession();
-                }
-
-                // โหลด sensors + data พร้อมกัน
+                // โหลด sensors + data ทันที — auth tokens ถูก clear ก่อน createClient แล้ว
                 await Promise.all([loadRegisteredSensors(), loadData()]);
+
+                // Restore auth session AFTER data loads — fire-and-forget to avoid SDK blocking
+                if (_savedAuthTokens?.refresh_token) {
+                    const tokens = _savedAuthTokens;
+                    _savedAuthTokens = null;
+                    supabaseClient.auth.setSession({
+                        access_token: tokens.access_token,
+                        refresh_token: tokens.refresh_token,
+                    }).then(({ data, error }) => {
+                        if (data?.session?.user && !error) {
+                            checkAdminRole(data.session.user);
+                        } else {
+                            clearSupabaseSession();
+                        }
+                    }).catch(() => clearSupabaseSession());
+                }
             } catch (initErr) {
                 console.error('Init error:', initErr);
             } finally {
