@@ -678,6 +678,10 @@
                 if (adminHeader) adminHeader.textContent = '';
                 if (currentView === 'admin') switchView('basic');
             }
+            // หลัง token refresh สำเร็จ → โหลดข้อมูลใหม่ด้วย JWT ใหม่
+            if (dataLoaded && (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN')) {
+                loadData();
+            }
         });
 
         async function checkAdminRole(user) {
@@ -1540,11 +1544,14 @@
 
         // Toast notification (replaces alert)
         function showLoading(message = 'กำลังดำเนินการ...') {
+            hideLoading(); // ลบอันเก่าก่อน ป้องกัน overlay ซ้อน
             const el = document.createElement('div');
             el.id = 'loading-overlay';
             el.className = 'loading-overlay';
             el.innerHTML = `<div class="loading-spinner"></div><div class="loading-text">${message}</div>`;
             document.body.appendChild(el);
+            // Safety: auto-hide after 5s to prevent stuck overlay
+            setTimeout(() => { const o = document.getElementById('loading-overlay'); if (o) o.remove(); }, 5000);
         }
         function hideLoading() {
             const el = document.getElementById('loading-overlay');
@@ -2592,23 +2599,21 @@
                     }).join('');
                 }
 
-                const { data: devData } = await supabaseClient.from('devices').select('*, subjects(*)');
-                devices = devData || [];
-                renderDevicesList();
-                renderRegisteredSensors();
-
-                const { data: volData } = await supabaseClient.from('volunteers').select('*');
-                volunteers = volData || [];
-                renderVolunteersList();
-
-                const [subRes, projRes, spRes] = await Promise.all([
+                const [devRes, volRes, subRes, projRes, spRes] = await Promise.all([
+                    supabaseClient.from('devices').select('*, subjects(*)'),
+                    supabaseClient.from('volunteers').select('*'),
                     supabaseClient.from('subjects').select('*, volunteers(*)'),
                     supabaseClient.from('projects').select('*').eq('status', 'active'),
                     supabaseClient.from('subject_projects').select('*'),
                 ]);
+                devices = devRes.data || [];
+                volunteers = volRes.data || [];
                 subjects = subRes.data || [];
                 projects = projRes.data || [];
                 subjectProjects = spRes.data || [];
+                renderDevicesList();
+                renderRegisteredSensors();
+                renderVolunteersList();
                 renderSubjectsList();
                 renderProjectsList();
                 adminLoaded = true;
@@ -3059,22 +3064,24 @@
                         <input id="edit-sub-lat" value="${s.gps_lat || ''}" placeholder="Latitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
                         <input id="edit-sub-lng" value="${s.gps_long || ''}" placeholder="Longitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
                     </div>
-                    <select id="edit-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
-                        <option value="">${t('sub.select.vol')}</option>
-                        ${volunteers.map(v => `<option value="${v.id}" ${String(v.id) === String(s.volunteer_id) ? 'selected' : ''}>${v.full_name}</option>`).join('')}
-                    </select>
-                    <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
-                        <select id="edit-sub-connectivity" class="w-full p-4 rounded-2xl border custom-select">
-                            <option value="">${t('sub.select.conn')}</option>
-                            <option value="wifi" ${s.connectivity === 'wifi' ? 'selected' : ''}>${t('sub.wifi')}</option>
-                            <option value="hotspot" ${s.connectivity === 'hotspot' ? 'selected' : ''}>${t('sub.hotspot')}</option>
-                        </select>
-                    </div>
                     <label class="flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:bg-teal-50/50 transition-all">
-                        <input type="checkbox" id="edit-sub-sensor" ${s.has_sensor ? 'checked' : ''} class="w-5 h-5 rounded accent-teal-600">
+                        <input type="checkbox" id="edit-sub-sensor" ${s.has_sensor ? 'checked' : ''} class="w-5 h-5 rounded accent-teal-600" onchange="document.getElementById('edit-sensor-fields').style.display=this.checked?'flex':'none'">
                         <span class="font-bold text-navy">${t('sub.has.sensor')}</span>
                     </label>
+                    <div id="edit-sensor-fields" class="space-y-4" style="display:${s.has_sensor ? 'flex' : 'none'};flex-direction:column;gap:1rem">
+                        <select id="edit-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">${t('sub.select.vol')}</option>
+                            ${volunteers.map(v => `<option value="${v.id}" ${String(v.id) === String(s.volunteer_id) ? 'selected' : ''}>${v.full_name}</option>`).join('')}
+                        </select>
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
+                            <select id="edit-sub-connectivity" class="w-full p-4 rounded-2xl border custom-select">
+                                <option value="">${t('sub.select.conn')}</option>
+                                <option value="wifi" ${s.connectivity === 'wifi' ? 'selected' : ''}>${t('sub.wifi')}</option>
+                                <option value="hotspot" ${s.connectivity === 'hotspot' ? 'selected' : ''}>${t('sub.hotspot')}</option>
+                            </select>
+                        </div>
+                    </div>
                     <button onclick="saveSubject('${s.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
@@ -3266,22 +3273,24 @@
                         <input id="new-sub-lat" placeholder="Latitude (เช่น 18.805)" class="w-full p-4 rounded-2xl border" type="number" step="any">
                         <input id="new-sub-lng" placeholder="Longitude (เช่น 98.921)" class="w-full p-4 rounded-2xl border" type="number" step="any">
                     </div>
-                    <select id="new-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
-                        <option value="">${t('sub.select.vol')}</option>
-                        ${volunteers.map(v => `<option value="${v.id}">${v.full_name}</option>`).join('')}
-                    </select>
-                    <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
-                        <select id="new-sub-connectivity" class="w-full p-4 rounded-2xl border custom-select">
-                            <option value="">${t('sub.select.conn')}</option>
-                            <option value="wifi">${t('sub.wifi')}</option>
-                            <option value="hotspot">${t('sub.hotspot')}</option>
-                        </select>
-                    </div>
                     <label class="flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:bg-teal-50/50 transition-all">
-                        <input type="checkbox" id="new-sub-sensor" class="w-5 h-5 rounded accent-teal-600">
+                        <input type="checkbox" id="new-sub-sensor" class="w-5 h-5 rounded accent-teal-600" onchange="document.getElementById('new-sensor-fields').style.display=this.checked?'flex':'none'">
                         <span class="font-bold text-navy">${t('sub.has.sensor')}</span>
                     </label>
+                    <div id="new-sensor-fields" class="space-y-4" style="display:none;flex-direction:column;gap:1rem">
+                        <select id="new-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">${t('sub.select.vol')}</option>
+                            ${volunteers.map(v => `<option value="${v.id}">${v.full_name}</option>`).join('')}
+                        </select>
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
+                            <select id="new-sub-connectivity" class="w-full p-4 rounded-2xl border custom-select">
+                                <option value="">${t('sub.select.conn')}</option>
+                                <option value="wifi">${t('sub.wifi')}</option>
+                                <option value="hotspot">${t('sub.hotspot')}</option>
+                            </select>
+                        </div>
+                    </div>
                     <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
@@ -3471,7 +3480,7 @@
                     ));
                 } else {
                     stoveCount++;
-                    const icon = L.divIcon({ html: '<div style="background:#f97316;width:12px;height:12px;border-radius:50%;border:1.5px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>', iconSize: [12, 12], iconAnchor: [6, 6], className: '' });
+                    const icon = L.divIcon({ html: '<div style="background:#f97316;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔥</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
                         '<b>🏠 ' + s.full_name + '</b>' +
                         '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>'
@@ -3488,8 +3497,8 @@
             legend.onAdd = function() {
                 const div = L.DomUtil.create('div');
                 div.style.cssText = 'background:white;padding:8px 12px;border-radius:8px;font-size:11px;box-shadow:0 2px 6px rgba(0,0,0,0.15)';
-                div.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:50%"></span> ' + t('map.sensor.house') + '</div>' +
-                    '<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:8px;height:8px;background:#f97316;border-radius:50%"></span> ' + t('map.stove.house') + '</div>';
+                div.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:50%"></span> 📡 ' + t('map.sensor.house') + '</div>' +
+                    '<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:12px;background:#f97316;border-radius:50%"></span> 🔥 ' + t('map.stove.house') + '</div>';
                 return div;
             };
             legend.addTo(map);
@@ -3539,7 +3548,7 @@
                         '<br><span style="color:#10b981">✅ ' + t('sub.has.sensor') + ' + ' + t('map.stove.installed') + '</span>'
                     ));
                 } else {
-                    const icon = L.divIcon({ html: '<div style="background:#f97316;width:12px;height:12px;border-radius:50%;border:1.5px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.2)"></div>', iconSize: [12, 12], iconAnchor: [6, 6], className: '' });
+                    const icon = L.divIcon({ html: '<div style="background:#f97316;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔥</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
                         '<b>🏠 ' + s.full_name + '</b>' +
                         '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>' +
@@ -3554,18 +3563,23 @@
         // ==================== Init ====================
         document.addEventListener('DOMContentLoaded', async function() {
             showLoading('กำลังโหลดข้อมูล...');
-            applyLang();
-            loadThaiAddressData(); // fire-and-forget, non-blocking
-
-            // Check existing auth session (auto-login if remembered)
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session?.user) await checkAdminRole(session.user);
-            } catch (_) {}
+                applyLang();
+                loadThaiAddressData(); // fire-and-forget, non-blocking
 
-            await loadRegisteredSensors();
-            await loadData();
-            hideLoading();
+                // Check existing auth session
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (session?.user) await checkAdminRole(session.user);
+                } catch (_) {}
+
+                // โหลด sensors + data พร้อมกัน
+                await Promise.all([loadRegisteredSensors(), loadData()]);
+            } catch (initErr) {
+                console.error('Init error:', initErr);
+            } finally {
+                hideLoading();
+            }
             initMap();
             startAutoRefresh();
 
