@@ -658,6 +658,15 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Helper: force-clear Supabase session from localStorage (fallback when signOut fails)
+        function clearSupabaseSession() {
+            try {
+                Object.keys(localStorage).forEach(k => {
+                    if (k.startsWith('sb-') || k.includes('supabase')) localStorage.removeItem(k);
+                });
+            } catch (_) {}
+        }
+
         let isAdmin = false, map, mapDeep, charts = {}, allData = [], volunteers = [], subjects = [], devices = [];
         let allDataWithPending = [];
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
@@ -1318,10 +1327,6 @@
         let currentAdmin = '';
 
         function promptAdmin() {
-            // DEBUG: bypass login — เปิด admin ตรงเลยไม่ต้อง login
-            isAdmin = true; currentAdmin = 'DEBUG'; currentAdminRole = 'super';
-            switchView('admin'); loadAdminData(true); return;
-            // END DEBUG
             if (isAdmin) { switchView('admin'); return; }
             showModal(`
                 <div class="text-center mb-8"><div class="w-20 h-20 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">🔐</div>
@@ -1410,10 +1415,13 @@
             if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
             try {
-                // Clear any stale session first to prevent auth lock
-                try { await supabaseClient.auth.signOut(); } catch (_) {}
+                // Clear stale localStorage tokens (don't call signOut — it triggers onAuthStateChange race)
+                clearSupabaseSession();
 
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
+                // signInWithPassword with 10s timeout
+                const loginPromise = supabaseClient.auth.signInWithPassword({ email, password: pwd });
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Login timeout')), 10000));
+                const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
 
                 if (error) {
                     if (errEl) { errEl.textContent = t('admin.login.wrong.pwd'); errEl.classList.remove('hidden'); }
@@ -1433,6 +1441,7 @@
                 }, 500);
             } catch (e) {
                 console.error('Login error:', e);
+                clearSupabaseSession(); // ensure clean state after failure
                 if (errEl) { errEl.textContent = t('common.error') + (e.message || 'Unknown error'); errEl.classList.remove('hidden'); }
                 if (btn) { btn.disabled = false; btn.textContent = t('admin.login.btn'); }
             }
@@ -1440,7 +1449,8 @@
 
         async function logoutAdmin() {
             logActivity('ออกจากระบบ', currentAdmin);
-            await supabaseClient.auth.signOut();
+            try { await supabaseClient.auth.signOut(); } catch (_) {}
+            clearSupabaseSession(); // ensure localStorage is clean
             // onAuthStateChange จะ clear isAdmin + switchView
         }
 
@@ -3611,19 +3621,22 @@
                 applyLang();
                 loadThaiAddressData(); // fire-and-forget, non-blocking
 
-                // Check existing auth session — validate token server-side
+                // Check existing auth session — refresh token before any query
                 try {
-                    const { data: { user }, error: userErr } = await supabaseClient.auth.getUser();
-                    if (user && !userErr) {
-                        await checkAdminRole(user);
-                    } else if (userErr) {
-                        // Token expired/invalid — clear bad session so queries use anon role
-                        console.warn('Auth session invalid, signing out:', userErr.message);
-                        await supabaseClient.auth.signOut();
+                    const { data: refreshData, error: refreshErr } = await supabaseClient.auth.refreshSession();
+                    if (refreshData?.session?.user && !refreshErr) {
+                        // Token refreshed successfully — use new session
+                        await checkAdminRole(refreshData.session.user);
+                    } else if (refreshErr) {
+                        // Refresh failed — token too old or invalid
+                        console.warn('Session refresh failed, clearing:', refreshErr.message);
+                        try { await supabaseClient.auth.signOut(); } catch (_) {}
+                        clearSupabaseSession(); // force-clear localStorage as fallback
                     }
                 } catch (_) {
-                    // Auth check failed entirely — sign out to be safe
+                    // Auth check failed entirely — clear everything
                     try { await supabaseClient.auth.signOut(); } catch (__) {}
+                    clearSupabaseSession();
                 }
 
                 // โหลด sensors + data พร้อมกัน
