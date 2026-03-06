@@ -146,6 +146,13 @@
         <!-- ============================================================ -->
         <section id="view-basic" class="space-y-8">
 
+            <!-- Project Filter (Basic) -->
+            <div class="flex justify-end">
+                <select id="basic-project-filter" onchange="updateBasicView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white/70 font-medium">
+                    <option value="all" data-i18n="project.all">ทุกโครงการ</option>
+                </select>
+            </div>
+
             <!-- 1. Hero AQI Card -->
             <div id="hero-aqi" class="aqi-unknown rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
@@ -305,6 +312,9 @@
                         <input type="checkbox" id="baseline-toggle" onchange="updateDeepView()" class="w-4 h-4 rounded accent-blue-600">
                         <span data-i18n="baseline.toggle" class="font-medium text-[13px]">หักค่า Baseline</span>
                     </label>
+                    <select id="project-filter" onchange="updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
+                        <option value="all" data-i18n="project.all">ทุกโครงการ</option>
+                    </select>
                     <select id="deep-range-filter" onchange="updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
                         <option value="0" data-i18n="filter.all">ทั้งหมด</option>
                         <option value="24" data-i18n="filter.24h">24 ชม.</option>
@@ -395,11 +405,11 @@
                         <p class="text-slate-400 text-sm" id="sensor-chart-count" data-i18n="sensor.loading">กำลังโหลด...</p>
                     </div>
                     <select id="sensor-chart-range" onchange="updateSensorCharts()" class="px-4 py-2 rounded-xl border bg-white text-sm">
-                        <option value="24">24 ชม.</option>
-                        <option value="72">3 วัน</option>
-                        <option value="168" selected>7 วัน</option>
-                        <option value="720">30 วัน</option>
-                        <option value="0">ทั้งหมด</option>
+                        <option value="24" data-i18n="filter.24h">24 ชม.</option>
+                        <option value="72" data-i18n="filter.3d">3 วัน</option>
+                        <option value="168" selected data-i18n="filter.7d">7 วัน</option>
+                        <option value="720" data-i18n="filter.30d">30 วัน</option>
+                        <option value="0" data-i18n="filter.all">ทั้งหมด</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -500,12 +510,14 @@
             </div>
 
             <div class="flex bg-white/50 p-1.5 rounded-[1.5rem] w-fit border border-slate-200 shadow-inner overflow-x-auto max-w-full custom-scrollbar">
+                <button onclick="switchAdminTab('projects')" id="tab-btn-projects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.projects">โครงการ</button>
                 <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm tab-active whitespace-nowrap" data-i18n="tab.volunteers">อาสาสมัคร</button>
                 <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.subjects">บ้านกลุ่มตัวอย่าง</button>
                 <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.devices">เครื่องวัด</button>
                 <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap"><span data-i18n="tab.approvals">รออนุมัติ</span> (<span id="count-pending">0</span>)</button>
                 <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.data">ข้อมูลจากเซนเซอร์</button>
                 <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.activity">ประวัติกิจกรรม</button>
+                <button onclick="switchAdminTab('admins')" id="tab-btn-admins" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" style="display:none" data-i18n="admin.manage">จัดการแอดมิน</button>
             </div>
 
             <!-- API Quota Usage -->
@@ -518,6 +530,15 @@
                     <div id="api-quota-fill" class="h-full rounded-full transition-all duration-500 bg-emerald-500" style="width: 0%"></div>
                 </div>
                 <p id="api-quota-warning" class="text-xs text-slate-400 mt-1"></p>
+            </div>
+
+            <!-- Tab 0: โครงการ -->
+            <div id="admin-projects-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-navy" data-i18n="project.manage">จัดการโครงการ</h3>
+                    <button onclick="showAddProjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="project.add">+ เพิ่มโครงการ</button>
+                </div>
+                <div id="projects-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
 
             <!-- Tab 1: อาสาสมัคร (default visible) -->
@@ -611,6 +632,14 @@
                 </div>
                 <div id="admin-activity-feed" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
             </div>
+
+            <!-- Tab: จัดการแอดมิน (Super Admin only) -->
+            <div id="admin-admins-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-2xl font-bold text-navy" data-i18n="admin.manage">จัดการแอดมิน</h3>
+                </div>
+                <div id="admins-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
         </section>
     </main>
 
@@ -632,6 +661,63 @@
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
         let autoRefreshInterval = null;
         let currentView = 'basic';
+        let projects = [], subjectProjects = [];
+        let authUser = null;
+        let currentAdminRole = ''; // 'super' or 'admin'
+
+        // Supabase Auth — listen for login/logout
+        supabaseClient.auth.onAuthStateChange(async (event, session) => {
+            authUser = session?.user || null;
+            if (authUser) {
+                await checkAdminRole(authUser);
+            } else {
+                isAdmin = false;
+                currentAdmin = '';
+                currentAdminRole = '';
+                const adminHeader = document.getElementById('admin-user-name');
+                if (adminHeader) adminHeader.textContent = '';
+                if (currentView === 'admin') switchView('basic');
+            }
+        });
+
+        async function checkAdminRole(user) {
+            const { data } = await supabaseClient
+                .from('admin_users')
+                .select('name, role')
+                .eq('auth_id', user.id)
+                .single();
+            if (data) {
+                isAdmin = true;
+                currentAdmin = data.name;
+                currentAdminRole = data.role || 'admin';
+                const adminHeader = document.getElementById('admin-user-name');
+                if (adminHeader) adminHeader.textContent = data.name + (data.role === 'super' ? ' (Super)' : '');
+            } else {
+                isAdmin = false;
+                currentAdmin = '';
+                currentAdminRole = '';
+            }
+        }
+
+        // Thai address data (cascading dropdown)
+        let thaiProvinces = [], thaiDistricts = [], thaiSubdistricts = [];
+        async function loadThaiAddressData() {
+            try {
+                const base = 'https://raw.githubusercontent.com/thailand-geography-data/thailand-geography-json/main/src';
+                const [pRes, dRes, sRes] = await Promise.all([
+                    fetch(base + '/provinces.json'), fetch(base + '/districts.json'), fetch(base + '/subdistricts.json')
+                ]);
+                if (pRes.ok) thaiProvinces = await pRes.json();
+                if (dRes.ok) thaiDistricts = await dRes.json();
+                if (sRes.ok) thaiSubdistricts = await sRes.json();
+            } catch (e) { console.warn('Thai address data load failed:', e); }
+        }
+        function getDistrictsByProvince(provinceCode) {
+            return thaiDistricts.filter(d => d.provinceCode === provinceCode);
+        }
+        function getSubdistrictsByDistrict(districtCode) {
+            return thaiSubdistricts.filter(s => s.districtCode === districtCode);
+        }
 
         // ==================== i18n ====================
         let currentLang = localStorage.getItem('ecostove_lang') || 'th';
@@ -670,6 +756,7 @@
             'aqi.ref.aqi': { th: 'ดัชนี AQI', en: 'AQI Index' },
             'aqi.ref.level': { th: 'ระดับ', en: 'Level' },
             'aqi.ref.source': { th: 'อ้างอิง: กรมควบคุมมลพิษ (PCD) — ค่า PM2.5 เฉลี่ย 24 ชั่วโมง', en: 'Source: Pollution Control Department (PCD) — 24hr PM2.5 average' },
+            'threshold.source': { th: 'อ้างอิง: PCD 2566 (PM2.5/AQI), กรมอนามัย 2565 (CO2), WHO 2010 (HCHO)', en: 'Ref: PCD 2023 (PM2.5/AQI), DoH 2022 (CO2), WHO 2010 (HCHO)' },
             'baseline.toggle': { th: 'หักค่า Baseline', en: 'Subtract Baseline' },
             'tvoc.title': { th: 'บันทึก TVOC', en: 'Record TVOC' },
             'tvoc.subtitle': { th: 'อ่านค่าจากหน้าจอเซนเซอร์แล้วกรอกที่นี่', en: 'Read value from sensor display and enter here' },
@@ -788,12 +875,32 @@
             'admin.subtitle': { th: 'การตรวจสอบและติดตามกิจกรรมโครงการ', en: 'Project monitoring and activity tracking' },
             'admin.logout': { th: 'Logout', en: 'Logout' },
             'admin.login': { th: 'Admin Login', en: 'Admin Login' },
-            'admin.username': { th: 'ชื่อผู้ใช้', en: 'Username' },
+            'admin.email': { th: 'อีเมล', en: 'Email' },
             'admin.password': { th: 'รหัสผ่าน', en: 'Password' },
             'admin.login.btn': { th: 'เข้าสู่ระบบ', en: 'Login' },
-            'admin.login.no.name': { th: 'กรุณากรอกชื่อผู้ใช้', en: 'Please enter username' },
-            'admin.login.wrong.pwd': { th: 'รหัสผ่านไม่ถูกต้อง', en: 'Incorrect password' },
+            'admin.login.fill': { th: 'กรุณากรอก Email และ Password', en: 'Please enter email and password' },
+            'admin.login.wrong.pwd': { th: 'Email หรือ Password ไม่ถูกต้อง', en: 'Incorrect email or password' },
+            'admin.no.account': { th: 'ยังไม่มีบัญชี?', en: "Don't have an account?" },
+            'admin.has.account': { th: 'มีบัญชีแล้ว?', en: 'Already have an account?' },
+            'admin.register': { th: 'สมัครสมาชิก', en: 'Register' },
+            'admin.reg.name': { th: 'ชื่อ-นามสกุล', en: 'Full Name' },
+            'admin.reg.invite': { th: 'รหัสเชิญ', en: 'Invite Code' },
+            'admin.reg.btn': { th: 'สมัครสมาชิก', en: 'Register' },
+            'admin.reg.fill': { th: 'กรุณากรอกข้อมูลให้ครบ', en: 'Please fill all fields' },
+            'admin.reg.short.pwd': { th: 'Password ต้องมีอย่างน้อย 6 ตัวอักษร', en: 'Password must be at least 6 characters' },
+            'admin.reg.done': { th: 'สมัครสำเร็จ!', en: 'Registered!' },
+            'admin.manage': { th: 'จัดการแอดมิน', en: 'Manage Admins' },
+            'admin.no.data': { th: 'ยังไม่มีแอดมิน', en: 'No admins yet' },
+            'admin.you': { th: '(คุณ)', en: '(You)' },
+            'admin.registered': { th: 'สมัครเมื่อ', en: 'Registered' },
+            'admin.delete.btn': { th: 'ลบ', en: 'Delete' },
+            'admin.role.super': { th: 'Super Admin', en: 'Super Admin' },
+            'admin.role.admin': { th: 'Admin', en: 'Admin' },
+            'admin.delete.confirm': { th: 'ต้องการลบแอดมินนี้?', en: 'Delete this admin?' },
+            'admin.promote': { th: 'เลื่อนขั้น', en: 'Promote' },
+            'admin.demote': { th: 'ลดขั้น', en: 'Demote' },
             // Admin tabs
+            'tab.projects': { th: 'โครงการ', en: 'Projects' },
             'tab.volunteers': { th: 'อาสาสมัคร', en: 'Volunteers' },
             'tab.subjects': { th: 'บ้านกลุ่มตัวอย่าง', en: 'Subject Houses' },
             'tab.devices': { th: 'เครื่องวัด', en: 'Devices' },
@@ -818,7 +925,28 @@
             'sub.add': { th: '+ เพิ่มบ้าน', en: '+ Add House' },
             'sub.add.title': { th: 'เพิ่มบ้านกลุ่มตัวอย่าง', en: 'Add Subject House' },
             'sub.name.ph': { th: 'ชื่อบ้าน (เช่น บ้านดอยสุเทพ)', en: 'House name (e.g. Doi Suthep)' },
-            'sub.address.ph': { th: 'ที่อยู่ / ตำบล อำเภอ จังหวัด', en: 'Address' },
+            'sub.address.ph': { th: 'ที่อยู่ (บ้านเลขที่ ซอย ถนน)', en: 'Address (house no., soi, road)' },
+            'sub.province': { th: 'จังหวัด', en: 'Province' },
+            'sub.district': { th: 'อำเภอ', en: 'District' },
+            'sub.subdistrict': { th: 'ตำบล', en: 'Sub-district' },
+            'sub.select.province': { th: '-- เลือกจังหวัด --', en: '-- Select Province --' },
+            'sub.select.district': { th: '-- เลือกอำเภอ --', en: '-- Select District --' },
+            'sub.select.subdistrict': { th: '-- เลือกตำบล --', en: '-- Select Sub-district --' },
+            'project.label': { th: 'โครงการ', en: 'Project' },
+            'project.select': { th: '-- เลือกโครงการ --', en: '-- Select Project --' },
+            'project.all': { th: 'ทุกโครงการ', en: 'All Projects' },
+            'project.manage': { th: 'จัดการโครงการ', en: 'Manage Projects' },
+            'project.add': { th: '+ เพิ่มโครงการ', en: '+ Add Project' },
+            'project.add.title': { th: 'เพิ่มโครงการ', en: 'Add Project' },
+            'project.edit': { th: 'แก้ไขโครงการ', en: 'Edit Project' },
+            'project.name.ph': { th: 'ชื่อโครงการ', en: 'Project Name' },
+            'project.desc.ph': { th: 'รายละเอียด (ไม่บังคับ)', en: 'Description (optional)' },
+            'project.no.data': { th: 'ยังไม่มีโครงการ', en: 'No projects yet' },
+            'project.name.required': { th: 'กรุณากรอกชื่อโครงการ', en: 'Please enter project name' },
+            'project.added': { th: 'เพิ่มโครงการสำเร็จ', en: 'Project added' },
+            'project.saved': { th: 'บันทึกโครงการแล้ว', en: 'Project saved' },
+            'project.deleted': { th: 'ลบโครงการแล้ว', en: 'Project deleted' },
+            'project.delete.error': { th: 'ลบไม่ได้', en: 'Cannot delete' },
             'sub.select.vol': { th: '-- เลือกอาสาสมัคร --', en: '-- Select Volunteer --' },
             'sub.no.data': { th: 'ยังไม่มีกลุ่มตัวอย่าง', en: 'No subject houses yet' },
             'sub.active': { th: '● ใช้งาน', en: '● Active' },
@@ -1038,6 +1166,63 @@
             return '<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold ' + info.color + '">' + info.label + '</span>';
         }
 
+        // ===== Baseline Reference Thresholds =====
+        // PM2.5 & AQI: กรมควบคุมมลพิษ (PCD) ราชกิจจานุเบกษา พ.ศ. 2566
+        //   https://laws.anamai.moph.go.th/th/practices/211864
+        // CO2: กรมอนามัย ค่าเฝ้าระวังคุณภาพอากาศภายในอาคารสาธารณะ พ.ศ. 2565
+        //   https://laws.anamai.moph.go.th/th/practices/download/?did=211864&id=99012
+        // HCHO: WHO Indoor Air Quality Guidelines: Selected Pollutants (2010)
+        //   0.1 mg/m³ short-term (30-min) guideline
+        //   https://www.who.int/publications/i/item/9789289002134
+        const THRESHOLDS = {
+            pm25: [
+                { value: 25, label: 'PCD 25', color: '#f59e0b' },
+                { value: 37.5, label: 'PCD 37.5', color: '#ef4444' }
+            ],
+            aqi: [
+                { value: 50, label: 'AQI 50', color: '#f59e0b' },
+                { value: 100, label: 'AQI 100', color: '#ef4444' }
+            ],
+            co2: [
+                { value: 1000, label: 'IAQ 1000', color: '#ef4444' }
+            ],
+            hcho: [
+                { value: 0.1, label: 'WHO 0.1', color: '#ef4444' }
+            ]
+        };
+
+        function thresholdLinesPlugin(thresholds) {
+            return {
+                id: 'thresholdLines',
+                afterDraw(chart) {
+                    const { ctx, chartArea, scales } = chart;
+                    if (!chartArea || !scales || !scales.y) return;
+                    const { left, right, top, bottom } = chartArea;
+                    if (!right || !bottom) return;
+                    const yScale = scales.y;
+                    thresholds.forEach(t => {
+                        const yPos = yScale.getPixelForValue(t.value);
+                        if (yPos < top || yPos > bottom) return;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.setLineDash([6, 4]);
+                        ctx.strokeStyle = t.color;
+                        ctx.lineWidth = 1.5;
+                        ctx.globalAlpha = 0.7;
+                        ctx.moveTo(left, yPos);
+                        ctx.lineTo(right, yPos);
+                        ctx.stroke();
+                        ctx.fillStyle = t.color;
+                        ctx.font = '10px sans-serif';
+                        ctx.textAlign = 'right';
+                        ctx.globalAlpha = 0.9;
+                        ctx.fillText(t.label, right - 4, yPos - 4);
+                        ctx.restore();
+                    });
+                }
+            };
+        }
+
         function showAqiReference() {
             const rows = [
                 { aqi: '0-25', pm25: '0-15.0', label: t('aqi.level.excellent'), bg: 'bg-cyan-50', dot: '🟦' },
@@ -1113,36 +1298,204 @@
             showModal(`
                 <div class="text-center mb-8"><div class="w-20 h-20 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">🔐</div>
                 <h3 class="text-2xl font-bold text-navy">${t('admin.login')}</h3></div>
-                <input type="text" id="admin-name" placeholder="${t('admin.username')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-[#064e3b] text-lg text-center">
-                <input type="password" id="admin-password" placeholder="${t('admin.password')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-6 outline-none focus:ring-2 focus:ring-[#064e3b] text-lg text-center tracking-widest" onkeyup="if(event.key==='Enter') checkAdminPassword()">
-                <button onclick="checkAdminPassword()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">${t('admin.login.btn')}</button>
+                <input type="email" id="admin-email" placeholder="${t('admin.email')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-[#064e3b] text-lg text-center">
+                <input type="password" id="admin-password" placeholder="${t('admin.password')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-6 outline-none focus:ring-2 focus:ring-[#064e3b] text-lg text-center tracking-widest" onkeyup="if(event.key==='Enter') loginAdmin()">
+                <p id="login-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
+                <button onclick="loginAdmin()" id="login-btn" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">${t('admin.login.btn')}</button>
+                <p class="text-center mt-4 text-sm text-slate-500">${t('admin.no.account')} <a href="#" onclick="event.preventDefault(); showRegisterModal()" class="text-emerald-600 font-bold hover:underline">${t('admin.register')}</a></p>
             `);
-            setTimeout(() => document.getElementById('admin-name')?.focus(), 100);
+            setTimeout(() => document.getElementById('admin-email')?.focus(), 100);
         }
 
-        function checkAdminPassword() {
-            const name = (document.getElementById('admin-name').value || '').trim();
-            const pwd = document.getElementById('admin-password').value;
-            if (!name) { showToast(t('admin.login.no.name'), 'error'); return; }
-            if (pwd === 'admin' || pwd === 'ecostove2024') {
-                isAdmin = true;
-                currentAdmin = name;
-                closeModal();
-                switchView('admin');
-                loadAdminData(!adminLoaded);
-                logActivity('เข้าสู่ระบบ', name);
-                const adminHeader = document.getElementById('admin-user-name');
-                if (adminHeader) adminHeader.textContent = name;
-            } else {
-                showToast(t('admin.login.wrong.pwd'), 'error');
+        function showRegisterModal() {
+            showModal(`
+                <div class="text-center mb-8"><div class="w-20 h-20 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">📝</div>
+                <h3 class="text-2xl font-bold text-navy">${t('admin.register')}</h3></div>
+                <input type="text" id="reg-name" placeholder="${t('admin.reg.name')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center">
+                <input type="email" id="reg-email" placeholder="${t('admin.email')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center">
+                <input type="password" id="reg-password" placeholder="${t('admin.password')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center tracking-widest">
+                <input type="text" id="reg-invite" placeholder="${t('admin.reg.invite')}" class="w-full p-4 rounded-2xl border bg-amber-50 mb-6 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center" onkeyup="if(event.key==='Enter') registerAdmin()">
+                <p id="reg-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
+                <p id="reg-success" class="text-emerald-600 text-sm mb-4 hidden text-center"></p>
+                <button onclick="registerAdmin()" id="reg-btn" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-xl">${t('admin.reg.btn')}</button>
+                <p class="text-center mt-4 text-sm text-slate-500">${t('admin.has.account')} <a href="#" onclick="event.preventDefault(); promptAdmin()" class="text-emerald-600 font-bold hover:underline">${t('admin.login.btn')}</a></p>
+            `);
+            setTimeout(() => document.getElementById('reg-name')?.focus(), 100);
+        }
+
+        async function registerAdmin() {
+            const name = (document.getElementById('reg-name')?.value || '').trim();
+            const email = (document.getElementById('reg-email')?.value || '').trim();
+            const password = document.getElementById('reg-password')?.value || '';
+            const inviteCode = (document.getElementById('reg-invite')?.value || '').trim();
+            const errEl = document.getElementById('reg-error');
+            const successEl = document.getElementById('reg-success');
+            const btn = document.getElementById('reg-btn');
+
+            if (!name || !email || !password || !inviteCode) {
+                if (errEl) { errEl.textContent = t('admin.reg.fill'); errEl.classList.remove('hidden'); }
+                return;
+            }
+            if (password.length < 6) {
+                if (errEl) { errEl.textContent = t('admin.reg.short.pwd'); errEl.classList.remove('hidden'); }
+                return;
+            }
+
+            if (btn) { btn.disabled = true; btn.textContent = '...'; }
+            if (errEl) errEl.classList.add('hidden');
+
+            try {
+                const resp = await fetch('/api/admin/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, name, inviteCode }),
+                });
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    if (errEl) { errEl.textContent = data.error || 'Registration failed'; errEl.classList.remove('hidden'); }
+                    if (btn) { btn.disabled = false; btn.textContent = t('admin.reg.btn'); }
+                    return;
+                }
+
+                if (successEl) { successEl.textContent = data.message; successEl.classList.remove('hidden'); }
+                if (btn) { btn.textContent = t('admin.reg.done'); }
+                // Auto-switch to login after 2s
+                setTimeout(() => promptAdmin(), 2000);
+            } catch (e) {
+                if (errEl) { errEl.textContent = 'Network error'; errEl.classList.remove('hidden'); }
+                if (btn) { btn.disabled = false; btn.textContent = t('admin.reg.btn'); }
             }
         }
 
-        function logoutAdmin() {
+        async function loginAdmin() {
+            const email = (document.getElementById('admin-email')?.value || '').trim();
+            const pwd = document.getElementById('admin-password')?.value || '';
+            const errEl = document.getElementById('login-error');
+            const btn = document.getElementById('login-btn');
+
+            if (!email || !pwd) {
+                if (errEl) { errEl.textContent = t('admin.login.fill'); errEl.classList.remove('hidden'); }
+                return;
+            }
+
+            if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
+
+            if (error) {
+                if (errEl) { errEl.textContent = t('admin.login.wrong.pwd'); errEl.classList.remove('hidden'); }
+                if (btn) { btn.disabled = false; btn.textContent = t('admin.login.btn'); }
+                return;
+            }
+
+            // onAuthStateChange จะจัดการ isAdmin + currentAdmin
+            closeModal();
+            switchView('admin');
+            loadAdminData(!adminLoaded);
+            logActivity('เข้าสู่ระบบ', email);
+            // Show super admin tab if applicable
+            setTimeout(() => {
+                const superTab = document.getElementById('tab-btn-admins');
+                if (superTab) superTab.style.display = currentAdminRole === 'super' ? '' : 'none';
+            }, 500);
+        }
+
+        async function logoutAdmin() {
             logActivity('ออกจากระบบ', currentAdmin);
-            isAdmin = false;
-            currentAdmin = '';
-            switchView('basic');
+            await supabaseClient.auth.signOut();
+            // onAuthStateChange จะ clear isAdmin + switchView
+        }
+
+        // ==================== Admin Management (Super Admin) ====================
+        async function loadAdminsList() {
+            const container = document.getElementById('admins-list');
+            if (!container) return;
+            const { data: admins } = await supabaseClient.from('admin_users').select('*').order('created_at');
+            if (!admins || admins.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-8">' + t('admin.no.data') + '</p>';
+                return;
+            }
+            const myAuthId = authUser?.id;
+            container.innerHTML = admins.map(a => {
+                const isMe = a.auth_id === myAuthId;
+                const canManage = currentAdminRole === 'super' && !isMe;
+                return `
+                <div class="card-styled p-6 rounded-2xl">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-lg text-navy">${a.name}${isMe ? ' <span class="text-xs text-emerald-500">' + t('admin.you') + '</span>' : ''}</h4>
+                            <p class="text-sm text-slate-500 mt-1">${a.email}</p>
+                            <span class="inline-block mt-2 text-[11px] px-3 py-1 rounded-full font-bold ${a.role === 'super' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">
+                                ${a.role === 'super' ? t('admin.role.super') : t('admin.role.admin')}
+                            </span>
+                        </div>
+                        ${canManage ? `
+                            <div class="flex gap-2">
+                                <button onclick="toggleAdminRole(${a.id}, '${a.name}', '${a.role}')" class="${a.role === 'super' ? 'text-blue-500 hover:text-blue-700 hover:bg-blue-50' : 'text-amber-500 hover:text-amber-700 hover:bg-amber-50'} text-sm font-bold px-3 py-1 rounded-lg transition-all">
+                                    ${a.role === 'super' ? t('admin.demote') : t('admin.promote')}
+                                </button>
+                                <button onclick="deleteAdmin(${a.id}, '${a.name}', '${a.auth_id}')" class="text-red-400 hover:text-red-600 text-sm font-bold px-3 py-1 rounded-lg hover:bg-red-50 transition-all">${t('admin.delete.btn')}</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-3">${t('admin.registered')} ${new Date(a.created_at).toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
+                </div>`;
+            }).join('');
+        }
+
+        async function deleteAdmin(id, name, authId) {
+            if (!confirm(t('admin.delete.confirm') + '\n' + name)) return;
+            try {
+                const session = (await supabaseClient.auth.getSession()).data.session;
+                const resp = await fetch('/api/admin/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (session?.access_token || ''),
+                    },
+                    body: JSON.stringify({ adminId: id, authId }),
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    showToast('ลบไม่สำเร็จ: ' + (data.error || 'Unknown error'), 'error');
+                    return;
+                }
+                logActivity('ลบแอดมิน', name);
+                showToast('ลบ ' + name + ' สำเร็จ', 'ok');
+                loadAdminsList();
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
+        }
+
+        async function toggleAdminRole(id, name, currentRole) {
+            const newRole = currentRole === 'super' ? 'admin' : 'super';
+            const msg = newRole === 'super'
+                ? 'เลื่อน ' + name + ' เป็น Super Admin?'
+                : 'ลดขั้น ' + name + ' เป็น Admin ปกติ?';
+            if (!confirm(msg)) return;
+            try {
+                const session = (await supabaseClient.auth.getSession()).data.session;
+                const resp = await fetch('/api/admin/role', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + (session?.access_token || ''),
+                    },
+                    body: JSON.stringify({ adminId: id, newRole }),
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    showToast(data.error || 'เปลี่ยน role ไม่สำเร็จ', 'error');
+                    return;
+                }
+                logActivity(newRole === 'super' ? 'เลื่อนขั้น' : 'ลดขั้น', name);
+                showToast(data.message, 'ok');
+                loadAdminsList();
+            } catch (e) {
+                showToast('Network error', 'error');
+            }
         }
 
         // ==================== Admin Tabs ====================
@@ -1153,12 +1506,16 @@
                 b.classList.add('text-slate-500');
             });
 
-            if (tab === 'devices') {
+            if (tab === 'projects') {
+                document.getElementById('admin-projects-container').classList.remove('hidden');
+            } else if (tab === 'devices') {
                 document.getElementById('admin-devices-container').classList.remove('hidden');
             } else if (tab === 'volunteers') {
                 document.getElementById('admin-volunteers-container').classList.remove('hidden');
             } else if (tab === 'subjects') {
                 document.getElementById('admin-subjects-container').classList.remove('hidden');
+            } else if (tab === 'admins') {
+                document.getElementById('admin-admins-container').classList.remove('hidden');
             } else {
                 document.getElementById(`admin-${tab}`).classList.remove('hidden');
             }
@@ -1169,6 +1526,7 @@
             // Load data for the selected tab
             if (tab === 'data') updateAllDataTable();
             if (tab === 'activity') renderAdminActivityFeed();
+            if (tab === 'admins') loadAdminsList();
         }
 
         // ==================== Modal ====================
@@ -1328,10 +1686,14 @@
         async function loadData(showSpinner) {
             if (showSpinner) showLoading('กำลังโหลดข้อมูล...');
             try {
+                // Load last 30 days only (ลด bandwidth ~90%)
+                const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
                 const { data: allRecords, error } = await supabaseClient
                     .from('pollution_logs')
                     .select('*')
-                    .order('recorded_at', { ascending: false });
+                    .gte('recorded_at', cutoff)
+                    .order('recorded_at', { ascending: false })
+                    .limit(10000);
 
                 if (error) throw error;
                 allDataWithPending = allRecords || [];
@@ -1340,8 +1702,20 @@
 
                 // Load house names from devices → subjects
                 try {
-                    const { data: devs } = await supabaseClient.from('devices').select('tuya_device_id, subjects(full_name)');
+                    const { data: devs } = await supabaseClient.from('devices').select('tuya_device_id, subject_id, subjects(full_name)');
                     if (devs) devs.forEach(d => { if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name; });
+                    devices = devs || [];
+                } catch (_) {}
+
+                // Load projects + subject-project links
+                try {
+                    const [pRes, spRes] = await Promise.all([
+                        supabaseClient.from('projects').select('*').eq('status', 'active'),
+                        supabaseClient.from('subject_projects').select('*'),
+                    ]);
+                    projects = pRes.data || [];
+                    subjectProjects = spRes.data || [];
+                    populateProjectFilters();
                 } catch (_) {}
 
                 // Load baseline data from sessions
@@ -1362,6 +1736,43 @@
             }
         }
 
+        // ==================== Project Filtering ====================
+        function getProjectHouseIds(projectId) {
+            if (!projectId || projectId === 'all') return null;
+            return subjectProjects.filter(sp => String(sp.project_id) === String(projectId)).map(sp => sp.subject_id);
+        }
+        function getProjectDeviceIds(projectId) {
+            const houseIds = getProjectHouseIds(projectId);
+            if (!houseIds) return null;
+            return (devices || []).filter(d => d.subject_id && houseIds.includes(d.subject_id)).map(d => d.tuya_device_id);
+        }
+        function getActiveProjectFilter() {
+            if (currentView === 'deep') return document.getElementById('project-filter')?.value || 'all';
+            if (currentView === 'basic') return document.getElementById('basic-project-filter')?.value || 'all';
+            return 'all';
+        }
+        function getFilteredData(source) {
+            const data = source || allData;
+            const projectId = getActiveProjectFilter();
+            const deviceIds = getProjectDeviceIds(projectId);
+            if (!deviceIds) return data;
+            return data.filter(d => deviceIds.includes(d.tuya_device_id));
+        }
+        function populateProjectFilters() {
+            const options = '<option value="all">' + t('project.all') + '</option>' +
+                projects.map(p => '<option value="' + p.id + '">' + p.name + '</option>').join('');
+            ['project-filter', 'basic-project-filter'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { const prev = el.value; el.innerHTML = options; el.value = prev || 'all'; }
+            });
+        }
+        function getSubjectProjectName(subjectId) {
+            const sp = subjectProjects.find(sp => String(sp.subject_id) === String(subjectId));
+            if (!sp) return null;
+            const proj = projects.find(p => String(p.id) === String(sp.project_id));
+            return proj ? proj.name : null;
+        }
+
         // ==================== BASIC VIEW ====================
         function updateBasicView() {
             updateHeroAqi();
@@ -1373,7 +1784,8 @@
         }
 
         function updateHeroAqi() {
-            const latest = allDataWithPending[0];
+            const filteredPending = getFilteredData(allDataWithPending);
+            const latest = filteredPending[0];
             const aqiVal = latest?.aqi;
             const status = getAqiStatus(aqiVal);
 
@@ -1389,7 +1801,8 @@
         }
 
         function updateBigNumbers() {
-            const latest = allDataWithPending[0];
+            const filteredPending = getFilteredData(allDataWithPending);
+            const latest = filteredPending[0];
             document.getElementById('basic-pm25').textContent = latest?.pm25_value ?? '--';
             document.getElementById('basic-co2').textContent = latest?.co2_value ?? '--';
             document.getElementById('basic-temp').textContent = latest?.temperature ?? '--';
@@ -1410,8 +1823,9 @@
         }
 
         function updateBeforeAfter() {
-            const ecoData = allData.filter(d => d.stove_type === 'eco');
-            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const filtered = getFilteredData();
+            const ecoData = filtered.filter(d => d.stove_type === 'eco');
+            const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
             const avgEco = avg(ecoData, 'pm25_value');
             const avgOld = avg(oldData, 'pm25_value');
@@ -1430,10 +1844,10 @@
         async function loadTodaySummary() {
             try {
                 const today = new Date().toISOString().slice(0, 10);
-                const { data } = await supabaseClient
-                    .from('daily_summaries')
-                    .select('sessions_completed, sessions_incomplete, device_id')
-                    .eq('summary_date', today);
+                let todayQuery = supabaseClient.from('daily_summaries').select('sessions_completed, sessions_incomplete, device_id').eq('summary_date', today);
+                const projDevIds = getProjectDeviceIds(getActiveProjectFilter());
+                if (projDevIds) todayQuery = todayQuery.in('device_id', projDevIds);
+                const { data } = await todayQuery;
 
                 const totalCompleted = (data || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
                 const totalTarget = (data || []).length > 0 ? data.length * 2 : 4; // 2 sessions per device per day
@@ -1455,7 +1869,8 @@
         }
 
         function updateLiveCard() {
-            const latest = allDataWithPending[0];
+            const filteredPending = getFilteredData(allDataWithPending);
+            const latest = filteredPending[0];
             if (!latest) {
                 document.getElementById('live-house-name').textContent = t('live.no.data');
                 return;
@@ -1492,7 +1907,7 @@
         function updateActivityFeed() {
             const feed = document.getElementById('live-activity-feed');
             if (!feed) return;
-            const recent = allData.slice(0, 5);
+            const recent = getFilteredData().slice(0, 5);
             feed.innerHTML = recent.map(d => {
                 const sensorName = getDeviceName(d);
                 const houseName = HOUSE_NAMES[d.tuya_device_id] || t('activity.no.house');
@@ -1540,7 +1955,7 @@
         }
 
         function updateResearchStats() {
-            const baseData = applyBaselineSubtraction(allData);
+            const baseData = applyBaselineSubtraction(getFilteredData());
             const ecoData = baseData.filter(d => d.stove_type === 'eco');
             const oldData = baseData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
@@ -1590,8 +2005,9 @@
 
         let groupCharts = {};
         function renderGroupCharts() {
-            const ecoData = allData.filter(d => d.stove_type === 'eco');
-            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const filtered = getFilteredData();
+            const ecoData = filtered.filter(d => d.stove_type === 'eco');
+            const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
             // PM Group
             if (groupCharts.pm) groupCharts.pm.destroy();
@@ -1657,8 +2073,9 @@
         }
 
         function updateReductionTable() {
-            const ecoData = allData.filter(d => d.stove_type === 'eco');
-            const oldData = allData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const filtered = getFilteredData();
+            const ecoData = filtered.filter(d => d.stove_type === 'eco');
+            const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
             const tbody = document.getElementById('reduction-table-body');
             if (!tbody) return;
 
@@ -1692,7 +2109,7 @@
             const hours = parseInt(rangeEl.value);
             const now = new Date();
 
-            let sensorData = allData.filter(d => d.data_source === 'sensor' && d.tuya_device_id);
+            let sensorData = getFilteredData().filter(d => d.data_source === 'sensor' && d.tuya_device_id);
             if (hours > 0) {
                 const cutoff = new Date(now.getTime() - hours * 60 * 60 * 1000);
                 sensorData = sensorData.filter(d => new Date(d.recorded_at) >= cutoff);
@@ -1724,6 +2141,12 @@
                 const canvas = document.getElementById(cfg.id);
                 if (!canvas) return;
 
+                const chartPlugins = [];
+                let ySuggestedMax = undefined;
+                if (cfg.id === 'sensorPm25Chart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.pm25)); ySuggestedMax = 40; }
+                if (cfg.id === 'sensorAqiChart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.aqi)); ySuggestedMax = 110; }
+                if (cfg.id === 'sensorCo2Chart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.co2)); ySuggestedMax = 1100; }
+
                 sensorCharts[cfg.id] = new Chart(canvas, {
                     type: 'line',
                     data: {
@@ -1744,9 +2167,10 @@
                         },
                         scales: {
                             x: { type: 'time', time: { tooltipFormat: 'dd/MM/yyyy HH:mm' }, ticks: { font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
-                            y: { beginAtZero: true, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                            y: { beginAtZero: true, suggestedMax: ySuggestedMax, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         },
                     },
+                    plugins: chartPlugins,
                 });
             });
         }
@@ -1762,6 +2186,8 @@
             const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
             let query = supabaseClient.from('sessions').select('*').order('started_at', { ascending: false }).gte('started_at', cutoff).limit(100);
             if (deviceFilter !== 'all') query = query.eq('device_id', deviceFilter);
+            const projDeviceIds = getProjectDeviceIds(getActiveProjectFilter());
+            if (projDeviceIds) query = query.in('device_id', projDeviceIds);
 
             const { data: sessions, error } = await query;
             if (error) { console.error('loadSessionsTab:', error); return; }
@@ -1842,7 +2268,10 @@
         }
 
         async function loadDailySummaries() {
-            const { data, error } = await supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }).limit(30);
+            let dsQuery = supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }).limit(30);
+            const projDevIds = getProjectDeviceIds(getActiveProjectFilter());
+            if (projDevIds) dsQuery = dsQuery.in('device_id', projDevIds);
+            const { data, error } = await dsQuery;
             if (error) { console.error('loadDailySummaries:', error); return; }
 
             const tbody = document.getElementById('daily-summary-body');
@@ -1870,11 +2299,22 @@
         function startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
             autoRefreshInterval = setInterval(() => {
+                if (document.hidden) return; // ไม่โหลดเมื่อ tab ซ่อนอยู่
                 loadData();
                 const statusEl = document.getElementById('live-refresh-status');
                 if (statusEl) statusEl.textContent = t('live.updated') + new Date().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US');
             }, 120000);
         }
+
+        // หยุด/เริ่ม auto-refresh ตาม tab visibility
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+            } else {
+                loadData(); // โหลดทันทีเมื่อกลับมา
+                startAutoRefresh();
+            }
+        });
 
         function manualRefresh() {
             const icon = document.getElementById('refresh-icon');
@@ -2161,9 +2601,16 @@
                 volunteers = volData || [];
                 renderVolunteersList();
 
-                const { data: subData } = await supabaseClient.from('subjects').select('*, volunteers(*)');
-                subjects = subData || [];
+                const [subRes, projRes, spRes] = await Promise.all([
+                    supabaseClient.from('subjects').select('*, volunteers(*)'),
+                    supabaseClient.from('projects').select('*').eq('status', 'active'),
+                    supabaseClient.from('subject_projects').select('*'),
+                ]);
+                subjects = subRes.data || [];
+                projects = projRes.data || [];
+                subjectProjects = spRes.data || [];
                 renderSubjectsList();
+                renderProjectsList();
                 adminLoaded = true;
             } catch (e) {
                 console.error('Error loading admin data:', e);
@@ -2417,6 +2864,72 @@
             else { showToast(t('common.error') + error.message, 'error'); }
         }
 
+        // ==================== Project CRUD ====================
+        function renderProjectsList() {
+            const list = document.getElementById('projects-list');
+            if (!list) return;
+            list.innerHTML = projects.map(p => {
+                const houseCount = subjectProjects.filter(sp => String(sp.project_id) === String(p.id)).length;
+                return `
+                <div class="card-styled p-6 rounded-2xl">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-bold text-navy text-lg">📋 ${p.name}</p>
+                        <div class="flex gap-2">
+                            <button onclick="showEditProjectModal('${p.id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
+                            <button onclick="deleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                        </div>
+                    </div>
+                    <p class="text-[13px] text-slate-500">${p.description || '-'}</p>
+                    <p class="text-[13px] text-indigo-500 font-bold mt-1">🏠 ${houseCount} ${currentLang === 'th' ? 'บ้าน' : 'houses'}</p>
+                </div>`;
+            }).join('') || '<p class="text-slate-400">' + t('project.no.data') + '</p>';
+        }
+        function showAddProjectModal() {
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">${t('project.add.title')}</h3>
+                <div class="space-y-4">
+                    <input id="new-proj-name" placeholder="${t('project.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="new-proj-desc" placeholder="${t('project.desc.ph')}" class="w-full p-4 rounded-2xl border">
+                    <button onclick="addProject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
+                </div>
+            `);
+        }
+        async function addProject() {
+            const name = document.getElementById('new-proj-name').value;
+            const desc = document.getElementById('new-proj-desc').value;
+            if (!name) { showToast(t('project.name.required'), 'warning'); return; }
+            const { error } = await supabaseClient.from('projects').insert([{ name, description: desc || null }]);
+            if (!error) { closeModal(); logActivity(t('project.add.title'), name); loadAdminData(); showToast(t('project.added')); }
+            else { showToast(t('common.error') + error.message, 'error'); }
+        }
+        function showEditProjectModal(id) {
+            const p = projects.find(x => String(x.id) === String(id));
+            if (!p) return;
+            showModal(`
+                <h3 class="text-2xl font-bold text-navy mb-6">${t('project.edit')}</h3>
+                <div class="space-y-4">
+                    <input id="edit-proj-name" value="${p.name}" placeholder="${t('project.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-proj-desc" value="${p.description || ''}" placeholder="${t('project.desc.ph')}" class="w-full p-4 rounded-2xl border">
+                    <button onclick="saveProject('${p.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
+                </div>
+            `);
+        }
+        async function saveProject(id) {
+            const name = document.getElementById('edit-proj-name').value;
+            const desc = document.getElementById('edit-proj-desc').value;
+            if (!name) { showToast(t('project.name.required'), 'warning'); return; }
+            const { error } = await supabaseClient.from('projects').update({ name, description: desc || null }).eq('id', String(id));
+            if (!error) { closeModal(); loadAdminData(); showToast(t('project.saved')); }
+            else { showToast(t('common.error') + error.message, 'error'); }
+        }
+        async function deleteProject(id, name) {
+            showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
+                const { error } = await supabaseClient.from('projects').delete().eq('id', String(id));
+                if (!error) { logActivity(t('project.deleted'), name); loadAdminData(); showToast(t('project.deleted')); }
+                else { showToast(t('project.delete.error') + ': ' + error.message, 'error'); }
+            });
+        }
+
         function renderVolunteersList() {
             const list = document.getElementById('volunteers-list');
             list.innerHTML = volunteers.map(v => `
@@ -2470,6 +2983,9 @@
                 const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>' +
                     (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
                     unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + d.name + '</option>').join('');
+                const projName = getSubjectProjectName(s.id);
+                const addrParts = [s.subdistrict ? 'ต.' + s.subdistrict : '', s.district ? 'อ.' + s.district : '', s.province ? 'จ.' + s.province : ''].filter(Boolean).join(' ');
+                const displayAddr = addrParts || s.address || '-';
 
                 return `
                 <div class="card-styled p-6 rounded-2xl">
@@ -2481,9 +2997,11 @@
                             <button onclick="deleteSubject('${s.id}', '${s.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${s.address || '-'}</p>
+                    <p class="text-[13px] text-slate-500">${displayAddr}</p>
+                    ${s.address && addrParts ? `<p class="text-[12px] text-slate-400">${s.address}</p>` : ''}
                     <p class="text-[13px] text-slate-400">${t('sub.volunteer')}${s.volunteers?.full_name || t('sub.unassigned')}</p>
                     <div class="flex items-center gap-2 mt-2 flex-wrap">
+                        ${projName ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">📋 ${projName}</span>` : ''}
                         <p class="text-[13px] ${s.status === 'active' ? 'text-emerald-500' : 'text-red-500'}">${s.status === 'active' ? t('sub.active') : t('sub.inactive')}</p>
                         ${s.connectivity ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : ''}
                         <button onclick="toggleSensor('${s.id}', ${!s.has_sensor})" class="text-[11px] px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-all ${s.has_sensor ? 'bg-teal-50 text-teal-600' : 'bg-slate-100 text-slate-400'}">${s.has_sensor ? t('sub.has.sensor') : t('sub.stove.only')}</button>
@@ -2501,11 +3019,42 @@
         function showEditSubjectModal(id) {
             const s = subjects.find(x => String(x.id) === String(id));
             if (!s) return;
+            const currentSp = subjectProjects.find(sp => String(sp.subject_id) === String(id));
+            const currentProjectId = currentSp ? String(currentSp.project_id) : '';
+            const provinceOptions = thaiProvinces.map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === (s.province || '') ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('sub.edit')}</h3>
                 <div class="space-y-4">
                     <input id="edit-sub-name" value="${s.full_name || ''}" placeholder="${t('sub.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('project.label')}</label>
+                        <select id="edit-sub-project" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">${t('project.select')}</option>
+                            ${projects.map(p => `<option value="${p.id}" ${String(p.id) === currentProjectId ? 'selected' : ''}>${p.name}</option>`).join('')}
+                        </select>
+                    </div>
                     <input id="edit-sub-address" value="${s.address || ''}" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>
+                            <select id="edit-sub-province" onchange="onEditProvinceChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
+                                <option value="">${t('sub.select.province')}</option>
+                                ${provinceOptions}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.district')}</label>
+                            <select id="edit-sub-district" onchange="onEditDistrictChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
+                                <option value="">${t('sub.select.district')}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.subdistrict')}</label>
+                            <select id="edit-sub-subdistrict" class="w-full p-3 rounded-xl border text-[13px] custom-select">
+                                <option value="">${t('sub.select.subdistrict')}</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-3">
                         <input id="edit-sub-lat" value="${s.gps_lat || ''}" placeholder="Latitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
                         <input id="edit-sub-lng" value="${s.gps_long || ''}" placeholder="Longitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
@@ -2529,6 +3078,41 @@
                     <button onclick="saveSubject('${s.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
+            // Pre-populate district + subdistrict if province is set
+            setTimeout(() => {
+                if (s.province) {
+                    onEditProvinceChange();
+                    setTimeout(() => {
+                        if (s.district) {
+                            const distEl = document.getElementById('edit-sub-district');
+                            if (distEl) { for (const opt of distEl.options) { if (opt.text === s.district) { opt.selected = true; break; } } }
+                            onEditDistrictChange();
+                            setTimeout(() => {
+                                if (s.subdistrict) {
+                                    const subEl = document.getElementById('edit-sub-subdistrict');
+                                    if (subEl) { for (const opt of subEl.options) { if (opt.text === s.subdistrict) { opt.selected = true; break; } } }
+                                }
+                            }, 50);
+                        }
+                    }, 50);
+                }
+            }, 50);
+        }
+        function onEditProvinceChange() {
+            const provinceCode = parseInt(document.getElementById('edit-sub-province')?.value);
+            const districtEl = document.getElementById('edit-sub-district');
+            const subEl = document.getElementById('edit-sub-subdistrict');
+            if (!districtEl) return;
+            districtEl.innerHTML = '<option value="">' + t('sub.select.district') + '</option>' +
+                (provinceCode ? getDistrictsByProvince(provinceCode).map(d => '<option value="' + d.districtCode + '">' + d.districtNameTh + '</option>').join('') : '');
+            if (subEl) subEl.innerHTML = '<option value="">' + t('sub.select.subdistrict') + '</option>';
+        }
+        function onEditDistrictChange() {
+            const districtCode = parseInt(document.getElementById('edit-sub-district')?.value);
+            const subEl = document.getElementById('edit-sub-subdistrict');
+            if (!subEl) return;
+            subEl.innerHTML = '<option value="">' + t('sub.select.subdistrict') + '</option>' +
+                (districtCode ? getSubdistrictsByDistrict(districtCode).map(s => '<option value="' + s.subdistrictCode + '">' + s.subdistrictNameTh + '</option>').join('') : '');
         }
         async function saveSubject(id) {
             const fullName = document.getElementById('edit-sub-name').value;
@@ -2538,11 +3122,23 @@
             const volunteerId = document.getElementById('edit-sub-volunteer').value;
             const connectivity = document.getElementById('edit-sub-connectivity').value;
             const hasSensor = document.getElementById('edit-sub-sensor').checked;
+            const projectId = document.getElementById('edit-sub-project').value;
+            const provinceEl = document.getElementById('edit-sub-province');
+            const districtEl = document.getElementById('edit-sub-district');
+            const subdistrictEl = document.getElementById('edit-sub-subdistrict');
+            const province = provinceEl?.selectedOptions[0]?.text !== t('sub.select.province') ? provinceEl?.selectedOptions[0]?.text : null;
+            const district = districtEl?.selectedOptions[0]?.text !== t('sub.select.district') ? districtEl?.selectedOptions[0]?.text : null;
+            const subdistrict = subdistrictEl?.selectedOptions[0]?.text !== t('sub.select.subdistrict') ? subdistrictEl?.selectedOptions[0]?.text : null;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
-            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: connectivity || null, has_sensor: hasSensor };
+            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: connectivity || null, has_sensor: hasSensor, province: province, district: district, subdistrict: subdistrict };
             const { error } = await supabaseClient.from('subjects').update(record).eq('id', String(id));
-            if (!error) { closeModal(); loadAdminData(); showToast(t('sub.saved')); }
-            else { showToast(t('common.error') + error.message, 'error'); }
+            if (error) { showToast(t('common.error') + error.message, 'error'); return; }
+            // Update subject_projects junction
+            await supabaseClient.from('subject_projects').delete().eq('subject_id', String(id));
+            if (projectId) {
+                await supabaseClient.from('subject_projects').insert([{ subject_id: parseInt(id), project_id: parseInt(projectId) }]);
+            }
+            closeModal(); loadAdminData(); showToast(t('sub.saved'));
         }
         async function toggleSubjectStatus(id, newStatus) {
             const { error } = await supabaseClient.from('subjects').update({ status: newStatus }).eq('id', String(id));
@@ -2632,11 +3228,40 @@
         }
 
         function showAddSubjectModal() {
+            const provinceOptions = thaiProvinces.map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === 'เชียงใหม่' ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('sub.add.title')}</h3>
                 <div class="space-y-4">
                     <input id="new-sub-name" placeholder="${t('sub.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('project.label')}</label>
+                        <select id="new-sub-project" class="w-full p-4 rounded-2xl border custom-select">
+                            <option value="">${t('project.select')}</option>
+                            ${projects.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+                        </select>
+                    </div>
                     <input id="new-sub-address" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>
+                            <select id="new-sub-province" onchange="onNewProvinceChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
+                                <option value="">${t('sub.select.province')}</option>
+                                ${provinceOptions}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.district')}</label>
+                            <select id="new-sub-district" onchange="onNewDistrictChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
+                                <option value="">${t('sub.select.district')}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.subdistrict')}</label>
+                            <select id="new-sub-subdistrict" class="w-full p-3 rounded-xl border text-[13px] custom-select">
+                                <option value="">${t('sub.select.subdistrict')}</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-2 gap-3">
                         <input id="new-sub-lat" placeholder="Latitude (เช่น 18.805)" class="w-full p-4 rounded-2xl border" type="number" step="any">
                         <input id="new-sub-lng" placeholder="Longitude (เช่น 98.921)" class="w-full p-4 rounded-2xl border" type="number" step="any">
@@ -2660,6 +3285,24 @@
                     <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
+            // Pre-populate districts for default province (Chiang Mai)
+            setTimeout(() => onNewProvinceChange(), 50);
+        }
+        function onNewProvinceChange() {
+            const provinceCode = parseInt(document.getElementById('new-sub-province')?.value);
+            const districtEl = document.getElementById('new-sub-district');
+            const subEl = document.getElementById('new-sub-subdistrict');
+            if (!districtEl) return;
+            districtEl.innerHTML = '<option value="">' + t('sub.select.district') + '</option>' +
+                (provinceCode ? getDistrictsByProvince(provinceCode).map(d => '<option value="' + d.districtCode + '">' + d.districtNameTh + '</option>').join('') : '');
+            if (subEl) subEl.innerHTML = '<option value="">' + t('sub.select.subdistrict') + '</option>';
+        }
+        function onNewDistrictChange() {
+            const districtCode = parseInt(document.getElementById('new-sub-district')?.value);
+            const subEl = document.getElementById('new-sub-subdistrict');
+            if (!subEl) return;
+            subEl.innerHTML = '<option value="">' + t('sub.select.subdistrict') + '</option>' +
+                (districtCode ? getSubdistrictsByDistrict(districtCode).map(s => '<option value="' + s.subdistrictCode + '">' + s.subdistrictNameTh + '</option>').join('') : '');
         }
         async function addSubject() {
             const fullName = document.getElementById('new-sub-name').value;
@@ -2669,14 +3312,28 @@
             const volunteerId = document.getElementById('new-sub-volunteer').value;
             const connectivity = document.getElementById('new-sub-connectivity').value;
             const hasSensor = document.getElementById('new-sub-sensor').checked;
+            const projectId = document.getElementById('new-sub-project').value;
+            const provinceEl = document.getElementById('new-sub-province');
+            const districtEl = document.getElementById('new-sub-district');
+            const subdistrictEl = document.getElementById('new-sub-subdistrict');
+            const province = provinceEl?.selectedOptions[0]?.text !== t('sub.select.province') ? provinceEl?.selectedOptions[0]?.text : null;
+            const district = districtEl?.selectedOptions[0]?.text !== t('sub.select.district') ? districtEl?.selectedOptions[0]?.text : null;
+            const subdistrict = subdistrictEl?.selectedOptions[0]?.text !== t('sub.select.subdistrict') ? subdistrictEl?.selectedOptions[0]?.text : null;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
             const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active', has_sensor: hasSensor };
             if (connectivity) record.connectivity = connectivity;
             if (lat) record.gps_lat = parseFloat(lat);
             if (lng) record.gps_long = parseFloat(lng);
-            const { error } = await supabaseClient.from('subjects').insert([record]);
-            if (!error) { closeModal(); logActivity(t('sub.add'), fullName); loadAdminData(); showToast(t('sub.added')); }
-            else { showToast(t('common.error') + error.message, 'error'); }
+            if (province) record.province = province;
+            if (district) record.district = district;
+            if (subdistrict) record.subdistrict = subdistrict;
+            const { data: inserted, error } = await supabaseClient.from('subjects').insert([record]).select();
+            if (!error && inserted?.length) {
+                if (projectId) {
+                    await supabaseClient.from('subject_projects').insert([{ subject_id: inserted[0].id, project_id: parseInt(projectId) }]);
+                }
+                closeModal(); logActivity(t('sub.add'), fullName); loadAdminData(); showToast(t('sub.added'));
+            } else { showToast(t('common.error') + (error?.message || ''), 'error'); }
         }
 
         function exportDataRows(data) {
@@ -2898,6 +3555,14 @@
         document.addEventListener('DOMContentLoaded', async function() {
             showLoading('กำลังโหลดข้อมูล...');
             applyLang();
+            loadThaiAddressData(); // fire-and-forget, non-blocking
+
+            // Check existing auth session (auto-login if remembered)
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (session?.user) await checkAdminRole(session.user);
+            } catch (_) {}
+
             await loadRegisteredSensors();
             await loadData();
             hideLoading();
@@ -3015,10 +3680,11 @@
                     plugins: { legend: { position: 'top' } },
                     scales: {
                         x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
-                        y: { position: 'left', title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y: { position: 'left', suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
                     }
-                }
+                },
+                plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],
             });
         }
 
@@ -3087,10 +3753,11 @@
                     plugins: { legend: { position: 'top' } },
                     scales: {
                         x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
-                        y: { position: 'left', title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y: { position: 'left', suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
                     }
-                }
+                },
+                plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],
             });
         }
 
