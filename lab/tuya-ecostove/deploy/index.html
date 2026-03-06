@@ -432,8 +432,6 @@
                     <div class="flex flex-wrap gap-3 items-center">
                         <select id="session-device-filter" onchange="loadSessionsTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                             <option value="all" data-i18n="session.all.devices">ทุกเครื่อง</option>
-                            <option value="a3d01864e463e3ede0hf0e">MT13W (ใหม่)</option>
-                            <option value="a3b9c2e4bdfe69ad7ekytn">MT29 (เดิม)</option>
                         </select>
                     </div>
                 </div>
@@ -580,8 +578,6 @@
                     <div class="flex items-center gap-3">
                         <select id="sensor-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                             <option value="all" data-i18n="filter.all">ทั้งหมด</option>
-                            <option value="a3d01864e463e3ede0hf0e">Sensor 1 (MT13W)</option>
-                            <option value="a3b9c2e4bdfe69ad7ekytn">Sensor 2 (ZN-MT29)</option>
                         </select>
                         <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
                     </div>
@@ -982,6 +978,23 @@
                     data.forEach(s => { DEVICE_NAMES[s.tuya_device_id] = s.name; });
                 }
             } catch (e) { console.log('loadRegisteredSensors fallback to hardcoded'); }
+            populateSensorDropdowns();
+        }
+
+        function populateSensorDropdowns() {
+            const selectors = ['session-device-filter', 'sensor-filter'];
+            for (const selId of selectors) {
+                const sel = document.getElementById(selId);
+                if (!sel) continue;
+                // Keep the first "all" option, remove the rest
+                while (sel.options.length > 1) sel.remove(1);
+                for (const s of KNOWN_SENSORS) {
+                    const opt = document.createElement('option');
+                    opt.value = s.tuyaId;
+                    opt.textContent = s.name;
+                    sel.appendChild(opt);
+                }
+            }
         }
 
         // Activity log stored in localStorage
@@ -1685,12 +1698,19 @@
                 sensorData = sensorData.filter(d => new Date(d.recorded_at) >= cutoff);
             }
 
-            const device1 = sensorData.filter(d => d.tuya_device_id === 'a3d01864e463e3ede0hf0e').reverse();
-            const device2 = sensorData.filter(d => d.tuya_device_id === 'a3b9c2e4bdfe69ad7ekytn').reverse();
-            const totalPoints = device1.length + device2.length;
+            // Group data by sensor dynamically (no hardcoded IDs)
+            const sensorIds = [...new Set(sensorData.map(d => d.tuya_device_id))];
+            const sensorGroups = sensorIds.map(id => ({
+                id,
+                name: DEVICE_NAMES[id] || id.slice(-6),
+                data: sensorData.filter(d => d.tuya_device_id === id).reverse(),
+            }));
+            const totalPoints = sensorGroups.reduce((sum, g) => sum + g.data.length, 0);
 
             const countEl = document.getElementById('sensor-chart-count');
-            if (countEl) countEl.textContent = `Sensor 1: ${device1.length} | Sensor 2: ${device2.length} (รวม ${totalPoints})`;
+            if (countEl) countEl.textContent = sensorGroups.map(g => `${g.name}: ${g.data.length}`).join(' | ') + ` (รวม ${totalPoints})`;
+
+            const chartColors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6'];
 
             const chartConfigs = [
                 { id: 'sensorPm25Chart', field: 'pm25_value' },
@@ -1707,20 +1727,13 @@
                 sensorCharts[cfg.id] = new Chart(canvas, {
                     type: 'line',
                     data: {
-                        datasets: [
-                            {
-                                label: 'Sensor 1 (MT13W)',
-                                data: device1.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
-                                borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.1)',
-                                borderWidth: 2, pointRadius: totalPoints > 100 ? 0 : 3, tension: 0.3, fill: false,
-                            },
-                            {
-                                label: 'Sensor 2 (ZN-MT29)',
-                                data: device2.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
-                                borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)',
-                                borderWidth: 2, pointRadius: totalPoints > 100 ? 0 : 3, tension: 0.3, fill: false,
-                            },
-                        ],
+                        datasets: sensorGroups.map((g, i) => ({
+                            label: g.name,
+                            data: g.data.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
+                            borderColor: chartColors[i % chartColors.length],
+                            backgroundColor: chartColors[i % chartColors.length] + '1a',
+                            borderWidth: 2, pointRadius: totalPoints > 100 ? 0 : 3, tension: 0.3, fill: false,
+                        })),
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false,
@@ -2043,7 +2056,7 @@
                     btnAll.classList.remove('hidden');
 
                     container.innerHTML = sessions.map(s => {
-                        const sensorName = s.device === 'a3d01864e463e3ede0hf0e' ? 'MT13W' : s.device === 'a3b9c2e4bdfe69ad7ekytn' ? 'MT29' : s.device?.slice(0, 8);
+                        const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
                         const houseName = DEVICE_NAMES[s.device] || sensorName;
                         const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
                         const sKey = 'ps_' + s.device.slice(-6) + '_' + s.date.replace(/-/g,'');

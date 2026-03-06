@@ -18,10 +18,37 @@ const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
 const MONTHLY_API_LIMIT = 24000; // 26,000 minus 2,000 buffer
 const BASELINE_MINUTES = 10; // baseline phase duration (~2 readings at 5min interval)
 
-const SENSORS = [
-  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old', houseId: 19 },
-  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)', stoveType: 'eco', houseId: 20 },
-];
+// SENSORS loaded dynamically from Supabase (registered_sensors + devices)
+async function loadSensors(sbUrl, sbKey) {
+  // 1. Get all registered sensors (tuya_device_id, name, stove_type)
+  const sensorsRes = await fetch(
+    sbUrl + '/rest/v1/registered_sensors?select=tuya_device_id,name,stove_type',
+    { headers: sbHeaders(sbKey) }
+  );
+  if (!sensorsRes.ok) return [];
+  const sensors = await sensorsRes.json();
+
+  // 2. Get active device-to-house assignments (tuya_device_id, subject_id)
+  const devicesRes = await fetch(
+    sbUrl + '/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id',
+    { headers: sbHeaders(sbKey) }
+  );
+  const deviceMap = {};
+  if (devicesRes.ok) {
+    const devices = await devicesRes.json();
+    for (const d of devices) {
+      if (d.tuya_device_id) deviceMap[d.tuya_device_id] = d.subject_id;
+    }
+  }
+
+  // 3. Build SENSORS array
+  return sensors.map(s => ({
+    id: s.tuya_device_id,
+    name: s.name,
+    stoveType: s.stove_type || 'eco',
+    houseId: deviceMap[s.tuya_device_id] || null,
+  }));
+}
 
 // ===== Token Cache (in-memory, survives Vercel warm starts) =====
 let _cachedToken = null;
@@ -59,37 +86,6 @@ async function getTuyaToken(accessId, secret) {
   });
   const data = await res.json();
   return data.success ? data.result.access_token : null;
-}
-
-async function getDeviceInfo(accessId, secret, token, deviceId) {
-  const timestamp = Date.now().toString();
-  const path = '/v1.0/devices/' + deviceId;
-  const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
-
-  const res = await fetch(TUYA_BASE_URL + path, {
-    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-  });
-  return res.json();
-}
-
-async function getDeviceStatus(accessId, secret, token, deviceId) {
-  const timestamp = Date.now().toString();
-  const path = '/v1.0/devices/' + deviceId + '/status';
-  const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
-
-  const res = await fetch(TUYA_BASE_URL + path, {
-    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-  });
-  return res.json();
-}
-
-function parseReadings(data) {
-  if (!data.success) return null;
-  const readings = {};
-  for (const item of data.result || []) {
-    readings[item.code] = item.value;
-  }
-  return readings;
 }
 
 // ===== Tuya Batch API (reduces N calls → 1 call) =====
@@ -159,7 +155,7 @@ function sbHeaders(sbKey) {
   };
 }
 
-async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType) {
+async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId) {
   const record = {
     pm25_value: readings.pm25_value ?? null,
     pm10_value: readings.pm10 ?? null,
@@ -175,6 +171,7 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType) {
     stove_type: stoveType || 'eco',
     status: 'pending',
     recorded_at: new Date().toISOString(),
+    session_id: sessionId || null,
   };
 
   const res = await fetch(sbUrl + '/rest/v1/pollution_logs', {
@@ -256,14 +253,14 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
 
 async function closeSession(sbUrl, sbKey, session) {
   try {
-    // Query pollution_logs for this device during the session period
-    const startedAt = encodeURIComponent(session.started_at);
-    const logs = await fetch(
-      sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
-      '&recorded_at=gte.' + startedAt +
-      '&select=pm25_value,pm10_value,co2_value,temperature,humidity',
-      { headers: sbHeaders(sbKey) }
-    );
+    // Query pollution_logs for this session (prefer session_id, fallback to time range)
+    const logsUrl = session.id
+      ? sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + session.id + '&select=pm25_value,pm10_value,co2_value,temperature,humidity'
+      : sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
+        '&recorded_at=gte.' + encodeURIComponent(session.started_at) +
+        '&recorded_at=lte.' + encodeURIComponent(new Date().toISOString()) +
+        '&select=pm25_value,pm10_value,co2_value,temperature,humidity';
+    const logs = await fetch(logsUrl, { headers: sbHeaders(sbKey) });
     if (!logs.ok) {
       console.error('closeSession: failed to fetch logs for session ' + session.id + ', status=' + logs.status);
       // Still close the session even if we can't compute averages
@@ -350,6 +347,9 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
 
     const houseId = sessions.length > 0 ? sessions[0].house_id : null;
 
+    const pm25Maxes = completed.map(c => c.max_pm25).filter(v => v != null);
+    const pm25Mins = completed.map(c => c.min_pm25).filter(v => v != null);
+
     const summary = {
       summary_date: today,
       device_id: deviceId,
@@ -359,8 +359,8 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
       sessions_cancelled: cancelled.length,
       total_readings: totalReadings,
       avg_pm25: avgOf(completed, 'avg_pm25'),
-      max_pm25: completed.length ? Math.max(...completed.map(c => c.max_pm25).filter(v => v != null)) : null,
-      min_pm25: completed.length ? Math.min(...completed.map(c => c.min_pm25).filter(v => v != null)) : null,
+      max_pm25: pm25Maxes.length > 0 ? Math.max(...pm25Maxes) : null,
+      min_pm25: pm25Mins.length > 0 ? Math.min(...pm25Mins) : null,
       avg_co2: avgOf(completed, 'avg_co2'),
       avg_temperature: avgOf(completed, 'avg_temperature'),
       avg_humidity: avgOf(completed, 'avg_humidity'),
@@ -415,9 +415,9 @@ async function updateMonthlyQuota(sbUrl, sbKey, callsToAdd) {
   }
 }
 
-async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId) {
+async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId, cachedActive) {
   try {
-    const active = await getActiveSession(sbUrl, sbKey, deviceId);
+    const active = cachedActive !== undefined ? cachedActive : await getActiveSession(sbUrl, sbKey, deviceId);
 
     if (active) {
       const lastUpdate = new Date(active.updated_at || active.started_at);
@@ -454,10 +454,18 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
           readings_count: (active.readings_count || 0) + 1,
           updated_at: new Date().toISOString(),
         };
-        await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + active.id, {
+        const patchRes = await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + active.id, {
           method: 'PATCH', headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal' },
           body: JSON.stringify(update),
         });
+        if (!patchRes.ok) {
+          console.error('Baseline transition failed for session ' + active.id + ', status=' + patchRes.status + ', body=' + await patchRes.text());
+          // Fallback: transition without baseline columns so session doesn't get stuck
+          await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + active.id, {
+            method: 'PATCH', headers: sbHeaders(sbKey),
+            body: JSON.stringify({ session_status: 'collecting', baseline_ended_at: new Date().toISOString(), readings_count: (active.readings_count || 0) + 1, updated_at: new Date().toISOString() }),
+          });
+        }
         console.log('Baseline ended for session ' + active.id + ': pm25=' + update.baseline_avg_pm25 + ', co2=' + update.baseline_avg_co2 + ', readings=' + baselineLogs.length);
         return { action: 'baseline-ended', sessionId: active.id, baselineReadings: baselineLogs.length };
       } else {
@@ -516,9 +524,16 @@ module.exports = async function handler(req, res) {
   let tuyaCalls = 0;
 
   try {
+    // ===== Phase 0: Load sensors from Supabase (dynamic) =====
+    const SENSORS = await loadSensors(sbUrl, sbKey);
+    if (SENSORS.length === 0) {
+      return res.status(200).json({ success: true, synced: '0/0', skipped: 'no registered sensors', time: new Date().toISOString(), tuya_calls: 0 });
+    }
+
     // ===== Phase 1: Supabase pre-checks (0 Tuya calls) =====
-    // Determine which sensors actually need Tuya data
+    // Determine which sensors actually need Tuya data + cache session state
     const sensorsNeedingTuya = [];
+    const cachedSessions = {}; // sensor.id → active session (avoid re-query in Phase 6)
 
     for (const sensor of SENSORS) {
       try {
@@ -540,6 +555,7 @@ module.exports = async function handler(req, res) {
             continue;
           }
           // Active session within time window — needs Tuya data
+          cachedSessions[sensor.id] = active;
           sensorsNeedingTuya.push(sensor);
         } else {
           const last = await getLastClosedSession(sbUrl, sbKey, sensor.id);
@@ -556,6 +572,7 @@ module.exports = async function handler(req, res) {
             continue;
           }
           // Not in cooldown, not at limit — needs Tuya data
+          cachedSessions[sensor.id] = null; // no active session, will create new
           sensorsNeedingTuya.push(sensor);
         }
       } catch (err) {
@@ -621,7 +638,7 @@ module.exports = async function handler(req, res) {
       try {
         const isOnline = deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online;
 
-        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId);
+        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id]);
         const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
 
         if (skipActions.includes(session.action)) {
@@ -635,7 +652,7 @@ module.exports = async function handler(req, res) {
           continue;
         }
 
-        const inserted = await insertLog(sbUrl, sbKey, readings, sensor.id, sensor.stoveType);
+        const inserted = await insertLog(sbUrl, sbKey, readings, sensor.id, sensor.stoveType, session.sessionId);
 
         results.push({
           sensor: sensor.name,
