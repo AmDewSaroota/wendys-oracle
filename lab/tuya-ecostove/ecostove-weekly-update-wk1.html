@@ -889,9 +889,10 @@
       <h3>GPS ตรวจจับบ้าน</h3>
       <ul>
         <li>เปิดหน้าเว็บ → ขอตำแหน่ง GPS</li>
-        <li>เทียบพิกัดกับบ้าน 10 หลัง</li>
-        <li>แสดงบ้านที่ใกล้ที่สุดอัตโนมัติ</li>
-        <li>ลดโอกาสเลือกบ้านผิด</li>
+        <li>คำนวณระยะ Haversine กับพิกัดบ้าน 10 หลัง</li>
+        <li><strong>&lt; 30 ม.</strong> → ยืนยันอัตโนมัติ</li>
+        <li><strong>30–200 ม.</strong> → แสดงชื่อบ้าน ให้กดยืนยัน</li>
+        <li><strong>&gt; 200 ม.</strong> → ไม่พบบ้าน ต้องเลือกเอง</li>
       </ul>
     </div>
     <div class="card orange">
@@ -918,18 +919,22 @@
       <div class="icon">🛡️</div>
       <h3>ป้องกันข้อมูลผิดพลาด</h3>
       <ul>
-        <li>GPS log ทุกครั้งที่เริ่ม session</li>
-        <li>ระบบแนะนำบ้านอัตโนมัติ</li>
-        <li>เห็นสถานะเซนเซอร์ realtime</li>
-        <li>ย้อนตรวจสอบได้ทีหลัง</li>
+        <li>GPS log ทุกครั้งที่กดปุ่ม</li>
+        <li>ระบบจำกัดรัศมี <strong>200 ม.</strong> จากพิกัดบ้าน</li>
+        <li>แสดงสถานะเซนเซอร์ + ครบโควต้า/ยังไม่ครบ</li>
+        <li>ย้อนตรวจสอบ GPS + เวลาได้ทีหลัง</li>
       </ul>
     </div>
   </div>
 
-  <div style="margin-top:20px; display:flex; justify-content:center;">
-    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.85rem; text-align:center; max-width:700px;">
+  <div style="margin-top:20px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.85rem; text-align:center;">
       💡 <strong>หน้าเว็บแยกต่างหาก</strong> — อาสาเปิดลิงก์เดียวบนมือถือ ไม่ต้องสมัคร ไม่ต้อง login &nbsp;|&nbsp;
       ⚡ <strong>โหลดเร็ว</strong> เพราะไม่ต้องโหลด Dashboard ทั้งหมด
+    </div>
+    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.85rem; text-align:center;">
+      📐 <strong>ขยายพื้นที่ได้</strong> — เพิ่มพิกัด GPS ในระบบ → รัศมี 200 ม. ขยายตามจำนวนบ้าน &nbsp;|&nbsp;
+      🏘️ ปัจจุบันรองรับ <strong>10 หลัง</strong> — เพิ่มได้ไม่จำกัด
     </div>
   </div>
   <div class="slide-number">11 / 13</div>
@@ -943,7 +948,7 @@
   <div class="flow" style="margin-bottom:16px;">
     <div class="flow-step" style="background:#ede9fe; border:2px solid var(--purple);">
       <div class="icon">📍</div>
-      <div class="label"><strong>GPS ตรวจจับ</strong><br>"บ้านป้าแดง"<br><small style="color:var(--gray-500);">ห่าง 12 ม.</small></div>
+      <div class="label"><strong>GPS ตรวจจับ</strong><br>"บ้านป้าแดง"<br><small style="color:var(--gray-500);">ห่าง 12 ม. (รัศมี 200 ม.)</small></div>
     </div>
     <div class="flow-arrow">→</div>
     <div class="flow-step" style="background:#dbeafe; border:2px solid var(--blue);">
@@ -970,8 +975,8 @@
   <div class="card-grid cols-3" style="margin-top:12px;">
     <div class="card" style="text-align:center;">
       <div style="font-size:2.5rem;">📍</div>
-      <h3>เปิดลิงก์</h3>
-      <p>อาสาเปิดลิงก์บนมือถือ<br>GPS ตรวจจับตำแหน่ง<br>แสดงชื่อบ้านที่ใกล้ที่สุด<br>กดยืนยัน 1 ครั้ง</p>
+      <h3>เปิดลิงก์ + GPS</h3>
+      <p>อาสาเปิดลิงก์บนมือถือ<br>GPS เทียบพิกัด (รัศมี 200 ม.)<br>&lt;30 ม. = ยืนยันอัตโนมัติ<br>&gt;200 ม. = เลือก dropdown</p>
     </div>
     <div class="card orange" style="text-align:center;">
       <div style="font-size:2.5rem;">🔥</div>
@@ -985,9 +990,12 @@
     </div>
   </div>
 
-  <div style="margin-top:12px; text-align:center;">
+  <div style="margin-top:12px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
     <span style="background:var(--green-light); color:var(--green-dark); padding:8px 20px; border-radius:10px; font-size:0.85rem; font-weight:500;">
       🧪 ระบบพร้อมทดสอบ — เปิด volunteer.html บนมือถือได้เลย
+    </span>
+    <span style="background:#ede9fe; color:#5b21b6; padding:8px 20px; border-radius:10px; font-size:0.85rem; font-weight:500;">
+      📐 ขยายพื้นที่ → เพิ่มพิกัด GPS ในระบบ admin + ปรับรัศมีได้
     </span>
   </div>
   <div class="slide-number">12 / 13</div>

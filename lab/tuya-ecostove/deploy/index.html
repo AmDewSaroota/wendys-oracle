@@ -234,7 +234,6 @@
                     <div id="session-progress-bar" class="h-2.5 rounded-full progress-fill bg-emerald-500" style="width:0%"></div>
                 </div>
                 <div id="today-house-breakdown" class="space-y-2"></div>
-                <div id="today-tvoc-live" class="hidden mt-3 bg-purple-50 border border-purple-200 rounded-xl px-4 py-2"></div>
             </div>
 
             <!-- 6. Map + Activity Feed -->
@@ -251,10 +250,6 @@
                 </div>
             </div>
 
-            <!-- TVOC Manual Input FAB -->
-            <button id="tvoc-fab" onclick="showTvocInputForm()" class="fixed bottom-6 right-6 w-14 h-14 bg-purple-600 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-purple-700 transition-all active:scale-95" title="บันทึก TVOC">
-                <span class="text-xl">✏️</span>
-            </button>
         </section>
 
         <!-- ============================================================ -->
@@ -568,7 +563,6 @@
                         ✓ อนุมัติทั้งหมด
                     </button>
                 </div>
-                <div id="tvoc-live-status" class="hidden bg-purple-50 border border-purple-200 rounded-2xl p-4 mb-2"></div>
                 <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
@@ -1626,351 +1620,6 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
         }
 
-        // ==================== Manual TVOC Input (Session-based) ====================
-        let tvocStoveType = 'eco';
-        let tvocHousesData = [];
-        let tvocDevicesData = [];
-        let tvocActiveSession = null;
-        try { tvocActiveSession = JSON.parse(localStorage.getItem('ecostove_tvoc_session')); } catch(e) {}
-
-        // Browser ID — unique per browser, persists across sessions
-        let browserId = localStorage.getItem('ecostove_browser_id');
-        if (!browserId) { browserId = crypto.randomUUID(); localStorage.setItem('ecostove_browser_id', browserId); }
-
-        function saveTvocSession() { localStorage.setItem('ecostove_tvoc_session', JSON.stringify(tvocActiveSession)); }
-        function clearTvocSession() { tvocActiveSession = null; localStorage.removeItem('ecostove_tvoc_session'); }
-
-        // Active session tracking (server-side)
-        async function registerActiveSession(houseId, houseName, volunteerName, stoveType) {
-            await supabaseClient.from('tvoc_active_sessions').delete().eq('browser_id', browserId);
-            await supabaseClient.from('tvoc_active_sessions').insert([{
-                house_id: houseId, house_name: houseName, volunteer_name: volunteerName,
-                browser_id: browserId, stove_type: stoveType
-            }]);
-        }
-        async function pingActiveSession() {
-            await supabaseClient.from('tvoc_active_sessions').update({ last_ping_at: new Date().toISOString() }).eq('browser_id', browserId);
-        }
-        async function removeActiveSession() {
-            await supabaseClient.from('tvoc_active_sessions').delete().eq('browser_id', browserId);
-        }
-        async function getActiveSessions() {
-            const cutoff = new Date(Date.now() - 3 * 60000).toISOString();
-            const { data } = await supabaseClient.from('tvoc_active_sessions').select('*').gte('last_ping_at', cutoff);
-            return data || [];
-        }
-        async function checkRecentRecords(houseId) {
-            const cutoff = new Date(Date.now() - 30 * 60000).toISOString();
-            const { data } = await supabaseClient.from('pollution_logs')
-                .select('tvoc_value, recorded_at, volunteer_id')
-                .eq('data_source', 'manual').eq('house_id', houseId)
-                .not('tvoc_value', 'is', null)
-                .gte('recorded_at', cutoff)
-                .order('recorded_at', { ascending: false }).limit(1);
-            return data && data.length > 0 ? data[0] : null;
-        }
-        // Ping interval
-        let _activePingInterval = null;
-        function startActivePing() {
-            if (_activePingInterval) clearInterval(_activePingInterval);
-            _activePingInterval = setInterval(() => pingActiveSession(), 60000);
-        }
-        function stopActivePing() {
-            if (_activePingInterval) { clearInterval(_activePingInterval); _activePingInterval = null; }
-        }
-        function getTvocSessionDuration() {
-            if (!tvocActiveSession) return '';
-            const mins = Math.floor((Date.now() - new Date(tvocActiveSession.startedAt).getTime()) / 60000);
-            return mins < 60 ? mins + ' นาที' : Math.floor(mins/60) + ' ชม. ' + (mins%60) + ' นาที';
-        }
-
-        function updateTvocFab() {
-            const fab = document.getElementById('tvoc-fab');
-            if (!fab) return;
-            if (tvocActiveSession) {
-                fab.className = 'fixed bottom-6 right-6 w-14 h-14 bg-red-500 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-red-600 transition-all active:scale-95 animate-pulse';
-                fab.querySelector('span').textContent = '🔴';
-                fab.title = 'Session กำลังบันทึก — ' + tvocActiveSession.houseName;
-            } else {
-                fab.className = 'fixed bottom-6 right-6 w-14 h-14 bg-purple-600 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-purple-700 transition-all active:scale-95';
-                fab.querySelector('span').textContent = '✏️';
-                fab.title = 'บันทึก TVOC';
-            }
-        }
-
-        async function onTvocHouseChange() {
-            const houseId = document.getElementById('tvoc-house')?.value;
-            const infoEl = document.getElementById('tvoc-house-info');
-            const startBtn = document.getElementById('tvoc-start-btn');
-            if (!houseId) {
-                if (infoEl) infoEl.classList.add('hidden');
-                if (startBtn) startBtn.classList.add('hidden');
-                return;
-            }
-            const house = tvocHousesData.find(h => String(h.id) === String(houseId));
-            if (!house) return;
-            const dev = tvocDevicesData.find(d => String(d.subject_id) === String(houseId));
-            tvocStoveType = dev ? 'eco' : 'old';
-            const stoveBadge = tvocStoveType === 'eco'
-                ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">🟢 EcoStove</span>'
-                : '<span class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">🔴 เตาเดิม</span>';
-            const volName = house.volunteers?.full_name || '-';
-
-            let warningHtml = '';
-            // Part B: Check active sessions (real-time)
-            const activeSessions = await getActiveSessions();
-            const activeForHouse = activeSessions.filter(s => String(s.house_id) === String(houseId) && s.browser_id !== browserId);
-            if (activeForHouse.length > 0) {
-                const who = activeForHouse[0].volunteer_name || 'ไม่ระบุชื่อ';
-                const ago = Math.floor((Date.now() - new Date(activeForHouse[0].last_ping_at).getTime()) / 60000);
-                warningHtml = '<div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-2">' +
-                    '<p class="text-amber-700 font-bold text-sm">⚠️ กำลังถูกบันทึกอยู่</p>' +
-                    '<p class="text-amber-600 text-xs mt-0.5">👤 ' + who + ' · เมื่อ ' + (ago < 1 ? 'เมื่อกี้' : ago + ' นาทีที่แล้ว') + '</p>' +
-                '</div>';
-            } else {
-                // Part A: Check recent records (last 30 min)
-                const recent = await checkRecentRecords(houseId);
-                if (recent) {
-                    const dt = new Date(recent.recorded_at);
-                    const ago = Math.floor((Date.now() - dt.getTime()) / 60000);
-                    warningHtml = '<div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mt-2">' +
-                        '<p class="text-blue-700 font-bold text-sm">ℹ️ มีการบันทึกล่าสุด</p>' +
-                        '<p class="text-blue-600 text-xs mt-0.5">TVOC ' + Number(recent.tvoc_value).toFixed(3) + ' mg/m³ · เมื่อ ' + ago + ' นาทีที่แล้ว</p>' +
-                    '</div>';
-                }
-            }
-
-            if (infoEl) {
-                infoEl.innerHTML = '<div class="flex items-center justify-between bg-slate-50 rounded-xl px-4 py-3">' +
-                    '<div><span class="text-xs text-slate-400">อาสา:</span> <span class="font-bold text-navy">' + volName + '</span></div>' +
-                    stoveBadge + '</div>' + warningHtml;
-                infoEl.classList.remove('hidden');
-            }
-            if (startBtn) startBtn.classList.remove('hidden');
-        }
-
-        async function showTvocInputForm() {
-            const [housesRes, devsRes] = await Promise.all([
-                supabaseClient.from('subjects').select('id, full_name, volunteer_id, volunteers(full_name)').eq('status', 'active').order('full_name'),
-                supabaseClient.from('devices').select('subject_id, tuya_device_id').eq('is_active', true),
-            ]);
-            tvocHousesData = housesRes.data || [];
-            tvocDevicesData = devsRes.data || [];
-
-            // Check session recovery (>4h stale)
-            if (tvocActiveSession) {
-                const elapsed = (Date.now() - new Date(tvocActiveSession.startedAt).getTime()) / 3600000;
-                if (elapsed > 4) {
-                    showModal(
-                        '<div class="text-center mb-4"><div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">⏰</div>' +
-                        '<h3 class="text-xl font-bold text-navy mb-2">Session ค้าง</h3>' +
-                        '<p class="text-slate-500">🏠 ' + tvocActiveSession.houseName + '</p>' +
-                        '<p class="text-sm text-slate-400">' + tvocActiveSession.readingsCount + ' readings · ' + getTvocSessionDuration() + '</p></div>' +
-                        '<div class="flex gap-3 mt-4">' +
-                            '<button onclick="endTvocSessionSilent()" class="flex-1 py-3 rounded-2xl border-2 border-slate-200 font-bold text-slate-500">จบ Session</button>' +
-                            '<button onclick="closeModal();showTvocSessionMode()" class="flex-1 py-3 rounded-2xl bg-purple-600 text-white font-bold">ดำเนินการต่อ</button>' +
-                        '</div>'
-                    );
-                    return;
-                }
-                showTvocSessionMode();
-                return;
-            }
-            showTvocStartMode();
-        }
-
-        async function showTvocStartMode() {
-            const houseOptions = tvocHousesData.map(h => '<option value="' + h.id + '">' + h.full_name + '</option>').join('');
-
-            // Check who's recording right now
-            let liveHtml = '';
-            try {
-                const activeSessions = await getActiveSessions();
-                const othersActive = activeSessions.filter(s => s.browser_id !== browserId);
-                if (othersActive.length > 0) {
-                    liveHtml = '<div class="bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 mb-3">' +
-                        '<p class="text-purple-700 font-bold text-xs mb-1">🔴 กำลังบันทึกอยู่ตอนนี้</p>' +
-                        othersActive.map(s => '<p class="text-purple-600 text-xs">🏠 ' + (s.house_name || '?') + (s.volunteer_name ? ' · 👤 ' + s.volunteer_name : '') + '</p>').join('') +
-                    '</div>';
-                }
-            } catch(e) {}
-
-            showModal(
-                '<h3 class="text-xl font-bold text-navy mb-1">🟣 ' + t('tvoc.session.start') + '</h3>' +
-                '<p class="text-sm text-slate-400 mb-5">เลือกบ้านแล้วกดเริ่ม Session — บันทึกค่าหลายตัวในรอบเดียว</p>' +
-                liveHtml +
-                '<div class="space-y-4">' +
-                    '<select id="tvoc-house" onchange="onTvocHouseChange()" class="w-full p-3 rounded-2xl border bg-white text-sm"><option value="">' + t('tvoc.select.house') + '</option>' + houseOptions + '</select>' +
-                    '<div id="tvoc-house-info" class="hidden"></div>' +
-                    '<button id="tvoc-start-btn" onclick="startTvocSession()" class="hidden w-full bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-xl text-lg active:scale-95 transition-transform">▶️ เริ่ม Session</button>' +
-                    '<div id="tvoc-recent" class="mt-2"></div>' +
-                '</div>'
-            );
-            loadTvocRecent();
-        }
-
-        async function startTvocSession() {
-            const houseId = document.getElementById('tvoc-house')?.value;
-            if (!houseId) { showToast(t('tvoc.select.house.required'), 'warning'); return; }
-            const house = tvocHousesData.find(h => String(h.id) === String(houseId));
-            if (!house) return;
-            const dev = tvocDevicesData.find(d => String(d.subject_id) === String(houseId));
-            const volunteerName = house.volunteers?.full_name || '';
-            const stoveType = dev ? 'eco' : 'old';
-            tvocActiveSession = {
-                houseId: parseInt(houseId),
-                houseName: house.full_name,
-                volunteerId: house.volunteer_id || null,
-                volunteerName: volunteerName,
-                stoveType: stoveType,
-                startedAt: new Date().toISOString(),
-                readingsCount: 0,
-            };
-            saveTvocSession();
-            updateTvocFab();
-            // Register on server + start ping
-            registerActiveSession(parseInt(houseId), house.full_name, volunteerName, stoveType);
-            startActivePing();
-            closeModal();
-            showTvocSessionMode();
-            showToast('เริ่ม Session — ' + house.full_name);
-        }
-
-        function showTvocSessionMode() {
-            const s = tvocActiveSession;
-            if (!s) { showTvocStartMode(); return; }
-            const stoveBadge = s.stoveType === 'eco'
-                ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">🟢 EcoStove</span>'
-                : '<span class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">🔴 เตาเดิม</span>';
-            showModal(
-                '<div class="bg-purple-50 rounded-2xl p-4 mb-4">' +
-                    '<div class="flex items-center justify-between mb-2">' +
-                        '<span class="px-2.5 py-1 rounded-full bg-purple-200 text-purple-800 text-xs font-bold">🔴 Session กำลังบันทึก</span>' +
-                        stoveBadge +
-                    '</div>' +
-                    '<p class="font-bold text-navy text-lg">🏠 ' + s.houseName + '</p>' +
-                    '<div class="flex items-center gap-3 text-xs text-slate-500 mt-1">' +
-                        (s.volunteerName ? '<span>👤 ' + s.volunteerName + '</span>' : '') +
-                        '<span id="tvoc-session-timer">⏱ ' + getTvocSessionDuration() + '</span>' +
-                        '<span id="tvoc-session-count">📝 ' + s.readingsCount + ' readings</span>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="space-y-4">' +
-                    '<div class="text-center">' +
-                        '<label class="text-xs font-bold text-purple-600 uppercase tracking-wider">TVOC (mg/m³)</label>' +
-                        '<input type="number" id="tvoc-value" inputmode="numeric" class="w-full text-center text-5xl font-bold p-5 rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none" placeholder="0">' +
-                    '</div>' +
-                    '<button onclick="submitTvocReading()" class="w-full bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-xl text-lg active:scale-95 transition-transform">📝 เพิ่มค่า</button>' +
-                    '<button onclick="endTvocSession()" class="w-full bg-slate-100 text-slate-500 py-3 rounded-2xl font-bold text-sm hover:bg-red-50 hover:text-red-500 transition-all">⏹ จบ Session</button>' +
-                '</div>' +
-                '<div id="tvoc-recent" class="mt-4"></div>'
-            );
-            loadTvocRecent();
-            setTimeout(() => document.getElementById('tvoc-value')?.focus(), 100);
-            if (window._tvocTimerInterval) clearInterval(window._tvocTimerInterval);
-            window._tvocTimerInterval = setInterval(() => {
-                const el = document.getElementById('tvoc-session-timer');
-                if (el) el.textContent = '⏱ ' + getTvocSessionDuration();
-            }, 30000);
-        }
-
-        async function submitTvocReading() {
-            const tvocValue = parseFloat(document.getElementById('tvoc-value')?.value);
-            if (isNaN(tvocValue) || tvocValue < 0) { showToast(t('tvoc.value.required'), 'warning'); return; }
-
-            let houseId, volunteerId, stoveType;
-            if (tvocActiveSession) {
-                houseId = tvocActiveSession.houseId;
-                volunteerId = tvocActiveSession.volunteerId;
-                stoveType = tvocActiveSession.stoveType;
-            } else {
-                houseId = parseInt(document.getElementById('tvoc-house')?.value);
-                if (!houseId) { showToast(t('tvoc.select.house.required'), 'warning'); return; }
-                const house = tvocHousesData.find(h => String(h.id) === String(houseId));
-                volunteerId = house?.volunteer_id || null;
-                stoveType = tvocStoveType;
-            }
-
-            const record = {
-                tvoc_value: tvocValue, data_source: 'manual', stove_type: stoveType,
-                status: 'pending', recorded_at: new Date().toISOString(),
-                house_id: houseId, volunteer_id: volunteerId,
-            };
-
-            const { error } = await supabaseClient.from('pollution_logs').insert([record]);
-            if (!error) {
-                showToast(t('tvoc.saved'));
-                if (tvocActiveSession) {
-                    tvocActiveSession.readingsCount++;
-                    saveTvocSession();
-                    const countEl = document.getElementById('tvoc-session-count');
-                    if (countEl) countEl.textContent = '📝 ' + tvocActiveSession.readingsCount + ' readings';
-                }
-                const valInput = document.getElementById('tvoc-value');
-                if (valInput) { valInput.value = ''; valInput.focus(); }
-                loadTvocRecent();
-            } else {
-                showToast(t('common.error') + ': ' + error.message, 'error');
-            }
-        }
-
-        function endTvocSession() {
-            if (!tvocActiveSession) return;
-            showConfirm('จบ Session นี้?\n\n🏠 ' + tvocActiveSession.houseName + '\n📝 ' + tvocActiveSession.readingsCount + ' readings\n⏱ ' + getTvocSessionDuration(), () => {
-                const name = tvocActiveSession.houseName;
-                const count = tvocActiveSession.readingsCount;
-                clearTvocSession();
-                if (window._tvocTimerInterval) clearInterval(window._tvocTimerInterval);
-                stopActivePing();
-                removeActiveSession();
-                updateTvocFab();
-                closeModal();
-                showToast('จบ Session — ' + name + ' (' + count + ' readings)');
-            });
-        }
-
-        function endTvocSessionSilent() {
-            clearTvocSession();
-            if (window._tvocTimerInterval) clearInterval(window._tvocTimerInterval);
-            stopActivePing();
-            removeActiveSession();
-            updateTvocFab();
-            closeModal();
-            showToast('จบ Session เรียบร้อย');
-        }
-
-        async function loadTvocRecent() {
-            const el = document.getElementById('tvoc-recent');
-            if (!el) return;
-            let query = supabaseClient.from('pollution_logs')
-                .select('tvoc_value, recorded_at, stove_type, house_id, volunteer_id')
-                .eq('data_source', 'manual')
-                .not('tvoc_value', 'is', null)
-                .order('recorded_at', { ascending: false });
-            if (tvocActiveSession) {
-                query = query.eq('house_id', tvocActiveSession.houseId);
-                const today = new Date().toISOString().split('T')[0];
-                query = query.gte('recorded_at', today + 'T00:00:00');
-            } else {
-                query = query.limit(5);
-            }
-            const { data } = await query;
-            if (!data || !data.length) { el.innerHTML = '<p class="text-center text-slate-400 text-sm">' + t('tvoc.no.recent') + '</p>'; return; }
-            const label = tvocActiveSession ? 'ค่าที่บันทึกใน Session นี้' : t('tvoc.recent');
-            el.innerHTML = '<p class="text-xs font-bold text-slate-500 mb-2">' + label + '</p>' +
-                data.map(d => {
-                    const dt = new Date(d.recorded_at);
-                    const dateStr = dt.toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short' });
-                    const timeStr = dt.toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit' });
-                    const stoveBadge = d.stove_type === 'eco' ? '<span class="text-emerald-600">●</span>' : '<span class="text-orange-500">●</span>';
-                    const houseName = tvocHousesData.find(h => h.id === d.house_id)?.full_name || '';
-                    const nameHtml = houseName && !tvocActiveSession ? '<span class="text-slate-600 truncate">' + houseName + '</span>' : '';
-                    return '<div class="flex items-center justify-between text-sm py-1.5 border-b border-slate-100">' +
-                        '<div class="flex items-center gap-1.5 min-w-0">' + stoveBadge + nameHtml + '<span class="text-slate-400 text-xs">' + dateStr + ' ' + timeStr + '</span></div>' +
-                        '<span class="font-bold text-purple-700 whitespace-nowrap ml-2">' + Number(d.tvoc_value).toFixed(3) + ' mg/m³</span></div>';
-                }).join('');
-        }
-
         // Approve modal (full-screen, replaces browser confirm for batch approve)
         function showApproveModal(count, warnings) {
             return new Promise(resolve => {
@@ -2273,19 +1922,6 @@
                 }
 
                 breakdownEl.innerHTML = rows.length > 0 ? rows.join('') : '<p class="text-center text-slate-400 text-sm py-2">ยังไม่มีข้อมูลวันนี้</p>';
-
-                // TVOC live recording status
-                try {
-                    const activeSessions = await getActiveSessions();
-                    const liveEl = document.getElementById('today-tvoc-live');
-                    if (activeSessions.length > 0) {
-                        liveEl.innerHTML = '<p class="font-bold text-purple-700 text-xs mb-1">🔴 กำลังบันทึก TVOC</p>' +
-                            activeSessions.map(s => '<p class="text-xs text-purple-600">🏠 ' + (s.house_name || 'ไม่ระบุ') + (s.volunteer_name ? ' · 👤 ' + s.volunteer_name : '') + '</p>').join('');
-                        liveEl.classList.remove('hidden');
-                    } else {
-                        liveEl.classList.add('hidden');
-                    }
-                } catch (_) {}
 
                 // Overall progress
                 const totalCompleted = (summaries || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
@@ -3043,27 +2679,6 @@
                 const container = document.getElementById('pending-sessions-list');
                 const summaryEl = document.getElementById('approval-summary-text');
                 const btnAll = document.getElementById('btn-approve-all');
-
-                // Live status: who's recording right now
-                const liveEl = document.getElementById('tvoc-live-status');
-                if (liveEl) {
-                    const activeSessions = await getActiveSessions();
-                    if (activeSessions.length > 0) {
-                        liveEl.innerHTML = '<p class="font-bold text-purple-700 text-sm mb-2">🔴 กำลังบันทึกอยู่ตอนนี้</p>' +
-                            activeSessions.map(s => {
-                                const ago = Math.floor((Date.now() - new Date(s.last_ping_at).getTime()) / 60000);
-                                const agoText = ago < 1 ? 'เมื่อกี้' : ago + ' นาทีที่แล้ว';
-                                const stoveBadge = s.stove_type === 'eco' ? '🟢' : '🔴';
-                                return '<div class="flex items-center justify-between py-1.5 text-sm">' +
-                                    '<span>🏠 <b>' + (s.house_name || 'ไม่ระบุ') + '</b>' + (s.volunteer_name ? ' · 👤 ' + s.volunteer_name : '') + ' ' + stoveBadge + '</span>' +
-                                    '<span class="text-xs text-purple-400">ping: ' + agoText + '</span>' +
-                                '</div>';
-                            }).join('');
-                        liveEl.classList.remove('hidden');
-                    } else {
-                        liveEl.classList.add('hidden');
-                    }
-                }
 
                 const totalPending = (data || []).length;
                 const hasAny = sessions.length > 0 || manualData.length > 0;
@@ -4219,12 +3834,6 @@
             }
             initMap();
             startAutoRefresh();
-            updateTvocFab();
-            // Re-register active session if browser was refreshed mid-session
-            if (tvocActiveSession) {
-                registerActiveSession(tvocActiveSession.houseId, tvocActiveSession.houseName, tvocActiveSession.volunteerName, tvocActiveSession.stoveType);
-                startActivePing();
-            }
 
             // Lazy init deep map when tab is switched
             const origSwitch = switchView;

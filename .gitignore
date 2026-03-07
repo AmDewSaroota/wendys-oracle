@@ -8,3 +8,4 @@ venv/
 
 # Secrets
 .env
+.vercel

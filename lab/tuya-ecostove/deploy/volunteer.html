@@ -7,8 +7,8 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-  body { font-family: 'Prompt', sans-serif; }
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+  body { font-family: 'Chakra Petch', sans-serif; }
   @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 20px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
   .pulse-ring { animation: pulse-ring 2s infinite; }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -141,12 +141,12 @@
     <!-- ======================= -->
     <div id="tvoc-section" class="hidden bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 fade-in">
       <p class="font-bold text-purple-800 mb-3">📝 บันทึก TVOC (mg/m³)</p>
-      <div class="flex gap-2">
+      <div class="flex gap-2 w-full min-w-0">
         <input type="number" id="tvoc-input" inputmode="decimal" step="0.001"
-          class="flex-1 text-center text-3xl font-bold p-4 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
+          class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
           placeholder="0.000">
         <button onclick="submitTvoc()"
-          class="px-6 bg-purple-600 text-white rounded-xl font-bold text-lg active:scale-95 transition-transform">
+          class="shrink-0 px-4 bg-purple-600 text-white rounded-xl font-bold active:scale-95 transition-transform">
           บันทึก
         </button>
       </div>
@@ -364,8 +364,22 @@ async function pollStatus() {
     .limit(1);
 
   if (!sessions || sessions.length === 0) {
-    setSensorUI('waiting', '⏳', 'รอเซนเซอร์ออนไลน์...',
-      'เปิด Hotspot แล้วรอระบบตรวจจับ (ทุก ~5 นาที)');
+    // Check if daily limit reached (2 completed sessions today)
+    const today = new Date().toISOString().split('T')[0];
+    const { data: todaySessions } = await sb.from('sessions')
+      .select('id, session_status')
+      .eq('device_id', currentDevice.tuya_device_id)
+      .in('session_status', ['complete', 'incomplete'])
+      .gte('started_at', today + 'T00:00:00Z')
+      .limit(3);
+    const doneCount = todaySessions ? todaySessions.length : 0;
+    if (doneCount >= 2) {
+      setSensorUI('daily-limit', '✅', 'ครบ 2 sessions แล้ววันนี้',
+        'เซนเซอร์เก็บข้อมูลครบตามกำหนด — พรุ่งนี้เก็บต่อได้');
+    } else {
+      setSensorUI('waiting', '⏳', 'รอเซนเซอร์ออนไลน์...',
+        'เปิด Hotspot แล้วรอระบบตรวจจับ (ทุก ~5 นาที)');
+    }
     hideAllActions();
     return;
   }
@@ -397,6 +411,7 @@ function setSensorUI(state, emoji, text, detail) {
   const colors = {
     'no-device': 'text-red-600',
     'waiting': 'text-gray-600',
+    'daily-limit': 'text-emerald-700',
     'baseline': 'text-blue-700',
     'collecting': 'text-orange-700'
   };
