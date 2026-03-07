@@ -124,6 +124,7 @@
             <div class="hidden md:flex space-x-10">
                 <button onclick="switchView('basic')" id="nav-basic" class="nav-active py-2 flex items-center gap-1" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
                 <button onclick="switchView('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.deep">📊 ข้อมูลเชิงลึก</button>
+                <a href="/volunteer.html" target="_blank" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1.5">📱 อาสาสมัคร</a>
                 <button onclick="promptAdmin()" id="nav-admin" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1.5" data-i18n="nav.admin"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>จัดการระบบ</button>
                 <button onclick="toggleLang()" class="ml-4 px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-xl text-white text-sm font-bold transition-all"><span class="lang-toggle-text">EN</span></button>
             </div>
@@ -137,6 +138,7 @@
         <div id="mobile-menu" class="hidden md:hidden p-6 shadow-xl space-y-4" style="background-color: #043327;">
             <button onclick="switchView('basic'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
             <button onclick="switchView('deep'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.deep">📊 ข้อมูลเชิงลึก</button>
+            <a href="/volunteer.html" target="_blank" class="block w-full text-left font-medium py-2 text-emerald-100">📱 อาสาสมัคร</a>
             <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-white border-t border-emerald-700 pt-4" data-i18n="nav.admin.mobile">จัดการระบบ (Admin)</button>
             <button onclick="toggleLang()" class="block w-full text-left font-medium py-2 text-emerald-100 border-t border-emerald-700 pt-4"><span class="lang-toggle-text">EN</span></button>
         </div>

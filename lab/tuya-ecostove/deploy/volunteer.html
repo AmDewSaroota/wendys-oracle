@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EcoStove — อาสาสมัคร</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Prompt', sans-serif; }
+  @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); } 70% { box-shadow: 0 0 0 20px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+  .pulse-ring { animation: pulse-ring 2s infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .spin { animation: spin 1.5s linear infinite; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fade-in 0.3s ease; }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-8">
+
+<!-- Header -->
+<header class="bg-emerald-800 text-white px-4 py-4 shadow-lg sticky top-0 z-50">
+  <div class="max-w-md mx-auto flex items-center gap-3">
+    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">🌿</div>
+    <div>
+      <h1 class="text-lg font-bold leading-tight">EcoStove อาสาสมัคร</h1>
+      <p class="text-emerald-200 text-xs">ระบบเก็บข้อมูลภาคสนาม</p>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-md mx-auto p-4 space-y-4">
+
+  <!-- ==================== -->
+  <!-- STEP 1: House Select -->
+  <!-- ==================== -->
+  <div id="step-house" class="bg-white rounded-2xl shadow-md p-5 fade-in">
+    <!-- GPS detecting -->
+    <div id="gps-detecting" class="text-center py-4">
+      <div class="text-4xl mb-3">📍</div>
+      <p class="font-bold text-gray-700">กำลังตรวจจับตำแหน่ง...</p>
+      <p class="text-sm text-gray-400 mt-1">กรุณาอนุญาตการเข้าถึง GPS</p>
+      <div class="mt-3 w-8 h-8 border-3 border-emerald-200 border-t-emerald-600 rounded-full spin mx-auto" style="border-width:3px;"></div>
+    </div>
+
+    <!-- GPS matched -->
+    <div id="gps-matched" class="hidden">
+      <div class="bg-emerald-50 rounded-xl p-4 mb-3">
+        <div class="flex items-center gap-3">
+          <div class="text-3xl">🏠</div>
+          <div class="flex-1">
+            <p class="font-bold text-lg text-gray-800" id="matched-house-name"></p>
+            <p class="text-sm text-gray-500" id="matched-house-detail"></p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="confirmMatchedHouse()" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">✅ ยืนยัน</button>
+        <button onclick="showManualSelect()" class="px-4 bg-gray-100 text-gray-600 rounded-xl font-bold active:scale-95">เปลี่ยน</button>
+      </div>
+    </div>
+
+    <!-- Manual select -->
+    <div id="manual-select" class="hidden">
+      <p class="text-sm text-yellow-600 font-bold mb-3" id="manual-reason">⚠️ เลือกบ้านเอง</p>
+      <select id="house-dropdown" class="w-full p-3 rounded-xl border-2 border-gray-200 text-lg font-bold bg-white focus:border-emerald-500 outline-none" style="-webkit-appearance:none;">
+        <option value="">-- เลือกบ้าน --</option>
+      </select>
+      <button onclick="confirmDropdownHouse()" class="mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">✅ ยืนยัน</button>
+    </div>
+  </div>
+
+  <!-- ======================== -->
+  <!-- STEP 2: Session Monitor -->
+  <!-- ======================== -->
+  <div id="step-session" class="hidden space-y-4">
+
+    <!-- House info bar -->
+    <div class="bg-emerald-800 text-white rounded-2xl px-5 py-3 flex items-center gap-3 shadow-md fade-in">
+      <div class="text-2xl">🏠</div>
+      <div class="flex-1">
+        <p class="font-bold" id="session-house-name"></p>
+        <p class="text-emerald-200 text-xs" id="session-volunteer-name"></p>
+      </div>
+      <div class="text-right">
+        <p class="text-xs text-emerald-200" id="session-time"></p>
+      </div>
+    </div>
+
+    <!-- Sensor status card -->
+    <div id="sensor-card" class="bg-white rounded-2xl shadow-md p-5 fade-in">
+      <div class="flex items-center gap-3">
+        <div class="text-3xl" id="sensor-emoji">⏳</div>
+        <div class="flex-1">
+          <p class="font-bold text-lg" id="sensor-status-text">กำลังตรวจสอบ...</p>
+          <p class="text-sm text-gray-500" id="sensor-status-detail"></p>
+        </div>
+      </div>
+
+      <!-- Baseline progress -->
+      <div id="baseline-progress" class="hidden mt-4 bg-blue-50 rounded-xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-bold text-blue-800">📊 กำลังเก็บค่า Baseline</span>
+          <span class="text-xs text-blue-600" id="baseline-count">0 ค่า</span>
+        </div>
+        <div class="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+          <div id="baseline-bar" class="h-full bg-blue-500 rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+        <p class="text-xs text-blue-600 mt-2" id="baseline-time">⏱ 0 นาที</p>
+      </div>
+
+      <!-- Collecting progress -->
+      <div id="collecting-progress" class="hidden mt-4 bg-orange-50 rounded-xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm font-bold text-orange-800">🔥 กำลังเก็บข้อมูลการใช้เตา</span>
+          <span class="text-xs text-orange-600" id="collecting-count">0 ค่า</span>
+        </div>
+        <div class="w-full h-2 bg-orange-200 rounded-full overflow-hidden">
+          <div id="collecting-bar" class="h-full bg-orange-500 rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+        <p class="text-xs text-orange-600 mt-2" id="collecting-time">⏱ 0 นาที</p>
+      </div>
+    </div>
+
+    <!-- ======================= -->
+    <!-- BIG COOKING BUTTON -->
+    <!-- ======================= -->
+    <div id="cooking-btn-wrap" class="hidden fade-in">
+      <button id="cooking-btn" onclick="markCookingStart()"
+        class="w-full bg-red-500 text-white py-8 rounded-3xl shadow-2xl active:scale-95 transition-transform pulse-ring">
+        <div class="text-6xl mb-2">🔥</div>
+        <div class="text-2xl font-bold">เริ่มจุดเตาแล้ว</div>
+        <div class="text-sm opacity-70 mt-2">กดเมื่อเห็นชาวบ้านจุดเตา</div>
+      </button>
+    </div>
+
+    <!-- ======================= -->
+    <!-- TVOC Recording Section -->
+    <!-- ======================= -->
+    <div id="tvoc-section" class="hidden bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 fade-in">
+      <p class="font-bold text-purple-800 mb-3">📝 บันทึก TVOC (mg/m³)</p>
+      <div class="flex gap-2">
+        <input type="number" id="tvoc-input" inputmode="decimal" step="0.001"
+          class="flex-1 text-center text-3xl font-bold p-4 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
+          placeholder="0.000">
+        <button onclick="submitTvoc()"
+          class="px-6 bg-purple-600 text-white rounded-xl font-bold text-lg active:scale-95 transition-transform">
+          บันทึก
+        </button>
+      </div>
+      <div id="tvoc-list" class="mt-3 space-y-1"></div>
+    </div>
+
+    <!-- End session -->
+    <div id="end-btn-wrap" class="hidden">
+      <button onclick="endVolunteerSession()" class="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm hover:bg-red-50 hover:text-red-500 transition-all">
+        ⏹ จบ Session
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== -->
+  <!-- STEP 3: Summary -->
+  <!-- ==================== -->
+  <div id="step-summary" class="hidden bg-emerald-50 rounded-2xl p-6 border-2 border-emerald-200 fade-in">
+    <div class="text-center mb-4">
+      <div class="text-5xl">✅</div>
+      <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
+    </div>
+    <div id="summary-details" class="space-y-3 text-sm bg-white rounded-xl p-4"></div>
+    <button onclick="resetPage()" class="mt-5 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">
+      🔄 เริ่มใหม่
+    </button>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-20 left-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-xl text-center text-sm font-bold z-50 hidden transition-all max-w-md mx-auto"></div>
+
+<script>
+// ================================================
+// Config
+// ================================================
+const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const API_BASE = window.location.origin;
+
+// ================================================
+// State
+// ================================================
+let houses = [];
+let selectedHouse = null;
+let currentDevice = null;
+let activeSession = null;
+let cookingStartedAt = null;
+let tvocReadings = [];
+let pollTimer = null;
+let timeTimer = null;
+let userGPS = null; // { lat, lng }
+
+// ================================================
+// Init
+// ================================================
+async function init() {
+  await loadHouses();
+  detectGPS();
+}
+
+async function loadHouses() {
+  const { data } = await sb.from('subjects')
+    .select('id, full_name, gps_lat, gps_long, volunteer_id, volunteers(full_name), status')
+    .eq('status', 'active')
+    .order('full_name');
+  houses = data || [];
+
+  const dd = document.getElementById('house-dropdown');
+  houses.forEach(h => {
+    const opt = document.createElement('option');
+    opt.value = h.id;
+    opt.textContent = h.full_name;
+    dd.appendChild(opt);
+  });
+}
+
+// ================================================
+// GPS Detection
+// ================================================
+function detectGPS() {
+  if (!navigator.geolocation) {
+    showManualSelect('GPS ไม่รองรับ — เลือกบ้านเอง');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userGPS = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      matchNearestHouse(pos.coords.latitude, pos.coords.longitude);
+    },
+    err => showManualSelect('ไม่สามารถระบุตำแหน่ง — เลือกบ้านเอง'),
+    { enableHighAccuracy: true, timeout: 15000 }
+  );
+}
+
+function matchNearestHouse(lat, lng) {
+  let nearest = null;
+  let minDist = Infinity;
+
+  houses.forEach(h => {
+    if (h.gps_lat != null && h.gps_long != null) {
+      const d = haversine(lat, lng, h.gps_lat, h.gps_long);
+      if (d < minDist) { minDist = d; nearest = h; }
+    }
+  });
+
+  if (nearest && minDist < 200) {
+    document.getElementById('gps-detecting').classList.add('hidden');
+    document.getElementById('gps-matched').classList.remove('hidden');
+    document.getElementById('matched-house-name').textContent = nearest.full_name;
+    const parts = ['📍 ห่าง ' + Math.round(minDist) + ' เมตร'];
+    if (nearest.volunteers?.full_name) parts.push('👤 ' + nearest.volunteers.full_name);
+    document.getElementById('matched-house-detail').textContent = parts.join(' · ');
+    selectedHouse = nearest;
+
+    // Auto-confirm if very close
+    if (minDist < 30) {
+      confirmMatchedHouse();
+    }
+  } else {
+    showManualSelect('ไม่พบบ้านในรัศมี 200 เมตร — เลือกเอง');
+  }
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ================================================
+// House Selection
+// ================================================
+function showManualSelect(reason) {
+  document.getElementById('gps-detecting').classList.add('hidden');
+  document.getElementById('gps-matched').classList.add('hidden');
+  document.getElementById('manual-select').classList.remove('hidden');
+  if (reason) document.getElementById('manual-reason').textContent = '⚠️ ' + reason;
+}
+
+function confirmMatchedHouse() {
+  if (!selectedHouse) return;
+  onHouseConfirmed(selectedHouse);
+}
+
+function confirmDropdownHouse() {
+  const id = document.getElementById('house-dropdown').value;
+  if (!id) { showToast('กรุณาเลือกบ้าน'); return; }
+  const house = houses.find(h => String(h.id) === id);
+  if (house) {
+    selectedHouse = house;
+    onHouseConfirmed(house);
+  }
+}
+
+function onHouseConfirmed(house) {
+  // Show session step
+  document.getElementById('step-house').classList.add('hidden');
+  document.getElementById('step-session').classList.remove('hidden');
+
+  // Set house info
+  document.getElementById('session-house-name').textContent = house.full_name;
+  document.getElementById('session-volunteer-name').textContent =
+    house.volunteers?.full_name ? '👤 ' + house.volunteers.full_name : '';
+
+  showToast('✅ เลือกบ้าน: ' + house.full_name);
+
+  // Start polling for sensor/session status
+  startPolling();
+  startTimeUpdate();
+}
+
+// ================================================
+// Polling — Sensor & Session Status
+// ================================================
+async function startPolling() {
+  await pollStatus();
+  pollTimer = setInterval(pollStatus, 15000); // every 15 seconds
+}
+
+function startTimeUpdate() {
+  timeTimer = setInterval(() => {
+    const now = new Date();
+    document.getElementById('session-time').textContent =
+      now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    updateTimers();
+  }, 1000);
+}
+
+async function pollStatus() {
+  if (!selectedHouse) return;
+
+  // 1. Find device for this house
+  const { data: devices } = await sb.from('devices')
+    .select('id, tuya_device_id, name')
+    .eq('subject_id', selectedHouse.id)
+    .limit(1);
+
+  if (!devices || devices.length === 0) {
+    setSensorUI('no-device', '❌', 'ไม่พบเซนเซอร์', 'บ้านนี้ยังไม่ได้ลงทะเบียนเซนเซอร์ในระบบ');
+    return;
+  }
+  currentDevice = devices[0];
+
+  // 2. Check for active session on this device
+  const { data: sessions } = await sb.from('sessions')
+    .select('*')
+    .eq('device_id', currentDevice.tuya_device_id)
+    .in('session_status', ['baseline', 'collecting'])
+    .order('started_at', { ascending: false })
+    .limit(1);
+
+  if (!sessions || sessions.length === 0) {
+    setSensorUI('waiting', '⏳', 'รอเซนเซอร์ออนไลน์...',
+      'เปิด Hotspot แล้วรอระบบตรวจจับ (ทุก ~5 นาที)');
+    hideAllActions();
+    return;
+  }
+
+  activeSession = sessions[0];
+
+  if (activeSession.session_status === 'baseline') {
+    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    setSensorUI('baseline', '📊', 'เซนเซอร์ออนไลน์ — เก็บ Baseline',
+      'เก็บได้ ' + (activeSession.readings_count || 0) + ' ค่า · ' + elapsed + ' นาที');
+    showBaselineProgress();
+    showCookingButton();
+  } else if (activeSession.session_status === 'collecting') {
+    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
+      (activeSession.readings_count || 0) + ' ค่า · ' + elapsed + ' นาที');
+    showCollectingProgress();
+    hideCookingButton();
+    showTvocSection();
+    showEndButton();
+  }
+}
+
+function setSensorUI(state, emoji, text, detail) {
+  document.getElementById('sensor-emoji').textContent = emoji;
+  const statusText = document.getElementById('sensor-status-text');
+  statusText.textContent = text;
+
+  const colors = {
+    'no-device': 'text-red-600',
+    'waiting': 'text-gray-600',
+    'baseline': 'text-blue-700',
+    'collecting': 'text-orange-700'
+  };
+  statusText.className = 'font-bold text-lg ' + (colors[state] || '');
+  document.getElementById('sensor-status-detail').textContent = detail;
+}
+
+// ================================================
+// Progress Displays
+// ================================================
+function showBaselineProgress() {
+  document.getElementById('baseline-progress').classList.remove('hidden');
+  document.getElementById('collecting-progress').classList.add('hidden');
+  updateTimers();
+}
+
+function showCollectingProgress() {
+  document.getElementById('baseline-progress').classList.add('hidden');
+  document.getElementById('collecting-progress').classList.remove('hidden');
+  updateTimers();
+}
+
+function updateTimers() {
+  if (!activeSession) return;
+
+  if (activeSession.session_status === 'baseline') {
+    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    const readings = activeSession.readings_count || 0;
+    document.getElementById('baseline-count').textContent = readings + ' ค่า';
+    document.getElementById('baseline-time').textContent = '⏱ ' + elapsed + ' นาที';
+    // Progress bar: approximate 10 min baseline
+    const pct = Math.min(100, (elapsed / 10) * 100);
+    document.getElementById('baseline-bar').style.width = pct + '%';
+  }
+
+  if (activeSession.session_status === 'collecting' || cookingStartedAt) {
+    const startRef = cookingStartedAt || (activeSession.baseline_ended_at ? new Date(activeSession.baseline_ended_at) : new Date(activeSession.started_at));
+    const elapsed = Math.floor((Date.now() - startRef.getTime()) / 60000);
+    const readings = activeSession.readings_count || 0;
+    document.getElementById('collecting-count').textContent = readings + ' ค่า';
+    const hrs = Math.floor(elapsed / 60);
+    const mins = elapsed % 60;
+    document.getElementById('collecting-time').textContent = '⏱ ' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที';
+    // Progress bar: approximate 130 min session
+    const pct = Math.min(100, (elapsed / 130) * 100);
+    document.getElementById('collecting-bar').style.width = pct + '%';
+  }
+}
+
+// ================================================
+// UI State Control
+// ================================================
+function showCookingButton() {
+  document.getElementById('cooking-btn-wrap').classList.remove('hidden');
+  document.getElementById('tvoc-section').classList.remove('hidden');
+}
+
+function hideCookingButton() {
+  document.getElementById('cooking-btn-wrap').classList.add('hidden');
+}
+
+function showTvocSection() {
+  document.getElementById('tvoc-section').classList.remove('hidden');
+}
+
+function showEndButton() {
+  document.getElementById('end-btn-wrap').classList.remove('hidden');
+}
+
+function hideAllActions() {
+  document.getElementById('cooking-btn-wrap').classList.add('hidden');
+  document.getElementById('tvoc-section').classList.add('hidden');
+  document.getElementById('end-btn-wrap').classList.add('hidden');
+  document.getElementById('baseline-progress').classList.add('hidden');
+  document.getElementById('collecting-progress').classList.add('hidden');
+}
+
+// ================================================
+// Cooking Start — THE BIG BUTTON
+// ================================================
+async function markCookingStart() {
+  if (!activeSession) { showToast('❌ ไม่พบ session ที่กำลังทำงาน'); return; }
+  if (activeSession.session_status !== 'baseline') {
+    showToast('⚠️ ระบบเปลี่ยนเฟสไปแล้ว');
+    return;
+  }
+
+  const btn = document.getElementById('cooking-btn');
+  btn.disabled = true;
+  btn.classList.remove('pulse-ring');
+  btn.innerHTML = '<div class="text-4xl mb-2 spin" style="display:inline-block;">⏳</div><div class="text-xl font-bold">กำลังบันทึก...</div>';
+
+  try {
+    const params = new URLSearchParams({
+      action: 'cooking-start',
+      session_id: activeSession.id,
+      house_id: selectedHouse.id,
+      gps_lat: userGPS?.lat || '',
+      gps_lng: userGPS?.lng || '',
+    });
+    const res = await fetch(API_BASE + '/api/volunteer?' + params.toString(), { method: 'POST' });
+    const result = await res.json();
+
+    if (result.ok) {
+      cookingStartedAt = new Date();
+      activeSession.session_status = 'collecting';
+      showToast('✅ บันทึกแล้ว — เริ่มเก็บข้อมูลการใช้เตา');
+      hideCookingButton();
+      showCollectingProgress();
+      showTvocSection();
+      showEndButton();
+      setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
+        'Baseline: ' + (result.baseline_readings || 0) + ' ค่า');
+    } else {
+      showToast('❌ ' + (result.error || 'เกิดข้อผิดพลาด'));
+      resetCookingBtn(btn);
+    }
+  } catch (e) {
+    showToast('❌ เชื่อมต่อ server ไม่ได้');
+    resetCookingBtn(btn);
+  }
+}
+
+function resetCookingBtn(btn) {
+  btn.disabled = false;
+  btn.classList.add('pulse-ring');
+  btn.innerHTML = '<div class="text-6xl mb-2">🔥</div><div class="text-2xl font-bold">เริ่มจุดเตาแล้ว</div><div class="text-sm opacity-70 mt-2">กดเมื่อเห็นชาวบ้านจุดเตา</div>';
+}
+
+// ================================================
+// TVOC Recording
+// ================================================
+async function submitTvoc() {
+  const input = document.getElementById('tvoc-input');
+  const val = parseFloat(input.value);
+  if (isNaN(val) || val < 0) { showToast('กรุณาใส่ค่า TVOC'); return; }
+
+  const record = {
+    tvoc_value: val,
+    house_id: selectedHouse.id,
+    volunteer_id: selectedHouse.volunteer_id || null,
+    data_source: 'manual',
+    stove_type: 'eco',
+    status: 'pending',
+    recorded_at: new Date().toISOString(),
+    session_id: activeSession?.id || null,
+  };
+
+  const { error } = await sb.from('pollution_logs').insert([record]);
+  if (error) {
+    showToast('❌ บันทึกไม่สำเร็จ: ' + error.message);
+    return;
+  }
+
+  tvocReadings.push({ value: val, time: new Date() });
+  input.value = '';
+  input.focus();
+  showToast('✅ บันทึก TVOC ' + val.toFixed(3) + ' mg/m³');
+  updateTvocList();
+}
+
+function updateTvocList() {
+  const list = document.getElementById('tvoc-list');
+  if (!tvocReadings.length) { list.innerHTML = ''; return; }
+  list.innerHTML =
+    '<div class="text-xs text-purple-700 font-bold mb-1">📝 ' + tvocReadings.length + ' ค่าที่บันทึก</div>' +
+    tvocReadings.slice().reverse().map(r =>
+      '<div class="flex justify-between text-xs text-gray-500 py-1 border-b border-purple-100">' +
+        '<span>' + r.time.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</span>' +
+        '<span class="font-bold text-purple-700">' + r.value.toFixed(3) + ' mg/m³</span>' +
+      '</div>'
+    ).join('');
+}
+
+// ================================================
+// End Session
+// ================================================
+function endVolunteerSession() {
+  if (!confirm('จบ Session นี้?\n\n🏠 ' + selectedHouse.full_name + '\n📝 TVOC: ' + tvocReadings.length + ' ค่า')) return;
+
+  clearInterval(pollTimer);
+  clearInterval(timeTimer);
+
+  // Hide session step, show summary
+  document.getElementById('step-session').classList.add('hidden');
+  document.getElementById('step-summary').classList.remove('hidden');
+
+  const det = document.getElementById('summary-details');
+  const items = [];
+  items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + selectedHouse.full_name + '</span></div>');
+
+  if (activeSession) {
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">' + (activeSession.readings_count || 0) + ' ค่า</span></div>');
+
+    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    const hrs = Math.floor(elapsed / 60);
+    const mins = elapsed % 60;
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">⏱ เวลารวม</span><span class="font-bold">' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที</span></div>');
+  }
+
+  if (cookingStartedAt) {
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🔥 จุดเตาเวลา</span><span class="font-bold">' + cookingStartedAt.toLocaleTimeString('th-TH') + '</span></div>');
+  }
+
+  if (tvocReadings.length > 0) {
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 TVOC</span><span class="font-bold">' + tvocReadings.length + ' ค่า</span></div>');
+    const avg = tvocReadings.reduce((s, r) => s + r.value, 0) / tvocReadings.length;
+    items.push('<div class="flex justify-between py-2"><span class="text-gray-500">📝 TVOC เฉลี่ย</span><span class="font-bold text-purple-700">' + avg.toFixed(3) + ' mg/m³</span></div>');
+  }
+
+  det.innerHTML = items.join('');
+}
+
+function resetPage() {
+  location.reload();
+}
+
+// ================================================
+// Utils
+// ================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hidden');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+// ================================================
+// Start
+// ================================================
+init();
+</script>
+</body>
+</html>

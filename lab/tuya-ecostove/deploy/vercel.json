@@ -2,6 +2,9 @@
   "functions": {
     "api/sync.js": {
       "maxDuration": 30
+    },
+    "api/volunteer.js": {
+      "maxDuration": 10
     }
   }
 }
