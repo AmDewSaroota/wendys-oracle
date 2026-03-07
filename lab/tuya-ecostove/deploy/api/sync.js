@@ -4,7 +4,7 @@
  *
  * Env vars required (set in Vercel dashboard):
  *   TUYA_ACCESS_ID, TUYA_ACCESS_SECRET
- *   SUPABASE_URL, SUPABASE_KEY
+ *   SUPABASE_URL, SUPABASE_KEY, SUPABASE_SERVICE_KEY
  *   CRON_SECRET  (ป้องกันไม่ให้คนอื่นเรียก)
  */
 
@@ -41,13 +41,32 @@ async function loadSensors(sbUrl, sbKey) {
     }
   }
 
-  // 3. Build SENSORS array
-  return sensors.map(s => ({
-    id: s.tuya_device_id,
-    name: s.name,
-    stoveType: s.stove_type || 'eco',
-    houseId: deviceMap[s.tuya_device_id] || null,
-  }));
+  // 3. Get subject-to-project mapping
+  const projectMap = {};
+  try {
+    const spRes = await fetch(
+      sbUrl + '/rest/v1/subject_projects?select=subject_id,project_id',
+      { headers: sbHeaders(sbKey) }
+    );
+    if (spRes.ok) {
+      const spData = await spRes.json();
+      for (const sp of spData) {
+        projectMap[sp.subject_id] = sp.project_id;
+      }
+    }
+  } catch (_) {}
+
+  // 4. Build SENSORS array
+  return sensors.map(s => {
+    const houseId = deviceMap[s.tuya_device_id] || null;
+    return {
+      id: s.tuya_device_id,
+      name: s.name,
+      stoveType: s.stove_type || 'eco',
+      houseId,
+      projectId: houseId ? (projectMap[houseId] || null) : null,
+    };
+  });
 }
 
 // ===== Token Cache (in-memory, survives Vercel warm starts) =====
@@ -127,23 +146,22 @@ async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
   return map;
 }
 
-// Calculate AQI from PM2.5 using US EPA breakpoints
+// Calculate AQI from PM2.5 using Thai PCD breakpoints (กรมควบคุมมลพิษ พ.ศ.2566)
 function calculateAqiFromPm25(pm25) {
   if (pm25 == null || isNaN(pm25) || pm25 < 0) return null;
   const bp = [
-    { lo: 0,     hi: 12.0,   aqiLo: 0,   aqiHi: 50 },
-    { lo: 12.1,  hi: 35.4,   aqiLo: 51,  aqiHi: 100 },
-    { lo: 35.5,  hi: 55.4,   aqiLo: 101, aqiHi: 150 },
-    { lo: 55.5,  hi: 150.4,  aqiLo: 151, aqiHi: 200 },
-    { lo: 150.5, hi: 250.4,  aqiLo: 201, aqiHi: 300 },
-    { lo: 250.5, hi: 500.4,  aqiLo: 301, aqiHi: 500 },
+    { lo: 0,    hi: 15,   aqiLo: 0,   aqiHi: 25 },
+    { lo: 15.1, hi: 25,   aqiLo: 26,  aqiHi: 50 },
+    { lo: 25.1, hi: 37.5, aqiLo: 51,  aqiHi: 100 },
+    { lo: 37.6, hi: 75,   aqiLo: 101, aqiHi: 200 },
+    { lo: 75.1, hi: 150,  aqiLo: 201, aqiHi: 300 },
   ];
   for (const b of bp) {
     if (pm25 >= b.lo && pm25 <= b.hi) {
       return Math.round((b.aqiHi - b.aqiLo) / (b.hi - b.lo) * (pm25 - b.lo) + b.aqiLo);
     }
   }
-  return pm25 > 500.4 ? 500 : null;
+  return pm25 > 150 ? 300 : null;
 }
 
 // ===== Supabase helpers =====
@@ -220,14 +238,20 @@ async function getLastClosedSession(sbUrl, sbKey, deviceId) {
   return data.length > 0 ? data[0] : null;
 }
 
-async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId) {
+async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId, projectId) {
+  // Pre-check: guard against race condition (2 cron calls at same time)
   const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
+  if (countToday >= MAX_SESSIONS_PER_DAY) {
+    console.log('[createSession] blocked — already', countToday, 'sessions today for', deviceId);
+    return null;
+  }
   const record = {
     device_id: deviceId,
     session_status: 'baseline',
     session_number: countToday + 1,
     stove_type: stoveType || 'eco',
     house_id: houseId || null,
+    project_id: projectId || null,
     started_at: new Date().toISOString(),
     readings_count: 1,
   };
@@ -238,7 +262,17 @@ async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId) {
   });
   if (res.ok) {
     const result = await res.json();
-    return result[0];
+    const created = result[0];
+    // Post-check: if another cron snuck in, rollback this session
+    const recheck = await getSessionCountToday(sbUrl, sbKey, deviceId);
+    if (recheck > MAX_SESSIONS_PER_DAY && created) {
+      console.log('[createSession] race detected — rolling back session', created.id);
+      await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + created.id, {
+        method: 'DELETE', headers: sbHeaders(sbKey),
+      });
+      return null;
+    }
+    return created;
   }
   return null;
 }
@@ -251,7 +285,7 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
   });
 }
 
-async function closeSession(sbUrl, sbKey, session) {
+async function closeSession(sbUrl, sbKey, session, closeReason) {
   try {
     // Query pollution_logs for this session (prefer session_id, fallback to time range)
     const logsUrl = session.id
@@ -266,9 +300,9 @@ async function closeSession(sbUrl, sbKey, session) {
       // Still close the session even if we can't compute averages
       await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + session.id, {
         method: 'PATCH', headers: sbHeaders(sbKey),
-        body: JSON.stringify({ session_status: 'incomplete', ended_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
+        body: JSON.stringify({ session_status: 'incomplete', ended_at: new Date().toISOString(), notes: closeReason || null, updated_at: new Date().toISOString() }),
       });
-      await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+      await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type, session.project_id);
       return;
     }
     const data = await logs.json();
@@ -282,8 +316,9 @@ async function closeSession(sbUrl, sbKey, session) {
     const temps = vals('temperature');
     const hums = vals('humidity');
 
+    const isComplete = data.length >= 26;
     const update = {
-      session_status: data.length >= 26 ? 'complete' : 'incomplete',
+      session_status: isComplete ? 'complete' : 'incomplete',
       ended_at: new Date().toISOString(),
       collection_ended_at: new Date().toISOString(),
       readings_count: data.length,
@@ -293,6 +328,7 @@ async function closeSession(sbUrl, sbKey, session) {
       avg_co2: avg(co2s),
       avg_temperature: avg(temps),
       avg_humidity: avg(hums),
+      notes: !isComplete ? (closeReason || 'readings ไม่ถึง 26') : null,
       updated_at: new Date().toISOString(),
     };
 
@@ -304,7 +340,7 @@ async function closeSession(sbUrl, sbKey, session) {
     }
 
     // Update daily summary after closing session
-    await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+    await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type, session.project_id);
   } catch (err) {
     console.error('closeSession error for session ' + session.id + ':', err.message);
     // Attempt to at least mark session as incomplete + update daily summary
@@ -313,12 +349,12 @@ async function closeSession(sbUrl, sbKey, session) {
         method: 'PATCH', headers: sbHeaders(sbKey),
         body: JSON.stringify({ session_status: 'incomplete', ended_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
       });
-      await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type);
+      await upsertDailySummary(sbUrl, sbKey, session.device_id, session.stove_type, session.project_id);
     } catch (_) {}
   }
 }
 
-async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
+async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) {
   try {
     const today = new Date().toISOString().slice(0, 10);
     // Use PostgREST and() operator to avoid duplicate param name issue
@@ -365,6 +401,7 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType) {
       avg_temperature: avgOf(completed, 'avg_temperature'),
       avg_humidity: avgOf(completed, 'avg_humidity'),
       stove_type: stoveType || 'eco',
+      project_id: projectId || null,
       updated_at: new Date().toISOString(),
     };
 
@@ -415,7 +452,7 @@ async function updateMonthlyQuota(sbUrl, sbKey, callsToAdd) {
   }
 }
 
-async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId, cachedActive) {
+async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId, cachedActive, projectId) {
   try {
     const active = cachedActive !== undefined ? cachedActive : await getActiveSession(sbUrl, sbKey, deviceId);
 
@@ -426,11 +463,11 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
 
       if (sessionAge >= SESSION_MAX_MINUTES) {
         // Session reached 2h10m — close, do NOT start new
-        await closeSession(sbUrl, sbKey, active);
+        await closeSession(sbUrl, sbKey, active, 'ครบเวลา ' + Math.round(sessionAge) + ' นาที');
         return { action: 'auto-cutoff', sessionId: active.id, minutes: Math.round(sessionAge) };
       } else if (minutesAgo >= SESSION_GAP_MINUTES) {
         // Gap too long — close old, enter cooldown
-        await closeSession(sbUrl, sbKey, active);
+        await closeSession(sbUrl, sbKey, active, 'เซนเซอร์ออฟไลน์เกิน ' + Math.round(minutesAgo) + ' นาที');
         return { action: 'cooldown (after close)', minutesLeft: SESSION_COOLDOWN_MINUTES };
       } else if (!isOnline) {
         // Device offline mid-session — skip this tick, don't inflate readings_count
@@ -491,7 +528,7 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
       if (!isOnline) {
         return { action: 'device-offline' };
       }
-      const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType, houseId);
+      const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType, houseId, projectId);
       return { action: 'new', sessionId: newSession?.id };
     }
   } catch (err) {
@@ -514,7 +551,7 @@ module.exports = async function handler(req, res) {
   const accessId = process.env.TUYA_ACCESS_ID;
   const accessSecret = process.env.TUYA_ACCESS_SECRET;
   const sbUrl = process.env.SUPABASE_URL;
-  const sbKey = process.env.SUPABASE_KEY;
+  const sbKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
   if (!accessId || !accessSecret || !sbUrl || !sbKey) {
     return res.status(500).json({ error: 'Missing env vars' });
@@ -545,12 +582,12 @@ module.exports = async function handler(req, res) {
           const minutesAgo = (Date.now() - lastUpdate.getTime()) / 60000;
 
           if (sessionAge >= SESSION_MAX_MINUTES) {
-            await closeSession(sbUrl, sbKey, active);
+            await closeSession(sbUrl, sbKey, active, 'ครบเวลา ' + Math.round(sessionAge) + ' นาที');
             results.push({ sensor: sensor.name, status: 'skipped', reason: 'auto-cutoff', session: { action: 'auto-cutoff', sessionId: active.id, minutes: Math.round(sessionAge) } });
             continue;
           }
           if (minutesAgo >= SESSION_GAP_MINUTES) {
-            await closeSession(sbUrl, sbKey, active);
+            await closeSession(sbUrl, sbKey, active, 'เซนเซอร์ออฟไลน์เกิน ' + Math.round(minutesAgo) + ' นาที');
             results.push({ sensor: sensor.name, status: 'skipped', reason: 'gap-close', session: { action: 'cooldown (after close)' } });
             continue;
           }
@@ -583,7 +620,7 @@ module.exports = async function handler(req, res) {
     // ===== Phase 2: Early exit if no sensor needs Tuya (0 Tuya calls) =====
     if (sensorsNeedingTuya.length === 0) {
       for (const sensor of SENSORS) {
-        try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType); } catch (_) {}
+        try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType, sensor.projectId); } catch (_) {}
       }
       return res.status(200).json({
         success: true,
@@ -638,7 +675,7 @@ module.exports = async function handler(req, res) {
       try {
         const isOnline = deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online;
 
-        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id]);
+        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id], sensor.projectId);
         const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
 
         if (skipActions.includes(session.action)) {
@@ -670,7 +707,7 @@ module.exports = async function handler(req, res) {
 
     // Always recalculate daily summaries
     for (const sensor of SENSORS) {
-      try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType); } catch (_) {}
+      try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType, sensor.projectId); } catch (_) {}
     }
 
     // Track API usage for this month

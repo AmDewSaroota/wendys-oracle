@@ -96,6 +96,7 @@
         .loading-text { color: #fff; font-weight: 600; font-size: 0.95rem; }
 
         /* AQI Hero */
+        .aqi-excellent { background: linear-gradient(135deg, #0891b2, #22d3ee); }
         .aqi-good { background: linear-gradient(135deg, #059669, #10b981); }
         .aqi-moderate { background: linear-gradient(135deg, #d97706, #f59e0b); }
         .aqi-unhealthy { background: linear-gradient(135deg, #ea580c, #f97316); }
@@ -215,67 +216,23 @@
                 </div>
             </div>
 
-            <!-- 4. Today's Session Progress -->
+            <!-- 4. Today's Collection Summary (Expanded) -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-400">
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="text-4xl" id="session-progress-emoji">⏳</div>
-                    <div>
-                        <h4 class="font-bold text-lg text-navy" data-i18n="session.title">เก็บข้อมูลวันนี้</h4>
-                    </div>
-                </div>
-                <div class="flex justify-between text-sm mb-2">
-                    <span id="session-progress-text" class="text-slate-500" data-i18n="session.checking">กำลังตรวจสอบ...</span>
-                    <span id="session-progress-pct" class="font-bold text-navy">0%</span>
-                </div>
-                <div class="w-full bg-slate-200 rounded-full h-3">
-                    <div id="session-progress-bar" class="h-3 rounded-full progress-fill bg-emerald-500" style="width:0%"></div>
-                </div>
-            </div>
-
-            <!-- 5. Live Card -->
-            <div id="live-latest-card" class="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-[2.5rem] p-6 md:p-8 text-white shadow-2xl shadow-emerald-500/30 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                <div class="relative z-10">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur">
-                                <span class="text-2xl" id="live-status-icon">📡</span>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-lg" data-i18n="live.title">ค่าล่าสุดจาก Sensor</h3>
-                                <p class="text-emerald-100 text-sm" id="live-house-name" data-i18n="live.waiting">รอข้อมูล...</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-emerald-100 text-sm" id="live-timestamp">--</span>
-                            <span class="px-3 py-1 bg-white/20 rounded-full text-sm font-bold" id="live-stove-badge">--</span>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="text-3xl" id="session-progress-emoji">⏳</div>
+                        <div>
+                            <h4 class="font-bold text-lg text-navy" data-i18n="session.title">เก็บข้อมูลวันนี้</h4>
+                            <p id="session-progress-text" class="text-slate-400 text-xs" data-i18n="session.checking">กำลังตรวจสอบ...</p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
-                            <div class="text-4xl font-bold" id="live-pm25">--</div>
-                            <div class="text-emerald-100 text-sm">PM2.5</div>
-                        </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
-                            <div class="text-4xl font-bold" id="live-co2">--</div>
-                            <div class="text-emerald-100 text-sm">CO2</div>
-                        </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
-                            <div class="text-4xl font-bold" id="live-aqi">--</div>
-                            <div class="text-emerald-100 text-sm">AQI</div>
-                        </div>
-                        <div class="bg-white/15 backdrop-blur rounded-2xl p-5 text-center">
-                            <div class="text-4xl font-bold" id="live-temp">--</div>
-                            <div class="text-emerald-100 text-sm">°C</div>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center justify-between text-sm">
-                        <span class="text-emerald-100" id="live-refresh-status" data-i18n="live.autorefresh">Auto-refresh: ทุก 2 นาที</span>
-                        <button onclick="manualRefresh()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl font-bold transition-all flex items-center gap-2">
-                            <span id="refresh-icon">🔄</span> Refresh
-                        </button>
-                    </div>
+                    <span id="session-progress-pct" class="font-bold text-2xl text-navy">0%</span>
                 </div>
+                <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                    <div id="session-progress-bar" class="h-2.5 rounded-full progress-fill bg-emerald-500" style="width:0%"></div>
+                </div>
+                <div id="today-house-breakdown" class="space-y-2"></div>
+                <div id="today-tvoc-live" class="hidden mt-3 bg-purple-50 border border-purple-200 rounded-xl px-4 py-2"></div>
             </div>
 
             <!-- 6. Map + Activity Feed -->
@@ -293,7 +250,7 @@
             </div>
 
             <!-- TVOC Manual Input FAB -->
-            <button onclick="showTvocInputForm()" class="fixed bottom-6 right-6 w-14 h-14 bg-purple-600 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-purple-700 transition-all active:scale-95" title="บันทึก TVOC">
+            <button id="tvoc-fab" onclick="showTvocInputForm()" class="fixed bottom-6 right-6 w-14 h-14 bg-purple-600 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-purple-700 transition-all active:scale-95" title="บันทึก TVOC">
                 <span class="text-xl">✏️</span>
             </button>
         </section>
@@ -352,7 +309,7 @@
                 </div>
             </div>
             <!-- Research Stat Cards — Row 2 -->
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-rose-300">
                     <p class="text-[12px] font-bold text-rose-500 uppercase tracking-wider" data-i18n="stat.temp">🌡️ อุณหภูมิ</p>
                     <h3 id="r-stat-temp" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">°C</span></h3>
@@ -364,6 +321,11 @@
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-400">
                     <p class="text-[12px] font-bold text-amber-600 uppercase tracking-wider">HCHO</p>
                     <h3 id="r-stat-hcho" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-500">
+                    <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">TVOC</p>
+                    <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
                 </div>
             </div>
 
@@ -377,6 +339,15 @@
                     <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.gas">ค่าก๊าซ (เตาเดิม vs EcoStove)</h4>
                     <div class="h-[220px]"><canvas id="gasGroupChart"></canvas></div>
                 </div>
+            </div>
+            <!-- TVOC Comparison Chart -->
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="font-bold text-sm text-navy">ค่า TVOC (เตาเดิม vs EcoStove)</h4>
+                    <button onclick="showTvocReference()" class="text-xs text-purple-500 hover:text-purple-700 font-bold">ℹ️ มาตรฐาน</button>
+                </div>
+                <div class="h-[220px]"><canvas id="tvocGroupChart"></canvas></div>
+                <p class="text-[10px] text-slate-400 mt-2">มาตรฐาน: WHO Indoor Air Quality Guidelines</p>
             </div>
 
             <!-- Reduction Summary Table -->
@@ -430,6 +401,10 @@
                     <div class="bg-white/60 rounded-2xl p-4">
                         <h5 class="font-bold text-sm text-blue-500 mb-2">AQI</h5>
                         <div class="h-[220px]"><canvas id="sensorAqiChart"></canvas></div>
+                    </div>
+                    <div class="bg-white/60 rounded-2xl p-4">
+                        <h5 class="font-bold text-sm text-purple-600 mb-2">TVOC (mg/m³) — บันทึกด้วยมือ</h5>
+                        <div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div>
                     </div>
                 </div>
             </div>
@@ -517,7 +492,7 @@
                 <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.subjects">บ้านกลุ่มตัวอย่าง</button>
                 <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.devices">เครื่องวัด</button>
                 <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap"><span data-i18n="tab.approvals">รออนุมัติ</span> (<span id="count-pending">0</span>)</button>
-                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.data">ข้อมูลจากเซนเซอร์</button>
+                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.data">ตารางข้อมูล</button>
                 <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.activity">ประวัติกิจกรรม</button>
                 <button onclick="switchAdminTab('admins')" id="tab-btn-admins" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" style="display:none" data-i18n="admin.manage">จัดการแอดมิน</button>
             </div>
@@ -591,13 +566,14 @@
                         ✓ อนุมัติทั้งหมด
                     </button>
                 </div>
+                <div id="tvoc-live-status" class="hidden bg-purple-50 border border-purple-200 rounded-2xl p-4 mb-2"></div>
                 <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
             <!-- Tab 5: ข้อมูลเซนเซอร์ -->
             <div id="admin-data" class="admin-tab-content hidden bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
                 <div class="p-5 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                    <span class="font-bold text-navy" data-i18n="data.title">ข้อมูลจากเซนเซอร์</span>
+                    <span class="font-bold text-navy" data-i18n="data.title">ตารางข้อมูล</span>
                     <div class="flex items-center gap-3">
                         <select id="sensor-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                             <option value="all" data-i18n="filter.all">ทั้งหมด</option>
@@ -618,6 +594,7 @@
                                 <th class="p-3 text-center text-red-400">°C</th>
                                 <th class="p-3 text-center text-cyan-500">%RH</th>
                                 <th class="p-3 text-center text-purple-400">HCHO</th>
+                                <th class="p-3 text-center text-purple-600">TVOC</th>
                                 <th class="p-3 text-center text-slate-400" data-i18n="data.source">แหล่งข้อมูล</th>
                             </tr>
                         </thead>
@@ -656,15 +633,12 @@
     <script>
         const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
-        // Save and clear auth tokens BEFORE creating client to prevent SDK blocking on stale refresh
-        let _savedAuthTokens = null;
+        // Clear auth tokens BEFORE creating client to prevent SDK blocking on stale refresh
+        // After refresh, user re-logins via login modal (simpler & reliable)
         try {
-            const storageKey = 'sb-' + SUPABASE_URL.split('//')[1].split('.')[0] + '-auth-token';
-            const raw = localStorage.getItem(storageKey);
-            if (raw) {
-                _savedAuthTokens = JSON.parse(raw);
-                localStorage.removeItem(storageKey);
-            }
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith('sb-') || k.includes('supabase')) localStorage.removeItem(k);
+            });
         } catch (_) {}
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -680,6 +654,7 @@
         let isAdmin = false, map, mapDeep, charts = {}, allData = [], volunteers = [], subjects = [], devices = [];
         let allDataWithPending = [];
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
+        let volunteerNameMap = {}; // volunteer_id → full_name
         let autoRefreshInterval = null;
         let currentView = 'basic';
         let projects = [], subjectProjects = [];
@@ -778,14 +753,16 @@
             // AQI
             'aqi.loading': { th: 'กำลังโหลด...', en: 'Loading...' },
             'aqi.waiting': { th: 'รอข้อมูลจาก Sensor', en: 'Waiting for Sensor data' },
+            'aqi.excellent': { th: 'อากาศดีมาก', en: 'Excellent Air Quality' },
+            'aqi.excellent.advice': { th: 'เพลิดเพลินกับอากาศบริสุทธิ์', en: 'Enjoy the clean air' },
             'aqi.good': { th: 'อากาศดี', en: 'Good Air Quality' },
             'aqi.good.advice': { th: 'เปิดหน้าต่างได้สบายๆ', en: 'Safe to open windows' },
-            'aqi.moderate': { th: 'อากาศพอใช้', en: 'Moderate Air Quality' },
+            'aqi.moderate': { th: 'อากาศปานกลาง', en: 'Moderate Air Quality' },
             'aqi.moderate.advice': { th: 'คนแพ้ง่ายควรระวัง', en: 'Sensitive people should be cautious' },
-            'aqi.unhealthy': { th: 'อากาศไม่ดี', en: 'Unhealthy Air' },
+            'aqi.unhealthy': { th: 'เริ่มมีผลกระทบต่อสุขภาพ', en: 'Unhealthy Air' },
             'aqi.unhealthy.advice': { th: 'ควรลดกิจกรรมกลางแจ้ง', en: 'Reduce outdoor activities' },
-            'aqi.hazardous': { th: 'อากาศอันตราย', en: 'Hazardous Air' },
-            'aqi.hazardous.advice': { th: 'ห้ามออกนอกบ้าน!', en: 'Stay indoors!' },
+            'aqi.hazardous': { th: 'มีผลกระทบต่อสุขภาพ', en: 'Hazardous Air' },
+            'aqi.hazardous.advice': { th: 'หลีกเลี่ยงกิจกรรมกลางแจ้ง', en: 'Avoid outdoor activities' },
             'aqi.unknown': { th: 'รอข้อมูล', en: 'Awaiting Data' },
             'aqi.unknown.advice': { th: 'กำลังรอค่าจาก Sensor', en: 'Waiting for Sensor reading' },
             'aqi.updated': { th: 'อัปเดต: ', en: 'Updated: ' },
@@ -809,8 +786,13 @@
             'tvoc.submit': { th: 'บันทึก TVOC', en: 'Save TVOC' },
             'tvoc.saved': { th: 'บันทึกสำเร็จ', en: 'TVOC Recorded' },
             'tvoc.value.required': { th: 'กรุณากรอกค่า TVOC', en: 'Please enter TVOC value' },
+            'tvoc.select.house.required': { th: 'กรุณาเลือกบ้าน', en: 'Please select a house' },
+            'tvoc.volunteer.required': { th: 'กรุณากรอกชื่อผู้บันทึก', en: 'Please enter recorder name' },
+            'tvoc.session.start': { th: 'เริ่ม Session บันทึก TVOC', en: 'Start TVOC Session' },
+            'tvoc.session.end': { th: 'จบ Session', en: 'End Session' },
             'tvoc.recent': { th: 'บันทึกล่าสุด', en: 'Recent Readings' },
             'tvoc.no.recent': { th: 'ยังไม่มีรายการ', en: 'No recent entries' },
+            'export.source': { th: 'แหล่งข้อมูล', en: 'Data Source' },
             // Big number cards
             'card.pm25': { th: 'PM 2.5', en: 'PM 2.5' },
             'card.co2': { th: 'CO2', en: 'CO2' },
@@ -948,7 +930,7 @@
             'tab.subjects': { th: 'บ้านกลุ่มตัวอย่าง', en: 'Subject Houses' },
             'tab.devices': { th: 'เครื่องวัด', en: 'Devices' },
             'tab.approvals': { th: 'รออนุมัติ', en: 'Pending' },
-            'tab.data': { th: 'ข้อมูลจากเซนเซอร์', en: 'Sensor Data' },
+            'tab.data': { th: 'ตารางข้อมูล', en: 'Data Table' },
             'tab.activity': { th: 'ประวัติกิจกรรม', en: 'Activity Log' },
             // Volunteers
             'vol.list': { th: 'รายชื่ออาสาสมัคร', en: 'Volunteer List' },
@@ -1071,7 +1053,7 @@
             'approval.approved': { th: 'อนุมัติแล้ว', en: 'Approved' },
             'approval.rejected': { th: 'ไม่อนุมัติแล้ว', en: 'Rejected' },
             // Data tab
-            'data.title': { th: 'ข้อมูลจากเซนเซอร์', en: 'Sensor Data' },
+            'data.title': { th: 'ตารางข้อมูล', en: 'Data Table' },
             'data.time': { th: 'เวลาบันทึก', en: 'Recorded' },
             'data.stove': { th: 'เตา', en: 'Stove' },
             'data.source': { th: 'แหล่งข้อมูล', en: 'Source' },
@@ -1185,11 +1167,29 @@
         let HOUSE_NAMES = {};
 
         // ==================== AQI Helper ====================
+        // Calculate AQI from PM2.5 using Thai PCD breakpoints (กรมควบคุมมลพิษ พ.ศ.2566)
+        function calculateThaiAqi(pm25) {
+            if (pm25 == null || isNaN(pm25) || pm25 < 0) return null;
+            const bp = [
+                { lo: 0, hi: 15, aqiLo: 0, aqiHi: 25 },
+                { lo: 15.1, hi: 25, aqiLo: 26, aqiHi: 50 },
+                { lo: 25.1, hi: 37.5, aqiLo: 51, aqiHi: 100 },
+                { lo: 37.6, hi: 75, aqiLo: 101, aqiHi: 200 },
+                { lo: 75.1, hi: 150, aqiLo: 201, aqiHi: 300 },
+            ];
+            for (const b of bp) {
+                if (pm25 >= b.lo && pm25 <= b.hi) return Math.round((b.aqiHi - b.aqiLo) / (b.hi - b.lo) * (pm25 - b.lo) + b.aqiLo);
+            }
+            return pm25 > 150 ? 300 : null;
+        }
+
+        // Thai PCD AQI breakpoints: 0-25 ดีมาก(ฟ้า), 26-50 ดี(เขียว), 51-100 ปานกลาง(เหลือง), 101-200 เริ่มมีผลกระทบ(ส้ม), 201+ มีผลกระทบ(แดง)
         function getAqiStatus(aqi) {
             if (aqi == null || isNaN(aqi)) return { cls: 'aqi-unknown', emoji: '🌤️', label: t('aqi.unknown'), advice: t('aqi.unknown.advice') };
-            if (aqi <= 50) return { cls: 'aqi-good', emoji: '😊', label: t('aqi.good'), advice: t('aqi.good.advice') };
+            if (aqi <= 25) return { cls: 'aqi-excellent', emoji: '😊', label: t('aqi.excellent'), advice: t('aqi.excellent.advice') };
+            if (aqi <= 50) return { cls: 'aqi-good', emoji: '🙂', label: t('aqi.good'), advice: t('aqi.good.advice') };
             if (aqi <= 100) return { cls: 'aqi-moderate', emoji: '😐', label: t('aqi.moderate'), advice: t('aqi.moderate.advice') };
-            if (aqi <= 150) return { cls: 'aqi-unhealthy', emoji: '😷', label: t('aqi.unhealthy'), advice: t('aqi.unhealthy.advice') };
+            if (aqi <= 200) return { cls: 'aqi-unhealthy', emoji: '😷', label: t('aqi.unhealthy'), advice: t('aqi.unhealthy.advice') };
             return { cls: 'aqi-hazardous', emoji: '🚨', label: t('aqi.hazardous'), advice: t('aqi.hazardous.advice') };
         }
 
@@ -1231,6 +1231,10 @@
             ],
             hcho: [
                 { value: 0.1, label: 'WHO 0.1', color: '#ef4444' }
+            ],
+            tvoc: [
+                { value: 0.3, label: 'WHO 0.3', color: '#f59e0b' },
+                { value: 0.5, label: 'WHO 0.5', color: '#ef4444' }
             ]
         };
 
@@ -1305,6 +1309,9 @@
         function getDeviceName(d) {
             if (d.tuya_device_id && DEVICE_NAMES[d.tuya_device_id]) return DEVICE_NAMES[d.tuya_device_id];
             if (d.data_source === 'sensor') return 'sensor';
+            if (d.data_source === 'manual' && d.volunteer_id && volunteerNameMap[d.volunteer_id]) {
+                return '📝 ' + volunteerNameMap[d.volunteer_id];
+            }
             return d.data_source || 'manual';
         }
 
@@ -1338,16 +1345,6 @@
 
         async function promptAdmin() {
             if (isAdmin) { switchView('admin'); loadAdminData(!adminLoaded); return; }
-            // Try restoring session with 3s timeout — if blocked by SDK refresh, fall through to login modal
-            try {
-                const sessionPromise = supabaseClient.auth.getSession();
-                const timeout = new Promise(r => setTimeout(() => r({ data: { session: null } }), 3000));
-                const { data: { session } } = await Promise.race([sessionPromise, timeout]);
-                if (session) {
-                    await Promise.race([checkAdminRole(session.user), new Promise(r => setTimeout(r, 3000))]);
-                    if (isAdmin) { switchView('admin'); loadAdminData(!adminLoaded); return; }
-                }
-            } catch (_) {}
             showModal(`
                 <div class="text-center mb-8"><div class="w-20 h-20 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-white shadow-2xl">🔐</div>
                 <h3 class="text-2xl font-bold text-navy">${t('admin.login')}</h3></div>
@@ -1627,62 +1624,286 @@
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
         }
 
-        // ==================== Manual TVOC Input ====================
+        // ==================== Manual TVOC Input (Session-based) ====================
         let tvocStoveType = 'eco';
-        function setTvocStove(type) {
-            tvocStoveType = type;
-            const ecoBtn = document.getElementById('tvoc-eco-btn');
-            const oldBtn = document.getElementById('tvoc-old-btn');
-            if (ecoBtn) ecoBtn.className = type === 'eco' ? 'flex-1 p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-center font-bold text-emerald-700' : 'flex-1 p-3 rounded-xl border-2 border-slate-200 text-center font-bold text-slate-400';
-            if (oldBtn) oldBtn.className = type === 'old' ? 'flex-1 p-3 rounded-xl border-2 border-orange-500 bg-orange-50 text-center font-bold text-orange-700' : 'flex-1 p-3 rounded-xl border-2 border-slate-200 text-center font-bold text-slate-400';
+        let tvocHousesData = [];
+        let tvocDevicesData = [];
+        let tvocActiveSession = null;
+        try { tvocActiveSession = JSON.parse(localStorage.getItem('ecostove_tvoc_session')); } catch(e) {}
+
+        // Browser ID — unique per browser, persists across sessions
+        let browserId = localStorage.getItem('ecostove_browser_id');
+        if (!browserId) { browserId = crypto.randomUUID(); localStorage.setItem('ecostove_browser_id', browserId); }
+
+        function saveTvocSession() { localStorage.setItem('ecostove_tvoc_session', JSON.stringify(tvocActiveSession)); }
+        function clearTvocSession() { tvocActiveSession = null; localStorage.removeItem('ecostove_tvoc_session'); }
+
+        // Active session tracking (server-side)
+        async function registerActiveSession(houseId, houseName, volunteerName, stoveType) {
+            await supabaseClient.from('tvoc_active_sessions').delete().eq('browser_id', browserId);
+            await supabaseClient.from('tvoc_active_sessions').insert([{
+                house_id: houseId, house_name: houseName, volunteer_name: volunteerName,
+                browser_id: browserId, stove_type: stoveType
+            }]);
+        }
+        async function pingActiveSession() {
+            await supabaseClient.from('tvoc_active_sessions').update({ last_ping_at: new Date().toISOString() }).eq('browser_id', browserId);
+        }
+        async function removeActiveSession() {
+            await supabaseClient.from('tvoc_active_sessions').delete().eq('browser_id', browserId);
+        }
+        async function getActiveSessions() {
+            const cutoff = new Date(Date.now() - 3 * 60000).toISOString();
+            const { data } = await supabaseClient.from('tvoc_active_sessions').select('*').gte('last_ping_at', cutoff);
+            return data || [];
+        }
+        async function checkRecentRecords(houseId) {
+            const cutoff = new Date(Date.now() - 30 * 60000).toISOString();
+            const { data } = await supabaseClient.from('pollution_logs')
+                .select('tvoc_value, recorded_at, volunteer_id')
+                .eq('data_source', 'manual').eq('house_id', houseId)
+                .not('tvoc_value', 'is', null)
+                .gte('recorded_at', cutoff)
+                .order('recorded_at', { ascending: false }).limit(1);
+            return data && data.length > 0 ? data[0] : null;
+        }
+        // Ping interval
+        let _activePingInterval = null;
+        function startActivePing() {
+            if (_activePingInterval) clearInterval(_activePingInterval);
+            _activePingInterval = setInterval(() => pingActiveSession(), 60000);
+        }
+        function stopActivePing() {
+            if (_activePingInterval) { clearInterval(_activePingInterval); _activePingInterval = null; }
+        }
+        function getTvocSessionDuration() {
+            if (!tvocActiveSession) return '';
+            const mins = Math.floor((Date.now() - new Date(tvocActiveSession.startedAt).getTime()) / 60000);
+            return mins < 60 ? mins + ' นาที' : Math.floor(mins/60) + ' ชม. ' + (mins%60) + ' นาที';
+        }
+
+        function updateTvocFab() {
+            const fab = document.getElementById('tvoc-fab');
+            if (!fab) return;
+            if (tvocActiveSession) {
+                fab.className = 'fixed bottom-6 right-6 w-14 h-14 bg-red-500 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-red-600 transition-all active:scale-95 animate-pulse';
+                fab.querySelector('span').textContent = '🔴';
+                fab.title = 'Session กำลังบันทึก — ' + tvocActiveSession.houseName;
+            } else {
+                fab.className = 'fixed bottom-6 right-6 w-14 h-14 bg-purple-600 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-40 hover:bg-purple-700 transition-all active:scale-95';
+                fab.querySelector('span').textContent = '✏️';
+                fab.title = 'บันทึก TVOC';
+            }
+        }
+
+        async function onTvocHouseChange() {
+            const houseId = document.getElementById('tvoc-house')?.value;
+            const infoEl = document.getElementById('tvoc-house-info');
+            const startBtn = document.getElementById('tvoc-start-btn');
+            if (!houseId) {
+                if (infoEl) infoEl.classList.add('hidden');
+                if (startBtn) startBtn.classList.add('hidden');
+                return;
+            }
+            const house = tvocHousesData.find(h => String(h.id) === String(houseId));
+            if (!house) return;
+            const dev = tvocDevicesData.find(d => String(d.subject_id) === String(houseId));
+            tvocStoveType = dev ? 'eco' : 'old';
+            const stoveBadge = tvocStoveType === 'eco'
+                ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">🟢 EcoStove</span>'
+                : '<span class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">🔴 เตาเดิม</span>';
+            const volName = house.volunteers?.full_name || '-';
+
+            let warningHtml = '';
+            // Part B: Check active sessions (real-time)
+            const activeSessions = await getActiveSessions();
+            const activeForHouse = activeSessions.filter(s => String(s.house_id) === String(houseId) && s.browser_id !== browserId);
+            if (activeForHouse.length > 0) {
+                const who = activeForHouse[0].volunteer_name || 'ไม่ระบุชื่อ';
+                const ago = Math.floor((Date.now() - new Date(activeForHouse[0].last_ping_at).getTime()) / 60000);
+                warningHtml = '<div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mt-2">' +
+                    '<p class="text-amber-700 font-bold text-sm">⚠️ กำลังถูกบันทึกอยู่</p>' +
+                    '<p class="text-amber-600 text-xs mt-0.5">👤 ' + who + ' · เมื่อ ' + (ago < 1 ? 'เมื่อกี้' : ago + ' นาทีที่แล้ว') + '</p>' +
+                '</div>';
+            } else {
+                // Part A: Check recent records (last 30 min)
+                const recent = await checkRecentRecords(houseId);
+                if (recent) {
+                    const dt = new Date(recent.recorded_at);
+                    const ago = Math.floor((Date.now() - dt.getTime()) / 60000);
+                    warningHtml = '<div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mt-2">' +
+                        '<p class="text-blue-700 font-bold text-sm">ℹ️ มีการบันทึกล่าสุด</p>' +
+                        '<p class="text-blue-600 text-xs mt-0.5">TVOC ' + Number(recent.tvoc_value).toFixed(3) + ' mg/m³ · เมื่อ ' + ago + ' นาทีที่แล้ว</p>' +
+                    '</div>';
+                }
+            }
+
+            if (infoEl) {
+                infoEl.innerHTML = '<div class="flex items-center justify-between bg-slate-50 rounded-xl px-4 py-3">' +
+                    '<div><span class="text-xs text-slate-400">อาสา:</span> <span class="font-bold text-navy">' + volName + '</span></div>' +
+                    stoveBadge + '</div>' + warningHtml;
+                infoEl.classList.remove('hidden');
+            }
+            if (startBtn) startBtn.classList.remove('hidden');
         }
 
         async function showTvocInputForm() {
-            // Load houses for selector
-            const { data: houses } = await supabaseClient.from('subjects').select('id, full_name').order('full_name');
-            const houseOptions = (houses || []).map(h => '<option value="' + h.id + '">' + h.full_name + '</option>').join('');
-            const savedName = localStorage.getItem('ecostove_volunteer_name') || '';
+            const [housesRes, devsRes] = await Promise.all([
+                supabaseClient.from('subjects').select('id, full_name, volunteer_id, volunteers(full_name)').eq('status', 'active').order('full_name'),
+                supabaseClient.from('devices').select('subject_id, tuya_device_id').eq('is_active', true),
+            ]);
+            tvocHousesData = housesRes.data || [];
+            tvocDevicesData = devsRes.data || [];
+
+            // Check session recovery (>4h stale)
+            if (tvocActiveSession) {
+                const elapsed = (Date.now() - new Date(tvocActiveSession.startedAt).getTime()) / 3600000;
+                if (elapsed > 4) {
+                    showModal(
+                        '<div class="text-center mb-4"><div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">⏰</div>' +
+                        '<h3 class="text-xl font-bold text-navy mb-2">Session ค้าง</h3>' +
+                        '<p class="text-slate-500">🏠 ' + tvocActiveSession.houseName + '</p>' +
+                        '<p class="text-sm text-slate-400">' + tvocActiveSession.readingsCount + ' readings · ' + getTvocSessionDuration() + '</p></div>' +
+                        '<div class="flex gap-3 mt-4">' +
+                            '<button onclick="endTvocSessionSilent()" class="flex-1 py-3 rounded-2xl border-2 border-slate-200 font-bold text-slate-500">จบ Session</button>' +
+                            '<button onclick="closeModal();showTvocSessionMode()" class="flex-1 py-3 rounded-2xl bg-purple-600 text-white font-bold">ดำเนินการต่อ</button>' +
+                        '</div>'
+                    );
+                    return;
+                }
+                showTvocSessionMode();
+                return;
+            }
+            showTvocStartMode();
+        }
+
+        async function showTvocStartMode() {
+            const houseOptions = tvocHousesData.map(h => '<option value="' + h.id + '">' + h.full_name + '</option>').join('');
+
+            // Check who's recording right now
+            let liveHtml = '';
+            try {
+                const activeSessions = await getActiveSessions();
+                const othersActive = activeSessions.filter(s => s.browser_id !== browserId);
+                if (othersActive.length > 0) {
+                    liveHtml = '<div class="bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 mb-3">' +
+                        '<p class="text-purple-700 font-bold text-xs mb-1">🔴 กำลังบันทึกอยู่ตอนนี้</p>' +
+                        othersActive.map(s => '<p class="text-purple-600 text-xs">🏠 ' + (s.house_name || '?') + (s.volunteer_name ? ' · 👤 ' + s.volunteer_name : '') + '</p>').join('') +
+                    '</div>';
+                }
+            } catch(e) {}
 
             showModal(
-                '<h3 class="text-xl font-bold text-navy mb-1">' + t('tvoc.title') + '</h3>' +
-                '<p class="text-sm text-slate-400 mb-5">' + t('tvoc.subtitle') + '</p>' +
+                '<h3 class="text-xl font-bold text-navy mb-1">🟣 ' + t('tvoc.session.start') + '</h3>' +
+                '<p class="text-sm text-slate-400 mb-5">เลือกบ้านแล้วกดเริ่ม Session — บันทึกค่าหลายตัวในรอบเดียว</p>' +
+                liveHtml +
                 '<div class="space-y-4">' +
-                    '<select id="tvoc-house" class="w-full p-3 rounded-2xl border bg-white text-sm"><option value="">' + t('tvoc.select.house') + '</option>' + houseOptions + '</select>' +
-                    '<div class="flex gap-3">' +
-                        '<button onclick="setTvocStove(\'eco\')" id="tvoc-eco-btn" class="flex-1 p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-center font-bold text-emerald-700">EcoStove</button>' +
-                        '<button onclick="setTvocStove(\'old\')" id="tvoc-old-btn" class="flex-1 p-3 rounded-xl border-2 border-slate-200 text-center font-bold text-slate-400">' + t('tvoc.old.stove') + '</button>' +
-                    '</div>' +
-                    '<div class="text-center">' +
-                        '<label class="text-xs font-bold text-purple-600 uppercase tracking-wider">TVOC (ppb)</label>' +
-                        '<input type="number" id="tvoc-value" inputmode="numeric" class="w-full text-center text-5xl font-bold p-5 rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none" placeholder="0">' +
-                    '</div>' +
-                    '<input id="tvoc-volunteer" placeholder="' + t('tvoc.volunteer') + '" class="w-full p-3 rounded-2xl border bg-white text-sm" value="' + savedName + '">' +
-                    '<button onclick="submitTvocReading()" class="w-full bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-xl text-lg active:scale-95 transition-transform">' + t('tvoc.submit') + '</button>' +
+                    '<select id="tvoc-house" onchange="onTvocHouseChange()" class="w-full p-3 rounded-2xl border bg-white text-sm"><option value="">' + t('tvoc.select.house') + '</option>' + houseOptions + '</select>' +
+                    '<div id="tvoc-house-info" class="hidden"></div>' +
+                    '<button id="tvoc-start-btn" onclick="startTvocSession()" class="hidden w-full bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-xl text-lg active:scale-95 transition-transform">▶️ เริ่ม Session</button>' +
                     '<div id="tvoc-recent" class="mt-2"></div>' +
                 '</div>'
             );
             loadTvocRecent();
+        }
+
+        async function startTvocSession() {
+            const houseId = document.getElementById('tvoc-house')?.value;
+            if (!houseId) { showToast(t('tvoc.select.house.required'), 'warning'); return; }
+            const house = tvocHousesData.find(h => String(h.id) === String(houseId));
+            if (!house) return;
+            const dev = tvocDevicesData.find(d => String(d.subject_id) === String(houseId));
+            const volunteerName = house.volunteers?.full_name || '';
+            const stoveType = dev ? 'eco' : 'old';
+            tvocActiveSession = {
+                houseId: parseInt(houseId),
+                houseName: house.full_name,
+                volunteerId: house.volunteer_id || null,
+                volunteerName: volunteerName,
+                stoveType: stoveType,
+                startedAt: new Date().toISOString(),
+                readingsCount: 0,
+            };
+            saveTvocSession();
+            updateTvocFab();
+            // Register on server + start ping
+            registerActiveSession(parseInt(houseId), house.full_name, volunteerName, stoveType);
+            startActivePing();
+            closeModal();
+            showTvocSessionMode();
+            showToast('เริ่ม Session — ' + house.full_name);
+        }
+
+        function showTvocSessionMode() {
+            const s = tvocActiveSession;
+            if (!s) { showTvocStartMode(); return; }
+            const stoveBadge = s.stoveType === 'eco'
+                ? '<span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">🟢 EcoStove</span>'
+                : '<span class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold">🔴 เตาเดิม</span>';
+            showModal(
+                '<div class="bg-purple-50 rounded-2xl p-4 mb-4">' +
+                    '<div class="flex items-center justify-between mb-2">' +
+                        '<span class="px-2.5 py-1 rounded-full bg-purple-200 text-purple-800 text-xs font-bold">🔴 Session กำลังบันทึก</span>' +
+                        stoveBadge +
+                    '</div>' +
+                    '<p class="font-bold text-navy text-lg">🏠 ' + s.houseName + '</p>' +
+                    '<div class="flex items-center gap-3 text-xs text-slate-500 mt-1">' +
+                        (s.volunteerName ? '<span>👤 ' + s.volunteerName + '</span>' : '') +
+                        '<span id="tvoc-session-timer">⏱ ' + getTvocSessionDuration() + '</span>' +
+                        '<span id="tvoc-session-count">📝 ' + s.readingsCount + ' readings</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="space-y-4">' +
+                    '<div class="text-center">' +
+                        '<label class="text-xs font-bold text-purple-600 uppercase tracking-wider">TVOC (mg/m³)</label>' +
+                        '<input type="number" id="tvoc-value" inputmode="numeric" class="w-full text-center text-5xl font-bold p-5 rounded-2xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 outline-none" placeholder="0">' +
+                    '</div>' +
+                    '<button onclick="submitTvocReading()" class="w-full bg-purple-600 text-white py-4 rounded-2xl font-bold shadow-xl text-lg active:scale-95 transition-transform">📝 เพิ่มค่า</button>' +
+                    '<button onclick="endTvocSession()" class="w-full bg-slate-100 text-slate-500 py-3 rounded-2xl font-bold text-sm hover:bg-red-50 hover:text-red-500 transition-all">⏹ จบ Session</button>' +
+                '</div>' +
+                '<div id="tvoc-recent" class="mt-4"></div>'
+            );
+            loadTvocRecent();
             setTimeout(() => document.getElementById('tvoc-value')?.focus(), 100);
+            if (window._tvocTimerInterval) clearInterval(window._tvocTimerInterval);
+            window._tvocTimerInterval = setInterval(() => {
+                const el = document.getElementById('tvoc-session-timer');
+                if (el) el.textContent = '⏱ ' + getTvocSessionDuration();
+            }, 30000);
         }
 
         async function submitTvocReading() {
             const tvocValue = parseFloat(document.getElementById('tvoc-value')?.value);
-            if (isNaN(tvocValue)) { showToast(t('tvoc.value.required'), 'warning'); return; }
-            const houseId = document.getElementById('tvoc-house')?.value || null;
-            const volunteerName = document.getElementById('tvoc-volunteer')?.value || '';
-            localStorage.setItem('ecostove_volunteer_name', volunteerName);
+            if (isNaN(tvocValue) || tvocValue < 0) { showToast(t('tvoc.value.required'), 'warning'); return; }
+
+            let houseId, volunteerId, stoveType;
+            if (tvocActiveSession) {
+                houseId = tvocActiveSession.houseId;
+                volunteerId = tvocActiveSession.volunteerId;
+                stoveType = tvocActiveSession.stoveType;
+            } else {
+                houseId = parseInt(document.getElementById('tvoc-house')?.value);
+                if (!houseId) { showToast(t('tvoc.select.house.required'), 'warning'); return; }
+                const house = tvocHousesData.find(h => String(h.id) === String(houseId));
+                volunteerId = house?.volunteer_id || null;
+                stoveType = tvocStoveType;
+            }
 
             const record = {
-                tvoc_value: tvocValue,
-                data_source: 'manual',
-                stove_type: tvocStoveType,
-                status: 'pending',
-                recorded_at: new Date().toISOString(),
+                tvoc_value: tvocValue, data_source: 'manual', stove_type: stoveType,
+                status: 'pending', recorded_at: new Date().toISOString(),
+                house_id: houseId, volunteer_id: volunteerId,
             };
 
             const { error } = await supabaseClient.from('pollution_logs').insert([record]);
             if (!error) {
                 showToast(t('tvoc.saved'));
+                if (tvocActiveSession) {
+                    tvocActiveSession.readingsCount++;
+                    saveTvocSession();
+                    const countEl = document.getElementById('tvoc-session-count');
+                    if (countEl) countEl.textContent = '📝 ' + tvocActiveSession.readingsCount + ' readings';
+                }
                 const valInput = document.getElementById('tvoc-value');
                 if (valInput) { valInput.value = ''; valInput.focus(); }
                 loadTvocRecent();
@@ -1691,20 +1912,60 @@
             }
         }
 
+        function endTvocSession() {
+            if (!tvocActiveSession) return;
+            showConfirm('จบ Session นี้?\n\n🏠 ' + tvocActiveSession.houseName + '\n📝 ' + tvocActiveSession.readingsCount + ' readings\n⏱ ' + getTvocSessionDuration(), () => {
+                const name = tvocActiveSession.houseName;
+                const count = tvocActiveSession.readingsCount;
+                clearTvocSession();
+                if (window._tvocTimerInterval) clearInterval(window._tvocTimerInterval);
+                stopActivePing();
+                removeActiveSession();
+                updateTvocFab();
+                closeModal();
+                showToast('จบ Session — ' + name + ' (' + count + ' readings)');
+            });
+        }
+
+        function endTvocSessionSilent() {
+            clearTvocSession();
+            if (window._tvocTimerInterval) clearInterval(window._tvocTimerInterval);
+            stopActivePing();
+            removeActiveSession();
+            updateTvocFab();
+            closeModal();
+            showToast('จบ Session เรียบร้อย');
+        }
+
         async function loadTvocRecent() {
             const el = document.getElementById('tvoc-recent');
             if (!el) return;
-            const { data } = await supabaseClient.from('pollution_logs')
-                .select('tvoc_value, recorded_at')
+            let query = supabaseClient.from('pollution_logs')
+                .select('tvoc_value, recorded_at, stove_type, house_id, volunteer_id')
                 .eq('data_source', 'manual')
                 .not('tvoc_value', 'is', null)
-                .order('recorded_at', { ascending: false })
-                .limit(5);
+                .order('recorded_at', { ascending: false });
+            if (tvocActiveSession) {
+                query = query.eq('house_id', tvocActiveSession.houseId);
+                const today = new Date().toISOString().split('T')[0];
+                query = query.gte('recorded_at', today + 'T00:00:00');
+            } else {
+                query = query.limit(5);
+            }
+            const { data } = await query;
             if (!data || !data.length) { el.innerHTML = '<p class="text-center text-slate-400 text-sm">' + t('tvoc.no.recent') + '</p>'; return; }
-            el.innerHTML = '<p class="text-xs font-bold text-slate-500 mb-2">' + t('tvoc.recent') + '</p>' +
+            const label = tvocActiveSession ? 'ค่าที่บันทึกใน Session นี้' : t('tvoc.recent');
+            el.innerHTML = '<p class="text-xs font-bold text-slate-500 mb-2">' + label + '</p>' +
                 data.map(d => {
-                    const time = new Date(d.recorded_at).toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit' });
-                    return '<div class="flex justify-between text-sm py-1 border-b border-slate-100"><span class="text-slate-500">' + time + '</span><span class="font-bold text-purple-700">' + d.tvoc_value + ' ppb</span></div>';
+                    const dt = new Date(d.recorded_at);
+                    const dateStr = dt.toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short' });
+                    const timeStr = dt.toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+                    const stoveBadge = d.stove_type === 'eco' ? '<span class="text-emerald-600">●</span>' : '<span class="text-orange-500">●</span>';
+                    const houseName = tvocHousesData.find(h => h.id === d.house_id)?.full_name || '';
+                    const nameHtml = houseName && !tvocActiveSession ? '<span class="text-slate-600 truncate">' + houseName + '</span>' : '';
+                    return '<div class="flex items-center justify-between text-sm py-1.5 border-b border-slate-100">' +
+                        '<div class="flex items-center gap-1.5 min-w-0">' + stoveBadge + nameHtml + '<span class="text-slate-400 text-xs">' + dateStr + ' ' + timeStr + '</span></div>' +
+                        '<span class="font-bold text-purple-700 whitespace-nowrap ml-2">' + Number(d.tvoc_value).toFixed(3) + ' mg/m³</span></div>';
                 }).join('');
         }
 
@@ -1785,6 +2046,12 @@
                     devices = devs || [];
                 } catch (_) {}
 
+                // Load volunteer name map (for manual records display)
+                try {
+                    const { data: vols } = await supabaseClient.from('volunteers').select('id, full_name');
+                    if (vols) vols.forEach(v => { volunteerNameMap[v.id] = v.full_name; });
+                } catch (_) {}
+
                 // Load projects + subject-project links
                 try {
                     const [pRes, spRes] = await Promise.all([
@@ -1834,7 +2101,9 @@
             const projectId = getActiveProjectFilter();
             const deviceIds = getProjectDeviceIds(projectId);
             if (!deviceIds) return data;
-            return data.filter(d => deviceIds.includes(d.tuya_device_id));
+            // Include manual records whose house_id matches project subjects
+            const projSubIds = subjectProjects.filter(sp => String(sp.project_id) === String(projectId)).map(sp => sp.subject_id);
+            return data.filter(d => deviceIds.includes(d.tuya_device_id) || (d.data_source === 'manual' && d.house_id && projSubIds.includes(d.house_id)));
         }
         function populateProjectFilters() {
             const options = '<option value="all">' + t('project.all') + '</option>' +
@@ -1857,14 +2126,14 @@
             updateBigNumbers();
             updateBeforeAfter();
             loadTodaySummary();
-            updateLiveCard();
             updateActivityFeed();
         }
 
         function updateHeroAqi() {
             const filteredPending = getFilteredData(allDataWithPending);
-            const latest = filteredPending[0];
-            const aqiVal = latest?.aqi;
+            // Recalculate AQI from avg PM2.5 using Thai PCD standard (not stored US EPA aqi field)
+            const avgPm25 = avg(filteredPending, 'pm25_value');
+            const aqiVal = calculateThaiAqi(avgPm25);
             const status = getAqiStatus(aqiVal);
 
             const hero = document.getElementById('hero-aqi');
@@ -1873,22 +2142,26 @@
             document.getElementById('hero-aqi-value').textContent = aqiVal ?? '--';
             document.getElementById('hero-aqi-label').textContent = status.label;
             document.getElementById('hero-aqi-advice').textContent = status.advice;
-            document.getElementById('hero-aqi-time').textContent = latest
-                ? t('aqi.updated') + new Date(latest.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')
+            const latest = filteredPending[0];
+            document.getElementById('hero-aqi-time').textContent = filteredPending.length > 0
+                ? (currentLang === 'th' ? 'ค่าเฉลี่ยจาก ' : 'Average of ') + filteredPending.length + (currentLang === 'th' ? ' รายการ' : ' records')
                 : '--';
         }
 
         function updateBigNumbers() {
             const filteredPending = getFilteredData(allDataWithPending);
-            const latest = filteredPending[0];
-            document.getElementById('basic-pm25').textContent = latest?.pm25_value ?? '--';
-            document.getElementById('basic-co2').textContent = latest?.co2_value ?? '--';
-            document.getElementById('basic-temp').textContent = latest?.temperature ?? '--';
-            document.getElementById('basic-humidity').textContent = latest?.humidity ?? '--';
+            const avgPm25 = avg(filteredPending, 'pm25_value');
+            const avgCo2 = avg(filteredPending, 'co2_value');
+            const avgTemp = avg(filteredPending, 'temperature');
+            const avgHum = avg(filteredPending, 'humidity');
+            document.getElementById('basic-pm25').textContent = avgPm25 != null ? avgPm25.toFixed(1) : '--';
+            document.getElementById('basic-co2').textContent = avgCo2 != null ? Math.round(avgCo2) : '--';
+            document.getElementById('basic-temp').textContent = avgTemp != null ? avgTemp.toFixed(1) : '--';
+            document.getElementById('basic-humidity').textContent = avgHum != null ? avgHum.toFixed(1) : '--';
 
             // Color PM2.5 based on threshold
             const pm25El = document.getElementById('basic-pm25');
-            const pm = latest?.pm25_value;
+            const pm = avgPm25;
             if (pm != null) {
                 pm25El.className = pm25El.className.replace(/text-(navy|red|orange|emerald)-\d+/g, '');
                 if (pm <= 25) pm25El.classList.add('text-emerald-600');
@@ -1897,7 +2170,7 @@
             }
             // AQI badge under PM2.5
             const badgeEl = document.getElementById('basic-pm25-badge');
-            if (badgeEl) badgeEl.innerHTML = pm != null ? pm25AqiBadge(pm) : '';
+            if (badgeEl) badgeEl.innerHTML = pm != null ? pm25AqiBadge(Math.round(pm)) : '';
         }
 
         function updateBeforeAfter() {
@@ -1922,13 +2195,99 @@
         async function loadTodaySummary() {
             try {
                 const today = new Date().toISOString().slice(0, 10);
+                const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+
+                // Sensor sessions from daily_summaries
                 let todayQuery = supabaseClient.from('daily_summaries').select('sessions_completed, sessions_incomplete, device_id').eq('summary_date', today);
                 const projDevIds = getProjectDeviceIds(getActiveProjectFilter());
                 if (projDevIds) todayQuery = todayQuery.in('device_id', projDevIds);
-                const { data } = await todayQuery;
+                const { data: summaries } = await todayQuery;
 
-                const totalCompleted = (data || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
-                const totalTarget = (data || []).length > 0 ? data.length * 2 : 4; // 2 sessions per device per day
+                // Today's sensor logs count per device
+                const todaySensor = (allDataWithPending || []).filter(d => d.data_source === 'sensor' && d.recorded_at >= today + 'T00:00:00Z' && d.recorded_at < tomorrow + 'T00:00:00Z');
+                const sensorByDevice = {};
+                todaySensor.forEach(d => {
+                    if (!sensorByDevice[d.tuya_device_id]) sensorByDevice[d.tuya_device_id] = [];
+                    sensorByDevice[d.tuya_device_id].push(d);
+                });
+
+                // Today's TVOC manual logs per house
+                const todayManual = (allDataWithPending || []).filter(d => d.data_source === 'manual' && d.tvoc_value != null && d.recorded_at >= today + 'T00:00:00Z' && d.recorded_at < tomorrow + 'T00:00:00Z');
+                const tvocByHouse = {};
+                todayManual.forEach(d => {
+                    const key = d.house_id || 'unknown';
+                    if (!tvocByHouse[key]) tvocByHouse[key] = [];
+                    tvocByHouse[key].push(d);
+                });
+
+                // Build per-house rows
+                const breakdownEl = document.getElementById('today-house-breakdown');
+                const rows = [];
+
+                // Sensor devices
+                const activeDevices = (devices || []).filter(d => d.is_active);
+                for (const dev of activeDevices) {
+                    const devLogs = sensorByDevice[dev.tuya_device_id] || [];
+                    const summary = (summaries || []).find(s => s.device_id === dev.tuya_device_id);
+                    const completed = summary?.sessions_completed || 0;
+                    const incomplete = summary?.sessions_incomplete || 0;
+                    const houseName = dev.subjects?.full_name || dev.name;
+                    const stoveType = devLogs.length > 0 ? devLogs[0].stove_type : null;
+                    const stoveBadge = stoveType === 'eco' ? '<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Eco</span>' : stoveType === 'old' ? '<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-500">เดิม</span>' : '';
+
+                    let statusIcon, statusText, statusClass;
+                    if (completed >= 2) {
+                        statusIcon = '✅'; statusText = 'ครบ ' + completed + '/2'; statusClass = 'text-emerald-600';
+                    } else if (completed > 0 || incomplete > 0) {
+                        statusIcon = '⚠️'; statusText = completed + '/2 สำเร็จ' + (incomplete > 0 ? ', ' + incomplete + ' ไม่ครบ' : ''); statusClass = 'text-amber-600';
+                    } else if (devLogs.length > 0) {
+                        statusIcon = '🔄'; statusText = 'กำลังเก็บ (' + devLogs.length + ')'; statusClass = 'text-blue-600';
+                    } else {
+                        statusIcon = '❌'; statusText = 'ยังไม่เปิด'; statusClass = 'text-slate-400';
+                    }
+
+                    rows.push(`<div class="flex items-center justify-between py-1.5 px-3 rounded-xl ${completed >= 2 ? 'bg-emerald-50' : devLogs.length > 0 ? 'bg-blue-50' : 'bg-slate-50'}">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-sm">${statusIcon}</span>
+                            <span class="text-sm font-medium text-navy truncate">📡 ${houseName}</span>
+                            ${stoveBadge}
+                        </div>
+                        <span class="text-xs font-bold ${statusClass} whitespace-nowrap">${statusText}</span>
+                    </div>`);
+                }
+
+                // TVOC manual per house
+                for (const [houseId, logs] of Object.entries(tvocByHouse)) {
+                    const houseName = HOUSE_NAMES[houseId] || (subjects || []).find(s => String(s.id) === String(houseId))?.full_name || 'บ้าน #' + houseId;
+                    const avgTvoc = (logs.reduce((s, d) => s + d.tvoc_value, 0) / logs.length).toFixed(3);
+                    rows.push(`<div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-purple-50">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="text-sm">📝</span>
+                            <span class="text-sm font-medium text-navy truncate">${houseName}</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-600">TVOC</span>
+                        </div>
+                        <span class="text-xs font-bold text-purple-600 whitespace-nowrap">${logs.length} readings · ${avgTvoc} mg/m³</span>
+                    </div>`);
+                }
+
+                breakdownEl.innerHTML = rows.length > 0 ? rows.join('') : '<p class="text-center text-slate-400 text-sm py-2">ยังไม่มีข้อมูลวันนี้</p>';
+
+                // TVOC live recording status
+                try {
+                    const activeSessions = await getActiveSessions();
+                    const liveEl = document.getElementById('today-tvoc-live');
+                    if (activeSessions.length > 0) {
+                        liveEl.innerHTML = '<p class="font-bold text-purple-700 text-xs mb-1">🔴 กำลังบันทึก TVOC</p>' +
+                            activeSessions.map(s => '<p class="text-xs text-purple-600">🏠 ' + (s.house_name || 'ไม่ระบุ') + (s.volunteer_name ? ' · 👤 ' + s.volunteer_name : '') + '</p>').join('');
+                        liveEl.classList.remove('hidden');
+                    } else {
+                        liveEl.classList.add('hidden');
+                    }
+                } catch (_) {}
+
+                // Overall progress
+                const totalCompleted = (summaries || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
+                const totalTarget = activeDevices.length > 0 ? activeDevices.length * 2 : 4;
 
                 const textEl = document.getElementById('session-progress-text');
                 const emojiEl = document.getElementById('session-progress-emoji');
@@ -1936,11 +2295,12 @@
                 const barEl = document.getElementById('session-progress-bar');
 
                 const pct = totalTarget > 0 ? Math.round(totalCompleted / totalTarget * 100) : 0;
-                textEl.textContent = t('session.success', totalCompleted, totalTarget);
+                const tvocCount = todayManual.length;
+                textEl.textContent = t('session.success', totalCompleted, totalTarget) + (tvocCount > 0 ? ' + TVOC ' + tvocCount + ' readings' : '');
                 emojiEl.textContent = pct >= 100 ? '✅' : '⏳';
                 pctEl.textContent = pct + '%';
                 barEl.style.width = pct + '%';
-                barEl.className = 'h-3 rounded-full progress-fill ' + (pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500');
+                barEl.className = 'h-2.5 rounded-full progress-fill ' + (pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500');
             } catch (e) {
                 console.error('loadTodaySummary:', e);
             }
@@ -2009,6 +2369,7 @@
             renderGroupCharts();
             updateReductionTable();
             updateSensorCharts();
+            updateTvocChart();
             loadSessionsTab();
             loadDailySummaries();
 
@@ -2079,6 +2440,23 @@
                 const unitText = unitSpan ? unitSpan.outerHTML : '';
                 el.innerHTML = (v != null ? v.toFixed(1) : '--') + ' ' + unitText;
             });
+
+            // TVOC — eco vs old comparison (manual data)
+            const tvocEcoAvg = avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value');
+            const tvocOldAvg = avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value');
+            const tvocEl = document.getElementById('r-stat-tvoc');
+            const tvocChangeEl = document.getElementById('r-stat-tvoc-change');
+            if (tvocEl) {
+                const unitSpan = tvocEl.querySelector('span');
+                const unitText = unitSpan ? unitSpan.outerHTML : '';
+                const tvocAvg = tvocEcoAvg ?? tvocOldAvg;
+                tvocEl.innerHTML = (tvocAvg != null ? tvocAvg.toFixed(3) : '--') + ' ' + unitText;
+            }
+            if (tvocChangeEl && tvocOldAvg && tvocEcoAvg != null) {
+                const change = ((tvocOldAvg - tvocEcoAvg) / tvocOldAvg * 100).toFixed(1);
+                tvocChangeEl.textContent = t('stat.vs.old', (change > 0 ? '-' : '+') + Math.abs(change));
+                tvocChangeEl.className = `text-[12px] ${change > 0 ? 'text-emerald-500' : 'text-red-500'}`;
+            }
         }
 
         let groupCharts = {};
@@ -2148,6 +2526,30 @@
                     },
                 });
             }
+
+            // TVOC Group
+            if (groupCharts.tvoc) groupCharts.tvoc.destroy();
+            const tvocCanvas = document.getElementById('tvocGroupChart');
+            if (tvocCanvas) {
+                const tvocOld = avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value');
+                const tvocEco = avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value');
+                groupCharts.tvoc = new Chart(tvocCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: ['TVOC (mg/m³)'],
+                        datasets: [
+                            { label: t('chart.old'), data: [tvocOld], backgroundColor: 'rgba(249,115,22,0.7)', borderRadius: 6 },
+                            { label: 'EcoStove', data: [tvocEco], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 6 },
+                        ],
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } },
+                    },
+                    plugins: [thresholdLinesPlugin(THRESHOLDS.tvoc)],
+                });
+            }
         }
 
         function updateReductionTable() {
@@ -2158,11 +2560,12 @@
             if (!tbody) return;
 
             const params = [
-                { label: 'PM 2.5 (µg/m³)', field: 'pm25_value' },
-                { label: 'PM 10 (µg/m³)', field: 'pm10_value' },
-                { label: 'CO2 (ppm)', field: 'co2_value' },
-                { label: 'AQI', field: 'aqi' },
-                { label: 'HCHO (mg/m³)', field: 'hcho_value' },
+                { label: 'PM 2.5 (µg/m³)', field: 'pm25_value', dec: 2 },
+                { label: 'PM 10 (µg/m³)', field: 'pm10_value', dec: 2 },
+                { label: 'CO2 (ppm)', field: 'co2_value', dec: 0 },
+                { label: 'AQI', field: 'aqi', dec: 0 },
+                { label: 'HCHO (mg/m³)', field: 'hcho_value', dec: 3 },
+                { label: 'TVOC (mg/m³)', field: 'tvoc_value', dec: 3 },
             ];
 
             tbody.innerHTML = params.map(p => {
@@ -2172,11 +2575,68 @@
                 const pctClass = pct !== '--' && pct > 0 ? 'text-emerald-600 font-bold' : pct !== '--' ? 'text-red-500 font-bold' : 'text-slate-400';
                 return `<tr class="hover:bg-slate-50">
                     <td class="p-3 font-medium">${p.label}</td>
-                    <td class="p-3 text-center text-orange-500">${oldAvg != null ? oldAvg.toFixed(2) : '--'}</td>
-                    <td class="p-3 text-center text-emerald-600">${ecoAvg != null ? ecoAvg.toFixed(2) : '--'}</td>
+                    <td class="p-3 text-center text-orange-500">${oldAvg != null ? oldAvg.toFixed(p.dec) : '--'}</td>
+                    <td class="p-3 text-center text-emerald-600">${ecoAvg != null ? ecoAvg.toFixed(p.dec) : '--'}</td>
                     <td class="p-3 text-center ${pctClass}">${pct !== '--' ? (pct > 0 ? '-' + pct + '%' : '+' + Math.abs(pct) + '%') : '--'}</td>
                 </tr>`;
             }).join('');
+        }
+
+        // ==================== TVOC Time Chart ====================
+        let tvocTimeChartInstance = null;
+        function updateTvocChart() {
+            if (tvocTimeChartInstance) tvocTimeChartInstance.destroy();
+            const canvas = document.getElementById('tvocTimeChart');
+            if (!canvas) return;
+            const tvocData = getFilteredData().filter(d => d.tvoc_value != null);
+            if (!tvocData.length) {
+                tvocTimeChartInstance = null;
+                return;
+            }
+            const ecoData = tvocData.filter(d => d.stove_type === 'eco').reverse();
+            const oldData = tvocData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional').reverse();
+            tvocTimeChartInstance = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'EcoStove', data: ecoData.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
+                            borderColor: '#10b981', backgroundColor: '#10b98120', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: false,
+                        },
+                        {
+                            label: t('chart.old'), data: oldData.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
+                            borderColor: '#f97316', backgroundColor: '#f9731620', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: false,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
+                    scales: {
+                        x: { type: 'time', time: { tooltipFormat: 'dd/MM/yyyy HH:mm' }, ticks: { font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
+                        y: { beginAtZero: true, suggestedMax: 700, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                    },
+                },
+                plugins: [thresholdLinesPlugin(THRESHOLDS.tvoc)],
+            });
+        }
+
+        function showTvocReference() {
+            const rows = [
+                { range: '0 - 0.3', label: 'ดี (Good)', bg: 'bg-emerald-50', dot: '🟩' },
+                { range: '0.3 - 0.5', label: 'ปานกลาง (Moderate)', bg: 'bg-yellow-50', dot: '🟨' },
+                { range: '> 0.5', label: 'ไม่ดี (Poor)', bg: 'bg-red-50', dot: '🟥' },
+            ];
+            showModal(
+                '<h3 class="text-xl font-bold text-navy mb-4">ค่ามาตรฐาน TVOC</h3>' +
+                '<table class="w-full text-sm border-collapse rounded-xl overflow-hidden">' +
+                '<thead><tr class="bg-slate-100"><th class="p-2 text-center">TVOC (mg/m³)</th><th class="p-2 text-left">ระดับ</th></tr></thead>' +
+                '<tbody>' + rows.map(r =>
+                    '<tr class="' + r.bg + '"><td class="p-3 text-center font-bold">' + r.range + '</td><td class="p-3">' + r.dot + ' ' + r.label + '</td></tr>'
+                ).join('') + '</tbody></table>' +
+                '<p class="text-xs text-slate-400 mt-4">อ้างอิง: WHO Indoor Air Quality Guidelines</p>'
+            );
         }
 
         // ==================== Sensor Charts ====================
@@ -2377,10 +2837,8 @@
         function startAutoRefresh() {
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
             autoRefreshInterval = setInterval(() => {
-                if (document.hidden) return; // ไม่โหลดเมื่อ tab ซ่อนอยู่
+                if (document.hidden) return;
                 loadData();
-                const statusEl = document.getElementById('live-refresh-status');
-                if (statusEl) statusEl.textContent = t('live.updated') + new Date().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US');
             }, 120000);
         }
 
@@ -2468,7 +2926,7 @@
             else if (filter !== 'all') filtered = allDataWithPending.filter(d => d.tuya_device_id === filter);
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
                 return;
             }
 
@@ -2486,6 +2944,7 @@
                     <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
                     <td class="p-3 text-center text-cyan-500">${d.humidity ?? '-'}</td>
                     <td class="p-3 text-center text-purple-400">${d.hcho_value ?? '-'}</td>
+                    <td class="p-3 text-center text-purple-600 font-bold">${d.tvoc_value != null ? Number(d.tvoc_value).toFixed(3) : '-'}</td>
                     <td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ${srcClass}">${getDeviceName(d)}</span></td>
                 </tr>`;
             }).join('');
@@ -2532,11 +2991,29 @@
                 const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false });
                 if (error) throw error;
 
+                // Separate manual TVOC vs sensor records
+                const sensorData = (data || []).filter(d => d.data_source !== 'manual');
+                const manualData = (data || []).filter(d => d.data_source === 'manual');
+
                 document.getElementById('count-pending').textContent = data?.length || 0;
 
-                // Group by device + date, then split by time gaps > 30 min
+                // Lookup house names for manual records
+                let manualHouseMap = {};
+                if (manualData.length > 0) {
+                    const houseIds = [...new Set(manualData.map(d => d.house_id).filter(Boolean))];
+                    if (houseIds.length > 0) {
+                        const { data: houses } = await supabaseClient.from('subjects')
+                            .select('id, full_name, volunteers(full_name)')
+                            .in('id', houseIds);
+                        (houses || []).forEach(h => {
+                            manualHouseMap[h.id] = { name: h.full_name, volunteer: h.volunteers?.full_name || '' };
+                        });
+                    }
+                }
+
+                // Group SENSOR data by device + date, then split by time gaps > 30 min
                 const deviceDateMap = {};
-                (data || []).forEach(d => {
+                sensorData.forEach(d => {
                     const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
                     const key = `${d.tuya_device_id || 'unknown'}__${date}`;
                     if (!deviceDateMap[key]) deviceDateMap[key] = [];
@@ -2565,15 +3042,103 @@
                 const summaryEl = document.getElementById('approval-summary-text');
                 const btnAll = document.getElementById('btn-approve-all');
 
-                if (sessions.length === 0) {
+                // Live status: who's recording right now
+                const liveEl = document.getElementById('tvoc-live-status');
+                if (liveEl) {
+                    const activeSessions = await getActiveSessions();
+                    if (activeSessions.length > 0) {
+                        liveEl.innerHTML = '<p class="font-bold text-purple-700 text-sm mb-2">🔴 กำลังบันทึกอยู่ตอนนี้</p>' +
+                            activeSessions.map(s => {
+                                const ago = Math.floor((Date.now() - new Date(s.last_ping_at).getTime()) / 60000);
+                                const agoText = ago < 1 ? 'เมื่อกี้' : ago + ' นาทีที่แล้ว';
+                                const stoveBadge = s.stove_type === 'eco' ? '🟢' : '🔴';
+                                return '<div class="flex items-center justify-between py-1.5 text-sm">' +
+                                    '<span>🏠 <b>' + (s.house_name || 'ไม่ระบุ') + '</b>' + (s.volunteer_name ? ' · 👤 ' + s.volunteer_name : '') + ' ' + stoveBadge + '</span>' +
+                                    '<span class="text-xs text-purple-400">ping: ' + agoText + '</span>' +
+                                '</div>';
+                            }).join('');
+                        liveEl.classList.remove('hidden');
+                    } else {
+                        liveEl.classList.add('hidden');
+                    }
+                }
+
+                const totalPending = (data || []).length;
+                const hasAny = sessions.length > 0 || manualData.length > 0;
+
+                // Group manual TVOC records into sessions (house_id + date + 30min gaps)
+                const manualDateMap = {};
+                manualData.forEach(d => {
+                    const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
+                    const key = `${d.house_id || 'unknown'}__${date}`;
+                    if (!manualDateMap[key]) manualDateMap[key] = [];
+                    manualDateMap[key].push(d);
+                });
+                const manualSessions = [];
+                for (const [key, logs] of Object.entries(manualDateMap)) {
+                    const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
+                    let cur = { houseId: sorted[0].house_id, stoveType: sorted[0].stove_type, date: key.split('__')[1], logs: [sorted[0]], ids: [sorted[0].id] };
+                    for (let i = 1; i < sorted.length; i++) {
+                        const gap = (new Date(sorted[i].recorded_at) - new Date(sorted[i-1].recorded_at)) / 60000;
+                        if (gap > 30) {
+                            manualSessions.push(cur);
+                            cur = { houseId: sorted[i].house_id, stoveType: sorted[i].stove_type, date: key.split('__')[1], logs: [sorted[i]], ids: [sorted[i].id] };
+                        } else { cur.logs.push(sorted[i]); cur.ids.push(sorted[i].id); }
+                    }
+                    manualSessions.push(cur);
+                }
+                manualSessions.sort((a, b) => new Date(b.logs[0].recorded_at) - new Date(a.logs[0].recorded_at));
+
+                if (!hasAny) {
                     container.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400 text-lg">' + t('approval.no.data') + '</div>';
                     summaryEl.textContent = 'ไม่มีข้อมูลรออนุมัติ';
                     btnAll.classList.add('hidden');
                 } else {
-                    summaryEl.textContent = `${data.length} รายการ ใน ${sessions.length} เซสชัน`;
+                    const parts = [];
+                    if (sensorData.length > 0) parts.push(`${sensorData.length} รายการเซนเซอร์ (${sessions.length} เซสชัน)`);
+                    if (manualData.length > 0) parts.push(`${manualData.length} รายการบันทึกด้วยมือ (${manualSessions.length} เซสชัน)`);
+                    summaryEl.textContent = parts.join(' + ');
                     btnAll.classList.remove('hidden');
 
-                    container.innerHTML = sessions.map(s => {
+                    // Render manual session cards
+                    const manualCardsHtml = manualSessions.map(ms => {
+                        const houseInfo = manualHouseMap[ms.houseId] || {};
+                        const houseName = houseInfo.name || 'ไม่ระบุบ้าน';
+                        const volunteerName = houseInfo.volunteer || '';
+                        const stoveLabel = ms.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
+                        const tvocValues = ms.logs.map(d => d.tvoc_value).filter(v => v != null);
+                        const avgTvoc = tvocValues.length > 0 ? (tvocValues.reduce((a,b) => a+b, 0) / tvocValues.length).toFixed(3) : '--';
+                        const maxTvoc = tvocValues.length > 0 ? Math.max(...tvocValues).toFixed(3) : '--';
+                        const firstDt = new Date(ms.logs[0].recorded_at);
+                        const lastDt = new Date(ms.logs[ms.logs.length - 1].recorded_at);
+                        const dateStr = firstDt.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+                        const startTime = firstDt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                        const endTime = lastDt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                        const timeRange = ms.logs.length === 1 ? startTime : startTime + '-' + endTime;
+                        const idsStr = ms.ids.join(',');
+                        return `
+                        <div class="card-styled p-5 rounded-2xl border-l-4 border-purple-400 flex flex-col gap-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <p class="font-bold text-navy text-base leading-tight">🏠 ${houseName}</p>
+                                    <p class="text-xs text-slate-400 mt-0.5">${volunteerName ? '👤 ' + volunteerName + ' · ' : ''}${stoveLabel}</p>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-700 font-bold text-xs">📝 ${ms.logs.length} readings</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 bg-purple-50 rounded-xl px-3 py-2">
+                                <div><span class="text-xs text-slate-400">เฉลี่ย</span><p class="text-purple-700 font-bold text-xl">${avgTvoc} <span class="text-sm font-normal">mg/m³</span></p></div>
+                                <div><span class="text-xs text-slate-400">สูงสุด</span><p class="text-orange-600 font-bold text-xl">${maxTvoc} <span class="text-sm font-normal">mg/m³</span></p></div>
+                            </div>
+                            <p class="text-xs text-slate-400">${dateStr} · ${timeRange} น.</p>
+                            <div class="flex gap-2">
+                                <button onclick="approveSession([${idsStr}])" class="flex-1 px-3 py-2 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-xl font-bold text-xs transition-all">✓ อนุมัติ</button>
+                                <button onclick="rejectSession([${idsStr}])" class="px-3 py-2 bg-red-100 text-red-500 hover:bg-red-200 rounded-xl font-bold text-xs transition-all">✗</button>
+                            </div>
+                        </div>`;
+                    }).join('');
+
+                    // Render sensor session cards
+                    const sensorCardsHtml = sessions.map(s => {
                         const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
                         const houseName = DEVICE_NAMES[s.device] || sensorName;
                         const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
@@ -2607,7 +3172,7 @@
                         const lastTime = lastLog ? new Date(lastLog.recorded_at) : null;
                         const minutesAgo = lastTime ? Math.round((Date.now() - lastTime.getTime()) / 60000) : 999;
                         const isStillCollecting = minutesAgo < 10;
-                        const isComplete = s.logs.length >= 10 && !isStillCollecting;
+                        const isComplete = s.logs.length >= 26 && !isStillCollecting;
 
                         let statusBadge, borderColor, statusNote;
                         if (isStillCollecting) {
@@ -2620,9 +3185,9 @@
                             statusNote = '';
                         } else {
                             const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + ' ชม.' : minutesAgo + ' นาที';
-                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">⚠️ หยุดเก็บ</span>';
-                            borderColor = 'border-red-400';
-                            statusNote = '<div class="text-[11px] text-red-400 bg-red-50 rounded-lg px-3 py-1.5">หยุดเก็บ — ข้อมูลล่าสุด ' + timeEnd + ' น. (' + agoText + 'ที่แล้ว)</div>';
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">⚠️ เก็บไม่ครบ</span>';
+                            borderColor = 'border-amber-400';
+                            statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/26 รายการ — ข้อมูลล่าสุด ' + timeEnd + ' น. (' + agoText + 'ที่แล้ว)</div>';
                         }
 
                         return `
@@ -2668,6 +3233,8 @@
                             </div>
                         </div>`;
                     }).join('');
+
+                    container.innerHTML = manualCardsHtml + sensorCardsHtml;
                 }
 
                 const [devRes, volRes, subRes, projRes, spRes] = await Promise.all([
@@ -3418,10 +3985,11 @@
 
         function exportDataRows(data) {
             return data.map(d => ({
-                [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name, [t('export.stove.type')]: d.stove_type,
+                [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name || HOUSE_NAMES[d.tuya_device_id] || '', [t('export.stove.type')]: d.stove_type,
                 'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
                 'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
-                'HCHO': d.hcho_value,
+                'HCHO': d.hcho_value, 'TVOC (mg/m³)': d.tvoc_value,
+                [t('export.source')]: d.data_source,
             }));
         }
 
@@ -3641,21 +4209,7 @@
                 // โหลด sensors + data ทันที — auth tokens ถูก clear ก่อน createClient แล้ว
                 await Promise.all([loadRegisteredSensors(), loadData()]);
 
-                // Restore auth session AFTER data loads — fire-and-forget to avoid SDK blocking
-                if (_savedAuthTokens?.refresh_token) {
-                    const tokens = _savedAuthTokens;
-                    _savedAuthTokens = null;
-                    supabaseClient.auth.setSession({
-                        access_token: tokens.access_token,
-                        refresh_token: tokens.refresh_token,
-                    }).then(({ data, error }) => {
-                        if (data?.session?.user && !error) {
-                            checkAdminRole(data.session.user);
-                        } else {
-                            clearSupabaseSession();
-                        }
-                    }).catch(() => clearSupabaseSession());
-                }
+                // Auth tokens cleared before createClient — user re-logins after refresh
             } catch (initErr) {
                 console.error('Init error:', initErr);
             } finally {
@@ -3663,6 +4217,12 @@
             }
             initMap();
             startAutoRefresh();
+            updateTvocFab();
+            // Re-register active session if browser was refreshed mid-session
+            if (tvocActiveSession) {
+                registerActiveSession(tvocActiveSession.houseId, tvocActiveSession.houseName, tvocActiveSession.volunteerName, tvocActiveSession.stoveType);
+                startActivePing();
+            }
 
             // Lazy init deep map when tab is switched
             const origSwitch = switchView;
