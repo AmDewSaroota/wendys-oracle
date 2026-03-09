@@ -15,6 +15,10 @@
   .spin { animation: spin 1.5s linear infinite; }
   @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .fade-in { animation: fade-in 0.3s ease; }
+  @keyframes tvoc-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(147,51,234,0.3); } 50% { box-shadow: 0 0 0 12px rgba(147,51,234,0); } }
+  .tvoc-glow { animation: tvoc-glow 1.5s ease-in-out 3; }
+  .tvoc-countdown { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7c3aed; }
+  .tvoc-countdown .dot { width: 6px; height: 6px; border-radius: 50%; background: #7c3aed; animation: pulse-ring 2s infinite; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen pb-8">
@@ -136,11 +140,36 @@
       </button>
     </div>
 
+    <!-- ======================== -->
+    <!-- TVOC Question (after cooking start) -->
+    <!-- ======================== -->
+    <div id="tvoc-question" class="hidden bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 fade-in">
+      <div class="text-center mb-4">
+        <div class="text-4xl">📝</div>
+        <p class="font-bold text-lg text-purple-800 mt-2">วันนี้ต้องเก็บ TVOC มั้ย?</p>
+        <p class="text-sm text-purple-500 mt-1">ถ้าอาจารย์ไม่ได้สั่งให้เก็บ กด "ไม่เก็บ" ได้เลย</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="answerTvoc(true)" class="flex-1 bg-purple-600 text-white py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform">
+          ✅ เก็บ TVOC
+        </button>
+        <button onclick="answerTvoc(false)" class="flex-1 bg-gray-200 text-gray-600 py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform">
+          ❌ ไม่เก็บ
+        </button>
+      </div>
+    </div>
+
     <!-- ======================= -->
     <!-- TVOC Recording Section -->
     <!-- ======================= -->
     <div id="tvoc-section" class="hidden bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 fade-in">
-      <p class="font-bold text-purple-800 mb-3">📝 บันทึก TVOC (mg/m³)</p>
+      <div class="flex items-center justify-between mb-3">
+        <p class="font-bold text-purple-800">📝 บันทึก TVOC (mg/m³)</p>
+        <div id="tvoc-countdown-wrap" class="tvoc-countdown hidden">
+          <span class="dot"></span>
+          <span id="tvoc-countdown-text">ถัดไปใน 5:00</span>
+        </div>
+      </div>
       <div class="flex gap-2 w-full min-w-0">
         <input type="number" id="tvoc-input" inputmode="decimal" step="0.001"
           class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
@@ -150,10 +179,20 @@
           บันทึก
         </button>
       </div>
+      <div id="tvoc-reminder-banner" class="hidden mt-3 bg-purple-200 rounded-xl p-3 text-center cursor-pointer active:scale-95 transition-transform" onclick="focusTvocInput()">
+        <p class="text-purple-800 font-bold text-lg">⏰ ได้เวลากรอก TVOC แล้ว!</p>
+        <p class="text-purple-600 text-xs">กดที่นี่เพื่อกรอกค่า</p>
+      </div>
       <div id="tvoc-list" class="mt-3 space-y-1"></div>
     </div>
 
-    <!-- End session -->
+    <!-- Session time remaining info -->
+    <div id="session-remaining-wrap" class="hidden bg-blue-50 rounded-2xl p-4 text-center fade-in">
+      <p class="text-blue-700 font-bold text-sm">⏱ เซนเซอร์ยังเก็บข้อมูลอยู่</p>
+      <p class="text-blue-500 text-xs mt-1" id="session-remaining-text">เหลืออีก ~2 ชม. — กรุณาอยู่กรอก TVOC ต่อ</p>
+    </div>
+
+    <!-- End session (hidden until near completion) -->
     <div id="end-btn-wrap" class="hidden">
       <button onclick="endVolunteerSession()" class="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm hover:bg-red-50 hover:text-red-500 transition-all">
         ⏹ จบ Session
@@ -198,6 +237,7 @@ let currentDevice = null;
 let activeSession = null;
 let cookingStartedAt = null;
 let tvocReadings = [];
+let tvocEnabled = false; // true only when volunteer chooses to record TVOC
 let pollTimer = null;
 let timeTimer = null;
 let userGPS = null; // { lat, lng }
@@ -398,7 +438,7 @@ async function pollStatus() {
       (activeSession.readings_count || 0) + ' ค่า · ' + elapsed + ' นาที');
     showCollectingProgress();
     hideCookingButton();
-    showTvocSection();
+    if (tvocEnabled) showTvocSection();
     showEndButton();
   }
 }
@@ -459,6 +499,45 @@ function updateTimers() {
     const pct = Math.min(100, (elapsed / 130) * 100);
     document.getElementById('collecting-bar').style.width = pct + '%';
   }
+
+  // Update session remaining + end button visibility
+  updateSessionRemaining();
+}
+
+function updateSessionRemaining() {
+  if (!activeSession) return;
+  const sessionAge = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+  const remaining = 130 - sessionAge; // SESSION_MAX_MINUTES = 130
+  const endWrap = document.getElementById('end-btn-wrap');
+  const remainWrap = document.getElementById('session-remaining-wrap');
+  const remainText = document.getElementById('session-remaining-text');
+
+  if (!tvocEnabled) {
+    // No TVOC — volunteer can leave, show "safe to close" message
+    if (endWrap) endWrap.classList.add('hidden');
+    if (remainWrap && activeSession.session_status === 'collecting') {
+      remainWrap.classList.remove('hidden');
+      if (remainText) {
+        remainText.textContent = '✅ เซนเซอร์เก็บข้อมูลอัตโนมัติ — ปิดหน้าจอได้เลยค่ะ';
+      }
+    }
+  } else if (sessionAge >= END_BTN_SHOW_AFTER_MIN) {
+    // Near completion — show end button, hide remaining info
+    if (endWrap) endWrap.classList.remove('hidden');
+    if (remainWrap) remainWrap.classList.add('hidden');
+  } else {
+    // Still collecting with TVOC — hide end button, show remaining time
+    if (endWrap) endWrap.classList.add('hidden');
+    if (remainWrap && activeSession.session_status === 'collecting') {
+      remainWrap.classList.remove('hidden');
+      if (remainText) {
+        const rHrs = Math.floor(remaining / 60);
+        const rMins = remaining % 60;
+        const timeStr = rHrs > 0 ? '~' + rHrs + ' ชม. ' + rMins + ' นาที' : '~' + rMins + ' นาที';
+        remainText.textContent = 'เหลืออีก ' + timeStr + ' — กรุณาอยู่กรอก TVOC ต่อ';
+      }
+    }
+  }
 }
 
 // ================================================
@@ -466,7 +545,7 @@ function updateTimers() {
 // ================================================
 function showCookingButton() {
   document.getElementById('cooking-btn-wrap').classList.remove('hidden');
-  document.getElementById('tvoc-section').classList.remove('hidden');
+  // TVOC is shown only after volunteer answers the TVOC question (after cooking start)
 }
 
 function hideCookingButton() {
@@ -475,18 +554,36 @@ function hideCookingButton() {
 
 function showTvocSection() {
   document.getElementById('tvoc-section').classList.remove('hidden');
+  if (!tvocReminderTimer) startTvocReminder();
 }
 
+const END_BTN_SHOW_AFTER_MIN = 100; // show "จบ" button after 100 min (30 min before auto-cutoff)
+
 function showEndButton() {
-  document.getElementById('end-btn-wrap').classList.remove('hidden');
+  // Don't show yet — updateSessionRemaining() will show when it's time
+  updateSessionRemaining();
 }
 
 function hideAllActions() {
   document.getElementById('cooking-btn-wrap').classList.add('hidden');
   document.getElementById('tvoc-section').classList.add('hidden');
+  document.getElementById('tvoc-question').classList.add('hidden');
   document.getElementById('end-btn-wrap').classList.add('hidden');
+  document.getElementById('session-remaining-wrap').classList.add('hidden');
   document.getElementById('baseline-progress').classList.add('hidden');
   document.getElementById('collecting-progress').classList.add('hidden');
+  stopTvocReminder();
+}
+
+function answerTvoc(yes) {
+  document.getElementById('tvoc-question').classList.add('hidden');
+  tvocEnabled = yes;
+  if (yes) {
+    showTvocSection();
+    showToast('📝 เปิดบันทึก TVOC — จะเตือนทุก 5 นาที');
+  } else {
+    showToast('👍 ไม่เก็บ TVOC — แค่รอเซนเซอร์เก็บข้อมูลอัตโนมัติ');
+  }
 }
 
 // ================================================
@@ -521,10 +618,11 @@ async function markCookingStart() {
       showToast('✅ บันทึกแล้ว — เริ่มเก็บข้อมูลการใช้เตา');
       hideCookingButton();
       showCollectingProgress();
-      showTvocSection();
       showEndButton();
       setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
         'Baseline: ' + (result.baseline_readings || 0) + ' ค่า');
+      // Ask if volunteer needs to record TVOC today
+      document.getElementById('tvoc-question').classList.remove('hidden');
     } else {
       showToast('❌ ' + (result.error || 'เกิดข้อผิดพลาด'));
       resetCookingBtn(btn);
@@ -571,6 +669,7 @@ async function submitTvoc() {
   input.focus();
   showToast('✅ บันทึก TVOC ' + val.toFixed(3) + ' mg/m³');
   updateTvocList();
+  resetTvocCountdown();
 }
 
 function updateTvocList() {
@@ -594,6 +693,7 @@ function endVolunteerSession() {
 
   clearInterval(pollTimer);
   clearInterval(timeTimer);
+  stopTvocReminder();
 
   // Hide session step, show summary
   document.getElementById('step-session').classList.add('hidden');
@@ -638,6 +738,118 @@ function showToast(msg) {
   t.classList.remove('hidden');
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+// ================================================
+// TVOC Reminder — Notification + Beep + Vibrate
+// ================================================
+const TVOC_INTERVAL_SEC = 300; // 5 minutes
+let tvocCountdown = TVOC_INTERVAL_SEC;
+let tvocReminderTimer = null;
+let notificationPermission = 'default';
+
+function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    notificationPermission = 'granted';
+    return;
+  }
+  if (Notification.permission !== 'denied') {
+    Notification.requestPermission().then(p => { notificationPermission = p; });
+  }
+}
+
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Two-tone beep: short high + short low
+    [880, 660].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.value = 0.3;
+      osc.start(ctx.currentTime + i * 0.2);
+      osc.stop(ctx.currentTime + i * 0.2 + 0.15);
+    });
+  } catch (_) {}
+}
+
+function vibrateDevice() {
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+}
+
+function sendTvocNotification() {
+  if (notificationPermission === 'granted') {
+    try {
+      new Notification('📝 EcoStove — กรอก TVOC', {
+        body: 'ครบ 5 นาทีแล้ว กรุณาอ่านค่า TVOC จากหน้าจอเซนเซอร์',
+        icon: 'logo.png',
+        tag: 'tvoc-reminder',
+        requireInteraction: true,
+      });
+    } catch (_) {}
+  }
+  playBeep();
+  vibrateDevice();
+
+  // Visual: glow the TVOC section + show banner
+  const section = document.getElementById('tvoc-section');
+  if (section) {
+    section.classList.remove('tvoc-glow');
+    void section.offsetWidth; // force reflow
+    section.classList.add('tvoc-glow');
+  }
+  const banner = document.getElementById('tvoc-reminder-banner');
+  if (banner) banner.classList.remove('hidden');
+}
+
+function focusTvocInput() {
+  const input = document.getElementById('tvoc-input');
+  if (input) input.focus();
+  const banner = document.getElementById('tvoc-reminder-banner');
+  if (banner) banner.classList.add('hidden');
+}
+
+function updateTvocCountdown() {
+  const wrap = document.getElementById('tvoc-countdown-wrap');
+  const text = document.getElementById('tvoc-countdown-text');
+  if (!wrap || !text) return;
+  wrap.classList.remove('hidden');
+  const m = Math.floor(tvocCountdown / 60);
+  const s = tvocCountdown % 60;
+  text.textContent = 'ถัดไปใน ' + m + ':' + String(s).padStart(2, '0');
+}
+
+function startTvocReminder() {
+  if (tvocReminderTimer) clearInterval(tvocReminderTimer);
+  tvocCountdown = TVOC_INTERVAL_SEC;
+  updateTvocCountdown();
+  requestNotificationPermission();
+
+  tvocReminderTimer = setInterval(() => {
+    tvocCountdown--;
+    if (tvocCountdown <= 0) {
+      sendTvocNotification();
+      tvocCountdown = TVOC_INTERVAL_SEC; // restart countdown
+    }
+    updateTvocCountdown();
+  }, 1000);
+}
+
+function stopTvocReminder() {
+  if (tvocReminderTimer) { clearInterval(tvocReminderTimer); tvocReminderTimer = null; }
+  const wrap = document.getElementById('tvoc-countdown-wrap');
+  if (wrap) wrap.classList.add('hidden');
+}
+
+function resetTvocCountdown() {
+  tvocCountdown = TVOC_INTERVAL_SEC;
+  updateTvocCountdown();
+  const banner = document.getElementById('tvoc-reminder-banner');
+  if (banner) banner.classList.add('hidden');
 }
 
 // ================================================

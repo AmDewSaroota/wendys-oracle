@@ -5,10 +5,6 @@ const SB_URL = process.env.SUPABASE_URL;
 const SB_KEY = process.env.SUPABASE_KEY;
 
 const MAX_SESSIONS = 2;
-const DEVICES = [
-  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (ตัวเดิม)' },
-  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ตัวใหม่)' },
-];
 
 function supabaseGet(path) {
   return new Promise((resolve, reject) => {
@@ -66,25 +62,30 @@ module.exports = async function handler(req, res) {
     day: 'numeric', month: 'long',
   });
 
-  // Query all sessions for today (use and() to avoid duplicate param issue)
+  // Load active devices with house names from DB
+  const devices = await supabaseGet(
+    `/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id,subjects(full_name)`
+  );
+  if (!devices || devices.length === 0) {
+    return res.status(200).json({ ok: true, message: 'No active devices' });
+  }
+
+  // Query all sessions for today
   const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
   const sessions = await supabaseGet(
     `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,avg_pm25,started_at,ended_at,notes`
   );
 
-  // Query pending logs count
-  const pendingLogs = await supabaseGet(
-    `/rest/v1/pollution_logs?status=eq.pending&select=id`
-  );
-  const pendingCount = (pendingLogs || []).length;
-
   const lines = [`สรุปเก็บข้อมูลประจำวัน (${dateStr})`, ''];
 
   let totalReadings = 0;
-  let missingDevices = [];
+  let fullHouses = 0;
+  let partialHouses = 0;
+  let missingHouses = [];
 
-  for (const dev of DEVICES) {
-    const devSessions = (sessions || []).filter(s => s.device_id === dev.id);
+  for (const dev of devices) {
+    const name = dev.subjects?.full_name || dev.tuya_device_id.slice(-6);
+    const devSessions = (sessions || []).filter(s => s.device_id === dev.tuya_device_id);
     const completed = devSessions.filter(s => s.session_status === 'complete');
     const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
     const collecting = devSessions.filter(s => s.session_status === 'collecting' || s.session_status === 'baseline');
@@ -96,32 +97,40 @@ module.exports = async function handler(req, res) {
     if (completed.length >= MAX_SESSIONS) {
       const pm25Vals = completed.map(s => s.avg_pm25).filter(v => v != null);
       const avgPm25 = pm25Vals.length ? (pm25Vals.reduce((a, b) => a + b, 0) / pm25Vals.length).toFixed(1) : '-';
-      lines.push(`✅ ${dev.name} — ครบ ${completed.length}/${MAX_SESSIONS} เซสชัน (${readings} รายการ, PM2.5 ${avgPm25})`);
+      lines.push(`✅ ${name} — ครบ ${completed.length}/${MAX_SESSIONS} session (${readings} รายการ, PM2.5 ${avgPm25})`);
+      fullHouses++;
     } else if (total > 0) {
       const detail = [];
       if (completed.length > 0) detail.push(`${completed.length} สำเร็จ`);
-      if (incomplete.length > 0) detail.push(`${incomplete.length} ไม่ครบ`);
+      if (incomplete.length > 0) {
+        // Check cause of incomplete sessions
+        const tuyaCount = incomplete.filter(s => (s.notes || '').includes('Tuya') || (s.notes || '').includes('tuya_api')).length;
+        const offlineCount = incomplete.filter(s => (s.notes || '').includes('ออฟไลน์')).length;
+        let incLabel = `${incomplete.length} ไม่ครบ`;
+        if (tuyaCount > 0) incLabel += ` [Tuya Cloud ขัดข้อง]`;
+        else if (offlineCount > 0) incLabel += ` [เซนเซอร์ออฟไลน์]`;
+        detail.push(incLabel);
+      }
       if (collecting.length > 0) detail.push(`${collecting.length} กำลังเก็บ`);
-      lines.push(`⚠️ ${dev.name} — ${total}/${MAX_SESSIONS} เซสชัน (${detail.join(', ')}, ${readings} รายการ)`);
-      missingDevices.push(dev.name);
+      lines.push(`⚠️ ${name} — ${total}/${MAX_SESSIONS} session (${detail.join(', ')}, ${readings} รายการ)`);
+      partialHouses++;
     } else {
-      lines.push(`❌ ${dev.name} — ไม่ได้เก็บข้อมูลวันนี้`);
-      missingDevices.push(dev.name);
+      lines.push(`❌ ${name} — ไม่มีข้อมูลวันนี้`);
+      missingHouses.push(name);
     }
   }
 
-  lines.push('', `รวม: ${totalReadings} รายการ จาก ${(sessions || []).length} เซสชัน`);
+  lines.push('', `รวม: ${totalReadings} รายการ จาก ${(sessions || []).length} session`);
+  lines.push(`ครบ: ${fullHouses}/${devices.length} บ้าน`);
 
-  if (missingDevices.length > 0) {
-    lines.push('', `บ้านที่ยังเก็บไม่ครบ: ${missingDevices.join(', ')}`, 'กรุณาติดตามกับอาสาค่ะ');
-  } else {
+  if (missingHouses.length > 0) {
+    lines.push(`ไม่มีข้อมูล: ${missingHouses.join(', ')}`);
+  }
+
+  if (fullHouses === devices.length) {
     lines.push('', 'ทุกบ้านเก็บข้อมูลครบถ้วนค่ะ');
   }
 
-  if (pendingCount > 0) {
-    lines.push('', `มี ${pendingCount} รายการรออนุมัติ`, 'กรุณาเข้า Dashboard เพื่ออนุมัติข้อมูลค่ะ');
-  }
-
   const result = await lineBroadcast(lines.join('\n'));
-  return res.status(200).json({ ok: true, sessions: (sessions || []).length, totalReadings, result });
+  return res.status(200).json({ ok: true, devices: devices.length, fullHouses, totalReadings, sessions: (sessions || []).length, result });
 };

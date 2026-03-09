@@ -105,6 +105,34 @@
 
         /* Progress bar animation */
         .progress-fill { transition: width 0.6s ease-in-out; }
+
+        /* Pulse dot for waiting sensors */
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+        .pulse-dot {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+            background: #94a3b8; animation: pulse-dot 2s ease-in-out infinite;
+        }
+        .pulse-dot.collecting { background: #3b82f6; animation-duration: 1.2s; }
+        .pulse-dot.baseline { background: #f59e0b; animation-duration: 1s; }
+
+        /* Countdown ring */
+        @keyframes countdown-pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        .countdown-ring {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 600; color: #64748b;
+            animation: countdown-pulse 2s ease-in-out infinite;
+        }
+        .countdown-ring .ring-icon {
+            width: 20px; height: 20px; border: 2.5px solid #e2e8f0;
+            border-top-color: #10b981; border-radius: 50%;
+            animation: spin 3s linear infinite;
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -233,6 +261,15 @@
                 <div class="w-full bg-slate-200 rounded-full h-2.5 mb-4">
                     <div id="session-progress-bar" class="h-2.5 rounded-full progress-fill bg-emerald-500" style="width:0%"></div>
                 </div>
+                <!-- Countdown + Last Check -->
+                <div class="flex items-center justify-between text-xs mb-3 px-1">
+                    <div id="sync-countdown" class="countdown-ring">
+                        <div class="ring-icon"></div>
+                        <span id="countdown-text" data-i18n="sync.checking">ตรวจสอบ...</span>
+                    </div>
+                    <span id="last-check-time" class="text-slate-400 text-[11px]"></span>
+                </div>
+
                 <div id="today-house-breakdown" class="space-y-2"></div>
             </div>
 
@@ -652,6 +689,10 @@
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
         let volunteerNameMap = {}; // volunteer_id → full_name
         let autoRefreshInterval = null;
+        let countdownInterval = null;
+        let countdownSeconds = 60; // 1-minute refresh cycle
+        const REFRESH_INTERVAL_SEC = 60;
+        let lastCheckTime = null;
         let currentView = 'basic';
         let projects = [], subjectProjects = [];
         let authUser = null;
@@ -803,13 +844,20 @@
             'session.title': { th: 'เก็บข้อมูลวันนี้', en: "Today's Collection" },
             'session.checking': { th: 'กำลังตรวจสอบ...', en: 'Checking...' },
             'session.success': { th: 'สำเร็จ {0} จาก {1} ครั้ง', en: '{0} of {1} sessions completed' },
+            'sync.checking': { th: 'ตรวจสอบ...', en: 'Checking...' },
+            'sync.next.in': { th: 'ตรวจอีกครั้งใน', en: 'Next check in' },
+            'sync.refreshing': { th: 'กำลังโหลดข้อมูล...', en: 'Refreshing...' },
+            'sync.last.check': { th: 'อัปเดตล่าสุด', en: 'Last updated' },
+            'sync.waiting': { th: 'รอเซนเซอร์...', en: 'Waiting for sensor...' },
+            'sync.collecting': { th: 'กำลังเก็บข้อมูล', en: 'Collecting data' },
+            'sync.baseline': { th: 'ช่วง Baseline', en: 'Baseline phase' },
             // Live card
             'live.title': { th: 'ค่าล่าสุดจาก Sensor', en: 'Latest Sensor Reading' },
             'live.waiting': { th: 'รอข้อมูล...', en: 'Waiting...' },
             'live.no.data': { th: 'ยังไม่มีข้อมูล', en: 'No data yet' },
             'live.eco': { th: '✨ Eco', en: '✨ Eco' },
             'live.old': { th: '🪵 เดิม', en: '🪵 Traditional' },
-            'live.autorefresh': { th: 'Auto-refresh: ทุก 2 นาที', en: 'Auto-refresh: every 2 min' },
+            'live.autorefresh': { th: 'Auto-refresh: ทุก 1 นาที', en: 'Auto-refresh: every 1 min' },
             'live.updated': { th: 'อัปเดตล่าสุด: ', en: 'Last updated: ' },
             // Activity feed
             'activity.title': { th: 'กิจกรรมล่าสุด', en: 'Recent Activity' },
@@ -1886,24 +1934,26 @@
                     const stoveType = devLogs.length > 0 ? devLogs[0].stove_type : null;
                     const stoveBadge = stoveType === 'eco' ? '<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-600">Eco</span>' : stoveType === 'old' ? '<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-500">เดิม</span>' : '';
 
-                    let statusIcon, statusText, statusClass;
+                    let statusIcon, statusText, statusClass, pulseDot = '';
                     if (completed >= 2) {
                         statusIcon = '✅'; statusText = 'ครบ ' + completed + '/2'; statusClass = 'text-emerald-600';
                     } else if (completed > 0 || incomplete > 0) {
                         statusIcon = '⚠️'; statusText = completed + '/2 สำเร็จ' + (incomplete > 0 ? ', ' + incomplete + ' ไม่ครบ' : ''); statusClass = 'text-amber-600';
                     } else if (devLogs.length > 0) {
-                        statusIcon = '🔄'; statusText = 'กำลังเก็บ (' + devLogs.length + ')'; statusClass = 'text-blue-600';
+                        statusIcon = '🔄'; statusText = t('sync.collecting') + ' (' + devLogs.length + ')'; statusClass = 'text-blue-600';
+                        pulseDot = '<span class="pulse-dot collecting"></span>';
                     } else {
-                        statusIcon = '❌'; statusText = 'ยังไม่เปิด'; statusClass = 'text-slate-400';
+                        statusIcon = ''; statusText = t('sync.waiting'); statusClass = 'text-slate-400';
+                        pulseDot = '<span class="pulse-dot"></span>';
                     }
 
                     rows.push(`<div class="flex items-center justify-between py-1.5 px-3 rounded-xl ${completed >= 2 ? 'bg-emerald-50' : devLogs.length > 0 ? 'bg-blue-50' : 'bg-slate-50'}">
                         <div class="flex items-center gap-2 min-w-0">
-                            <span class="text-sm">${statusIcon}</span>
+                            ${pulseDot || '<span class="text-sm">' + statusIcon + '</span>'}
                             <span class="text-sm font-medium text-navy truncate">📡 ${houseName}</span>
                             ${stoveBadge}
                         </div>
-                        <span class="text-xs font-bold ${statusClass} whitespace-nowrap">${statusText}</span>
+                        <span class="text-xs font-bold ${statusClass} whitespace-nowrap">${statusIcon} ${statusText}</span>
                     </div>`);
                 }
 
@@ -2099,7 +2149,7 @@
 
         let groupCharts = {};
         function renderGroupCharts() {
-            const filtered = getFilteredData();
+            const filtered = applyBaselineSubtraction(getFilteredData());
             const ecoData = filtered.filter(d => d.stove_type === 'eco');
             const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
@@ -2191,7 +2241,7 @@
         }
 
         function updateReductionTable() {
-            const filtered = getFilteredData();
+            const filtered = applyBaselineSubtraction(getFilteredData());
             const ecoData = filtered.filter(d => d.stove_type === 'eco');
             const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
             const tbody = document.getElementById('reduction-table-body');
@@ -2226,7 +2276,7 @@
             if (tvocTimeChartInstance) tvocTimeChartInstance.destroy();
             const canvas = document.getElementById('tvocTimeChart');
             if (!canvas) return;
-            const tvocData = getFilteredData().filter(d => d.tvoc_value != null);
+            const tvocData = applyBaselineSubtraction(getFilteredData()).filter(d => d.tvoc_value != null);
             if (!tvocData.length) {
                 tvocTimeChartInstance = null;
                 return;
@@ -2285,7 +2335,7 @@
             const hours = parseInt(rangeEl.value);
             const now = new Date();
 
-            let sensorData = getFilteredData().filter(d => d.data_source === 'sensor' && d.tuya_device_id);
+            let sensorData = applyBaselineSubtraction(getFilteredData()).filter(d => d.data_source === 'sensor' && d.tuya_device_id);
             if (hours > 0) {
                 const cutoff = new Date(now.getTime() - hours * 60 * 60 * 1000);
                 sensorData = sensorData.filter(d => new Date(d.recorded_at) >= cutoff);
@@ -2429,10 +2479,21 @@
                 const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const sessNum = numMap[s.id] || '';
                 const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
-                rows.push('<tr class="hover:bg-blue-50/50">' +
+
+                // Format notes: show cause of incomplete
+                let notesHtml = '';
+                if (s.notes) {
+                    const isTuyaError = s.notes.includes('Tuya');
+                    const isOffline = s.notes.includes('ออฟไลน์');
+                    const noteColor = isTuyaError ? 'text-red-500' : isOffline ? 'text-amber-500' : 'text-slate-400';
+                    const noteIcon = isTuyaError ? '🔴' : isOffline ? '📡' : 'ℹ️';
+                    notesHtml = '<div class="text-[10px] ' + noteColor + ' mt-0.5">' + noteIcon + ' ' + s.notes + '</div>';
+                }
+
+                rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + deviceName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\')">' +
                     '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
                     '<td class="p-3">' + deviceName + sessLabel + '</td>' +
-                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span></td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span>' + notesHtml + '</td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -2471,22 +2532,60 @@
             }).join('') || '<tr><td colspan="6" class="p-4 text-center text-slate-400">' + t('daily.no.data') + '</td></tr>';
         }
 
-        // ==================== Auto Refresh ====================
-        function startAutoRefresh() {
-            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-            autoRefreshInterval = setInterval(() => {
+        // ==================== Countdown Auto Refresh ====================
+        function updateCountdownDisplay() {
+            const textEl = document.getElementById('countdown-text');
+            const ringEl = document.querySelector('.countdown-ring .ring-icon');
+            if (!textEl) return;
+            if (countdownSeconds <= 0) {
+                textEl.textContent = t('sync.refreshing');
+                if (ringEl) ringEl.style.animationDuration = '0.5s';
+            } else {
+                const m = Math.floor(countdownSeconds / 60);
+                const s = countdownSeconds % 60;
+                const timeStr = m > 0 ? m + ':' + String(s).padStart(2, '0') : s + 's';
+                textEl.textContent = t('sync.next.in') + ' ' + timeStr;
+                if (ringEl) ringEl.style.animationDuration = '3s';
+            }
+        }
+
+        function updateLastCheckDisplay() {
+            const el = document.getElementById('last-check-time');
+            if (!el || !lastCheckTime) return;
+            const timeStr = lastCheckTime.toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            el.textContent = t('sync.last.check') + ' ' + timeStr;
+        }
+
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownSeconds = REFRESH_INTERVAL_SEC;
+            updateCountdownDisplay();
+            countdownInterval = setInterval(() => {
                 if (document.hidden) return;
-                loadData();
-            }, 120000);
+                countdownSeconds--;
+                updateCountdownDisplay();
+                if (countdownSeconds <= 0) {
+                    loadData();
+                    lastCheckTime = new Date();
+                    updateLastCheckDisplay();
+                    countdownSeconds = REFRESH_INTERVAL_SEC;
+                }
+            }, 1000);
+        }
+
+        function startAutoRefresh() {
+            startCountdown();
         }
 
         // หยุด/เริ่ม auto-refresh ตาม tab visibility
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+                if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
             } else {
-                loadData(); // โหลดทันทีเมื่อกลับมา
-                startAutoRefresh();
+                loadData();
+                lastCheckTime = new Date();
+                updateLastCheckDisplay();
+                startCountdown();
             }
         });
 
@@ -2494,6 +2593,10 @@
             const icon = document.getElementById('refresh-icon');
             if (icon) { icon.style.animation = 'spin 0.5s linear'; setTimeout(() => icon.style.animation = '', 500); }
             loadData();
+            lastCheckTime = new Date();
+            updateLastCheckDisplay();
+            countdownSeconds = REFRESH_INTERVAL_SEC;
+            updateCountdownDisplay();
             const statusEl = document.getElementById('live-refresh-status');
             if (statusEl) statusEl.textContent = t('live.updated') + new Date().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US');
         }
@@ -2676,6 +2779,17 @@
                 }
                 // Sort sessions: newest first
                 sessions.sort((a, b) => new Date(b.logs[0].recorded_at) - new Date(a.logs[0].recorded_at));
+
+                // Fetch session notes for each group (use session_id from logs)
+                const sessionNotes = {};
+                const uniqueSessionIds = [...new Set(sensorData.map(d => d.session_id).filter(Boolean))];
+                if (uniqueSessionIds.length > 0) {
+                    const { data: sessRows } = await supabaseClient.from('sessions')
+                        .select('id, notes, session_status')
+                        .in('id', uniqueSessionIds);
+                    (sessRows || []).forEach(sr => { sessionNotes[sr.id] = sr.notes; });
+                }
+
                 const container = document.getElementById('pending-sessions-list');
                 const summaryEl = document.getElementById('approval-summary-text');
                 const btnAll = document.getElementById('btn-approve-all');
@@ -2755,11 +2869,11 @@
                     }).join('');
 
                     // Render sensor session cards
-                    const sensorCardsHtml = sessions.map(s => {
+                    const sensorCardsHtml = sessions.map((s, sIdx) => {
                         const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
                         const houseName = DEVICE_NAMES[s.device] || sensorName;
                         const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
-                        const sKey = 'ps_' + (s.device || 'unknown').slice(-6) + '_' + s.date.replace(/-/g,'');
+                        const sKey = 'ps_' + (s.device || 'unknown').slice(-6) + '_' + s.date.replace(/-/g,'') + '_' + sIdx;
                         window[sKey] = s.ids;
                         window[sKey + '_logs'] = s.logs;
                         window[sKey + '_label'] = houseName + ' · ' + sensorName;
@@ -2789,7 +2903,13 @@
                         const lastTime = lastLog ? new Date(lastLog.recorded_at) : null;
                         const minutesAgo = lastTime ? Math.round((Date.now() - lastTime.getTime()) / 60000) : 999;
                         const isStillCollecting = minutesAgo < 10;
-                        const isComplete = s.logs.length >= 26 && !isStillCollecting;
+                        const isComplete = s.logs.length >= 24 && !isStillCollecting;
+
+                        // Get session notes from DB (match by session_id of first log)
+                        const logSessionId = firstLog ? firstLog.session_id : null;
+                        const sessNote = logSessionId ? (sessionNotes[logSessionId] || '') : '';
+                        const isTuyaIssue = sessNote.includes('Tuya') || sessNote.includes('tuya_api');
+                        const isOfflineIssue = sessNote.includes('ออฟไลน์');
 
                         let statusBadge, borderColor, statusNote;
                         if (isStillCollecting) {
@@ -2799,12 +2919,22 @@
                         } else if (isComplete) {
                             statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">✅ เก็บเสร็จ</span>';
                             borderColor = 'border-emerald-400';
-                            statusNote = '';
+                            statusNote = isTuyaIssue ? '<div class="text-[11px] text-amber-500 bg-amber-50 rounded-lg px-3 py-1.5">⚠️ ครบแล้ว แต่ ' + sessNote + '</div>' : '';
                         } else {
                             const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + ' ชม.' : minutesAgo + ' นาที';
-                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">⚠️ เก็บไม่ครบ</span>';
-                            borderColor = 'border-amber-400';
-                            statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/26 รายการ — ข้อมูลล่าสุด ' + timeEnd + ' น. (' + agoText + 'ที่แล้ว)</div>';
+                            if (isTuyaIssue) {
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">🔴 Tuya Cloud ขัดข้อง</span>';
+                                borderColor = 'border-red-400';
+                                statusNote = '<div class="text-[11px] text-red-500 bg-red-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/24 รายการ — ' + sessNote + '</div>';
+                            } else if (isOfflineIssue) {
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">📡 เซนเซอร์ออฟไลน์</span>';
+                                borderColor = 'border-amber-400';
+                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/24 รายการ — ' + sessNote + '</div>';
+                            } else {
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">⚠️ เก็บไม่ครบ</span>';
+                                borderColor = 'border-amber-400';
+                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/24 รายการ — ข้อมูลล่าสุด ' + timeEnd + ' น. (' + agoText + 'ที่แล้ว)</div>';
+                            }
                         }
 
                         return `
@@ -2956,7 +3086,7 @@
                     for (const s of activeSessions) {
                         const age = Math.round((Date.now() - new Date(s.started_at).getTime()) / 60000);
                         await supabaseClient.from('sessions').update({
-                            session_status: s.readings_count >= 26 ? 'complete' : 'incomplete',
+                            session_status: s.readings_count >= 24 ? 'complete' : 'incomplete',
                             ended_at: new Date().toISOString(),
                             collection_ended_at: new Date().toISOString(),
                             updated_at: new Date().toISOString(),
@@ -3833,6 +3963,8 @@
                 hideLoading();
             }
             initMap();
+            lastCheckTime = new Date();
+            updateLastCheckDisplay();
             startAutoRefresh();
 
             // Lazy init deep map when tab is switched

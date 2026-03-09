@@ -113,16 +113,24 @@ async function getBatchDeviceInfo(accessId, secret, token, deviceIds) {
   const path = '/v1.0/iot-03/devices?device_ids=' + deviceIds.join(',');
   const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
 
-  const res = await fetch(TUYA_BASE_URL + path, {
-    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-  });
-  const data = await res.json();
-  if (!data.success) return {};
-  const map = {};
-  for (const device of (data.result && data.result.list || [])) {
-    map[device.id] = device;
+  try {
+    const res = await fetch(TUYA_BASE_URL + path, {
+      headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+    });
+    const data = await res.json();
+    if (!data.success) {
+      console.error('getBatchDeviceInfo: Tuya API error — code=' + data.code + ', msg=' + data.msg);
+      return { _apiError: true, _errorMsg: 'Tuya API: ' + (data.msg || data.code || 'unknown') };
+    }
+    const map = {};
+    for (const device of (data.result && data.result.list || [])) {
+      map[device.id] = device;
+    }
+    return map;
+  } catch (err) {
+    console.error('getBatchDeviceInfo: fetch error —', err.message);
+    return { _apiError: true, _errorMsg: 'fetch: ' + err.message };
   }
-  return map;
 }
 
 async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
@@ -316,7 +324,25 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
     const temps = vals('temperature');
     const hums = vals('humidity');
 
-    const isComplete = data.length >= 26;
+    const isComplete = data.length >= 24;
+
+    // Check if Tuya API errors were tracked during this session
+    const tuyaErrorMatch = ((session.notes || '').match(/tuya_api_errors:(\d+)/) || []);
+    const tuyaErrorCount = parseInt(tuyaErrorMatch[1] || '0');
+
+    // Build descriptive notes with cause
+    let finalNotes = null;
+    if (!isComplete) {
+      let reason = closeReason || 'readings ไม่ถึง 24';
+      if (tuyaErrorCount > 0) {
+        reason += ' (Tuya Cloud ขัดข้อง ' + tuyaErrorCount + ' ครั้ง — ไม่ใช่เซนเซอร์)';
+      }
+      finalNotes = reason;
+    } else if (tuyaErrorCount > 0) {
+      // Complete but had errors — note it anyway
+      finalNotes = 'ครบ แต่ Tuya Cloud ขัดข้อง ' + tuyaErrorCount + ' ครั้ง';
+    }
+
     const update = {
       session_status: isComplete ? 'complete' : 'incomplete',
       ended_at: new Date().toISOString(),
@@ -328,7 +354,7 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
       avg_co2: avg(co2s),
       avg_temperature: avg(temps),
       avg_humidity: avg(hums),
-      notes: !isComplete ? (closeReason || 'readings ไม่ถึง 26') : null,
+      notes: finalNotes,
       updated_at: new Date().toISOString(),
     };
 
@@ -656,6 +682,26 @@ module.exports = async function handler(req, res) {
     const needingIds = sensorsNeedingTuya.map(s => s.id);
     const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds);
     tuyaCalls++;
+
+    // If Tuya API itself failed, keep sessions alive (update updated_at) to prevent false gap-close
+    if (deviceInfoMap._apiError) {
+      console.error('Phase 4: Tuya API failed — ' + deviceInfoMap._errorMsg + '. Keeping sessions alive.');
+      for (const sensor of sensorsNeedingTuya) {
+        const cached = cachedSessions[sensor.id];
+        if (cached) {
+          // Track error count in session notes so closeSession can report the cause
+          const existingErrors = parseInt(((cached.notes || '').match(/tuya_api_errors:(\d+)/) || [])[1] || '0');
+          const newErrors = existingErrors + 1;
+          await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + cached.id, {
+            method: 'PATCH', headers: sbHeaders(sbKey),
+            body: JSON.stringify({ updated_at: new Date().toISOString(), notes: 'tuya_api_errors:' + newErrors }),
+          });
+        }
+        results.push({ sensor: sensor.name, status: 'tuya_api_error', reason: deviceInfoMap._errorMsg });
+      }
+      await updateMonthlyQuota(sbUrl, sbKey, tuyaCalls);
+      return res.status(200).json({ success: true, synced: '0/' + SENSORS.length, tuya_api_error: deviceInfoMap._errorMsg, time: new Date().toISOString(), tuya_calls: tuyaCalls, results });
+    }
 
     // ===== Phase 5: Batch device status — ONLY if any sensor is online (0 or 1 call) =====
     const onlineSensors = sensorsNeedingTuya.filter(s => {

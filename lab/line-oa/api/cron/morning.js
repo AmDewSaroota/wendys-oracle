@@ -4,11 +4,6 @@ const CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 const SB_URL = process.env.SUPABASE_URL;
 const SB_KEY = process.env.SUPABASE_KEY;
 
-const DEVICES = [
-  { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (ตัวเดิม)' },
-  { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ตัวใหม่)' },
-];
-
 function supabaseGet(path) {
   return new Promise((resolve, reject) => {
     const url = new URL(path, SB_URL);
@@ -65,47 +60,59 @@ module.exports = async function handler(req, res) {
     day: 'numeric', month: 'long',
   });
 
-  // Query sessions for today (use and() to avoid duplicate param issue)
+  // Load active devices with house names from DB
+  const devices = await supabaseGet(
+    `/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id,subjects(full_name)`
+  );
+  if (!devices || devices.length === 0) {
+    return res.status(200).json({ ok: true, message: 'No active devices' });
+  }
+
+  // Query sessions for today
   const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
   const sessions = await supabaseGet(
     `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,avg_pm25,started_at,ended_at,notes`
   );
 
   const lines = [`สรุปเก็บข้อมูลเช้า (${dateStr})`, ''];
+  const collected = [];
+  const missing = [];
 
-  let allCollected = true;
-
-  for (const dev of DEVICES) {
-    const devSessions = (sessions || []).filter(s => s.device_id === dev.id);
+  for (const dev of devices) {
+    const name = dev.subjects?.full_name || dev.tuya_device_id.slice(-6);
+    const devSessions = (sessions || []).filter(s => s.device_id === dev.tuya_device_id);
     const completed = devSessions.filter(s => s.session_status === 'complete');
-    const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
     const collecting = devSessions.filter(s => s.session_status === 'collecting' || s.session_status === 'baseline');
+    const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
 
     if (completed.length > 0) {
       const s = completed[0];
       const readings = s.readings_count || 0;
       const pm25 = s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-';
-      lines.push(`✅ ${dev.name} — เก็บแล้ว (${readings} รายการ, PM2.5 เฉลี่ย ${pm25})`);
+      lines.push(`✅ ${name} — เก็บแล้ว (${readings} รายการ, PM2.5 ${pm25})`);
+      collected.push(name);
     } else if (collecting.length > 0) {
       const s = collecting[0];
-      lines.push(`🔄 ${dev.name} — กำลังเก็บ (${s.readings_count || 0} รายการ)`);
+      lines.push(`🔄 ${name} — กำลังเก็บ (${s.readings_count || 0} รายการ)`);
+      collected.push(name);
     } else if (incomplete.length > 0) {
       const s = incomplete[0];
       const readings = s.readings_count || 0;
       const pm25 = s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-';
-      const reason = s.notes ? `\n   → สาเหตุ: ${s.notes}` : '';
-      lines.push(`⚠️ ${dev.name} — เก็บไม่ครบ (${readings}/26 รายการ, PM2.5 ${pm25})${reason}`);
-      allCollected = false;
+      const notes = s.notes || '';
+      const isTuya = notes.includes('Tuya') || notes.includes('tuya_api');
+      const isOffline = notes.includes('ออฟไลน์');
+      const cause = isTuya ? ' [Tuya Cloud ขัดข้อง]' : isOffline ? ' [เซนเซอร์ออฟไลน์]' : '';
+      lines.push(`⚠️ ${name} — เก็บไม่ครบ (${readings} รายการ, PM2.5 ${pm25})${cause}`);
+      missing.push(name);
     } else {
-      lines.push(`❌ ${dev.name} — ยังไม่ได้เปิดเซนเซอร์`);
-      allCollected = false;
+      lines.push(`❌ ${name} — ยังไม่มีข้อมูล`);
+      missing.push(name);
     }
   }
 
-  if (!allCollected) {
-    lines.push('', 'กรุณาแจ้งเตือนบ้านที่ยังไม่เปิดเซนเซอร์ค่ะ');
-  }
+  lines.push('', `เก็บได้: ${collected.length}/${devices.length} บ้าน`);
 
   const result = await lineBroadcast(lines.join('\n'));
-  return res.status(200).json({ ok: true, sessions: (sessions || []).length, result });
+  return res.status(200).json({ ok: true, devices: devices.length, collected: collected.length, sessions: (sessions || []).length, result });
 };
