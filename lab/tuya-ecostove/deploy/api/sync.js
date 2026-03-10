@@ -10,6 +10,12 @@
 
 const crypto = require('crypto');
 
+// Thai timezone helper — returns YYYY-MM-DD in Bangkok time (UTC+7)
+function getThaiDate() {
+  const d = new Date(Date.now() + 7 * 3600000);
+  return d.toISOString().slice(0, 10);
+}
+
 const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
 const SESSION_GAP_MINUTES = 30; // gap > 30 min = close old session, start new
 const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
@@ -215,7 +221,7 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId)
 
 // ===== Session Management =====
 async function getSessionCountToday(sbUrl, sbKey, deviceId) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getThaiDate();
   const res = await fetch(
     sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
     '&started_at=gte.' + today + 'T00:00:00Z&select=id',
@@ -382,7 +388,7 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
 
 async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getThaiDate();
     // Use PostgREST and() operator to avoid duplicate param name issue
     const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().slice(0, 10);
     const res = await fetch(
@@ -448,7 +454,7 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
 // ===== API Quota Tracking =====
 async function getMonthlyQuota(sbUrl, sbKey) {
   try {
-    const month = new Date().toISOString().slice(0, 7); // '2026-03'
+    const month = getThaiDate().slice(0, 7); // '2026-03'
     const res = await fetch(
       sbUrl + '/rest/v1/api_quota?month=eq.' + month + '&limit=1',
       { headers: sbHeaders(sbKey) }
@@ -464,7 +470,7 @@ async function getMonthlyQuota(sbUrl, sbKey) {
 async function updateMonthlyQuota(sbUrl, sbKey, callsToAdd) {
   if (callsToAdd <= 0) return;
   try {
-    const month = new Date().toISOString().slice(0, 7);
+    const month = getThaiDate().slice(0, 7);
     const current = await getMonthlyQuota(sbUrl, sbKey);
     if (!current) return; // table doesn't exist, skip
     const newTotal = (current.tuya_calls || 0) + callsToAdd;
@@ -564,14 +570,15 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
 
 // ===== Handler =====
 module.exports = async function handler(req, res) {
-  // Auth check
+  // Auth check — fail-closed: MUST have CRON_SECRET set
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers['authorization'];
-    const query = req.query?.secret;
-    if (auth !== 'Bearer ' + secret && query !== secret) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+  if (!secret) {
+    return res.status(500).json({ error: 'CRON_SECRET not configured' });
+  }
+  const auth = req.headers['authorization'];
+  const query = req.query?.secret;
+  if (auth !== 'Bearer ' + secret && query !== secret) {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const accessId = process.env.TUYA_ACCESS_ID;
@@ -689,12 +696,14 @@ module.exports = async function handler(req, res) {
       for (const sensor of sensorsNeedingTuya) {
         const cached = cachedSessions[sensor.id];
         if (cached) {
-          // Track error count in session notes so closeSession can report the cause
+          // Track error count in session notes — append, don't overwrite
+          const existingNotes = (cached.notes || '').replace(/\s*tuya_api_errors:\d+/, '').trim();
           const existingErrors = parseInt(((cached.notes || '').match(/tuya_api_errors:(\d+)/) || [])[1] || '0');
           const newErrors = existingErrors + 1;
+          const updatedNotes = (existingNotes ? existingNotes + ' ' : '') + 'tuya_api_errors:' + newErrors;
           await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + cached.id, {
             method: 'PATCH', headers: sbHeaders(sbKey),
-            body: JSON.stringify({ updated_at: new Date().toISOString(), notes: 'tuya_api_errors:' + newErrors }),
+            body: JSON.stringify({ updated_at: new Date().toISOString(), notes: updatedNotes }),
           });
         }
         results.push({ sensor: sensor.name, status: 'tuya_api_error', reason: deviceInfoMap._errorMsg });

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EcoStove — Weekly Update (สัปดาห์หน้า)</title>
+<title>EcoStove — ประชุมอัปเดท 13 มี.ค. 2569</title>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -207,33 +207,6 @@
   .fill-yellow { background: var(--yellow); }
   .fill-blue { background: var(--blue); }
 
-  .choice-box {
-    background: #fff;
-    border-radius: 14px;
-    padding: 20px 24px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border-left: 5px solid var(--gray-300);
-  }
-  .choice-box.recommended { border-left-color: var(--green); background: var(--green-50); }
-  .choice-box.alt { border-left-color: var(--blue); }
-  .choice-box.risky { border-left-color: var(--yellow); }
-
-  .choice-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--gray-900);
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .choice-desc {
-    font-size: 0.85rem;
-    color: var(--gray-500);
-    font-weight: 300;
-    line-height: 1.6;
-  }
   .choice-pros { color: var(--green); font-weight: 400; }
   .choice-cons { color: var(--red); font-weight: 400; }
 
@@ -277,8 +250,6 @@
   .scenario-flow .step.warn { background: #fef3c7; color: #92400e; }
   .scenario-flow .step.ok { background: var(--green-light); color: var(--green-dark); }
   .scenario-flow .step.bad { background: #fee2e2; color: #991b1b; }
-  .scenario-flow .step.new { background: #ede9fe; color: #5b21b6; }
-  .scenario-flow .arr { color: var(--gray-300); }
 
   /* Nav */
   .nav {
@@ -335,553 +306,108 @@
 <div class="slide bg-gradient active">
   <div style="text-align:center;">
     <div style="font-size:4rem; margin-bottom:16px;">🌿</div>
-    <h1>EcoStove Weekly Update</h1>
-    <p class="subtitle">อัพเดทความคืบหน้า + ข้อจำกัดที่พบ + แผนรับมือ</p>
-    <div style="margin-top:32px; display:flex; justify-content:center; gap:48px;">
+    <h1>EcoStove — ประชุมอัปเดท</h1>
+    <p class="subtitle">ปัญหา Baseline → ระบบที่แก้ปัญหา → Demo → แผน Deploy 10 บ้าน</p>
+    <div style="margin-top:32px; display:flex; justify-content:center; gap:36px;">
       <div style="text-align:center;">
-        <div style="font-size:2.5rem; font-weight:700;">Wk 1–3</div>
-        <div style="font-size:0.85rem; opacity:0.6;">เช็คลิสต์</div>
+        <div style="font-size:2.2rem; font-weight:700;">⚠️</div>
+        <div style="font-size:0.8rem; opacity:0.6;">ปัญหาที่พบ</div>
       </div>
       <div style="text-align:center;">
-        <div style="font-size:2.5rem; font-weight:700;">3+1</div>
-        <div style="font-size:0.85rem; opacity:0.6;">ข้อจำกัด + ทางเลือก</div>
+        <div style="font-size:2.2rem; font-weight:700;">📱</div>
+        <div style="font-size:0.8rem; opacity:0.6;">ระบบที่แก้ปัญหา</div>
       </div>
       <div style="text-align:center;">
-        <div style="font-size:2.5rem; font-weight:700;">1</div>
-        <div style="font-size:0.85rem; opacity:0.6;">ข้อเสนอแก้ทั้งระบบ</div>
+        <div style="font-size:2.2rem; font-weight:700;">🖥️</div>
+        <div style="font-size:0.8rem; opacity:0.6;">Demo หน้าจอ</div>
       </div>
       <div style="text-align:center;">
-        <div style="font-size:2.5rem; font-weight:700;">📱</div>
-        <div style="font-size:0.85rem; opacity:0.6;">ระบบอาสาสมัคร</div>
+        <div style="font-size:2.2rem; font-weight:700;">📦</div>
+        <div style="font-size:0.8rem; opacity:0.6;">แผน Deploy</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:2.2rem; font-weight:700;">📋</div>
+        <div style="font-size:0.8rem; opacity:0.6;">Spec ที่ต้องเตรียม</div>
       </div>
     </div>
-    <p style="margin-top:40px; font-size:0.85rem; opacity:0.4;">NDF — มีนาคม 2026</p>
+    <p style="margin-top:40px; font-size:0.85rem; opacity:0.4;">NDF — 13 มีนาคม 2569</p>
   </div>
-  <div class="slide-number">1 / 13</div>
+  <div class="slide-number">1 / 10</div>
 </div>
 
-<!-- ========== SLIDE 2: Progress Overview ========== -->
+<!-- ========== SLIDE 2: ปัญหา Baseline ========== -->
 <div class="slide bg-white">
-  <span class="tag">ความคืบหน้า</span>
-  <h2>เช็คลิสต์ 3 สัปดาห์ — ภาพรวม</h2>
-  <div style="display:flex; flex-direction:column; gap:24px;">
-
-    <div style="background:var(--green-50); border-radius:16px; padding:24px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <h3 style="margin:0;">Wk1 — ระบบ Baseline / Subtraction</h3>
-        <span style="font-size:1.4rem; font-weight:700; color:var(--green);">80%</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill fill-green" style="width:80%;"></div></div>
-      <div style="font-size:0.85rem; color:var(--gray-500); margin-top:8px; font-weight:300;">
-        ✅ เปรียบเทียบเตาเดิม vs EcoStove ได้ &nbsp;|&nbsp; ✅ ตารางลดลง % &nbsp;|&nbsp; ✅ กราฟเปรียบเทียบ<br>
-        ⚠️ <strong>วิธีวัด baseline ต้องปรับปรุง</strong> (ดูสไลด์ถัดไป)
-      </div>
-    </div>
-
-    <div style="background:#eff6ff; border-radius:16px; padding:24px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <h3 style="margin:0; color:#1e40af;">Wk2 — Multi-Project + จัดการเซนเซอร์</h3>
-        <span style="font-size:1.4rem; font-weight:700; color:#2563eb;">75%</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill fill-blue" style="width:75%;"></div></div>
-      <div style="font-size:0.85rem; color:var(--gray-500); margin-top:8px; font-weight:300;">
-        ✅ ระบบโครงการ + ลงทะเบียนเซนเซอร์ + ผูกเซนเซอร์กับบ้าน<br>
-        ⚠️ <strong>เหลืองานขัดรายละเอียด</strong> (แก้ไขหลังสร้าง, ดูสถานะเซนเซอร์)
-      </div>
-    </div>
-
-    <div style="background:#fefce8; border-radius:16px; padding:24px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <h3 style="margin:0; color:#92400e;">Wk3 — ทดสอบ 10 เซนเซอร์พร้อมกัน</h3>
-        <span style="font-size:1.4rem; font-weight:700; color:#b45309;">90%</span>
-      </div>
-      <div class="progress-bar"><div class="progress-fill fill-yellow" style="width:90%;"></div></div>
-      <div style="font-size:0.85rem; color:var(--gray-500); margin-top:8px; font-weight:300;">
-        ✅ รองรับ 10 ตัวพร้อมกัน + Session แยกอิสระแต่ละเครื่อง + Dashboard ปรับตาม<br>
-        ⚠️ <strong>เหลือลงทะเบียนจริง + ทดสอบภาคสนาม</strong>
-      </div>
-    </div>
-
-  </div>
-  <div class="slide-number">2 / 13</div>
-</div>
-
-<!-- ========== SLIDE 3: ข้อจำกัดที่พบ ========== -->
-<div class="slide bg-white">
-  <span class="tag">⚠️ ข้อจำกัดที่พบ</span>
-  <h2>ปัญหาในระบบเก็บข้อมูลปัจจุบัน</h2>
-
-  <div class="issue-box">
-    <div class="issue-title">🔴 ปัญหาที่ 1 — Baseline ไม่น่าเชื่อถือ</div>
-    <div class="issue-desc">
-      ระบบใช้ <strong>10 นาทีแรก</strong> ของ session เป็น baseline อัตโนมัติ แต่มีปัจจัยที่ควบคุมไม่ได้:<br>
-      → <strong>ฝั่งภาคสนาม:</strong> ไม่รู้ว่าชาวบ้านจุดเตาไปก่อนแล้วหรือยัง — ถ้าจุดก่อน baseline = ค่าควัน ไม่ใช่อากาศปกติ<br>
-      → <strong>ฝั่งระบบ:</strong> Cron ตรวจจับทุก 5 นาที → อาจพลาดจังหวะ + แม้เซนเซอร์ต่อ WiFi เสถียร ระบบก็ยังเก็บข้อมูลได้ไม่ครบทุก session<br>
-      → การหักลบ baseline เป็นสิ่งจำเป็นสำหรับงานวิจัย — ต้องมีวิธีที่น่าเชื่อถือ
-    </div>
-  </div>
-
-  <div class="issue-box warn">
-    <div class="issue-title">🟡 ปัญหาที่ 2 — เซนเซอร์ออนไลน์ตลอด (บ้านมี WiFi)</div>
-    <div class="issue-desc">
-      บ้านที่มี WiFi → เซนเซอร์ต่อเน็ตตลอด → ระบบเริ่ม session อัตโนมัติ<br>
-      → ไม่มีคนควบคุม → ไม่รู้ว่าชาวบ้านใช้เตาจริงหรือเปล่า → ข้อมูลอาจปนกัน<br>
-      → เก็บได้แค่ 2 session/วัน แต่<strong>ไม่รู้ว่า session ไหนมีการใช้เตาจริง</strong>
-    </div>
-  </div>
-
-  <div class="issue-box warn">
-    <div class="issue-title">🟡 ปัญหาที่ 3 — ไม่รู้จังหวะ "เริ่มใช้เตา" vs "อากาศปกติ"</div>
-    <div class="issue-desc">
-      ระบบปัจจุบันเก็บข้อมูลต่อเนื่อง โดยไม่แยกว่าช่วงไหน "ยังไม่ใช้เตา" ช่วงไหน "ใช้เตาแล้ว"<br>
-      → เทียบ eco vs old ได้ (approach D) แต่<strong>หักลบ baseline ไม่ได้อย่างแม่นยำ</strong><br>
-      → ผลกระทบ: ค่าเฉลี่ยที่ได้อาจรวม ambient + cooking ปนกัน
-    </div>
-  </div>
-
-  <div class="slide-number">3 / 13</div>
-</div>
-
-<!-- ========== SLIDE 4: ตัวอย่างปัญหา Baseline ========== -->
-<div class="slide bg-light">
-  <span class="tag">ตัวอย่างปัญหา</span>
-  <h2>Baseline อัตโนมัติ 10 นาที — มีจุดที่ต้องปรับปรุง</h2>
+  <span class="tag">⚠️ ปัญหาที่พบ</span>
+  <h2>Baseline แยกไม่ได้ — ทำไมระบบเดิมไม่เพียงพอ</h2>
 
   <div class="two-col">
     <div>
-      <h3 style="color:var(--green);">✅ สถานการณ์ที่ต้องการ</h3>
-      <div class="scenario-flow">
-        <span class="step ok">เซนเซอร์ต่อ WiFi</span>
-        <span class="arr">→</span>
-        <span class="step ok">ระบบตรวจจับทันที</span>
-        <span class="arr">→</span>
-        <span class="step ok">10 นาที = อากาศปกติ ✅</span>
-        <span class="arr">→</span>
-        <span class="step">จุดเตา</span>
-        <span class="arr">→</span>
-        <span class="step">เก็บค่าจริง</span>
-      </div>
-      <div style="background:#d1fae5; padding:10px 16px; border-radius:10px; font-size:0.85rem; color:#064e3b; margin-top:8px;">
-        ✅ Baseline = อากาศปกติจริงๆ → หักลบได้ถูกต้อง
-      </div>
-    </div>
-    <div>
-      <h3 style="color:var(--red);">⚠️ สถานการณ์ที่เกิดจริงได้</h3>
-      <div class="scenario-flow">
-        <span class="step warn">เซนเซอร์ต่อ WiFi</span>
-        <span class="arr">→</span>
-        <span class="step bad">Cron ยังไม่ตรวจจับ (0–5 นาที)</span>
-        <span class="arr">→</span>
-        <span class="step bad">จุดเตาระหว่างรอ</span>
-        <span class="arr">→</span>
-        <span class="step bad">baseline = ค่าควัน</span>
-      </div>
-      <div style="background:#fee2e2; padding:10px 16px; border-radius:10px; font-size:0.85rem; color:#991b1b; margin-top:8px;">
-        ❌ Baseline ปนค่าควัน → หักลบแล้วผลคลาดเคลื่อน
-      </div>
-    </div>
-  </div>
-
-  <div class="card-grid cols-2" style="margin-top:20px;">
-    <div class="card red">
-      <div class="icon">🤖</div>
-      <h3>ข้อจำกัดฝั่งระบบ</h3>
-      <ul>
-        <li>Cron ตรวจจับเซนเซอร์ทุก 5 นาที → อาจพลาดจังหวะ</li>
-        <li>แม้ WiFi เสถียร ระบบก็ยังเก็บข้อมูลได้ไม่ครบทุก session</li>
-        <li>ไม่สามารถรู้ได้ว่า "10 นาทีแรก" เป็นอากาศปกติจริงหรือไม่</li>
-      </ul>
-    </div>
-    <div class="card yellow">
-      <div class="icon">🏠</div>
-      <h3>ข้อจำกัดฝั่งภาคสนาม</h3>
-      <ul>
-        <li>ชาวบ้านอาจจุดเตาก่อนเซนเซอร์พร้อม</li>
-        <li>ไม่มีสัญญาณบอกระบบว่า "เริ่มใช้เตาแล้ว"</li>
-        <li>แต่ละบ้านมีพฤติกรรมต่างกัน ควบคุมยาก</li>
-      </ul>
-    </div>
-  </div>
-  <div class="slide-number">4 / 13</div>
-</div>
-
-<!-- ========== SLIDE 5: ทางเลือก A-D ========== -->
-<div class="slide bg-white">
-  <span class="tag">🔧 ทางเลือก</span>
-  <h2>แผนรับมือ — เลือกวิธีวัด Baseline</h2>
-
-  <div class="two-col">
-    <div>
-      <div class="choice-box" style="border-left-color:var(--gray-500); background:#f9fafb;">
-        <div class="choice-title">📌 แผนปัจจุบัน — เทียบ eco vs old ตรงๆ (ไม่หักลบ)</div>
-        <div class="choice-desc">
-          ระบบปัจจุบันเปรียบเทียบค่าเฉลี่ยระหว่าง eco กับ old โดยไม่หักลบ baseline<br><br>
-          <span class="choice-pros">✅ ง่ายที่สุด ไม่ต้องเปลี่ยนอะไร</span><br>
-          <span class="choice-cons">❌ ค่าที่ได้ไม่น่าเชื่อถือ เนื่องจากไม่มีการลบค่า Baseline ทิ้ง</span>
+      <div class="issue-box">
+        <div class="issue-title">🔴 สาเหตุที่ 1 — ไม่รู้จังหวะ "เริ่มจุดเตา"</div>
+        <div class="issue-desc">
+          ระบบเก็บข้อมูลตลอดเวลาที่เซนเซอร์ออนไลน์ แต่<strong>ไม่รู้ว่าตอนไหนจุดเตาจริง</strong> → ข้อมูล ambient กับ cooking ปนกัน
         </div>
       </div>
-
-      <div class="choice-box recommended">
-        <div class="choice-title">✅ ทางเลือก A — อาสากดปุ่ม "เริ่มใช้เตา" (แนะนำ)</div>
-        <div class="choice-desc">
-          อาสาอยู่ที่บ้าน → เปิด Hotspot → ระบบเก็บ baseline → สังเกตชาวบ้านจุดเตา → <strong>กดปุ่ม 1 ครั้ง</strong> บนมือถือ → ระบบตัด baseline ตรงจุดนั้น<br><br>
-          <span class="choice-pros">✅ ได้ baseline ตรงความเป็นจริง &nbsp;|&nbsp; ✅ อาสากดง่ายแค่ปุ่มเดียว &nbsp;|&nbsp; ✅ แก้ปัญหาเซนเซอร์ออนไลน์ตลอดด้วย</span><br>
-          <span class="choice-cons">⚠️ ต้องมีอาสา 1 คน/บ้าน ตลอดการเก็บ</span>
+      <div class="issue-box">
+        <div class="issue-title">🔴 สาเหตุที่ 2 — Baseline อัตโนมัติไม่น่าเชื่อถือ</div>
+        <div class="issue-desc">
+          ใช้ <strong>10 นาทีแรก</strong>เป็น baseline → แต่ถ้าจุดเตาไปก่อนเซนเซอร์ออนไลน์ baseline จะปนควัน
+        </div>
+      </div>
+      <div class="issue-box warn">
+        <div class="issue-title">🟡 สาเหตุที่ 3 — เซนเซอร์ออนไลน์ตลอด (WiFi ถาวร)</div>
+        <div class="issue-desc">
+          ถ้าบ้านมี WiFi → เซนเซอร์ต่อ 24 ชม. → <strong>ไม่รู้ว่า session ไหนมีการใช้เตาจริง</strong>
+        </div>
+      </div>
+      <div class="issue-box">
+        <div class="issue-title">🔴 สาเหตุที่ 4 — ไม่มีระบบแจ้งว่าเซนเซอร์ออนไลน์</div>
+        <div class="issue-desc">
+          อาสาไม่รู้ว่าเซนเซอร์เชื่อมต่อ WiFi สำเร็จหรือยัง → อาจ<strong>เริ่มจุดเตาก่อนเซนเซอร์พร้อม</strong> → baseline เก็บไม่ครบ
         </div>
       </div>
     </div>
     <div>
-      <div class="choice-box alt">
-        <div class="choice-title">🔵 ทางเลือก B — แยก 2 รอบ (baseline แยก session)</div>
-        <div class="choice-desc">
-          รอบ 1: เปิดเซนเซอร์ก่อนใช้เตา 30 นาที → เก็บ baseline → ปิด<br>
-          รอบ 2: จุดเตาแล้วค่อยเปิดใหม่ → เก็บค่าจริง<br><br>
-          <span class="choice-pros">✅ แยกข้อมูลชัดเจน</span><br>
-          <span class="choice-cons">⚠️ ยุ่งยาก ต้องเปิด-ปิด Hotspot 2 รอบ &nbsp;|&nbsp; ⚠️ ใช้ 4 session/วัน (baseline 2 + เก็บจริง 2) — เกินขีดจำกัดระบบ (สูงสุด 2/วัน) → ต้องปรับระบบ + เสี่ยง API เกิน Quota</span>
-        </div>
+      <h3 style="color:var(--green); margin-bottom:8px;">✅ สิ่งที่ต้องการ</h3>
+      <div class="scenario-flow" style="margin-bottom:10px;">
+        <span class="step ok">เก็บ baseline (อากาศปกติ)</span>
+        <span class="arr">→</span>
+        <span class="step ok">จุดเตา → กดปุ่ม</span>
+        <span class="arr">→</span>
+        <span class="step ok">เก็บค่าจริง</span>
+      </div>
+      <div style="background:#d1fae5; padding:8px 14px; border-radius:10px; font-size:0.82rem; color:#064e3b; margin-bottom:20px;">
+        ✅ แยกข้อมูลชัดเจน → หักลบ baseline ได้แม่นยำ
       </div>
 
-      <div class="choice-box risky">
-        <div class="choice-title">🟡 ทางเลือก C — ตรวจจับจากข้อมูล (algorithm)</div>
-        <div class="choice-desc">
-          ระบบดูว่า PM2.5/CO2 พุ่งขึ้นตอนไหน → ใช้ช่วงก่อนพุ่งเป็น baseline<br><br>
-          <span class="choice-pros">✅ อัตโนมัติ 100% ไม่ต้องกด</span><br>
-          <span class="choice-cons">⚠️ ไม่แม่นเสมอ (ถ้าค่าค่อยๆขึ้น ไม่ใช่ spike) &nbsp;|&nbsp; ⚠️ ต้องเขียน algorithm ซับซ้อน &nbsp;|&nbsp; ⚠️ ยากอธิบายใน paper</span>
-        </div>
+      <h3 style="color:var(--red); margin-bottom:8px;">⚠️ สิ่งที่เกิดจริงในระบบเดิม</h3>
+      <div class="scenario-flow" style="margin-bottom:10px;">
+        <span class="step warn">เซนเซอร์ online</span>
+        <span class="arr">→</span>
+        <span class="step bad">จุดเตาแล้วก่อน?</span>
+        <span class="arr">→</span>
+        <span class="step bad">ไม่รู้ → baseline ผิด</span>
       </div>
-    </div>
-  </div>
-  <div class="slide-number">5 / 13</div>
-</div>
-
-<!-- ========== SLIDE 6: Hotspot-for-All Solution ========== -->
-<div class="slide bg-purple">
-  <span class="tag">💡 ข้อเสนอ</span>
-  <h2>1 อาสา + 1 Hotspot = แก้ทุกปัญหา</h2>
-  <p class="subtitle">ถ้าทุกบ้านใช้ Hotspot อาสา (แม้บ้านที่มี WiFi) → แก้ได้ทั้ง 3 ปัญหาพร้อมกัน</p>
-
-  <div class="card-grid cols-3" style="margin-top:24px;">
-    <div class="card">
-      <div class="icon">🔬</div>
-      <h3>แก้ Baseline</h3>
-      <ul>
-        <li>อาสาอยู่ตรงนั้น เห็นชาวบ้านจุดเตา</li>
-        <li>กดปุ่ม <strong>"🔥 เริ่มใช้เตา"</strong> ตอนเห็นจุด</li>
-        <li>Baseline = ช่วงก่อนกดปุ่ม</li>
-        <li>ตรงจริง ไม่ต้องเดา</li>
-      </ul>
-    </div>
-    <div class="card orange">
-      <div class="icon">📶</div>
-      <h3>แก้เซนเซอร์ออนไลน์ตลอด</h3>
-      <ul>
-        <li>ไม่ต่อ WiFi บ้าน → ต่อ Hotspot เท่านั้น</li>
-        <li>อาสาเปิด = เซนเซอร์ทำงาน</li>
-        <li>อาสาปิด = เซนเซอร์หยุด</li>
-        <li>ควบคุมได้ 100%</li>
-      </ul>
-    </div>
-    <div class="card blue">
-      <div class="icon">📋</div>
-      <h3>แก้คุณภาพข้อมูล</h3>
-      <ul>
-        <li>อาสาสังเกต + บันทึก TVOC ด้วยมือ</li>
-        <li>ยืนยันว่ามีการใช้เตาจริง</li>
-        <li>จด note สภาพอากาศ/ลม/ฝน ได้</li>
-        <li>ข้อมูลมีความน่าเชื่อถือสูง</li>
-      </ul>
-    </div>
-  </div>
-
-  <div style="margin-top:20px; display:flex; justify-content:center;">
-    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.85rem; text-align:center; max-width:600px;">
-      ⚠️ ข้อกำหนด: ต้องมี <strong>อาสา 1 คน/บ้าน</strong> ประจำตลอดการเก็บข้อมูล (~2 ชม./session)
-    </div>
-  </div>
-  <div class="slide-number">6 / 13</div>
-</div>
-
-<!-- ========== SLIDE 7: New Flow ========== -->
-<div class="slide bg-light">
-  <span class="tag">📐 Flow ใหม่ที่เสนอ</span>
-  <h2>ขั้นตอนเก็บข้อมูลแบบใหม่ (ถ้าเลือกทางเลือก A)</h2>
-
-  <div class="flow" style="margin-bottom:16px;">
-    <div class="flow-step" style="background:var(--green-50); border:2px solid var(--green);">
-      <div class="icon">🏠</div>
-      <div class="label"><strong>อาสาถึงบ้าน</strong><br>เปิด Hotspot</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:#ede9fe; border:2px solid var(--purple);">
-      <div class="icon">📡</div>
-      <div class="label"><strong>เซนเซอร์ต่อ WiFi</strong><br>ระบบเริ่ม Baseline<br><small style="color:var(--gray-500);">อัตโนมัติ</small></div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:#fef3c7;">
-      <div class="icon">⏳</div>
-      <div class="label"><strong>รอ (ยังไม่จุดเตา)</strong><br>เก็บค่าอากาศปกติ<br><small style="color:var(--gray-500);">5–30 นาที</small></div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:#fee2e2; border:2px solid var(--red);">
-      <div class="icon">🔥</div>
-      <div class="label"><strong>ชาวบ้านจุดเตา</strong><br>อาสากดปุ่ม<br><small style="color:var(--red); font-weight:500;">ตรงจุดนี้!</small></div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:var(--green-light); border:2px solid var(--green);">
-      <div class="icon">📊</div>
-      <div class="label"><strong>เก็บค่าจริง</strong><br>~2 ชม.<br><small style="color:var(--gray-500);">ทุก 5 นาที</small></div>
-    </div>
-  </div>
-
-  <div class="card-grid cols-2" style="margin-top:8px;">
-    <div class="card">
-      <div class="icon">📱</div>
-      <h3>สิ่งที่อาสาต้องทำ</h3>
-      <ul>
-        <li>เปิด Hotspot บนมือถือ</li>
-        <li>รอจนเซนเซอร์ต่อสำเร็จ (ระบบแจ้ง)</li>
-        <li>สังเกตชาวบ้าน — เมื่อจุดเตา <strong>กดปุ่ม 1 ครั้ง</strong></li>
-        <li>อยู่ประจำจนครบ ~2 ชม.</li>
-        <li>บันทึก TVOC ด้วยมือ (ถ้ามี)</li>
-        <li>ปิด Hotspot เมื่อเสร็จ</li>
-      </ul>
-    </div>
-    <div class="card purple">
-      <div class="icon">🤖</div>
-      <h3>สิ่งที่ระบบทำอัตโนมัติ</h3>
-      <ul>
-        <li>ตรวจจับเซนเซอร์ออนไลน์</li>
-        <li>เริ่ม session + เก็บ baseline ทันที</li>
-        <li>รับสัญญาณปุ่ม "จุดเตาแล้ว" → ตัด baseline</li>
-        <li>เก็บข้อมูลทุก 5 นาที (PM, CO2, HCHO ฯลฯ)</li>
-        <li>คำนวณ baseline avg → หักลบอัตโนมัติ</li>
-        <li>ปิด session เมื่อ Hotspot หาย</li>
-      </ul>
-    </div>
-  </div>
-  <div class="slide-number">7 / 13</div>
-</div>
-
-<!-- ========== SLIDE 8: ค่าเน็ตอาสา ========== -->
-<div class="slide bg-white">
-  <span class="tag">📶 ค่าเน็ต</span>
-  <h2>ประมาณการค่าเน็ต Hotspot อาสา (10 คน / 1 เดือน)</h2>
-
-  <div class="two-col">
-    <div>
-      <h3 style="margin-bottom:16px;">📊 คำนวณปริมาณเน็ตที่ใช้</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>รายการ</th><th>ค่า</th></tr></thead>
-          <tbody>
-            <tr><td>เซนเซอร์ส่งข้อมูลไป Tuya Cloud</td><td>~1–2 KB / ครั้ง</td></tr>
-            <tr><td>ส่งทุก ~15 วินาที (heartbeat + data)</td><td>~4 ครั้ง/นาที</td></tr>
-            <tr><td>1 session = 2 ชม. 10 นาที (130 นาที)</td><td>130 × 4 = <strong>520 ครั้ง</strong></td></tr>
-            <tr><td>ข้อมูลต่อ session</td><td>520 × 2 KB = <strong>~1 MB</strong></td></tr>
-            <tr><td>2 sessions/วัน</td><td><strong>~2 MB/วัน</strong></td></tr>
-            <tr><td>30 วัน</td><td><strong>~60 MB/เดือน</strong></td></tr>
-            <tr style="background:var(--green-50);"><td><strong>บวก overhead (TCP, headers) 50%</strong></td><td style="font-weight:700; color:var(--green-dark);">~90 MB/เดือน/คน</td></tr>
-          </tbody>
-        </table>
+      <div style="background:#fee2e2; padding:8px 14px; border-radius:10px; font-size:0.82rem; color:#991b1b; margin-bottom:20px;">
+        ❌ ข้อมูลปนกัน → ผลเปรียบเทียบไม่น่าเชื่อถือ
       </div>
-      <div style="background:var(--green-50); border-radius:12px; padding:12px 16px; margin-top:12px; text-align:center;">
-        <div style="font-size:0.85rem; color:var(--gray-500);">10 อาสา × 90 MB =</div>
-        <div style="font-size:1.6rem; font-weight:700; color:var(--green-dark);">~900 MB/เดือน (ทั้งทีม)</div>
-        <div style="font-size:0.8rem; color:var(--gray-500);">แพ็คเกจ 1–3 GB เพียงพอ</div>
-      </div>
-    </div>
-    <div>
-      <h3 style="margin-bottom:16px;">📱 แพ็คเกจเน็ตแนะนำ</h3>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>ค่าย</th><th>แพ็คเกจ</th><th>ราคา/เดือน</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><strong>AIS</strong></td>
-              <td>เติมเงิน 3 GB</td>
-              <td style="font-weight:700; color:var(--green);">99 ฿</td>
-            </tr>
-            <tr>
-              <td><strong>TRUE</strong></td>
-              <td>เติมเงิน 7.5 GB (4 Mbps)</td>
-              <td>120 ฿</td>
-            </tr>
-            <tr>
-              <td><strong>TRUE</strong></td>
-              <td>Unlimited 4 Mbps</td>
-              <td>139 ฿</td>
-            </tr>
-            <tr>
-              <td><strong>DTAC</strong></td>
-              <td>รายวัน Unlimited 256 Kbps</td>
-              <td>4 ฿/วัน<br><small style="color:var(--gray-500);">~120 ฿ ถ้าใช้ 30 วัน</small></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="card" style="margin-top:12px; border-top-color:var(--green);">
-        <div class="icon">💡</div>
-        <h3>แนะนำ: AIS 99 ฿/เดือน</h3>
-        <ul>
-          <li>สัญญาณครอบคลุมชนบทดีที่สุด</li>
-          <li>3 GB เหลือเฟือ (ใช้จริง ~90 MB)</li>
-          <li>สมัครง่ายผ่าน myAIS app หรือ *777*7107#</li>
-        </ul>
-      </div>
-    </div>
-  </div>
 
-  <div class="highlight-row" style="justify-content:center; margin-top:16px;">
-    <div class="highlight-box" style="max-width:500px; border:3px solid var(--green);">
-      <div style="font-size:0.9rem; color:var(--gray-500); margin-bottom:4px;">ค่าเน็ต Hotspot ทั้งทีม (10 คน)</div>
-      <div class="big-num" style="font-size:2.2rem;">990 ฿/เดือน<small>AIS 99 ฿ × 10 คน — แพ็คเกจเติมเงิน</small></div>
-    </div>
-  </div>
-  <div class="slide-number">8 / 13</div>
-</div>
-
-<!-- ========== SLIDE 9: คำถามสำหรับ อ.แก้ว ========== -->
-<div class="slide bg-amber">
-  <span class="tag">❓ ถาม อ.แก้ว</span>
-  <h2>คำถามเพื่อตัดสินใจ</h2>
-
-  <div class="card-grid cols-2" style="margin-top:8px;">
-    <div class="card">
-      <div class="icon">1️⃣</div>
-      <h3>วิธีวัด Baseline</h3>
-      <ul>
-        <li>เลือกทางเลือก A / B / C / D ?</li>
-        <li>ถ้า A → ต้องมีอาสาประจำทุกบ้าน ตลอดเวลาเก็บข้อมูล</li>
-        <li>Baseline ควรเก็บนานเท่าไหร่? (5 / 13 / 15 / 30 นาที?)</li>
-        <li>ถ้าอาสาลืมกดปุ่ม → ยกเลิก session นั้น หรือให้ระบบใช้ 10 นาทีแรกเป็น baseline แทน?</li>
-      </ul>
-    </div>
-
-    <div class="card orange">
-      <div class="icon">2️⃣</div>
-      <h3>บ้านที่มี WiFi</h3>
-      <ul>
-        <li>10 บ้าน — มีกี่บ้านที่มี WiFi?</li>
-        <li>บ้านที่มี WiFi → ให้ต่อ Hotspot อาสาแทน? (แนะนำ)</li>
-        <li>หรือจะให้เซนเซอร์ต่อ WiFi บ้าน + ใช้ algorithm ตรวจจับ?</li>
-        <li>ถ้าใช้ Hotspot ทุกบ้าน → methodology เหมือนกันหมด (ดีต่อ paper)</li>
-      </ul>
-    </div>
-
-    <div class="card blue">
-      <div class="icon">3️⃣</div>
-      <h3>อาสาสมัคร</h3>
-      <ul>
-        <li>มีอาสากี่คน?</li>
-        <li>1 คน/บ้าน หรือ 1 คนดูหลายบ้าน (สลับ)?</li>
-        <li>ถ้าสลับ → เก็บข้อมูลไม่ได้ 10 บ้านพร้อมกัน</li>
-        <li>ต้องอบรมอาสาใช้ระบบ (กดปุ่ม + บันทึก TVOC)</li>
-      </ul>
-    </div>
-
-    <div class="card purple">
-      <div class="icon">4️⃣</div>
-      <h3>ตารางเก็บข้อมูล</h3>
-      <ul>
-        <li>เก็บวันไหนบ้าง? (ทุกวัน / บางวัน / สัปดาห์ละครั้ง?)</li>
-        <li>กี่ session/วัน? (1 หรือ 2)</li>
-        <li>ถ้าอาสาน้อย → ต้องวาง schedule สลับบ้าน</li>
-        <li>API quota 10 ตัว = 90% → ถ้าเก็บน้อยกว่าทุกวัน จะเหลือ buffer</li>
-      </ul>
-    </div>
-  </div>
-  <div class="slide-number">9 / 13</div>
-</div>
-
-<!-- ========== SLIDE 10: เราเตอร์ WiFi vs Hotspot ========== -->
-<div class="slide bg-white">
-  <span class="tag">📡 ทางเลือกเพิ่มเติม</span>
-  <h2>เราเตอร์ WiFi กลาง vs Hotspot อาสา — เปรียบเทียบ</h2>
-  <p style="font-size:0.88rem; color:var(--gray-500); font-weight:300; margin-bottom:16px;">แผน: ใช้ 5 เราเตอร์ ครอบ 10 บ้าน (เราเตอร์ละ 2 หลังที่อยู่ใกล้กัน)</p>
-
-  <div class="two-col">
-    <div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>หัวข้อ</th><th>📡 เราเตอร์ WiFi กลาง</th><th>📱 Hotspot อาสา</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><strong>ระยะสัญญาณ</strong></td>
-              <td>ภายในอาคาร: <strong>15–30 ม.</strong><br>กลางแจ้ง: <strong>50–100 ม.</strong><br>⚠️ กำแพง/สิ่งกีดขวาง ลดลงมาก</td>
-              <td>ไม่จำกัด — อาสาเอามือถือไปวางใกล้เซนเซอร์ได้</td>
-            </tr>
-            <tr>
-              <td><strong>ค่าอุปกรณ์</strong></td>
-              <td>เราเตอร์ ~500–1,500 ฿ × 5 ตัว<br>= <strong>2,500–7,500 ฿</strong></td>
-              <td><strong>0 ฿</strong> (ใช้มือถืออาสา)</td>
-            </tr>
-            <tr>
-              <td><strong>ค่าเน็ตรายเดือน</strong></td>
-              <td>WiFi บ้าน: ~400–600 ฿/เดือน × 5 จุด<br>= <strong>2,000–3,000 ฿/เดือน</strong></td>
-              <td>AIS 99 ฿ × 10 คน<br>= <strong>990 ฿/เดือน</strong></td>
-            </tr>
-            <tr>
-              <td><strong>Baseline</strong></td>
-              <td style="color:var(--red);">❌ <strong>ยังมีปัญหาเดิม</strong><br>เซนเซอร์ออนไลน์ตลอด → ไม่รู้จังหวะจุดเตา</td>
-              <td style="color:var(--green);">✅ อาสาอยู่ตรงนั้น → กดปุ่มได้</td>
-            </tr>
-            <tr>
-              <td><strong>ควบคุมการเก็บข้อมูล</strong></td>
-              <td style="color:var(--red);">❌ ระบบเก็บเอง ไม่มีคนดู</td>
-              <td style="color:var(--green);">✅ อาสาควบคุม เปิด-ปิด ได้</td>
-            </tr>
-            <tr>
-              <td><strong>ข้อมูลเหวี่ยง?</strong></td>
-              <td>⚠️ เสี่ยง — ถ้าเซนเซอร์อยู่ชายขอบสัญญาณ<br>WiFi หลุดๆ ต่อๆ → session ขาดช่วง</td>
-              <td>✅ เสถียร — อาสาวางมือถือใกล้เซนเซอร์</td>
-            </tr>
-            <tr>
-              <td><strong>ต้องการอาสาไหม?</strong></td>
-              <td>⚠️ <strong>ยังต้องการ</strong> ถ้าจะแก้ปัญหา baseline</td>
-              <td>✅ ต้องการ (แต่แก้ทุกปัญหาพร้อมกัน)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div>
-      <div class="card red" style="margin-bottom:14px;">
-        <div class="icon">⚠️</div>
-        <h3>ข้อจำกัดเราเตอร์ WiFi</h3>
-        <ul>
-          <li>2 หลังใกล้กันต้อง<strong>ห่างไม่เกิน 30 ม.</strong> (ในอาคาร)</li>
-          <li>กำแพงบ้าน ต้นไม้ สังกะสี → สัญญาณลดลง 50–80%</li>
-          <li>ต้องมีไฟฟ้าและจุดติดตั้งเราเตอร์ระหว่าง 2 บ้าน</li>
-          <li>เซนเซอร์ออนไลน์ตลอด → <strong>ปัญหา baseline ยังไม่หายไป</strong></li>
-          <li>ถ้าเน็ตบ้านหลุด → เซนเซอร์ 2 หลังหายพร้อมกัน</li>
-        </ul>
-      </div>
-      <div class="card" style="margin-bottom:14px;">
-        <div class="icon">💰</div>
-        <h3>เปรียบเทียบค่าใช้จ่าย (6 เดือน)</h3>
-        <ul>
-          <li><strong>เราเตอร์:</strong> อุปกรณ์ 5,000 + เน็ต 15,000 = <strong>~20,000 ฿</strong></li>
-          <li><strong>Hotspot:</strong> อุปกรณ์ 0 + เน็ต 5,940 = <strong>~5,940 ฿</strong></li>
-          <li>Hotspot ประหยัดกว่า <strong>~14,000 ฿</strong></li>
-        </ul>
-      </div>
-      <div style="background:var(--green-50); border-radius:12px; padding:14px 18px; text-align:center;">
-        <div style="font-size:0.95rem; font-weight:600; color:var(--green-dark);">💡 สรุป</div>
+      <div style="background:var(--green-50); border-left:4px solid var(--green); border-radius:12px; padding:14px 20px;">
+        <div style="font-size:0.9rem; font-weight:600; color:var(--green-dark);">💡 ทางออก</div>
         <div style="font-size:0.85rem; color:var(--gray-700); font-weight:300; margin-top:4px;">
-          เราเตอร์ WiFi <strong>ไม่ได้แก้ปัญหา baseline</strong> — ยังต้องมีอาสาอยู่ดี<br>
-          Hotspot อาสาถูกกว่า + แก้ทุกปัญหาในตัว
+          ต้องมี<strong>คนจริงๆ</strong>อยู่ที่บ้าน คอยบอกระบบว่า "เริ่มจุดเตาแล้ว" → <strong>ระบบอาสาสมัคร</strong>
         </div>
       </div>
     </div>
   </div>
-  <div class="slide-number">10 / 13</div>
+  <div class="slide-number">2 / 10</div>
 </div>
 
-<!-- ========== SLIDE 11: ระบบอาสาสมัคร ========== -->
+<!-- ========== SLIDE 3: ระบบอาสาสมัคร (ทางแก้) ========== -->
 <div class="slide bg-blue">
-  <span class="tag">📱 ระบบใหม่</span>
-  <h2>ระบบอาสาสมัคร — หน้าเก็บข้อมูลบนมือถือ</h2>
-  <p class="subtitle">หน้าเว็บแยกจาก Dashboard — ออกแบบเฉพาะสำหรับอาสา ใช้งานง่ายบนมือถือ</p>
+  <span class="tag">📱 ระบบที่แก้ปัญหา</span>
+  <h2>ระบบอาสาสมัคร — แอปเก็บข้อมูลบนมือถือ</h2>
+  <p class="subtitle">ออกแบบเฉพาะสำหรับอาสา — ใช้งานง่ายบนมือถือ ไม่ต้องสมัคร ไม่ต้อง login</p>
 
   <div class="card-grid cols-4" style="margin-top:24px;">
     <div class="card">
@@ -889,17 +415,17 @@
       <h3>GPS ตรวจจับบ้าน</h3>
       <ul>
         <li>เปิดหน้าเว็บ → ขอตำแหน่ง GPS</li>
-        <li>คำนวณระยะ Haversine กับพิกัดบ้าน 10 หลัง</li>
+        <li>คำนวณระยะกับพิกัดบ้าน 10 หลัง</li>
         <li><strong>&lt; 30 ม.</strong> → ยืนยันอัตโนมัติ</li>
-        <li><strong>30–200 ม.</strong> → แสดงชื่อบ้าน ให้กดยืนยัน</li>
-        <li><strong>&gt; 200 ม.</strong> → ไม่พบบ้าน ต้องเลือกเอง</li>
+        <li><strong>30–200 ม.</strong> → ให้กดยืนยัน</li>
+        <li><strong>&gt; 200 ม.</strong> → เลือกบ้านเอง (ป้องกันบ้านซ้ำ)</li>
       </ul>
     </div>
     <div class="card orange">
       <div class="icon">🔥</div>
       <h3>ปุ่ม "เริ่มจุดเตา"</h3>
       <ul>
-        <li>กดเมื่อเห็นชาวบ้านจุดเตา</li>
+        <li>กดเมื่อเริ่มจุดเตา</li>
         <li>ระบบตัด baseline ทันที</li>
         <li>บันทึกเวลาแม่นยำ</li>
         <li>ได้ baseline ที่เชื่อถือได้</li>
@@ -909,10 +435,11 @@
       <div class="icon">📝</div>
       <h3>บันทึก TVOC</h3>
       <ul>
-        <li>แสดงเฉพาะวันที่กำหนด</li>
-        <li>สุ่มเก็บ 5–6 ครั้ง/เดือน</li>
-        <li>ใส่ค่าง่ายๆ ปุ่มเดียว</li>
-        <li>ข้อมูลเข้าระบบทันที</li>
+        <li>Tuya Cloud ส่งค่า TVOC ไม่ได้</li>
+        <li>อาสาอ่านจากหน้าจอเซนเซอร์</li>
+        <li>กรอกค่าในแอป ทุก 5 นาที</li>
+        <li>🔔 มี Noti เตือน (เสียง+สั่น+แจ้งเตือน)</li>
+        <li style="font-size:0.78rem; opacity:0.7;">⚠️ เวิร์คเมื่อเปิดหน้าเว็บค้างไว้ — ปิดจอ/ล็อคเครื่องจะไม่ดัง</li>
       </ul>
     </div>
     <div class="card blue">
@@ -920,129 +447,588 @@
       <h3>ป้องกันข้อมูลผิดพลาด</h3>
       <ul>
         <li>GPS log ทุกครั้งที่กดปุ่ม</li>
-        <li>ระบบจำกัดรัศมี <strong>200 ม.</strong> จากพิกัดบ้าน</li>
-        <li>แสดงสถานะเซนเซอร์ + ครบโควต้า/ยังไม่ครบ</li>
-        <li>ย้อนตรวจสอบ GPS + เวลาได้ทีหลัง</li>
+        <li>จำกัดรัศมี <strong>200 ม.</strong></li>
+        <li>แสดงสถานะเซนเซอร์ real-time</li>
+        <li>ย้อนตรวจสอบได้ทีหลัง</li>
       </ul>
     </div>
   </div>
 
   <div style="margin-top:20px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
     <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.85rem; text-align:center;">
-      💡 <strong>หน้าเว็บแยกต่างหาก</strong> — อาสาเปิดลิงก์เดียวบนมือถือ ไม่ต้องสมัคร ไม่ต้อง login &nbsp;|&nbsp;
-      ⚡ <strong>โหลดเร็ว</strong> เพราะไม่ต้องโหลด Dashboard ทั้งหมด
-    </div>
-    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:14px 28px; font-size:0.85rem; text-align:center;">
-      📐 <strong>ขยายพื้นที่ได้</strong> — เพิ่มพิกัด GPS ในระบบ → รัศมี 200 ม. ขยายตามจำนวนบ้าน &nbsp;|&nbsp;
-      🏘️ ปัจจุบันรองรับ <strong>10 หลัง</strong> — เพิ่มได้ไม่จำกัด
+      📎 <strong>QR Code แปะที่เซนเซอร์</strong> — อาสาสแกนเข้าใช้งานได้เลย ไม่ต้องจำ URL &nbsp;|&nbsp;
+      🔗 หรือเปิดผ่าน Dashboard ก็ได้
     </div>
   </div>
-  <div class="slide-number">11 / 13</div>
+  <div class="slide-number">3 / 10</div>
 </div>
 
-<!-- ========== SLIDE 12: Flow อาสาบนมือถือ ========== -->
-<div class="slide bg-light">
-  <span class="tag">📱 ขั้นตอน</span>
-  <h2>Flow การใช้งานบนมือถืออาสา</h2>
+<!-- ========== SLIDE 4: Demo — หน้าจอจริง ========== -->
+<div class="slide bg-gray">
+  <span class="tag">📱 Demo</span>
+  <h2>ตัวอย่างหน้าจอจริง — Flow การใช้งานอาสา</h2>
 
-  <div class="flow" style="margin-bottom:16px;">
-    <div class="flow-step" style="background:#ede9fe; border:2px solid var(--purple);">
-      <div class="icon">📍</div>
-      <div class="label"><strong>GPS ตรวจจับ</strong><br>"บ้านป้าแดง"<br><small style="color:var(--gray-500);">ห่าง 12 ม. (รัศมี 200 ม.)</small></div>
+  <div style="display:flex; justify-content:center; gap:24px; margin-top:16px; flex-wrap:wrap;">
+
+    <!-- Phone 1: GPS Detection -->
+    <div style="text-align:center;">
+      <div style="width:160px; height:280px; background:#fff; border-radius:24px; border:3px solid #333; padding:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12); position:relative; overflow:hidden;">
+        <!-- Status bar -->
+        <div style="background:#065f46; color:#fff; border-radius:16px 16px 0 0; padding:6px 8px; font-size:0.55rem; text-align:left;">
+          🌿 EcoStove อาสาสมัคร
+        </div>
+        <!-- Content -->
+        <div style="padding:12px 4px; text-align:center;">
+          <div style="font-size:2rem;">📍</div>
+          <div style="font-size:0.6rem; font-weight:600; color:#374151; margin-top:6px;">กำลังตรวจจับตำแหน่ง...</div>
+          <div style="width:20px; height:20px; border:2px solid #059669; border-top-color:transparent; border-radius:50%; margin:8px auto; animation:spin 1.5s linear infinite;"></div>
+          <div style="background:#d1fae5; border-radius:8px; padding:6px; margin-top:10px;">
+            <div style="font-size:0.55rem; font-weight:600; color:#065f46;">🏠 บ้านนายสมชาย</div>
+            <div style="font-size:0.5rem; color:#6b7280;">ระยะ 12 ม.</div>
+          </div>
+          <div style="background:#059669; color:#fff; border-radius:8px; padding:5px; margin-top:6px; font-size:0.55rem; font-weight:600;">✅ ยืนยัน</div>
+        </div>
+      </div>
+      <div style="margin-top:10px; font-size:0.8rem; font-weight:600; color:var(--green-dark);">1. GPS ตรวจจับบ้าน</div>
+      <div style="font-size:0.7rem; color:var(--gray-500); max-width:160px;">เปิดเว็บ → ระบบหาบ้านใกล้สุด<br>หรือเลือกบ้านเอง</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:#dbeafe; border:2px solid var(--blue);">
-      <div class="icon">📡</div>
-      <div class="label"><strong>รอเซนเซอร์</strong><br>"รอระบบตรวจจับ..."<br><small style="color:var(--gray-500);">ทุก 5 นาที</small></div>
+
+    <div style="display:flex; align-items:center; font-size:1.5rem; color:var(--gray-300);">→</div>
+
+    <!-- Phone 2: Cooking Button -->
+    <div style="text-align:center;">
+      <div style="width:160px; height:280px; background:#fff; border-radius:24px; border:3px solid #333; padding:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12); position:relative; overflow:hidden;">
+        <div style="background:#065f46; color:#fff; border-radius:16px 16px 0 0; padding:6px 8px; font-size:0.55rem; text-align:left;">
+          🏠 บ้านนายสมชาย
+        </div>
+        <div style="padding:8px 4px; text-align:center;">
+          <div style="background:#dbeafe; border-radius:8px; padding:5px; margin-bottom:6px;">
+            <div style="font-size:0.5rem; color:#1e40af;">📊 เก็บ Baseline... 5 นาที</div>
+            <div style="height:4px; background:#bfdbfe; border-radius:2px; margin-top:3px;"><div style="height:100%; width:60%; background:#2563eb; border-radius:2px;"></div></div>
+          </div>
+          <div style="background:#ef4444; color:#fff; border-radius:16px; padding:16px 8px; margin-top:8px; box-shadow:0 0 0 4px rgba(239,68,68,0.2);">
+            <div style="font-size:1.8rem;">🔥</div>
+            <div style="font-size:0.65rem; font-weight:700; margin-top:2px;">เริ่มจุดเตาแล้ว</div>
+            <div style="font-size:0.45rem; opacity:0.8; margin-top:2px;">กดเมื่อเริ่มจุดเตา</div>
+          </div>
+          <div style="font-size:0.45rem; color:#6b7280; margin-top:8px;">🟢 เซนเซอร์ออนไลน์</div>
+        </div>
+      </div>
+      <div style="margin-top:10px; font-size:0.8rem; font-weight:600; color:#dc2626;">2. กดเริ่มจุดเตา</div>
+      <div style="font-size:0.7rem; color:var(--gray-500); max-width:160px;">รอ baseline → กดปุ่ม<br>ระบบตัด baseline ทันที</div>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:var(--green-50); border:2px solid var(--green);">
+
+    <div style="display:flex; align-items:center; font-size:1.5rem; color:var(--gray-300);">→</div>
+
+    <!-- Phone 3: TVOC Recording -->
+    <div style="text-align:center;">
+      <div style="width:160px; height:280px; background:#fff; border-radius:24px; border:3px solid #333; padding:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12); position:relative; overflow:hidden;">
+        <div style="background:#065f46; color:#fff; border-radius:16px 16px 0 0; padding:6px 8px; font-size:0.55rem; text-align:left;">
+          🔥 กำลังเก็บข้อมูล...
+        </div>
+        <div style="padding:8px 4px; text-align:center;">
+          <div style="background:#fef3c7; border-radius:8px; padding:5px; margin-bottom:6px;">
+            <div style="font-size:0.5rem; color:#92400e;">🔥 เก็บข้อมูล 15 นาที (42 ค่า)</div>
+          </div>
+          <div style="background:#f3e8ff; border:2px solid #c084fc; border-radius:10px; padding:8px;">
+            <div style="font-size:0.55rem; font-weight:600; color:#6b21a8;">📝 บันทึก TVOC</div>
+            <div style="display:flex; gap:4px; margin-top:4px; align-items:center;">
+              <div style="flex:1; background:#fff; border:1px solid #c084fc; border-radius:6px; padding:4px; font-size:0.7rem; font-weight:700; color:#6b21a8;">0.125</div>
+              <div style="background:#7c3aed; color:#fff; border-radius:6px; padding:4px 8px; font-size:0.5rem; font-weight:600;">บันทึก</div>
+            </div>
+            <div style="font-size:0.45rem; color:#7c3aed; margin-top:4px;">🔔 ถัดไปใน 4:32</div>
+          </div>
+          <div style="font-size:0.45rem; color:#6b7280; margin-top:8px;">บันทึกแล้ว: 3 ค่า</div>
+        </div>
+      </div>
+      <div style="margin-top:10px; font-size:0.8rem; font-weight:600; color:#7c3aed;">3. บันทึก TVOC</div>
+      <div style="font-size:0.7rem; color:var(--gray-500); max-width:160px;">อ่านค่าจากหน้าจอเซนเซอร์<br>Noti เตือนทุก 5 นาที</div>
+    </div>
+
+    <div style="display:flex; align-items:center; font-size:1.5rem; color:var(--gray-300);">→</div>
+
+    <!-- Phone 4: Session End -->
+    <div style="text-align:center;">
+      <div style="width:160px; height:280px; background:#fff; border-radius:24px; border:3px solid #333; padding:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12); position:relative; overflow:hidden;">
+        <div style="background:#065f46; color:#fff; border-radius:16px 16px 0 0; padding:6px 8px; font-size:0.55rem; text-align:left;">
+          ✅ เสร็จสิ้น
+        </div>
+        <div style="padding:10px 4px; text-align:center;">
+          <div style="font-size:2rem;">✅</div>
+          <div style="font-size:0.65rem; font-weight:700; color:#065f46; margin-top:4px;">เก็บข้อมูลเสร็จแล้ว!</div>
+          <div style="background:#f0fdf4; border-radius:8px; padding:6px; margin-top:8px; text-align:left;">
+            <div style="font-size:0.45rem; color:#374151; line-height:1.8;">
+              🏠 บ้านนายสมชาย<br>
+              ⏱ Baseline: 10 นาที<br>
+              🔥 จุดเตา: 45 นาที<br>
+              📝 TVOC: 8 ค่า<br>
+              📊 ข้อมูล: 127 รายการ
+            </div>
+          </div>
+          <div style="background:#d1fae5; color:#065f46; border-radius:8px; padding:5px; margin-top:6px; font-size:0.5rem; font-weight:600;">
+            ปิดหน้าเว็บได้เลย
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px; font-size:0.8rem; font-weight:600; color:var(--green-dark);">4. สรุป + จบ session</div>
+      <div style="font-size:0.7rem; color:var(--gray-500); max-width:160px;">ปิด Hotspot → จบ session<br>ข้อมูลบันทึกอัตโนมัติ</div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:16px; display:flex; justify-content:center; gap:16px;">
+    <div style="background:#fff; border-radius:14px; padding:10px 20px; font-size:0.8rem; color:var(--gray-700); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+      ⏱ <strong>ทั้งหมด ~2 ชม./session</strong> — Baseline 10 นาที + เก็บข้อมูล ~2 ชม.
+    </div>
+    <div style="background:#fff; border-radius:14px; padding:10px 20px; font-size:0.8rem; color:var(--gray-700); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+      📱 <strong>ทำทั้งหมดบนมือถือ</strong> — เปิดเว็บอย่างเดียว ไม่ต้องโหลดแอป
+    </div>
+  </div>
+  <div class="slide-number">4 / 10</div>
+</div>
+
+<!-- ========== SLIDE 5: Admin Dashboard (สิ่งที่พร้อม) ========== -->
+<div class="slide bg-white">
+  <span class="tag">✅ ระบบพร้อม</span>
+  <h2>Admin Dashboard + เครื่องมือบริหาร</h2>
+
+  <div class="card-grid cols-4" style="margin-top:8px;">
+    <div class="card">
+      <div class="icon">🗺️</div>
+      <h3>Tab ภาพรวม</h3>
+      <ul>
+        <li>เห็นบ้าน + เซนเซอร์ + อาสา ในตารางเดียว</li>
+        <li>จับคู่ / เปลี่ยนเซนเซอร์ได้ทันที</li>
+        <li>Health badge สถานะ real-time</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <div class="icon">☁️</div>
+      <h3>Auto-discover เซนเซอร์</h3>
+      <ul>
+        <li>ดึงรายชื่อจาก Tuya Cloud อัตโนมัติ</li>
+        <li>เห็น online/offline ทันที</li>
+        <li>กดลงทะเบียนได้เลย</li>
+      </ul>
+    </div>
+    <div class="card orange">
       <div class="icon">📊</div>
-      <div class="label"><strong>เก็บ Baseline</strong><br>"กำลังเก็บค่าปกติ"<br><small style="color:var(--gray-500);">รอจนจุดเตา</small></div>
+      <h3>Export รายงาน (2 แบบ)</h3>
+      <ul>
+        <li><strong>Export ข้อมูลดิบ</strong> — รายการวัดค่าทั้งหมด (PM2.5, CO2, อุณหภูมิ ฯลฯ)</li>
+        <li><strong>Export เปรียบเทียบ</strong> — 2 sheets:<br>
+          <span style="opacity:0.8; font-size:0.8rem;">① สรุป eco vs old (ค่าเฉลี่ย + % ลดลง)</span><br>
+          <span style="opacity:0.8; font-size:0.8rem;">② ข้อมูลดิบ (เหมือน export ปกติ)</span></li>
+      </ul>
     </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:#fee2e2; border:2px solid var(--red);">
-      <div class="icon">🔥</div>
-      <div class="label"><strong>กดปุ่ม!</strong><br>"เริ่มจุดเตาแล้ว"<br><small style="color:var(--red); font-weight:500;">อาสากดตรงนี้</small></div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-step" style="background:var(--green-light); border:2px solid var(--green);">
-      <div class="icon">✅</div>
-      <div class="label"><strong>เก็บข้อมูลจริง</strong><br>"กำลังเก็บข้อมูล..."<br><small style="color:var(--gray-500);">~2 ชม.</small></div>
-    </div>
-  </div>
-
-  <div class="card-grid cols-3" style="margin-top:12px;">
-    <div class="card" style="text-align:center;">
-      <div style="font-size:2.5rem;">📍</div>
-      <h3>เปิดลิงก์ + GPS</h3>
-      <p>อาสาเปิดลิงก์บนมือถือ<br>GPS เทียบพิกัด (รัศมี 200 ม.)<br>&lt;30 ม. = ยืนยันอัตโนมัติ<br>&gt;200 ม. = เลือก dropdown</p>
-    </div>
-    <div class="card orange" style="text-align:center;">
-      <div style="font-size:2.5rem;">🔥</div>
-      <h3>กดเมื่อจุดเตา</h3>
-      <p>สังเกตชาวบ้าน<br>เห็นจุดเตา → <strong>กดปุ่มใหญ่</strong><br>ระบบตัด baseline ทันที<br>ไม่ต้องกดอะไรเพิ่ม</p>
-    </div>
-    <div class="card purple" style="text-align:center;">
-      <div style="font-size:2.5rem;">📝</div>
-      <h3>บันทึก TVOC (ถ้ามี)</h3>
-      <p>เฉพาะวันที่ระบบกำหนด<br>ใส่ค่าจากเครื่องวัด TVOC<br>กดบันทึก → เข้าระบบทันที<br>สุ่มเก็บ 5–6 ครั้ง/เดือน</p>
+    <div class="card purple">
+      <div class="icon">💬</div>
+      <h3>LINE OA สรุปผล</h3>
+      <ul>
+        <li>สรุป session เช้า (เที่ยง)</li>
+        <li>สรุปทั้งวัน (2 ทุ่ม)</li>
+        <li>แจ้งบ้านไหนไม่ได้เก็บข้อมูล</li>
+      </ul>
     </div>
   </div>
 
-  <div style="margin-top:12px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-    <span style="background:var(--green-light); color:var(--green-dark); padding:8px 20px; border-radius:10px; font-size:0.85rem; font-weight:500;">
-      🧪 ระบบพร้อมทดสอบ — เปิด volunteer.html บนมือถือได้เลย
-    </span>
-    <span style="background:#ede9fe; color:#5b21b6; padding:8px 20px; border-radius:10px; font-size:0.85rem; font-weight:500;">
-      📐 ขยายพื้นที่ → เพิ่มพิกัด GPS ในระบบ admin + ปรับรัศมีได้
-    </span>
+  <div style="margin-top:20px; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
+    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
+      <div style="font-size:2rem; font-weight:700;">✅</div>
+      <div style="font-size:0.8rem; opacity:0.6;">Admin Dashboard</div>
+    </div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
+      <div style="font-size:2rem; font-weight:700;">✅</div>
+      <div style="font-size:0.8rem; opacity:0.6;">Volunteer App</div>
+    </div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
+      <div style="font-size:2rem; font-weight:700;">✅</div>
+      <div style="font-size:0.8rem; opacity:0.6;">LINE OA</div>
+    </div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
+      <div style="font-size:2rem; font-weight:700;">✅</div>
+      <div style="font-size:0.8rem; opacity:0.6;">Sync อัตโนมัติ</div>
+    </div>
+    <div style="background:#d1fae5; border-radius:14px; padding:14px 28px; text-align:center;">
+      <div style="font-size:2rem; font-weight:700;">📦</div>
+      <div style="font-size:0.8rem; color:#064e3b;">เซนเซอร์ 11 ตัว<br>+ อแดปเตอร์ สั่งแล้ว<br><strong>มาอาทิตย์หน้า</strong></div>
+    </div>
   </div>
-  <div class="slide-number">12 / 13</div>
+  <div class="slide-number">5 / 10</div>
 </div>
 
-<!-- ========== SLIDE 13: สรุป ========== -->
+<!-- ========== SLIDE 6: แผน Deploy ========== -->
+<div class="slide bg-white">
+  <span class="tag">📦 แผน Deploy</span>
+  <h2>ทางเลือกเชื่อมเซนเซอร์ — เลือกตามงบและความสะดวก</h2>
+
+  <!-- Bandwidth info banner -->
+  <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:10px 16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; font-size:0.82rem;">
+    <div style="color:#1e40af;">
+      📶 <strong>ปริมาณเน็ตที่ต้องใช้:</strong> ~90 MB/เครื่อง/เดือน
+    </div>
+    <div style="color:#1e40af;">
+      10 เครื่อง = <strong>~900 MB/เดือน</strong>
+    </div>
+    <div style="color:#1e40af;">
+      6 เดือน = <strong>~5.4 GB ทั้งหมด</strong>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+    <!-- Plan A -->
+    <div style="background:var(--green-50); border:2px solid var(--green); border-radius:16px; padding:20px; position:relative;">
+      <div style="position:absolute; top:-12px; left:16px; background:var(--green); color:#fff; padding:2px 12px; border-radius:10px; font-size:0.75rem; font-weight:600;">แนะนำ</div>
+      <div style="font-size:1.5rem; margin-bottom:8px;">📱</div>
+      <h3 style="font-size:1rem; margin-bottom:8px;">แผน A — ซิม GOMO + Hotspot</h3>
+      <div style="font-size:0.8rem; color:var(--gray-500); line-height:1.5; margin-bottom:12px;">
+        อาสาใส่ซิม GOMO ในมือถือ → เปิด Hotspot → เซนเซอร์ต่อ WiFi → เปิดแอปกดเริ่มจุดเตา
+      </div>
+      <div style="font-size:0.8rem; line-height:1.8;">
+        <div class="choice-pros">✅ ถูกที่สุด — 990 ฿/ปี (10 คน)</div>
+        <div class="choice-pros">✅ Session ชัด (เปิด/ปิด Hotspot)</div>
+        <div class="choice-pros">✅ อุปกรณ์น้อย ดูแลง่าย</div>
+        <div class="choice-pros">✅ มีเบอร์โทร + โทรได้ 10 นาที</div>
+        <div class="choice-cons">⚠️ มือถือต้อง dual-SIM / สลับซิม</div>
+        <div class="choice-cons">⚠️ ต้องสอนเปิด Hotspot</div>
+      </div>
+      <div style="margin-top:12px; background:var(--green); color:#fff; border-radius:10px; padding:8px; text-align:center; font-weight:600; font-size:0.95rem;">
+        990 ฿/ปี
+      </div>
+    </div>
+
+    <!-- Plan B -->
+    <div style="background:#eff6ff; border:2px solid var(--blue); border-radius:16px; padding:20px; position:relative;">
+      <div style="position:absolute; top:-12px; left:16px; background:var(--blue); color:#fff; padding:2px 12px; border-radius:10px; font-size:0.75rem; font-weight:600;">สำรอง</div>
+      <div style="font-size:1.5rem; margin-bottom:8px;">📶</div>
+      <h3 style="font-size:1rem; margin-bottom:8px;">แผน B — Pocket WiFi</h3>
+      <div style="font-size:0.8rem; color:var(--gray-500); line-height:1.5; margin-bottom:12px;">
+        Pocket WiFi + ซิม GOMO วางประจำบ้าน → อาสาต่อ WiFi ใช้แอปด้วยมือถือตัวเอง ไม่ต้องยุ่งซิม
+      </div>
+      <div style="font-size:0.8rem; line-height:1.8;">
+        <div class="choice-pros">✅ ไม่ต้องยุ่งซิมมือถืออาสา</div>
+        <div class="choice-pros">✅ มือถือเครื่องไหนก็ได้</div>
+        <div class="choice-pros">✅ แบต 8–10 ชม. เหลือเฟือ</div>
+        <div class="choice-cons">⚠️ ค่าเครื่อง ~1,390–1,690 ฿/ตัว</div>
+        <div class="choice-cons">⚠️ ต้องดูแลเครื่อง + ชาร์จแบต</div>
+        <div class="choice-cons">⚠️ ยังไม่เคยใช้จริง → ต้องเผื่อเวลาทดสอบ</div>
+      </div>
+      <div style="margin-top:12px; background:var(--blue); color:#fff; border-radius:10px; padding:8px; text-align:center; font-weight:600; font-size:0.95rem;">
+        ปีแรก ~14,900–17,900 ฿
+      </div>
+    </div>
+
+    <!-- Plan C — ไม่แนะนำ (แสดงเพื่อเปรียบเทียบ) -->
+    <div style="background:#fef2f2; border:2px dashed #fca5a5; border-radius:16px; padding:20px; position:relative; opacity:0.75;">
+      <div style="position:absolute; top:-12px; left:16px; background:#ef4444; color:#fff; padding:2px 12px; border-radius:10px; font-size:0.75rem; font-weight:600;">ไม่แนะนำ</div>
+      <div style="font-size:1.5rem; margin-bottom:8px;">📡</div>
+      <h3 style="font-size:1rem; margin-bottom:8px; color:#991b1b;">แผน C — WiFi ถาวร</h3>
+      <div style="font-size:0.8rem; color:var(--gray-500); line-height:1.5; margin-bottom:12px;">
+        ติด WiFi ประจำบ้าน → เซนเซอร์ online ตลอด → ยังต้องมีอาสากดปุ่ม + บันทึก TVOC อยู่ดี
+      </div>
+      <div style="font-size:0.8rem; line-height:1.8;">
+        <div class="choice-cons">❌ แพงมาก (ค่าเน็ต+ติดตั้ง)</div>
+        <div class="choice-cons">❌ ติดตั้งยาก (ลากสาย)</div>
+        <div class="choice-cons">❌ เซนเซอร์ online ตลอด → session ไม่ชัด</div>
+        <div class="choice-cons">❌ ยังต้องมีอาสาอยู่ดี</div>
+      </div>
+      <div style="margin-top:12px; background:#ef4444; color:#fff; border-radius:10px; padding:8px; text-align:center; font-weight:600; font-size:0.95rem;">
+        ~36,000 ฿/ปี ❌
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px; display:flex; gap:16px;">
+    <div style="flex:1; background:#eff6ff; border-left:4px solid var(--blue); border-radius:12px; padding:12px 16px;">
+      <div style="font-size:0.85rem; font-weight:600; color:#1e40af;">🔬 ผลการศึกษาเพิ่มเติม</div>
+      <div style="font-size:0.8rem; color:var(--gray-700); font-weight:300; margin-top:4px; line-height:1.6;">
+        GOMO = ซิม Prepaid AIS มีเบอร์ + โทรได้ 10 นาที (ซื้อเพิ่มได้ในแอป) &nbsp;|&nbsp;
+        ปล่อย Hotspot ได้ &nbsp;|&nbsp;
+        AIS สัญญาณดีสุดในชนบท CM &nbsp;|&nbsp;
+        ทางเลือก: AIS รายเดือน (แพงกว่า โทรมากกว่า), True/dtac
+      </div>
+    </div>
+    <div style="flex:1; background:var(--green-50); border-left:4px solid var(--green); border-radius:12px; padding:12px 16px;">
+      <div style="font-size:0.85rem; font-weight:600; color:var(--green-dark);">💡 ข้อเสนอ — Mix ได้</div>
+      <div style="font-size:0.8rem; color:var(--gray-700); font-weight:300; margin-top:4px; line-height:1.6;">
+        <strong>หลัก:</strong> แผน A — ซิม GOMO + Hotspot (ถูกที่สุด)<br>
+        <strong>สำรอง:</strong> แผน B — Pocket WiFi สำหรับอาสาที่มือถือใส่ซิมเพิ่มไม่ได้
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">6 / 10</div>
+</div>
+
+<!-- ========== SLIDE 7: Spec — ต้องเตรียมอะไร ========== -->
+<div class="slide bg-blue">
+  <span class="tag">📋 Spec ที่ต้องเตรียม</span>
+  <h2>ก่อน Deploy 10 บ้าน — ต้องจัดเตรียมอะไรบ้าง</h2>
+
+  <div class="two-col" style="margin-top:8px;">
+    <div>
+      <div style="background:rgba(255,255,255,0.12); border-radius:16px; padding:24px; margin-bottom:16px;">
+        <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:14px; color:rgba(255,255,255,0.7);">⭐ Must-have — ทุกแผนต้องมี</div>
+        <div style="font-size:0.92rem; line-height:2.4;">
+          <div>📱 <strong>อาสา 1 คน/บ้าน</strong> — ต้องมีมือถือ smartphone</div>
+          <div>⏰ <strong>เวลา ~2 ชม./session</strong> — อยู่ที่บ้านขณะจุดเตา</div>
+          <div>🔥 <strong>กดปุ่ม "เริ่มจุดเตา"</strong> — เพื่อแยก baseline</div>
+          <div>📊 <strong>บันทึก TVOC</strong> — อ่านค่าจากหน้าจอเซนเซอร์ (วันที่กำหนด)</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.08); border-radius:16px; padding:20px;">
+        <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:10px; color:rgba(255,255,255,0.5);">⚠️ ถ้าอาสาไม่มีมือถือ → ซื้อแจก</div>
+        <div style="font-size:0.85rem; line-height:1.8;">
+          <strong>สเปคขั้นต่ำ:</strong> Android, WiFi, GPS, เปิดเว็บได้<br>
+          <strong>แนะนำ:</strong> Xiaomi Redmi A3 (~2,290–2,699 ฿) / Realme C51 (~2,690 ฿)<br>
+          <strong>10 เครื่อง ≈ 23,000–27,000 ฿</strong> (กรณีซื้อแจกทุกคน)
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="background:rgba(255,255,255,0.12); border-radius:16px; padding:20px; margin-bottom:12px; border-left:4px solid #34d399;">
+        <div style="font-size:0.9rem; font-weight:600; margin-bottom:8px;">📱 แผน A เพิ่ม — ซิม GOMO + Hotspot</div>
+        <div style="font-size:0.85rem; line-height:1.8; opacity:0.9;">
+          → มือถือ <strong>dual-SIM</strong> หรือยอมใส่ซิม GOMO ชั่วคราว<br>
+          → เปิด <strong>Hotspot</strong> เป็น (จัดอบรม 1 ครั้ง)<br>
+          → ซิม GOMO: <strong>99 ฿/คน/ปี</strong>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.12); border-radius:16px; padding:20px; margin-bottom:12px; border-left:4px solid #60a5fa;">
+        <div style="font-size:0.9rem; font-weight:600; margin-bottom:8px;">📶 แผน B เพิ่ม — Pocket WiFi</div>
+        <div style="font-size:0.85rem; line-height:1.8; opacity:0.9;">
+          → <strong>Pocket WiFi</strong> + ซิม GOMO วางประจำบ้าน<br>
+          → อาสาแค่ต่อ WiFi ด้วยมือถือตัวเอง (ไม่ยุ่งซิม)<br>
+          → ค่าเครื่อง: <strong>~1,390–1,690 ฿/เครื่อง</strong>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.15); border-radius:16px; padding:16px; text-align:center;">
+        <div style="font-size:0.82rem; opacity:0.7; margin-bottom:8px;">สรุปต้นทุนต่อบ้าน (ปีแรก)</div>
+        <div style="display:flex; justify-content:center; gap:28px;">
+          <div>
+            <div style="font-size:2rem; font-weight:700; color:#34d399;">99 ฿</div>
+            <div style="font-size:0.75rem; opacity:0.6;">แผน A (ซิมอย่างเดียว)</div>
+          </div>
+          <div>
+            <div style="font-size:2rem; font-weight:700; color:#60a5fa;">~1,490–1,790 ฿</div>
+            <div style="font-size:0.75rem; opacity:0.6;">แผน B (ซิม+Pocket WiFi)</div>
+          </div>
+          <div style="opacity:0.45;">
+            <div style="font-size:2rem; font-weight:700; color:#ef4444; text-decoration:line-through;">~3,600 ฿</div>
+            <div style="font-size:0.75rem; opacity:0.6;">แผน C ❌ ไม่แนะนำ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">7 / 10</div>
+</div>
+
+<!-- ========== SLIDE 8: Interactive Cost Calculator ========== -->
+<div class="slide bg-white">
+  <span class="tag">🧮 คำนวณงบ</span>
+  <h2>คำนวณค่าใช้จ่าย — เลือกแผนที่เหมาะกับเรา</h2>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:12px;">
+    <!-- Left: Controls -->
+    <div>
+      <!-- Phone purchase -->
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:16px; margin-bottom:12px;">
+        <div style="font-size:0.85rem; font-weight:600; color:#166534; margin-bottom:10px;">📱 ซื้อมือถือให้อาสา</div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+          <input type="range" id="calc-phones" min="0" max="10" value="0" oninput="calcCost()" style="flex:1; accent-color:#22c55e;">
+          <span id="calc-phones-val" style="font-size:1.3rem; font-weight:700; color:#166534; min-width:40px; text-align:center;">0</span>
+          <span style="font-size:0.8rem; color:#6b7280;">เครื่อง</span>
+        </div>
+        <div style="font-size:0.75rem; color:#6b7280;">Xiaomi Redmi A3 ≈ 2,500 ฿/เครื่อง</div>
+      </div>
+
+      <!-- Internet Plan A -->
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:14px; padding:16px; margin-bottom:12px;">
+        <div style="font-size:0.85rem; font-weight:600; color:#166534; margin-bottom:10px;">📱 แผน A — ซิม GOMO + Hotspot</div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+          <input type="range" id="calc-gomo" min="0" max="10" value="10" oninput="calcCost()" style="flex:1; accent-color:#22c55e;">
+          <span id="calc-gomo-val" style="font-size:1.3rem; font-weight:700; color:#166534; min-width:40px; text-align:center;">10</span>
+          <span style="font-size:0.8rem; color:#6b7280;">ซิม</span>
+        </div>
+        <!-- GOMO Size Selector -->
+        <div style="display:flex; gap:4px; margin-top:8px; flex-wrap:wrap;">
+          <button onclick="setGomoSize('S')" id="gomo-btn-S" class="gomo-size-btn active" style="flex:1; padding:6px 4px; border-radius:8px; border:2px solid #22c55e; background:#dcfce7; color:#166534; font-size:0.7rem; font-weight:600; cursor:pointer; text-align:center; line-height:1.3;">S<br>10GB · 99฿</button>
+          <button onclick="setGomoSize('M')" id="gomo-btn-M" class="gomo-size-btn" style="flex:1; padding:6px 4px; border-radius:8px; border:2px solid #e5e7eb; background:#fff; color:#6b7280; font-size:0.7rem; font-weight:600; cursor:pointer; text-align:center; line-height:1.3;">M<br>25GB · 199฿</button>
+          <button onclick="setGomoSize('L')" id="gomo-btn-L" class="gomo-size-btn" style="flex:1; padding:6px 4px; border-radius:8px; border:2px solid #e5e7eb; background:#fff; color:#6b7280; font-size:0.7rem; font-weight:600; cursor:pointer; text-align:center; line-height:1.3;">L<br>110GB · 699฿</button>
+          <button onclick="setGomoSize('XL')" id="gomo-btn-XL" class="gomo-size-btn" style="flex:1; padding:6px 4px; border-radius:8px; border:2px solid #e5e7eb; background:#fff; color:#6b7280; font-size:0.7rem; font-weight:600; cursor:pointer; text-align:center; line-height:1.3;">XL<br>150GB · 999฿</button>
+        </div>
+        <div id="gomo-desc" style="font-size:0.72rem; color:#6b7280; margin-top:6px;">📱 10 GB/ปี + โทร 10 นาที — พอสำหรับโครงการ (ใช้จริง ~0.5 GB)</div>
+      </div>
+
+      <!-- Internet Plan B -->
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:14px; padding:16px; margin-bottom:12px;">
+        <div style="font-size:0.85rem; font-weight:600; color:#1e40af; margin-bottom:10px;">📶 แผน B — Pocket WiFi</div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+          <input type="range" id="calc-pocket" min="0" max="10" value="0" oninput="calcCost()" style="flex:1; accent-color:#3b82f6;">
+          <span id="calc-pocket-val" style="font-size:1.3rem; font-weight:700; color:#1e40af; min-width:40px; text-align:center;">0</span>
+          <span style="font-size:0.8rem; color:#6b7280;">เครื่อง</span>
+        </div>
+        <div style="font-size:0.75rem; color:#6b7280;">Pocket WiFi ~1,500 ฿/เครื่อง + ซิม GOMO 99 ฿ (รวมในค่า GOMO ข้างบน)</div>
+      </div>
+
+      <!-- Note -->
+      <div style="background:#fefce8; border:1px solid #fde68a; border-radius:10px; padding:10px 14px; font-size:0.75rem; color:#92400e; line-height:1.5;">
+        💡 <strong>Pocket WiFi ต้องมีซิม GOMO ด้วย</strong> — ถ้าเลือก Pocket WiFi 4 เครื่อง ต้องมี GOMO อย่างน้อย 4 ซิม<br>
+        ⚠️ ราคาประมาณการ — อาจเปลี่ยนตามร้านและโปรโมชั่น
+      </div>
+    </div>
+
+    <!-- Right: Results -->
+    <div>
+      <!-- Total -->
+      <div id="calc-total-box" style="background:linear-gradient(135deg,#065f46,#047857); color:#fff; border-radius:18px; padding:28px; text-align:center; margin-bottom:16px;">
+        <div style="font-size:0.8rem; opacity:0.7; margin-bottom:4px;">รวมค่าใช้จ่ายทั้งหมด (ปีแรก)</div>
+        <div id="calc-total" style="font-size:3.5rem; font-weight:800; letter-spacing:-0.02em;">990 ฿</div>
+        <div id="calc-per-house" style="font-size:0.9rem; opacity:0.8; margin-top:4px;">เฉลี่ย 99 ฿/บ้าน</div>
+      </div>
+
+      <!-- Breakdown -->
+      <div style="background:#f9fafb; border:1px solid #e5e7eb; border-radius:14px; padding:20px;">
+        <div style="font-size:0.85rem; font-weight:600; color:#374151; margin-bottom:12px;">📊 รายละเอียด</div>
+        <div style="font-size:0.85rem; line-height:2.2; color:#4b5563;">
+          <div style="display:flex; justify-content:space-between;">
+            <span>📱 มือถือ</span>
+            <span id="calc-line-phone" style="font-weight:600;">0 ฿</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>📱 ซิม GOMO <span id="calc-line-gomo-size" style="font-size:0.75rem; color:#9ca3af;">(S)</span></span>
+            <span id="calc-line-gomo" style="font-weight:600;">990 ฿</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>📶 Pocket WiFi</span>
+            <span id="calc-line-pocket" style="font-weight:600;">0 ฿</span>
+          </div>
+          <div style="border-top:2px solid #e5e7eb; margin-top:8px; padding-top:8px; display:flex; justify-content:space-between; font-weight:700; font-size:0.95rem;">
+            <span>รวม</span>
+            <span id="calc-line-total" style="color:#059669;">990 ฿</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison bar -->
+      <div style="margin-top:12px; background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px 16px;">
+        <div style="font-size:0.75rem; color:#991b1b; margin-bottom:6px;">เทียบกับแผน C (WiFi ถาวร) = <strong>36,000 ฿/ปี</strong></div>
+        <div style="background:#fecaca; border-radius:6px; height:18px; position:relative; overflow:hidden;">
+          <div id="calc-bar" style="background:#22c55e; height:100%; border-radius:6px; transition:width 0.4s ease; width:2.75%;"></div>
+          <div id="calc-bar-label" style="position:absolute; right:8px; top:1px; font-size:0.7rem; font-weight:600; color:#991b1b;">ประหยัด 97%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">8 / 10</div>
+</div>
+
+<!-- ========== SLIDE 9: คำถามเพื่อตัดสินใจ ========== -->
+<div class="slide bg-amber">
+  <span class="tag">❓ ต้องตัดสินใจ</span>
+  <h2>คำถามเพื่อเตรียมพร้อม Deploy</h2>
+
+  <div class="card-grid cols-2" style="margin-top:8px;">
+    <div class="card">
+      <div class="icon">1️⃣</div>
+      <h3>👥 อาสาสมัคร</h3>
+      <ul>
+        <li><strong>ใครเป็นอาสา?</strong> — คนในบ้านเอง หรือคนนอกมาช่วย?</li>
+        <li>อาสา 10 คนมี <strong>มือถือ smartphone</strong> มั้ย?</li>
+        <li>มือถือ <strong>dual-SIM</strong> หรือ ซิมเดียว?</li>
+        <li>ถ้าไม่มีมือถือ → งบจัดหาจากไหน? (~1,500–2,500 ฿/เครื่อง)</li>
+      </ul>
+    </div>
+
+    <div class="card orange">
+      <div class="icon">2️⃣</div>
+      <h3>📡 อินเทอร์เน็ต</h3>
+      <ul>
+        <li>เลือก <strong>แผน A / B</strong> หรือ mix? (ไม่แนะนำ C)</li>
+        <li>10 บ้านอยู่ใกล้กันแค่ไหน? (Pocket WiFi แชร์ได้มั้ย)</li>
+        <li>บ้าน<strong>ไม้หรือคอนกรีต</strong>? (มีผลต่อสัญญาณ WiFi)</li>
+        <li>มี <strong>เน็ตประชารัฐ</strong> ในพื้นที่มั้ย?</li>
+      </ul>
+    </div>
+
+    <div class="card blue">
+      <div class="icon">3️⃣</div>
+      <h3>🏠 บ้านตัวอย่าง</h3>
+      <ul>
+        <li>10 บ้าน — <strong>กี่หลัง eco / กี่หลัง old?</strong></li>
+        <li>ต้องการ<strong>พิกัด GPS</strong> ทุกหลัง (ลงทะเบียนในระบบ)</li>
+        <li>Baseline เก็บนานเท่าไหร่? (5 / 15 / 30 นาที?)</li>
+      </ul>
+    </div>
+
+    <div class="card purple">
+      <div class="icon">4️⃣</div>
+      <h3>📅 ตารางเก็บข้อมูล</h3>
+      <ul>
+        <li>เก็บ<strong>วันไหน</strong>? (ทุกวัน / บางวัน / สัปดาห์ละครั้ง)</li>
+        <li><strong>กี่ session/วัน?</strong> (1 หรือ 2 — สูงสุด 2)</li>
+        <li>เก็บทั้งหมด<strong>กี่สัปดาห์/เดือน</strong>?</li>
+        <li>ใครดูแลอุปกรณ์? (ชาร์จ Pocket WiFi / เช็คเซนเซอร์)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-number">9 / 10</div>
+</div>
+
+<!-- ========== SLIDE 10: สรุป ========== -->
 <div class="slide bg-gradient">
   <div style="text-align:center;">
     <div style="font-size:3rem; margin-bottom:16px;">📋</div>
-    <h1>สรุป</h1>
-    <p class="subtitle" style="max-width:700px; margin:0 auto 32px;">ระบบพร้อม 75–90% — สิ่งที่ต้องตัดสินใจคือ <strong>วิธีวัด Baseline</strong> กับ <strong>แผนจัดอาสา</strong> + <strong>ระบบอาสาสมัครพร้อมทดสอบ</strong></p>
+    <h1>สรุป — ณ 13 มี.ค. 2569</h1>
+    <p class="subtitle" style="max-width:700px; margin:0 auto 24px;">ระบบพร้อมแล้ว — เซนเซอร์ 11 ตัว สั่งแล้ว มาอาทิตย์หน้า → ตัดสินใจเรื่องอาสาและอินเทอร์เน็ต</p>
 
-    <div style="display:flex; justify-content:center; gap:24px; margin-bottom:32px;">
-      <div class="highlight-box" style="max-width:220px;">
-        <div style="font-size:2.5rem; font-weight:700; color:#34d399;">80%</div>
-        <div style="font-size:0.85rem; opacity:0.7;">Wk1 Baseline</div>
+    <div style="display:flex; justify-content:center; gap:20px; margin-bottom:24px; flex-wrap:wrap;">
+      <div class="highlight-box" style="max-width:180px;">
+        <div style="font-size:2.2rem; font-weight:700; color:#34d399;">✅</div>
+        <div style="font-size:0.85rem; opacity:0.7;">Admin Dashboard</div>
       </div>
-      <div class="highlight-box" style="max-width:220px;">
-        <div style="font-size:2.5rem; font-weight:700; color:#60a5fa;">75%</div>
-        <div style="font-size:0.85rem; opacity:0.7;">Wk2 Multi-Project</div>
+      <div class="highlight-box" style="max-width:180px;">
+        <div style="font-size:2.2rem; font-weight:700; color:#34d399;">✅</div>
+        <div style="font-size:0.85rem; opacity:0.7;">Volunteer App</div>
       </div>
-      <div class="highlight-box" style="max-width:220px;">
-        <div style="font-size:2.5rem; font-weight:700; color:#fbbf24;">90%</div>
-        <div style="font-size:0.85rem; opacity:0.7;">Wk3 10 Sensors</div>
+      <div class="highlight-box" style="max-width:180px;">
+        <div style="font-size:2.2rem; font-weight:700; color:#34d399;">✅</div>
+        <div style="font-size:0.85rem; opacity:0.7;">LINE OA</div>
+      </div>
+      <div class="highlight-box" style="max-width:180px;">
+        <div style="font-size:2.2rem; font-weight:700; color:#34d399;">✅</div>
+        <div style="font-size:0.85rem; opacity:0.7;">Sync อัตโนมัติ</div>
       </div>
     </div>
 
-    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:20px 32px; max-width:650px; margin:0 auto; text-align:left;">
+    <div style="background:rgba(255,255,255,0.1); border-radius:16px; padding:20px 32px; max-width:700px; margin:0 auto; text-align:left;">
       <div style="font-size:0.95rem; font-weight:600; margin-bottom:12px;">📌 Next Steps</div>
       <div style="font-size:0.85rem; font-weight:300; line-height:2; opacity:0.9;">
-        1. 🗣️ DewS คุย อ.แก้ว → ตัดสินใจเรื่อง baseline + อาสา<br>
-        2. 📱 ทดสอบระบบอาสาสมัคร (GPS + ปุ่มจุดเตา + TVOC)<br>
-        3. 🔧 หลังตัดสินใจ → ปรับระบบตามแผนที่เลือก<br>
-        4. 🧪 ทดสอบ TVOC session flow end-to-end<br>
-        5. 📦 Deploy LINE OA updates<br>
-        6. 📡 ลงทะเบียน 10 เซนเซอร์ + ทดสอบพร้อมกัน
+        1. 📦 <strong>รับเซนเซอร์ 11 ตัว + อแดปเตอร์</strong> (อาทิตย์หน้า)<br>
+        2. ❓ ตัดสินใจ — อาสาเป็นใคร? อินเทอร์เน็ตแผนไหน?<br>
+        3. 📱 ตรวจสอบมือถืออาสา — มีมั้ย? dual-SIM มั้ย?<br>
+        4. 📡 จัดหาซิม GOMO / Pocket WiFi ตามแผนที่เลือก<br>
+        5. 🏠 ลงทะเบียน 10 บ้าน + จับคู่เซนเซอร์ในระบบ<br>
+        6. 🧪 <strong>ทดสอบ 10 ตัวพร้อมกัน</strong> → อบรมอาสา → เริ่มเก็บข้อมูลจริง
       </div>
     </div>
+
+    <div style="margin-top:16px; background:rgba(255,255,255,0.08); border-radius:12px; padding:12px 24px; max-width:500px; margin:16px auto 0; font-size:0.82rem; opacity:0.7;">
+      🌐 biomassstove.vercel.app &nbsp;|&nbsp; LINE: @711vcedr &nbsp;|&nbsp; NDF · 2026
+    </div>
   </div>
-  <div class="slide-number">13 / 13</div>
+  <div class="slide-number">10 / 10</div>
 </div>
 
 </div><!-- /deck -->
 
 <!-- Navigation -->
-<button class="arrow left" onclick="go(-1)">‹</button>
-<button class="arrow right" onclick="go(1)">›</button>
+<button class="arrow left" onclick="go(-1)">&#8249;</button>
+<button class="arrow right" onclick="go(1)">&#8250;</button>
 <div class="nav" id="nav"></div>
 
 <script>
@@ -1080,6 +1066,77 @@
     const dx = e.changedTouches[0].clientX - tx;
     if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
   });
+
+  // ========== Cost Calculator ==========
+  const GOMO_PLANS = {
+    S:  { price: 99,   data: '10 GB',  call: '10 นาที',  desc: 'พอสำหรับโครงการ (ใช้จริง ~0.5 GB)' },
+    M:  { price: 199,  data: '25 GB',  call: '50 นาที',  desc: 'เผื่ออาสาใช้ social ได้สบาย' },
+    L:  { price: 699,  data: '110 GB', call: '150 นาที', desc: 'อาสาเล่นเน็ตได้ไม่อั้น เป็นค่าตอบแทน' },
+    XL: { price: 999,  data: '150 GB', call: '300 นาที', desc: 'ใจกว้างสุด เน็ต+โทรเหลือเฟือ' }
+  };
+  let gomoSize = 'S';
+
+  const PRICES = {
+    phone: 2500,    // Xiaomi Redmi A3 avg
+    pocket: 1500    // Pocket WiFi avg
+  };
+  const PLAN_C_COST = 36000;
+
+  function setGomoSize(size) {
+    gomoSize = size;
+    // Update button styles
+    document.querySelectorAll('.gomo-size-btn').forEach(btn => {
+      btn.style.border = '2px solid #e5e7eb';
+      btn.style.background = '#fff';
+      btn.style.color = '#6b7280';
+    });
+    const active = document.getElementById('gomo-btn-' + size);
+    active.style.border = '2px solid #22c55e';
+    active.style.background = '#dcfce7';
+    active.style.color = '#166534';
+    // Update description
+    const plan = GOMO_PLANS[size];
+    document.getElementById('gomo-desc').innerHTML =
+      '📱 ' + plan.data + '/ปี + โทร ' + plan.call + ' — ' + plan.desc;
+    calcCost();
+  }
+
+  function calcCost() {
+    const phones = +document.getElementById('calc-phones').value;
+    const gomo = +document.getElementById('calc-gomo').value;
+    const pocket = +document.getElementById('calc-pocket').value;
+    const gomoPrice = GOMO_PLANS[gomoSize].price;
+
+    document.getElementById('calc-phones-val').textContent = phones;
+    document.getElementById('calc-gomo-val').textContent = gomo;
+    document.getElementById('calc-pocket-val').textContent = pocket;
+
+    const costPhone = phones * PRICES.phone;
+    const costGomo = gomo * gomoPrice;
+    const costPocket = pocket * PRICES.pocket;
+    const total = costPhone + costGomo + costPocket;
+
+    const fmt = n => n.toLocaleString('th-TH');
+
+    document.getElementById('calc-line-phone').textContent = fmt(costPhone) + ' ฿';
+    document.getElementById('calc-line-gomo').textContent = fmt(costGomo) + ' ฿';
+    document.getElementById('calc-line-gomo-size').textContent = '(' + gomoSize + ' · ' + gomoPrice + '฿/ซิม)';
+    document.getElementById('calc-line-pocket').textContent = fmt(costPocket) + ' ฿';
+    document.getElementById('calc-line-total').textContent = fmt(total) + ' ฿';
+    document.getElementById('calc-total').textContent = fmt(total) + ' ฿';
+
+    const perHouse = total > 0 ? Math.round(total / 10) : 0;
+    document.getElementById('calc-per-house').textContent = 'เฉลี่ย ' + fmt(perHouse) + ' ฿/บ้าน';
+
+    // Comparison bar
+    const pct = Math.min((total / PLAN_C_COST) * 100, 100);
+    const saved = total < PLAN_C_COST ? Math.round((1 - total / PLAN_C_COST) * 100) : 0;
+    document.getElementById('calc-bar').style.width = Math.max(pct, 1) + '%';
+    document.getElementById('calc-bar-label').textContent = saved > 0 ? 'ประหยัด ' + saved + '%' : 'เกินแผน C';
+  }
+
+  // Initialize calculator
+  calcCost();
 </script>
 </body>
 </html>

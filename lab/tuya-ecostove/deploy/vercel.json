@@ -5,6 +5,9 @@
     },
     "api/volunteer.js": {
       "maxDuration": 10
+    },
+    "api/tuya-devices.js": {
+      "maxDuration": 10
     }
   }
 }

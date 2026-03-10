@@ -94,7 +94,7 @@ module.exports = async function handler(req, res) {
         baseline_avg_temperature: avg(logs, 'temperature'),
         baseline_avg_humidity: avg(logs, 'humidity'),
         baseline_readings_count: logs.length,
-        notes: 'อาสากดเริ่มจุดเตา ' + now + gpsNote,
+        notes: ((session.notes || '') + ' อาสากดเริ่มจุดเตา ' + now + gpsNote).trim(),
         updated_at: now,
       };
 

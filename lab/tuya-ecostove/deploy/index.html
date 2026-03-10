@@ -520,15 +520,16 @@
                 <button onclick="logoutAdmin()" class="px-8 py-3 bg-red-100 text-red-600 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all" data-i18n="admin.logout">Logout</button>
             </div>
 
-            <div class="flex bg-white/50 p-1.5 rounded-[1.5rem] w-fit border border-slate-200 shadow-inner overflow-x-auto max-w-full custom-scrollbar">
-                <button onclick="switchAdminTab('projects')" id="tab-btn-projects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.projects">โครงการ</button>
-                <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm tab-active whitespace-nowrap" data-i18n="tab.volunteers">อาสาสมัคร</button>
-                <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.subjects">บ้านกลุ่มตัวอย่าง</button>
-                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.devices">เครื่องวัด</button>
-                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap"><span data-i18n="tab.approvals">รออนุมัติ</span> (<span id="count-pending">0</span>)</button>
-                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.data">ตารางข้อมูล</button>
-                <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" data-i18n="tab.activity">ประวัติกิจกรรม</button>
-                <button onclick="switchAdminTab('admins')" id="tab-btn-admins" class="admin-tab-btn px-8 py-3 rounded-xl font-bold text-sm text-slate-500 whitespace-nowrap" style="display:none" data-i18n="admin.manage">จัดการแอดมิน</button>
+            <div class="flex flex-wrap gap-1.5 bg-white/50 p-1.5 rounded-[1.5rem] border border-slate-200 shadow-inner">
+                <button onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] tab-active">ภาพรวม</button>
+                <button onclick="switchAdminTab('projects')" id="tab-btn-projects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.projects">โครงการ</button>
+                <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.volunteers">อาสา</button>
+                <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.subjects">บ้าน</button>
+                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.devices">เครื่องวัด</button>
+                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500"><span data-i18n="tab.approvals">อนุมัติ</span> (<span id="count-pending" class="text-[11px]">0</span>)</button>
+                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.data">ข้อมูล</button>
+                <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.activity">ประวัติ</button>
+                <button onclick="switchAdminTab('admins')" id="tab-btn-admins" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" style="display:none" data-i18n="admin.manage">แอดมิน</button>
             </div>
 
             <!-- API Quota Usage -->
@@ -543,6 +544,31 @@
                 <p id="api-quota-warning" class="text-xs text-slate-400 mt-1"></p>
             </div>
 
+            <!-- Tab: ภาพรวม (Overview) — default active -->
+            <div id="admin-overview-container" class="admin-tab-content space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+                    <h3 class="text-2xl font-bold text-navy">ภาพรวมระบบ</h3>
+                    <div class="flex items-center gap-3">
+                        <input id="overview-search" type="text" oninput="renderOverviewTable()" placeholder="🔍 ค้นหาบ้าน, อาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-48 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <button onclick="loadAdminData(true)" class="text-[13px] px-4 py-2 rounded-xl bg-slate-100 text-slate-500 font-bold hover:bg-slate-200 transition-all">🔄 รีเฟรช</button>
+                    </div>
+                </div>
+                <div class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
+                    <table class="w-full text-left text-[13px] min-w-[700px]">
+                        <thead class="bg-slate-50 border-b">
+                            <tr>
+                                <th onclick="sortOverviewTable('name')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider cursor-pointer hover:text-emerald-600 select-none">บ้าน <span id="sort-arrow-name" class="text-[10px]"></span></th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">เซนเซอร์</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">อาสาสมัคร</th>
+                                <th onclick="sortOverviewTable('status')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none">สถานะ <span id="sort-arrow-status" class="text-[10px]"></span></th>
+                                <th onclick="sortOverviewTable('project')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none">โครงการ <span id="sort-arrow-project" class="text-[10px]"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="overview-table-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Tab 0: โครงการ -->
             <div id="admin-projects-container" class="admin-tab-content hidden space-y-6">
                 <div class="flex justify-between items-center">
@@ -552,20 +578,26 @@
                 <div id="projects-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
 
-            <!-- Tab 1: อาสาสมัคร (default visible) -->
-            <div id="admin-volunteers-container" class="admin-tab-content space-y-6">
-                <div class="flex justify-between items-center">
+            <!-- Tab 1: อาสาสมัคร -->
+            <div id="admin-volunteers-container" class="admin-tab-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="vol.list">รายชื่ออาสาสมัคร</h3>
-                    <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="vol.add">+ เพิ่มอาสา</button>
+                    <div class="flex items-center gap-3">
+                        <input id="volunteers-search" type="text" oninput="renderVolunteersList()" placeholder="🔍 ค้นหาอาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="vol.add">+ เพิ่มอาสา</button>
+                    </div>
                 </div>
                 <div id="volunteers-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
             </div>
 
             <!-- Tab 2: บ้านกลุ่มตัวอย่าง -->
             <div id="admin-subjects-container" class="admin-tab-content hidden space-y-6">
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="sub.manage">จัดการกลุ่มตัวอย่าง</h3>
-                    <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="sub.add">+ เพิ่มบ้าน</button>
+                    <div class="flex items-center gap-3">
+                        <input id="subjects-search" type="text" oninput="renderSubjectsList()" placeholder="🔍 ค้นหาบ้าน..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="sub.add">+ เพิ่มบ้าน</button>
+                    </div>
                 </div>
                 <div id="subjects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
@@ -577,12 +609,18 @@
                         <h3 class="text-2xl font-bold text-navy" data-i18n="dev.manage">จัดการเครื่องวัด</h3>
                         <p class="text-slate-500 text-sm" data-i18n="dev.subtitle">ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor</p>
                     </div>
-                    <div class="flex gap-3">
+                    <div class="flex gap-3 flex-wrap items-center">
+                        <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาเครื่องวัด..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <button onclick="discoverTuyaDevices()" class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-600 transition-all">🔍 ค้นหาจาก Tuya Cloud</button>
                         <button onclick="showRegisterSensorModal()" class="bg-amber-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-amber-600 transition-all" data-i18n="reg.btn">📡 ลงทะเบียนเซนเซอร์ใหม่</button>
                         <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ เพิ่มเครื่องวัด</button>
                     </div>
                 </div>
                 <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="tuya-discover-container" class="hidden mt-4 pt-6 border-t border-slate-200">
+                    <h4 class="text-lg font-bold text-navy mb-4">🔍 เซนเซอร์จาก Tuya Cloud</h4>
+                    <div id="tuya-discover-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
                 <div class="mt-8 pt-6 border-t border-slate-200">
                     <h4 class="text-lg font-bold text-navy mb-4">📡 <span data-i18n="reg.title">ลงทะเบียนเซนเซอร์ใหม่</span></h4>
                     <div id="registered-sensors-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -612,6 +650,8 @@
                             <option value="all" data-i18n="filter.all">ทั้งหมด</option>
                         </select>
                         <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
+                        <button onclick="exportDailySummaries()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-indigo-700 transition-all">📋 สรุปรายวัน</button>
+                        <button onclick="exportComparisonReport()" class="bg-amber-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-amber-700 transition-all">📈 เปรียบเทียบ</button>
                     </div>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar">
@@ -664,6 +704,10 @@
     </div>
 
     <script>
+        // HTML sanitize helper — prevent XSS from DB data
+        function esc(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
+        function escAttr(str) { return esc(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
+
         const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
         // Clear auth tokens BEFORE creating client to prevent SDK blocking on stale refresh
@@ -684,17 +728,19 @@
             } catch (_) {}
         }
 
-        let isAdmin = false, map, mapDeep, charts = {}, allData = [], volunteers = [], subjects = [], devices = [];
+        let isAdmin = false, map, mapDeep, allData = [], volunteers = [], subjects = [], devices = [];
         let allDataWithPending = [];
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
         let volunteerNameMap = {}; // volunteer_id → full_name
-        let autoRefreshInterval = null;
         let countdownInterval = null;
         let countdownSeconds = 60; // 1-minute refresh cycle
         const REFRESH_INTERVAL_SEC = 60;
         let lastCheckTime = null;
         let currentView = 'basic';
         let projects = [], subjectProjects = [];
+        let sensorHealthMap = {}; // tuya_device_id → { status, label, color, lastLogAt }
+        let overviewSortField = ''; // '', 'name', 'status', 'project'
+        let overviewSortAsc = true;
         let authUser = null;
         let currentAdminRole = ''; // 'super' or 'admin'
 
@@ -1567,7 +1613,7 @@
                     return;
                 }
                 logActivity('ลบแอดมิน', name);
-                showToast('ลบ ' + name + ' สำเร็จ', 'ok');
+                showToast('ลบ ' + name + ' สำเร็จ', 'success');
                 loadAdminsList();
             } catch (e) {
                 showToast('Network error', 'error');
@@ -1596,7 +1642,7 @@
                     return;
                 }
                 logActivity(newRole === 'super' ? 'เลื่อนขั้น' : 'ลดขั้น', name);
-                showToast(data.message, 'ok');
+                showToast(data.message, 'success');
                 loadAdminsList();
             } catch (e) {
                 showToast('Network error', 'error');
@@ -1611,7 +1657,9 @@
                 b.classList.add('text-slate-500');
             });
 
-            if (tab === 'projects') {
+            if (tab === 'overview') {
+                document.getElementById('admin-overview-container').classList.remove('hidden');
+            } else if (tab === 'projects') {
                 document.getElementById('admin-projects-container').classList.remove('hidden');
             } else if (tab === 'devices') {
                 document.getElementById('admin-devices-container').classList.remove('hidden');
@@ -1629,6 +1677,7 @@
             document.getElementById(`tab-btn-${tab}`).classList.remove('text-slate-500');
 
             // Load data for the selected tab
+            if (tab === 'overview') renderOverviewTable();
             if (tab === 'data') updateAllDataTable();
             if (tab === 'activity') renderAdminActivityFeed();
             if (tab === 'admins') loadAdminsList();
@@ -1738,11 +1787,11 @@
                 allData = allDataWithPending.filter(d => d.status === 'approved');
                 dataLoaded = true;
 
-                // Load house names from devices → subjects
+                // Load house names from devices → subjects (use separate var to avoid overwriting admin-loaded devices)
                 try {
                     const { data: devs } = await supabaseClient.from('devices').select('tuya_device_id, subject_id, subjects(full_name)');
                     if (devs) devs.forEach(d => { if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name; });
-                    devices = devs || [];
+                    if (!isAdmin) devices = devs || []; // only overwrite if not in admin mode
                 } catch (_) {}
 
                 // Load volunteer name map (for manual records display)
@@ -1991,32 +2040,6 @@
                 barEl.className = 'h-2.5 rounded-full progress-fill ' + (pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500');
             } catch (e) {
                 console.error('loadTodaySummary:', e);
-            }
-        }
-
-        function updateLiveCard() {
-            const filteredPending = getFilteredData(allDataWithPending);
-            const latest = filteredPending[0];
-            if (!latest) {
-                document.getElementById('live-house-name').textContent = t('live.no.data');
-                return;
-            }
-
-            document.getElementById('live-house-name').textContent = HOUSE_NAMES[latest.tuya_device_id] || getDeviceName(latest);
-            document.getElementById('live-timestamp').textContent = new Date(latest.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US');
-            document.getElementById('live-stove-badge').textContent = latest.stove_type === 'eco' ? t('live.eco') : t('live.old');
-            document.getElementById('live-pm25').textContent = latest.pm25_value ?? '--';
-            document.getElementById('live-co2').textContent = latest.co2_value ?? '--';
-            document.getElementById('live-temp').textContent = latest.temperature ?? '--';
-            document.getElementById('live-aqi').textContent = latest.aqi ?? '--';
-
-            const card = document.getElementById('live-latest-card');
-            if (latest.status === 'pending') {
-                card.className = card.className.replace('from-emerald-500 to-teal-500', 'from-amber-500 to-orange-500').replace('shadow-emerald-500/30', 'shadow-amber-500/30');
-                document.getElementById('live-status-icon').textContent = '⏳';
-            } else {
-                card.className = card.className.replace('from-amber-500 to-orange-500', 'from-emerald-500 to-teal-500').replace('shadow-amber-500/30', 'shadow-emerald-500/30');
-                document.getElementById('live-status-icon').textContent = '📡';
             }
         }
 
@@ -2505,7 +2528,7 @@
         }
 
         async function loadDailySummaries() {
-            let dsQuery = supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }).limit(30);
+            let dsQuery = supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }).limit(10);
             const projDevIds = getProjectDeviceIds(getActiveProjectFilter());
             if (projDevIds) dsQuery = dsQuery.in('device_id', projDevIds);
             const { data, error } = await dsQuery;
@@ -2588,18 +2611,6 @@
                 startCountdown();
             }
         });
-
-        function manualRefresh() {
-            const icon = document.getElementById('refresh-icon');
-            if (icon) { icon.style.animation = 'spin 0.5s linear'; setTimeout(() => icon.style.animation = '', 500); }
-            loadData();
-            lastCheckTime = new Date();
-            updateLastCheckDisplay();
-            countdownSeconds = REFRESH_INTERVAL_SEC;
-            updateCountdownDisplay();
-            const statusEl = document.getElementById('live-refresh-status');
-            if (statusEl) statusEl.textContent = t('live.updated') + new Date().toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US');
-        }
 
         // ==================== Admin Activity Feed ====================
         function getActionStyle(action) {
@@ -2985,9 +2996,9 @@
                 }
 
                 const [devRes, volRes, subRes, projRes, spRes] = await Promise.all([
-                    supabaseClient.from('devices').select('*, subjects(*)'),
-                    supabaseClient.from('volunteers').select('*'),
-                    supabaseClient.from('subjects').select('*, volunteers(*)'),
+                    supabaseClient.from('devices').select('*, subjects(*)').order('updated_at', { ascending: false }),
+                    supabaseClient.from('volunteers').select('*').order('updated_at', { ascending: false }),
+                    supabaseClient.from('subjects').select('*, volunteers(*)').order('updated_at', { ascending: false }),
                     supabaseClient.from('projects').select('*').eq('status', 'active'),
                     supabaseClient.from('subject_projects').select('*'),
                 ]);
@@ -3001,6 +3012,8 @@
                 renderVolunteersList();
                 renderSubjectsList();
                 renderProjectsList();
+                await loadSensorHealth();
+                renderOverviewTable();
                 adminLoaded = true;
             } catch (e) {
                 console.error('Error loading admin data:', e);
@@ -3109,21 +3122,28 @@
 
         function renderDevicesList() {
             const list = document.getElementById('devices-list');
-            list.innerHTML = devices.map(d => `
+            const searchEl = document.getElementById('devices-search');
+            const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+            const filtered = q ? devices.filter(d =>
+                (d.name || '').toLowerCase().includes(q)
+                || (d.tuya_device_id || '').toLowerCase().includes(q)
+                || (d.subjects?.full_name || '').toLowerCase().includes(q)
+            ) : devices;
+            list.innerHTML = filtered.map(d => `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="text-3xl">📡</span>
-                        <div class="flex-1"><p class="font-bold text-navy">${d.name}</p><p class="text-[12px] text-slate-400 font-mono">${d.tuya_device_id}</p></div>
+                        <div class="flex-1"><p class="font-bold text-navy">${esc(d.name)}</p><p class="text-[12px] text-slate-400 font-mono">${esc(d.tuya_device_id)}</p></div>
                         <div class="flex gap-2">
-                            <button onclick="showEditDeviceModal('${d.id}', '${d.name}', '${d.tuya_device_id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="toggleDevice('${d.id}', ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${d.is_active ? t('dev.off') : t('dev.on')}</button>
-                            <button onclick="deleteDevice('${d.id}', '${d.name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                            <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
+                            <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${d.is_active ? t('dev.off') : t('dev.on')}</button>
+                            <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(d.name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${t('dev.house.label')}${d.subjects?.full_name || t('dev.unassigned')}</p>
+                    <p class="text-[13px] text-slate-500">${t('dev.house.label')}${esc(d.subjects?.full_name) || t('dev.unassigned')}</p>
                     <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'}">${d.is_active ? t('dev.active') : t('dev.inactive')}</p>
                 </div>
-            `).join('') || '<p class="text-slate-400">' + t('dev.no.data') + '</p>';
+            `).join('') || '<p class="text-slate-400">' + (q ? 'ไม่พบผลลัพธ์' : t('dev.no.data')) + '</p>';
         }
 
         async function toggleDevice(id, active) {
@@ -3269,7 +3289,8 @@
                             <button onclick="deleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${p.description || '-'}</p>
+                    <p class="text-[13px] text-slate-500">${esc(p.description) || '-'}</p>
+                    ${p.notes ? `<p class="text-[12px] text-slate-400 mt-1">📝 ${esc(p.notes)}</p>` : ''}
                     <p class="text-[13px] text-indigo-500 font-bold mt-1">🏠 ${houseCount} ${currentLang === 'th' ? 'บ้าน' : 'houses'}</p>
                 </div>`;
             }).join('') || '<p class="text-slate-400">' + t('project.no.data') + '</p>';
@@ -3322,28 +3343,34 @@
 
         function renderVolunteersList() {
             const list = document.getElementById('volunteers-list');
-            list.innerHTML = volunteers.map(v => `
+            const searchEl = document.getElementById('volunteers-search');
+            const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+            const filtered = q ? volunteers.filter(v =>
+                (v.full_name || '').toLowerCase().includes(q)
+                || (v.phone_contact || '').toLowerCase().includes(q)
+            ) : volunteers;
+            list.innerHTML = filtered.map(v => `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">${v.full_name}</p>
+                        <p class="font-bold text-navy text-lg">${esc(v.full_name)}</p>
                         <div class="flex gap-2">
-                            <button onclick="showEditVolunteerModal('${v.id}', '${v.full_name.replace(/'/g, "\\'")}', '${(v.phone_contact || '').replace(/'/g, "\\'")}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="deleteVolunteer('${v.id}', '${v.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                            <button onclick="showEditVolunteerModal('${escAttr(v.id)}', '${escAttr(v.full_name)}', '${escAttr(v.phone_contact || '')}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
+                            <button onclick="deleteVolunteer('${escAttr(v.id)}', '${escAttr(v.full_name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">📞 ${v.phone_contact || '-'}</p>
+                    <p class="text-[13px] text-slate-500">📞 ${esc(v.phone_contact) || '-'}</p>
                     <p class="text-[13px] text-emerald-500">${t('vol.active')}</p>
                 </div>
-            `).join('') || '<p class="text-slate-400">' + t('vol.no.data') + '</p>';
+            `).join('') || '<p class="text-slate-400">' + (q ? 'ไม่พบผลลัพธ์' : t('vol.no.data')) + '</p>';
         }
 
         function showEditVolunteerModal(id, name, phone) {
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('vol.edit')}</h3>
                 <div class="space-y-4">
-                    <input id="edit-vol-name" value="${name}" placeholder="${t('vol.name')}" class="w-full p-4 rounded-2xl border">
-                    <input id="edit-vol-phone" value="${phone}" placeholder="${t('vol.phone')}" class="w-full p-4 rounded-2xl border">
-                    <button onclick="saveVolunteer('${id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
+                    <input id="edit-vol-name" value="${escAttr(name)}" placeholder="${t('vol.name')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-vol-phone" value="${escAttr(phone)}" placeholder="${t('vol.phone')}" class="w-full p-4 rounded-2xl border">
+                    <button onclick="saveVolunteer('${escAttr(id)}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
         }
@@ -3365,10 +3392,19 @@
 
         function renderSubjectsList() {
             const list = document.getElementById('subjects-list');
+            const searchEl = document.getElementById('subjects-search');
+            const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
             // Find assigned devices for each subject and available (unassigned) devices
             const unassignedDevices = devices.filter(d => !d.subject_id);
+            const filteredSubjects = q ? subjects.filter(s =>
+                (s.full_name || '').toLowerCase().includes(q)
+                || (s.subdistrict || '').toLowerCase().includes(q)
+                || (s.district || '').toLowerCase().includes(q)
+                || (s.address || '').toLowerCase().includes(q)
+                || (s.volunteers?.full_name || '').toLowerCase().includes(q)
+            ) : subjects;
 
-            list.innerHTML = subjects.map(s => {
+            list.innerHTML = filteredSubjects.map(s => {
                 const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
                 const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>' +
                     (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
@@ -3380,16 +3416,16 @@
                 return `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">🏠 ${s.full_name}</p>
+                        <p class="font-bold text-navy text-lg">🏠 ${esc(s.full_name)}</p>
                         <div class="flex gap-2">
-                            <button onclick="showEditSubjectModal('${s.id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="toggleSubjectStatus('${s.id}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${s.status === 'active' ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>
-                            <button onclick="deleteSubject('${s.id}', '${s.full_name}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                            <button onclick="showEditSubjectModal('${escAttr(s.id)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
+                            <button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${s.status === 'active' ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>
+                            <button onclick="deleteSubject('${escAttr(s.id)}', '${escAttr(s.full_name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${displayAddr}</p>
-                    ${s.address && addrParts ? `<p class="text-[12px] text-slate-400">${s.address}</p>` : ''}
-                    <p class="text-[13px] text-slate-400">${t('sub.volunteer')}${s.volunteers?.full_name || t('sub.unassigned')}</p>
+                    <p class="text-[13px] text-slate-500">${esc(displayAddr)}</p>
+                    ${s.address && addrParts ? `<p class="text-[12px] text-slate-400">${esc(s.address)}</p>` : ''}
+                    <p class="text-[13px] text-slate-400">${t('sub.volunteer')}${esc(s.volunteers?.full_name) || t('sub.unassigned')}</p>
                     <div class="flex items-center gap-2 mt-2 flex-wrap">
                         ${projName ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">📋 ${projName}</span>` : ''}
                         <p class="text-[13px] ${s.status === 'active' ? 'text-emerald-500' : 'text-red-500'}">${s.status === 'active' ? t('sub.active') : t('sub.inactive')}</p>
@@ -3403,7 +3439,7 @@
                         </select>
                     </div>
                 </div>`;
-            }).join('') || '<p class="text-slate-400">' + t('sub.no.data') + '</p>';
+            }).join('') || '<p class="text-slate-400">' + (q ? 'ไม่พบผลลัพธ์' : t('sub.no.data')) + '</p>';
         }
 
         function showEditSubjectModal(id) {
@@ -3557,6 +3593,247 @@
                 if (!error) { logActivity(t('dev.delete'), name); loadAdminData(); showToast(t('sub.deleted')); }
                 else { showToast('ลบไม่ได้: ' + error.message, 'error'); }
             });
+        }
+
+        // ==================== Health Monitor ====================
+        async function loadSensorHealth() {
+            sensorHealthMap = {};
+            // Get all registered device tuya_ids
+            const allTuyaIds = devices.map(d => d.tuya_device_id).filter(Boolean);
+            if (allTuyaIds.length === 0) return;
+
+            // Query latest pollution_log per device (limit to recent only — 10 per device max)
+            const { data: latestLogs } = await supabaseClient
+                .from('pollution_logs')
+                .select('tuya_device_id, recorded_at')
+                .in('tuya_device_id', allTuyaIds)
+                .order('recorded_at', { ascending: false })
+                .limit(allTuyaIds.length * 3);
+
+            // Query active sessions
+            const { data: activeSessions } = await supabaseClient
+                .from('sessions')
+                .select('device_id, session_status, started_at')
+                .in('device_id', allTuyaIds)
+                .is('ended_at', null);
+
+            const activeSessionMap = {};
+            (activeSessions || []).forEach(s => { activeSessionMap[s.device_id] = s; });
+
+            // Build a map of latest log per device
+            const latestLogMap = {};
+            (latestLogs || []).forEach(l => {
+                if (!latestLogMap[l.tuya_device_id]) latestLogMap[l.tuya_device_id] = l;
+            });
+
+            const now = Date.now();
+            allTuyaIds.forEach(tuyaId => {
+                const latestLog = latestLogMap[tuyaId];
+                const activeSession = activeSessionMap[tuyaId];
+
+                if (!latestLog) {
+                    sensorHealthMap[tuyaId] = { status: 'none', label: 'ไม่มีข้อมูล', color: 'bg-slate-200 text-slate-500', emoji: '⚪' };
+                    return;
+                }
+
+                const minutesAgo = (now - new Date(latestLog.recorded_at).getTime()) / 60000;
+
+                if (minutesAgo < 6) {
+                    sensorHealthMap[tuyaId] = { status: 'online', label: 'ออนไลน์', color: 'bg-emerald-100 text-emerald-700', emoji: '🟢', minutesAgo: Math.round(minutesAgo) };
+                } else if (minutesAgo < 30 && activeSession) {
+                    sensorHealthMap[tuyaId] = { status: 'waiting', label: 'รอข้อมูล', color: 'bg-amber-100 text-amber-700', emoji: '🟡', minutesAgo: Math.round(minutesAgo) };
+                } else {
+                    const hrs = Math.floor(minutesAgo / 60);
+                    const agoStr = hrs > 0 ? hrs + ' ชม.' : Math.round(minutesAgo) + ' นาที';
+                    sensorHealthMap[tuyaId] = { status: 'offline', label: 'ออฟไลน์ · ' + agoStr + ' ที่แล้ว', color: 'bg-red-100 text-red-600', emoji: '🔴', minutesAgo: Math.round(minutesAgo) };
+                }
+            });
+        }
+
+        function renderHealthBadge(tuyaId) {
+            const h = sensorHealthMap[tuyaId];
+            if (!h) return '<span class="text-[11px] px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400">⚪ ไม่มีข้อมูล</span>';
+            return `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${h.color}" title="${h.label}">${h.emoji} ${h.label}</span>`;
+        }
+
+        // ==================== Overview Tab ====================
+        function renderOverviewTable() {
+            const tbody = document.getElementById('overview-table-body');
+            if (!tbody) return;
+
+            if (subjects.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">ยังไม่มีบ้านกลุ่มตัวอย่าง</td></tr>';
+                return;
+            }
+
+            // Search filter
+            const searchEl = document.getElementById('overview-search');
+            const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+
+            let filtered = subjects;
+            if (q) {
+                filtered = subjects.filter(s => {
+                    const volName = (s.volunteers?.full_name || '').toLowerCase();
+                    const projName = (getSubjectProjectName(s.id) || '').toLowerCase();
+                    return (s.full_name || '').toLowerCase().includes(q)
+                        || (s.subdistrict || '').toLowerCase().includes(q)
+                        || (s.address || '').toLowerCase().includes(q)
+                        || volName.includes(q)
+                        || projName.includes(q);
+                });
+            }
+
+            // Sort
+            if (overviewSortField) {
+                filtered = [...filtered].sort((a, b) => {
+                    let va, vb;
+                    if (overviewSortField === 'name') {
+                        va = a.full_name || ''; vb = b.full_name || '';
+                    } else if (overviewSortField === 'status') {
+                        const da = devices.find(d => String(d.subject_id) === String(a.id));
+                        const db = devices.find(d => String(d.subject_id) === String(b.id));
+                        const ha = da ? (sensorHealthMap[da.tuya_device_id]?.status || 'none') : 'zzz';
+                        const hb = db ? (sensorHealthMap[db.tuya_device_id]?.status || 'none') : 'zzz';
+                        const order = { online: 0, waiting: 1, offline: 2, none: 3, zzz: 4 };
+                        va = order[ha] ?? 4; vb = order[hb] ?? 4;
+                    } else if (overviewSortField === 'project') {
+                        va = getSubjectProjectName(a.id) || 'zzz';
+                        vb = getSubjectProjectName(b.id) || 'zzz';
+                    }
+                    if (typeof va === 'number') return overviewSortAsc ? va - vb : vb - va;
+                    return overviewSortAsc ? va.localeCompare(vb, 'th') : vb.localeCompare(va, 'th');
+                });
+            }
+
+            // Update sort arrows
+            ['name', 'status', 'project'].forEach(f => {
+                const el = document.getElementById('sort-arrow-' + f);
+                if (el) el.textContent = overviewSortField === f ? (overviewSortAsc ? '▲' : '▼') : '';
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">ไม่พบผลลัพธ์</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => {
+                const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
+                const projName = getSubjectProjectName(s.id);
+                const tuyaId = assignedDevice ? assignedDevice.tuya_device_id : null;
+
+                // Sensor dropdown
+                const unassignedDevices = devices.filter(d => !d.subject_id);
+                const sensorOpts = '<option value="">— ยังไม่จับคู่ —</option>' +
+                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
+                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + d.name + '</option>').join('');
+
+                // Volunteer dropdown
+                const volOpts = '<option value="">— ยังไม่มีอาสา —</option>' +
+                    volunteers.map(v => '<option value="' + v.id + '" ' + (String(s.volunteer_id) === String(v.id) ? 'selected' : '') + '>' + v.full_name + '</option>').join('');
+
+                return `<tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="p-3">
+                        <p class="font-bold text-navy text-[13px]">🏠 ${s.full_name}</p>
+                        <p class="text-[11px] text-slate-400">${s.subdistrict ? 'ต.' + s.subdistrict : s.address || ''}</p>
+                    </td>
+                    <td class="p-3">
+                        <select onchange="assignSensorFromOverview('${s.id}', this.value, '${assignedDevice?.id || ''}')" class="p-2 rounded-lg border text-[12px] font-medium bg-white custom-select w-full min-w-[140px] ${assignedDevice ? 'border-teal-200' : 'border-slate-200'}">
+                            ${sensorOpts}
+                        </select>
+                    </td>
+                    <td class="p-3">
+                        <select onchange="assignVolunteerFromOverview('${s.id}', this.value)" class="p-2 rounded-lg border text-[12px] font-medium bg-white custom-select w-full min-w-[130px] ${s.volunteer_id ? 'border-teal-200' : 'border-slate-200'}">
+                            ${volOpts}
+                        </select>
+                    </td>
+                    <td class="p-3 text-center">${tuyaId ? renderHealthBadge(tuyaId) : '<span class="text-[11px] text-slate-300">—</span>'}</td>
+                    <td class="p-3 text-center">${projName ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">' + projName + '</span>' : '<span class="text-[11px] text-slate-300">—</span>'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function sortOverviewTable(field) {
+            if (overviewSortField === field) {
+                overviewSortAsc = !overviewSortAsc;
+            } else {
+                overviewSortField = field;
+                overviewSortAsc = true;
+            }
+            renderOverviewTable();
+        }
+
+        async function assignSensorFromOverview(subjectId, newDeviceId, oldDeviceId) {
+            await assignSensorToHouse(subjectId, newDeviceId, oldDeviceId);
+        }
+
+        async function assignVolunteerFromOverview(subjectId, volunteerId) {
+            const { error } = await supabaseClient.from('subjects')
+                .update({ volunteer_id: volunteerId || null })
+                .eq('id', String(subjectId));
+            if (!error) {
+                showToast('บันทึกแล้ว');
+                loadAdminData();
+            } else {
+                showToast('เกิดข้อผิดพลาด: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== Tuya Cloud Auto-discover ====================
+        async function discoverTuyaDevices() {
+            const container = document.getElementById('tuya-discover-container');
+            const listEl = document.getElementById('tuya-discover-list');
+            container.classList.remove('hidden');
+            listEl.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-spinner mx-auto mb-3" style="width:32px;height:32px;border-width:3px"></div><p class="text-slate-500 text-sm">กำลังค้นหาเซนเซอร์จาก Tuya Cloud...</p></div>';
+
+            try {
+                const session = await supabaseClient.auth.getSession();
+                const token = session?.data?.session?.access_token;
+                if (!token) { showToast('กรุณาเข้าสู่ระบบก่อน', 'warning'); return; }
+
+                const resp = await fetch('/api/tuya-devices', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const result = await resp.json();
+                if (!resp.ok) throw new Error(result.error || 'API error');
+
+                const tuyaDevices = result.devices || [];
+                if (tuyaDevices.length === 0) {
+                    listEl.innerHTML = '<p class="col-span-full text-slate-400 text-sm py-4">ไม่พบเซนเซอร์ใน Tuya Cloud</p>';
+                    return;
+                }
+
+                // Check which are already registered
+                const registeredIds = KNOWN_SENSORS.map(s => s.tuyaId);
+
+                listEl.innerHTML = tuyaDevices.map(d => {
+                    const isRegistered = registeredIds.includes(d.id);
+                    return `<div class="bg-white/70 p-4 rounded-2xl border ${isRegistered ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-100'} flex items-center gap-3">
+                        <span class="text-2xl">${d.online ? '📡' : '📴'}</span>
+                        <div class="flex-1">
+                            <p class="font-bold text-navy text-sm">${d.name || d.id}</p>
+                            <p class="text-[11px] text-slate-400 font-mono">${d.id}</p>
+                            <p class="text-[11px] ${d.online ? 'text-emerald-500' : 'text-slate-400'}">${d.online ? 'ออนไลน์' : 'ออฟไลน์'}${d.model ? ' · ' + d.model : ''}</p>
+                        </div>
+                        ${isRegistered
+                            ? '<span class="text-[11px] px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-500">ลงทะเบียนแล้ว</span>'
+                            : '<button onclick="registerDiscoveredSensor(\'' + d.id + '\', \'' + (d.name || '').replace(/'/g, "\\'") + '\')" class="text-[11px] px-3 py-1.5 rounded-xl font-bold bg-amber-100 text-amber-700 hover:bg-amber-200 transition-all">+ ลงทะเบียน</button>'
+                        }
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                listEl.innerHTML = '<p class="col-span-full text-red-500 text-sm py-4">เกิดข้อผิดพลาด: ' + e.message + '</p>';
+            }
+        }
+
+        function registerDiscoveredSensor(tuyaId, name) {
+            // Pre-fill the register modal with discovered device info
+            showRegisterSensorModal();
+            setTimeout(() => {
+                const idInput = document.getElementById('reg-tuya-id');
+                const nameInput = document.getElementById('reg-name');
+                if (idInput) idInput.value = tuyaId;
+                if (nameInput) nameInput.value = name || tuyaId;
+            }, 100);
         }
 
         function showAddDeviceModal() {
@@ -3817,6 +4094,98 @@
                 </div>
             `);
             window._exportData = isFiltered ? filteredData : allData;
+        }
+
+        // ==================== Export: Daily Summary ====================
+        async function exportDailySummaries() {
+            showLoading('กำลังดึงข้อมูลสรุปรายวัน...');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('daily_summaries')
+                    .select('*')
+                    .order('summary_date', { ascending: false })
+                    .limit(30);
+                if (error) throw error;
+                if (!data || data.length === 0) { showToast('ไม่มีข้อมูลสรุปรายวัน', 'warning'); hideLoading(); return; }
+
+                const rows = data.map(d => {
+                    const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
+                    return {
+                        'วันที่': d.summary_date,
+                        'อุปกรณ์': DEVICE_NAMES[d.device_id] || d.device_id,
+                        'เซสชันสำเร็จ': d.sessions_completed || 0,
+                        'เซสชันทั้งหมด': total,
+                        'จำนวนรายการ': d.total_readings || 0,
+                        'PM2.5 เฉลี่ย': d.avg_pm25 != null ? +d.avg_pm25.toFixed(2) : '',
+                        'PM2.5 สูงสุด': d.max_pm25 != null ? +d.max_pm25.toFixed(2) : '',
+                        'PM10 เฉลี่ย': d.avg_pm10 != null ? +d.avg_pm10.toFixed(2) : '',
+                        'CO2 เฉลี่ย': d.avg_co2 != null ? +d.avg_co2.toFixed(0) : '',
+                        'อุณหภูมิ': d.avg_temperature != null ? +d.avg_temperature.toFixed(1) : '',
+                        'ความชื้น': d.avg_humidity != null ? +d.avg_humidity.toFixed(1) : '',
+                        'สถานะ': d.compliance_status || '',
+                    };
+                });
+
+                const ws = XLSX.utils.json_to_sheet(rows);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'สรุปรายวัน');
+                XLSX.writeFile(wb, `ecostove_daily_summary_${new Date().toISOString().split('T')[0]}.xlsx`);
+                logActivity('Export สรุปรายวัน', data.length + ' records');
+                showToast('Export สรุปรายวัน ' + data.length + ' วัน');
+            } catch (e) {
+                showToast('Export ผิดพลาด: ' + e.message, 'error');
+            } finally { hideLoading(); }
+        }
+
+        // ==================== Export: Comparison Report ====================
+        function exportComparisonReport() {
+            const filtered = applyBaselineSubtraction(getFilteredData());
+            if (!filtered.length) { showToast('ไม่มีข้อมูลสำหรับเปรียบเทียบ', 'warning'); return; }
+
+            showLoading('กำลังสร้างรายงานเปรียบเทียบ...');
+            setTimeout(() => {
+                try {
+                    const ecoData = filtered.filter(d => d.stove_type === 'eco');
+                    const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+                    const params = [
+                        { label: 'PM 2.5 (µg/m³)', field: 'pm25_value', dec: 2 },
+                        { label: 'PM 10 (µg/m³)', field: 'pm10_value', dec: 2 },
+                        { label: 'CO2 (ppm)', field: 'co2_value', dec: 0 },
+                        { label: 'AQI', field: 'aqi', dec: 0 },
+                        { label: 'HCHO (mg/m³)', field: 'hcho_value', dec: 3 },
+                        { label: 'TVOC (mg/m³)', field: 'tvoc_value', dec: 3 },
+                    ];
+
+                    // Sheet 1: Comparison summary
+                    const summaryRows = params.map(p => {
+                        const oldAvg = avg(oldData, p.field);
+                        const ecoAvg = avg(ecoData, p.field);
+                        const pct = oldAvg && ecoAvg != null ? +((oldAvg - ecoAvg) / oldAvg * 100).toFixed(1) : '';
+                        return {
+                            'ค่าวัด': p.label,
+                            'เตาเดิม (เฉลี่ย)': oldAvg != null ? +oldAvg.toFixed(p.dec) : '',
+                            'EcoStove (เฉลี่ย)': ecoAvg != null ? +ecoAvg.toFixed(p.dec) : '',
+                            'ลดลง (%)': pct,
+                            'จำนวนข้อมูลเตาเดิม': oldData.filter(d => d[p.field] != null).length,
+                            'จำนวนข้อมูล EcoStove': ecoData.filter(d => d[p.field] != null).length,
+                        };
+                    });
+
+                    const ws1 = XLSX.utils.json_to_sheet(summaryRows);
+                    // Sheet 2: Raw data
+                    const ws2 = XLSX.utils.json_to_sheet(exportDataRows(filtered));
+
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws1, 'สรุปเปรียบเทียบ');
+                    XLSX.utils.book_append_sheet(wb, ws2, 'ข้อมูลดิบ');
+                    XLSX.writeFile(wb, `ecostove_comparison_${new Date().toISOString().split('T')[0]}.xlsx`);
+                    logActivity('Export เปรียบเทียบ', filtered.length + ' records');
+                    showToast('Export เปรียบเทียบสำเร็จ (2 sheets)');
+                } catch (e) {
+                    showToast('Export ผิดพลาด: ' + e.message, 'error');
+                } finally { hideLoading(); }
+            }, 50);
         }
 
         // ==================== Map ====================
