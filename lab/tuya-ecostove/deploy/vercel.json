@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/sync.js": {
-      "maxDuration": 30
+      "maxDuration": 60
     },
     "api/volunteer.js": {
       "maxDuration": 10

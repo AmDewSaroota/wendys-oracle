@@ -114,29 +114,51 @@ async function getTuyaToken(accessId, secret) {
 }
 
 // ===== Tuya Batch API (reduces N calls → 1 call) =====
+async function tuyaFetchWithRetry(url, headers, label) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetch(url, { headers });
+      const data = await res.json();
+      if (data.success) return { ok: true, data, attempts: attempt + 1 };
+      if (attempt === 0) {
+        console.warn(label + ': attempt 1 failed (code=' + data.code + '), retrying in 3s...');
+        await new Promise(r => setTimeout(r, 3000));
+        continue;
+      }
+      return { ok: false, data, attempts: 2 };
+    } catch (err) {
+      if (attempt === 0) {
+        console.warn(label + ': fetch error (' + err.message + '), retrying in 3s...');
+        await new Promise(r => setTimeout(r, 3000));
+        continue;
+      }
+      return { ok: false, error: err, attempts: 2 };
+    }
+  }
+}
+
 async function getBatchDeviceInfo(accessId, secret, token, deviceIds) {
   const timestamp = Date.now().toString();
   const path = '/v1.0/iot-03/devices?device_ids=' + deviceIds.join(',');
   const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
 
-  try {
-    const res = await fetch(TUYA_BASE_URL + path, {
-      headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-    });
-    const data = await res.json();
-    if (!data.success) {
-      console.error('getBatchDeviceInfo: Tuya API error — code=' + data.code + ', msg=' + data.msg);
-      return { _apiError: true, _errorMsg: 'Tuya API: ' + (data.msg || data.code || 'unknown') };
-    }
-    const map = {};
-    for (const device of (data.result && data.result.list || [])) {
-      map[device.id] = device;
-    }
-    return map;
-  } catch (err) {
-    console.error('getBatchDeviceInfo: fetch error —', err.message);
-    return { _apiError: true, _errorMsg: 'fetch: ' + err.message };
+  const result = await tuyaFetchWithRetry(
+    TUYA_BASE_URL + path,
+    { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+    'getBatchDeviceInfo'
+  );
+
+  if (!result.ok) {
+    const msg = result.error ? 'fetch: ' + result.error.message : 'Tuya API: ' + (result.data?.msg || result.data?.code || 'unknown');
+    console.error('getBatchDeviceInfo: failed after retry — ' + msg);
+    return { _apiError: true, _errorMsg: msg, _attempts: result.attempts };
   }
+  const map = {};
+  map._attempts = result.attempts;
+  for (const device of (result.data.result && result.data.result.list || [])) {
+    map[device.id] = device;
+  }
+  return map;
 }
 
 async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
@@ -144,13 +166,16 @@ async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
   const path = '/v1.0/iot-03/devices/status?device_ids=' + deviceIds.join(',');
   const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
 
-  const res = await fetch(TUYA_BASE_URL + path, {
-    headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-  });
-  const data = await res.json();
-  if (!data.success) return {};
+  const result = await tuyaFetchWithRetry(
+    TUYA_BASE_URL + path,
+    { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+    'getBatchDeviceStatus'
+  );
+
+  if (!result.ok) return { _attempts: result.attempts };
   const map = {};
-  for (const device of (data.result || [])) {
+  map._attempts = result.attempts;
+  for (const device of (result.data.result || [])) {
     const readings = {};
     for (const item of (device.status || [])) {
       readings[item.code] = item.value;
@@ -240,6 +265,52 @@ async function getActiveSession(sbUrl, sbKey, deviceId) {
   if (!res.ok) return null;
   const data = await res.json();
   return data.length > 0 ? data[0] : null;
+}
+
+// Batch: load all active sessions for multiple devices in 1 call
+async function getBatchActiveSessions(sbUrl, sbKey, deviceIds) {
+  const res = await fetch(
+    sbUrl + '/rest/v1/sessions?device_id=in.(' + deviceIds.join(',') + ')&session_status=in.(baseline,collecting)&order=started_at.desc',
+    { headers: sbHeaders(sbKey) }
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  const map = {}; // deviceId → latest active session
+  for (const s of data) {
+    if (!map[s.device_id]) map[s.device_id] = s; // first = latest (desc order)
+  }
+  return map;
+}
+
+// Batch: load last closed session for multiple devices in 1 call
+async function getBatchLastClosedSessions(sbUrl, sbKey, deviceIds) {
+  const res = await fetch(
+    sbUrl + '/rest/v1/sessions?device_id=in.(' + deviceIds.join(',') + ')&session_status=in.(complete,incomplete,cancelled)&order=ended_at.desc',
+    { headers: sbHeaders(sbKey) }
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  const map = {};
+  for (const s of data) {
+    if (!map[s.device_id]) map[s.device_id] = s;
+  }
+  return map;
+}
+
+// Batch: count today's sessions for multiple devices in 1 call
+async function getBatchSessionCountToday(sbUrl, sbKey, deviceIds) {
+  const today = getThaiDate();
+  const res = await fetch(
+    sbUrl + '/rest/v1/sessions?device_id=in.(' + deviceIds.join(',') + ')&started_at=gte.' + today + 'T00:00:00Z&select=id,device_id',
+    { headers: sbHeaders(sbKey) }
+  );
+  if (!res.ok) return {};
+  const data = await res.json();
+  const map = {};
+  for (const s of data) {
+    map[s.device_id] = (map[s.device_id] || 0) + 1;
+  }
+  return map;
 }
 
 async function getLastClosedSession(sbUrl, sbKey, deviceId) {
@@ -484,6 +555,24 @@ async function updateMonthlyQuota(sbUrl, sbKey, callsToAdd) {
   }
 }
 
+// ===== Sync Schedule (Quiet Hours + Day-of-week + Holidays) =====
+async function loadSyncSchedule(sbUrl, sbKey) {
+  try {
+    const [configRes, holidayRes] = await Promise.all([
+      fetch(sbUrl + '/rest/v1/sync_config?limit=1', { headers: sbHeaders(sbKey) }),
+      fetch(sbUrl + '/rest/v1/sync_holidays?select=holiday_date,reason', { headers: sbHeaders(sbKey) }),
+    ]);
+    const config = configRes.ok ? await configRes.json() : [];
+    const holidays = holidayRes.ok ? await holidayRes.json() : [];
+    return {
+      config: config.length > 0 ? config[0] : null,
+      holidays, // [{holiday_date: '2026-03-15', reason: 'สงกรานต์'}, ...]
+    };
+  } catch (_) {
+    return { config: null, holidays: [] }; // fail-open
+  }
+}
+
 async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId, cachedActive, projectId) {
   try {
     const active = cachedActive !== undefined ? cachedActive : await getActiveSession(sbUrl, sbKey, deviceId);
@@ -600,14 +689,71 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, synced: '0/0', skipped: 'no registered sensors', time: new Date().toISOString(), tuya_calls: 0 });
     }
 
-    // ===== Phase 1: Supabase pre-checks (0 Tuya calls) =====
-    // Determine which sensors actually need Tuya data + cache session state
+    // ===== Phase 0.5: Check schedule — quiet hours / day-of-week / holidays (0 Tuya calls) =====
+    const schedule = await loadSyncSchedule(sbUrl, sbKey);
+    const quietConfig = schedule.config;
+    const thaiNow = new Date(Date.now() + 7 * 3600000);
+
+    // 0.5a: Quiet hours (time range)
+    if (quietConfig && quietConfig.quiet_hours_enabled) {
+      const hhmm = thaiNow.toISOString().slice(11, 16); // "HH:MM"
+      const start = quietConfig.quiet_hours_start;
+      const end = quietConfig.quiet_hours_end;
+      const inQuiet = start <= end
+        ? (hhmm >= start && hhmm < end)
+        : (hhmm >= start || hhmm < end);
+      if (inQuiet) {
+        return res.status(200).json({
+          success: true, synced: '0/' + SENSORS.length,
+          skipped: 'quiet hours (' + start + '-' + end + ' Thai time)',
+          quiet_hours: true, tuya_calls: 0, time: new Date().toISOString(),
+        });
+      }
+    }
+
+    // 0.5b: Day-of-week check (1=จ, 2=อ, ..., 7=อา)
+    if (quietConfig && quietConfig.active_days) {
+      const jsDay = thaiNow.getUTCDay(); // 0=Sun, 1=Mon, ...
+      const isoDay = jsDay === 0 ? 7 : jsDay; // 7=อา
+      const activeDays = quietConfig.active_days.split(',').map(d => parseInt(d.trim(), 10));
+      if (!activeDays.includes(isoDay)) {
+        const dayNames = ['', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
+        return res.status(200).json({
+          success: true, synced: '0/' + SENSORS.length,
+          skipped: 'rest day (วัน' + dayNames[isoDay] + ')',
+          rest_day: true, tuya_calls: 0, time: new Date().toISOString(),
+        });
+      }
+    }
+
+    // 0.5c: Holiday check
+    if (schedule.holidays.length > 0) {
+      const todayStr = thaiNow.toISOString().slice(0, 10); // "YYYY-MM-DD"
+      const holiday = schedule.holidays.find(h => h.holiday_date === todayStr);
+      if (holiday) {
+        return res.status(200).json({
+          success: true, synced: '0/' + SENSORS.length,
+          skipped: 'holiday (' + (holiday.reason || todayStr) + ')',
+          holiday: true, tuya_calls: 0, time: new Date().toISOString(),
+        });
+      }
+    }
+
+    // ===== Phase 1: Supabase pre-checks — BATCH (0 Tuya calls, 3 Supabase calls) =====
     const sensorsNeedingTuya = [];
-    const cachedSessions = {}; // sensor.id → active session (avoid re-query in Phase 6)
+    const cachedSessions = {};
+    const allIds = SENSORS.map(s => s.id);
+
+    // 3 batch queries instead of N×3 sequential queries
+    const [activeMap, closedMap, countMap] = await Promise.all([
+      getBatchActiveSessions(sbUrl, sbKey, allIds),
+      getBatchLastClosedSessions(sbUrl, sbKey, allIds),
+      getBatchSessionCountToday(sbUrl, sbKey, allIds),
+    ]);
 
     for (const sensor of SENSORS) {
       try {
-        const active = await getActiveSession(sbUrl, sbKey, sensor.id);
+        const active = activeMap[sensor.id] || null;
 
         if (active) {
           const sessionAge = (Date.now() - new Date(active.started_at).getTime()) / 60000;
@@ -624,11 +770,10 @@ module.exports = async function handler(req, res) {
             results.push({ sensor: sensor.name, status: 'skipped', reason: 'gap-close', session: { action: 'cooldown (after close)' } });
             continue;
           }
-          // Active session within time window — needs Tuya data
           cachedSessions[sensor.id] = active;
           sensorsNeedingTuya.push(sensor);
         } else {
-          const last = await getLastClosedSession(sbUrl, sbKey, sensor.id);
+          const last = closedMap[sensor.id] || null;
           if (last && last.ended_at) {
             const sinceEnded = (Date.now() - new Date(last.ended_at).getTime()) / 60000;
             if (sinceEnded < SESSION_COOLDOWN_MINUTES) {
@@ -636,13 +781,12 @@ module.exports = async function handler(req, res) {
               continue;
             }
           }
-          const countToday = await getSessionCountToday(sbUrl, sbKey, sensor.id);
+          const countToday = countMap[sensor.id] || 0;
           if (countToday >= MAX_SESSIONS_PER_DAY) {
             results.push({ sensor: sensor.name, status: 'skipped', reason: 'daily-limit', session: { action: 'daily-limit', sessionsToday: countToday } });
             continue;
           }
-          // Not in cooldown, not at limit — needs Tuya data
-          cachedSessions[sensor.id] = null; // no active session, will create new
+          cachedSessions[sensor.id] = null;
           sensorsNeedingTuya.push(sensor);
         }
       } catch (err) {
@@ -688,7 +832,7 @@ module.exports = async function handler(req, res) {
     // ===== Phase 4: Batch device info — online check (1 Tuya call) =====
     const needingIds = sensorsNeedingTuya.map(s => s.id);
     const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds);
-    tuyaCalls++;
+    tuyaCalls += deviceInfoMap._attempts || 1;
 
     // If Tuya API itself failed, keep sessions alive (update updated_at) to prevent false gap-close
     if (deviceInfoMap._apiError) {
@@ -722,7 +866,7 @@ module.exports = async function handler(req, res) {
     if (onlineSensors.length > 0) {
       const onlineIds = onlineSensors.map(s => s.id);
       deviceStatusMap = await getBatchDeviceStatus(accessId, accessSecret, token, onlineIds);
-      tuyaCalls++;
+      tuyaCalls += deviceStatusMap._attempts || 1;
     }
 
     // ===== Phase 6: Process each sensor with batch results =====
@@ -770,12 +914,17 @@ module.exports = async function handler(req, res) {
 
     const ok = results.filter(r => r.status === 'ok').length;
     const quotaAfter = quota ? (quota.tuya_calls || 0) + tuyaCalls : null;
+    const quotaPct = quotaAfter !== null ? Math.round(quotaAfter / MONTHLY_API_LIMIT * 100) : null;
+    if (quotaPct !== null && quotaPct >= 80) {
+      console.warn('QUOTA WARNING: ' + quotaPct + '% used (' + quotaAfter + '/' + MONTHLY_API_LIMIT + ')');
+    }
     return res.status(200).json({
       success: true,
       synced: ok + '/' + SENSORS.length,
       time: new Date().toISOString(),
       tuya_calls: tuyaCalls,
-      quota: quotaAfter !== null ? { used: quotaAfter, limit: MONTHLY_API_LIMIT, pct: Math.round(quotaAfter / MONTHLY_API_LIMIT * 100) } : null,
+      quota: quotaAfter !== null ? { used: quotaAfter, limit: MONTHLY_API_LIMIT, pct: quotaPct } : null,
+      quota_warning: quotaPct !== null && quotaPct >= 80,
       results,
     });
   } catch (err) {

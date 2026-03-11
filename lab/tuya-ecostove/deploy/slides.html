@@ -305,7 +305,7 @@
 <!-- ========== SLIDE 1: Cover ========== -->
 <div class="slide bg-gradient active">
   <div style="text-align:center;">
-    <div style="font-size:4rem; margin-bottom:16px;">🌿</div>
+    <div style="margin-bottom:16px;"><img src="logo.png" alt="EcoStove" style="width:80px; height:80px; object-fit:contain; margin:0 auto; border-radius:16px; background:#fff; padding:4px; box-shadow:0 4px 12px rgba(0,0,0,0.15);"></div>
     <h1>EcoStove — ประชุมอัปเดท</h1>
     <p class="subtitle">ปัญหา Baseline → ระบบที่แก้ปัญหา → Demo → แผน Deploy → สเปคมือถือ</p>
     <div style="margin-top:32px; display:flex; justify-content:center; gap:36px;">
@@ -474,8 +474,9 @@
     <div style="text-align:center;">
       <div style="width:160px; height:280px; background:#fff; border-radius:24px; border:3px solid #333; padding:8px; box-shadow:0 4px 20px rgba(0,0,0,0.12); position:relative; overflow:hidden;">
         <!-- Status bar -->
-        <div style="background:#065f46; color:#fff; border-radius:16px 16px 0 0; padding:6px 8px; font-size:0.55rem; text-align:left;">
-          🌿 EcoStove อาสาสมัคร
+        <div style="background:#065f46; color:#fff; border-radius:16px 16px 0 0; padding:4px 8px; font-size:0.55rem; text-align:left; display:flex; align-items:center; gap:4px;">
+          <img src="logo.png" alt="EcoStove" style="width:16px; height:16px; border-radius:4px; object-fit:contain; background:#fff;">
+          <span>EcoStove อาสาสมัคร</span>
         </div>
         <!-- Content -->
         <div style="padding:12px 4px; text-align:center;">
@@ -595,11 +596,12 @@
   <div class="card-grid cols-4" style="margin-top:8px;">
     <div class="card">
       <div class="icon">🗺️</div>
-      <h3>Tab ภาพรวม</h3>
+      <h3>แผนที่ + ภาพรวม</h3>
       <ul>
-        <li>เห็นบ้าน + เซนเซอร์ + อาสา ในตารางเดียว</li>
-        <li>จับคู่ / เปลี่ยนเซนเซอร์ได้ทันที</li>
-        <li>Health badge สถานะ real-time</li>
+        <li>ปักหมุดบ้านบนแผนที่ — เห็นตำแหน่งทุกบ้าน</li>
+        <li>🟢 มีเซนเซอร์ &nbsp; 🔴 ยังไม่มี — เห็นชัดว่าบ้านไหนต้องเพิ่ม</li>
+        <li>เพิ่มบ้านใหม่ได้เลยใน Dashboard</li>
+        <li>จับคู่เซนเซอร์ + อาสา ในตารางเดียว</li>
       </ul>
     </div>
     <div class="card blue">
@@ -630,28 +632,72 @@
         <li>แจ้งบ้านไหนไม่ได้เก็บข้อมูล</li>
       </ul>
     </div>
+    <div class="card" style="border-left:3px solid #8b5cf6;">
+      <div class="icon">📅</div>
+      <h3>ตารางเก็บข้อมูล</h3>
+      <ul>
+        <li><strong>เลือกวัน</strong>ประจำสัปดาห์ (เช่น หยุด ส-อา)</li>
+        <li><strong>วันหยุดพิเศษ</strong> (สงกรานต์ ฯลฯ)</li>
+        <li><strong>Quiet Hours</strong> — ไม่เรียก API ช่วงกลางคืน</li>
+        <li>ปฏิทินเดือน — เห็นภาพรวมวันเก็บ/หยุด</li>
+        <li>แสดง Projected Quota — เตือนถ้าเกิน 80%</li>
+      </ul>
+    </div>
   </div>
 
-  <div style="margin-top:20px; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
-    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
-      <div style="font-size:2rem; font-weight:700;">✅</div>
-      <div style="font-size:0.8rem; opacity:0.6;">Admin Dashboard</div>
+  <!-- ขยายบ้านได้ -->
+  <div style="margin-top:16px; background:linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%); border:1px solid #a7f3d0; border-radius:16px; padding:16px 24px;">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+      <span style="font-size:1.5rem;">🏠</span>
+      <div>
+        <strong style="color:#064e3b; font-size:0.95rem;">เพิ่มบ้านได้ง่าย — ปักหมุดบนแผนที่ + มอบหมายเซนเซอร์ ไม่กี่คลิก</strong>
+        <div style="font-size:0.78rem; color:#6b7280;">เพิ่มบ้าน → ปักพิกัด GPS → มอบหมายเซนเซอร์ → ระบบเก็บข้อมูลอัตโนมัติ</div>
+      </div>
     </div>
-    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
-      <div style="font-size:2rem; font-weight:700;">✅</div>
-      <div style="font-size:0.8rem; opacity:0.6;">Volunteer App</div>
+    <div style="display:flex; gap:16px; flex-wrap:wrap;">
+      <div style="background:#fff; border-radius:12px; padding:10px 18px; text-align:center; flex:1; min-width:120px;">
+        <div style="font-size:1.3rem; font-weight:700; color:#064e3b;">10 บ้าน</div>
+        <div style="font-size:0.75rem; color:#6b7280;">~5 MB/เดือน</div>
+        <div style="font-size:0.7rem; color:#059669;">✅ เฟสแรก</div>
+      </div>
+      <div style="background:#fff; border-radius:12px; padding:10px 18px; text-align:center; flex:1; min-width:120px;">
+        <div style="font-size:1.3rem; font-weight:700; color:#064e3b;">50 บ้าน</div>
+        <div style="font-size:0.75rem; color:#6b7280;">~25 MB/เดือน</div>
+        <div style="font-size:0.7rem; color:#2563eb;">ขยายได้สบาย</div>
+      </div>
+      <div style="background:#fff; border-radius:12px; padding:10px 18px; text-align:center; flex:1; min-width:120px;">
+        <div style="font-size:1.3rem; font-weight:700; color:#064e3b;">100 บ้าน</div>
+        <div style="font-size:0.75rem; color:#6b7280;">~50 MB/เดือน</div>
+        <div style="font-size:0.7rem; color:#7c3aed;">ยังเหลือพื้นที่เยอะ</div>
+      </div>
+      <div style="background:#f0fdf4; border:1px dashed #86efac; border-radius:12px; padding:10px 18px; text-align:center; flex:1; min-width:140px;">
+        <div style="font-size:1.3rem; font-weight:700; color:#064e3b;">500 MB</div>
+        <div style="font-size:0.75rem; color:#6b7280;">พื้นที่ฐานข้อมูลทั้งหมด</div>
+        <div style="font-size:0.7rem; color:#059669;">10 บ้าน เก็บได้ <strong>8+ ปี</strong></div>
+      </div>
     </div>
-    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
-      <div style="font-size:2rem; font-weight:700;">✅</div>
-      <div style="font-size:0.8rem; opacity:0.6;">LINE OA</div>
+  </div>
+
+  <div style="margin-top:12px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+    <div style="background:#f1f5f9; border-radius:14px; padding:10px 22px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:700;">✅</div>
+      <div style="font-size:0.75rem; opacity:0.6;">Dashboard</div>
     </div>
-    <div style="background:#f1f5f9; border-radius:14px; padding:14px 28px; text-align:center;">
-      <div style="font-size:2rem; font-weight:700;">✅</div>
-      <div style="font-size:0.8rem; opacity:0.6;">Sync อัตโนมัติ</div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:10px 22px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:700;">✅</div>
+      <div style="font-size:0.75rem; opacity:0.6;">Volunteer App</div>
     </div>
-    <div style="background:#d1fae5; border-radius:14px; padding:14px 28px; text-align:center;">
-      <div style="font-size:2rem; font-weight:700;">📦</div>
-      <div style="font-size:0.8rem; color:#064e3b;">เซนเซอร์ 11 ตัว<br>+ อแดปเตอร์ สั่งแล้ว<br><strong>มาอาทิตย์หน้า</strong></div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:10px 22px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:700;">✅</div>
+      <div style="font-size:0.75rem; opacity:0.6;">LINE OA</div>
+    </div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:10px 22px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:700;">✅</div>
+      <div style="font-size:0.75rem; opacity:0.6;">Sync อัตโนมัติ</div>
+    </div>
+    <div style="background:#f1f5f9; border-radius:14px; padding:10px 22px; text-align:center;">
+      <div style="font-size:1.5rem; font-weight:700;">✅</div>
+      <div style="font-size:0.75rem; opacity:0.6;">ตารางเก็บข้อมูล</div>
     </div>
   </div>
   <div class="slide-number">5 / 12</div>
@@ -1162,12 +1208,13 @@
 
     <div class="card purple">
       <div class="icon">4️⃣</div>
-      <h3>📅 ตารางเก็บข้อมูล</h3>
+      <h3>📅 ตารางเก็บข้อมูล <span style="font-size:0.7rem; background:#ddd6fe; color:#6d28d9; padding:2px 8px; border-radius:8px; margin-left:6px;">✅ ตั้งค่าได้แล้ว</span></h3>
       <ul>
-        <li>เก็บ<strong>วันไหน</strong>? (ทุกวัน / บางวัน / สัปดาห์ละครั้ง)</li>
-        <li><strong>กี่ session/วัน?</strong> (1 หรือ 2 — สูงสุด 2)</li>
-        <li>เก็บทั้งหมด<strong>กี่สัปดาห์/เดือน</strong>?</li>
-        <li>ใครดูแลอุปกรณ์? (ชาร์จ Pocket WiFi / เช็คเซนเซอร์)</li>
+        <li>เลือก<strong>วันเก็บ</strong>ประจำสัปดาห์ได้ (default จ-ศ / หยุด ส-อา)</li>
+        <li><strong>2 session/วัน</strong> — สูงสุด 2 ครั้ง × 2 ชม. 10 นาที</li>
+        <li>เพิ่ม<strong>วันหยุดพิเศษ</strong>ได้ (สงกรานต์ ฯลฯ)</li>
+        <li>Quiet Hours ช่วงกลางคืน — ไม่เปลือง API</li>
+        <li>ปฏิทินเดือน + แสดง Projected Quota ให้เห็นชัด</li>
       </ul>
     </div>
   </div>
