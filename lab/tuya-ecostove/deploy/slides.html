@@ -134,7 +134,6 @@
   .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
   .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
   .card-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-  .card-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
 
   .card {
     background: #fff;
@@ -584,9 +583,6 @@
     <div style="background:#fff; border-radius:14px; padding:10px 20px; font-size:0.8rem; color:var(--gray-700); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
       📱 <strong>ทำทั้งหมดบนมือถือ</strong> — เปิดเว็บอย่างเดียว ไม่ต้องโหลดแอป
     </div>
-    <div style="background:#fff; border-radius:14px; padding:10px 20px; font-size:0.8rem; color:var(--gray-700); box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-      🏠 <strong>ระบบรองรับ 300+ บ้าน</strong> — เฟสแรก 10 บ้าน ขยายได้ทันที
-    </div>
   </div>
   <div class="slide-number">4 / 12</div>
 </div>
@@ -596,7 +592,7 @@
   <span class="tag">✅ ระบบพร้อม</span>
   <h2>Admin Dashboard + เครื่องมือบริหาร</h2>
 
-  <div class="card-grid cols-5" style="margin-top:8px;">
+  <div class="card-grid cols-4" style="margin-top:8px;">
     <div class="card">
       <div class="icon">🗺️</div>
       <h3>Tab ภาพรวม</h3>
@@ -617,30 +613,13 @@
     </div>
     <div class="card orange">
       <div class="icon">📊</div>
-      <h3>Export รายงาน</h3>
+      <h3>Export รายงาน (2 แบบ)</h3>
       <ul>
-        <li><strong>ข้อมูลดิบ</strong> — PM2.5, CO2, อุณหภูมิ ฯลฯ</li>
-        <li><strong>เปรียบเทียบ</strong> — eco vs old (ค่าเฉลี่ย + % ลดลง)</li>
+        <li><strong>Export ข้อมูลดิบ</strong> — รายการวัดค่าทั้งหมด (PM2.5, CO2, อุณหภูมิ ฯลฯ)</li>
+        <li><strong>Export เปรียบเทียบ</strong> — 2 sheets:<br>
+          <span style="opacity:0.8; font-size:0.8rem;">① สรุป eco vs old (ค่าเฉลี่ย + % ลดลง)</span><br>
+          <span style="opacity:0.8; font-size:0.8rem;">② ข้อมูลดิบ (เหมือน export ปกติ)</span></li>
       </ul>
-    </div>
-    <div class="card" style="border-left:3px solid #7c3aed;">
-      <div class="icon">🔐</div>
-      <h3>ระบบสมัครแอดมิน</h3>
-      <div style="font-size:0.7rem; color:var(--gray-500); line-height:1.6; margin-top:4px;">
-        <div style="display:flex; align-items:center; gap:4px; margin-bottom:3px;">
-          <span style="background:#7c3aed; color:#fff; border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.55rem; flex-shrink:0;">1</span>
-          ได้รับรหัสเชิญ
-        </div>
-        <div style="display:flex; align-items:center; gap:4px; margin-bottom:3px;">
-          <span style="background:#7c3aed; color:#fff; border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.55rem; flex-shrink:0;">2</span>
-          สมัคร email + password
-        </div>
-        <div style="display:flex; align-items:center; gap:4px; margin-bottom:3px;">
-          <span style="background:#7c3aed; color:#fff; border-radius:50%; width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; font-size:0.55rem; flex-shrink:0;">3</span>
-          เข้า Dashboard ได้ทันที
-        </div>
-        <div style="margin-top:4px; font-size:0.65rem; color:#7c3aed; font-weight:600;">Super Admin จัดการสิทธิ์ได้</div>
-      </div>
     </div>
     <div class="card purple">
       <div class="icon">💬</div>
@@ -1177,7 +1156,7 @@
       <ul>
         <li>10 บ้าน — <strong>3 เดือนแรกเตาเก่า → 3 เดือนหลังเตาใหม่</strong></li>
         <li>ต้องการ<strong>พิกัด GPS</strong> ทุกหลัง (ลงทะเบียนในระบบ)</li>
-        <li>Baseline เก็บ <strong>10 นาที</strong> ก่อนจุดเตา</li>
+        <li>Baseline เก็บนานเท่าไหร่? (5 / 15 / 30 นาที?)</li>
       </ul>
     </div>
 
@@ -1185,10 +1164,10 @@
       <div class="icon">4️⃣</div>
       <h3>📅 ตารางเก็บข้อมูล</h3>
       <ul>
-        <li>เก็บ<strong>วันไหน</strong>? → อาจารย์ตกลงกับอาสาเอง</li>
-        <li>สูงสุด <strong>2 session/วัน</strong> (ระบบจำกัดไว้แล้ว)</li>
-        <li>เก็บทั้งหมด <strong>6 เดือน</strong> (3 เตาเก่า + 3 เตาใหม่)</li>
-        <li><strong>ใครดูแลอุปกรณ์?</strong> (ชาร์จ Pocket WiFi / เช็คเซนเซอร์)</li>
+        <li>เก็บ<strong>วันไหน</strong>? (ทุกวัน / บางวัน / สัปดาห์ละครั้ง)</li>
+        <li><strong>กี่ session/วัน?</strong> (1 หรือ 2 — สูงสุด 2)</li>
+        <li>เก็บทั้งหมด<strong>กี่สัปดาห์/เดือน</strong>?</li>
+        <li>ใครดูแลอุปกรณ์? (ชาร์จ Pocket WiFi / เช็คเซนเซอร์)</li>
       </ul>
     </div>
   </div>

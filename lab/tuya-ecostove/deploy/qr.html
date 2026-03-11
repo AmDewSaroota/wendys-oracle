@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoStove — QR Code สำหรับแปะเครื่อง</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Prompt', sans-serif; background: #f1f5f9; color: #1e293b; }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: #064e3b; color: #fff;
+    padding: 16px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .toolbar h1 { font-size: 1.1rem; font-weight: 600; }
+  .toolbar a { color: #a7f3d0; font-size: 0.85rem; text-decoration: none; }
+  .toolbar a:hover { color: #fff; }
+  .toolbar-actions { display: flex; gap: 12px; align-items: center; }
+  .toolbar-actions button {
+    padding: 8px 20px; border-radius: 12px; border: none;
+    font-family: 'Prompt'; font-weight: 600; font-size: 0.85rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-print { background: #10b981; color: #fff; }
+  .btn-print:hover { background: #059669; }
+  .btn-back { background: rgba(255,255,255,0.15); color: #fff; }
+  .btn-back:hover { background: rgba(255,255,255,0.25); }
+
+  .loading {
+    text-align: center; padding: 60px 20px;
+    font-size: 1rem; color: #64748b;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .qr-card {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .qr-card .house-name {
+    font-size: 1.1rem; font-weight: 700; color: #064e3b;
+    margin-bottom: 4px;
+  }
+  .qr-card .house-detail {
+    font-size: 0.75rem; color: #94a3b8; margin-bottom: 12px;
+  }
+  .qr-card .qr-img {
+    width: 180px; height: 180px;
+    margin: 0 auto 12px;
+    border: 2px solid #f1f5f9; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff;
+  }
+  .qr-card .qr-img img { width: 100%; height: 100%; }
+  .qr-card .qr-img canvas { width: 100% !important; height: 100% !important; }
+  .qr-card .scan-text {
+    font-size: 0.7rem; color: #94a3b8; margin-top: 8px;
+    line-height: 1.4;
+  }
+  .qr-card .brand {
+    font-size: 0.65rem; color: #cbd5e1; margin-top: 6px;
+  }
+  .qr-card .device-tag {
+    display: inline-block;
+    background: #ecfdf5; color: #065f46;
+    font-size: 0.7rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 8px;
+    margin-top: 6px;
+  }
+
+  /* Print styles */
+  @media print {
+    body { background: #fff; }
+    .toolbar { display: none; }
+    .grid {
+      padding: 10px;
+      gap: 12px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .qr-card {
+      border: 1.5px solid #ccc;
+      padding: 14px;
+      border-radius: 8px;
+    }
+    .qr-card .qr-img { width: 150px; height: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>QR Code — แปะเครื่องเซนเซอร์</h1>
+    <a href="/">กลับหน้าหลัก</a>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn-back" onclick="window.location='/'">กลับ Dashboard</button>
+    <button class="btn-print" onclick="window.print()">พิมพ์ QR Code</button>
+  </div>
+</div>
+
+<div id="content" class="loading">กำลังโหลดข้อมูลบ้าน...</div>
+
+<script src="https://unpkg.com/@anthropic-ai/sdk@0.39.0/dist/web.js" onerror="true"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script>
+const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const BASE_URL = window.location.origin;
+
+async function init() {
+  const { data: houses } = await sb.from('subjects')
+    .select('id, full_name, gps_lat, gps_long, volunteer_id, volunteers(full_name), devices(name)')
+    .eq('status', 'active')
+    .order('full_name');
+
+  if (!houses || houses.length === 0) {
+    document.getElementById('content').innerHTML = '<div class="loading">ไม่พบบ้านที่ active</div>';
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+
+  for (const h of houses) {
+    const url = BASE_URL + '/volunteer.html?house=' + h.id;
+    const deviceName = h.devices && h.devices.length > 0 ? h.devices[0].name : null;
+    const volunteerName = h.volunteers?.full_name || null;
+
+    const card = document.createElement('div');
+    card.className = 'qr-card';
+    card.innerHTML =
+      '<div class="house-name">' + esc(h.full_name) + '</div>' +
+      '<div class="house-detail">' +
+        (volunteerName ? volunteerName : 'ยังไม่มีอาสา') +
+        (deviceName ? ' · ' + deviceName : '') +
+      '</div>' +
+      '<div class="qr-img" id="qr-' + h.id + '"></div>' +
+      (deviceName ? '<div class="device-tag">' + esc(deviceName) + '</div>' : '') +
+      '<div class="scan-text">สแกนเพื่อเปิดแอปอาสา<br>เลือกบ้านอัตโนมัติ</div>' +
+      '<div class="brand">EcoStove · CMRU · NDF</div>';
+
+    grid.appendChild(card);
+
+    // Generate QR after appending
+    setTimeout(() => {
+      const container = document.getElementById('qr-' + h.id);
+      if (container && typeof QRCode !== 'undefined') {
+        QRCode.toCanvas(url, { width: 180, margin: 1, color: { dark: '#064e3b' } }, (err, canvas) => {
+          if (!err && canvas) container.appendChild(canvas);
+          else container.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=064e3b&data=' + encodeURIComponent(url) + '" alt="QR">';
+        });
+      } else {
+        // Fallback: use API
+        container.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=064e3b&data=' + encodeURIComponent(url) + '" alt="QR">';
+      }
+    }, 0);
+  }
+
+  const content = document.getElementById('content');
+  content.className = '';
+  content.innerHTML = '';
+  content.appendChild(grid);
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+init();
+</script>
+</body>
+</html>

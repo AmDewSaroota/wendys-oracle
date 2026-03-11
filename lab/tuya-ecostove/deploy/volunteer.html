@@ -309,6 +309,23 @@ async function init() {
   }
 
   await loadHouses();
+
+  // QR code support: ?house=ID → auto-select house
+  const qrHouseId = new URLSearchParams(window.location.search).get('house');
+  if (qrHouseId) {
+    const house = houses.find(h => String(h.id) === qrHouseId);
+    if (house) {
+      document.getElementById('gps-detecting').classList.add('hidden');
+      document.getElementById('gps-matched').classList.remove('hidden');
+      document.getElementById('matched-house-name').textContent = house.full_name;
+      const parts = ['📎 สแกน QR'];
+      if (house.volunteers?.full_name) parts.push('👤 ' + house.volunteers.full_name);
+      document.getElementById('matched-house-detail').textContent = parts.join(' · ');
+      selectedHouse = house;
+      return;
+    }
+  }
+
   detectGPS();
 }
 
