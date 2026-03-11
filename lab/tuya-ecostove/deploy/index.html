@@ -525,25 +525,14 @@
                 <button onclick="switchAdminTab('projects')" id="tab-btn-projects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.projects">โครงการ</button>
                 <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.volunteers">อาสา</button>
                 <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.subjects">บ้าน</button>
-                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.devices">เครื่องวัด</button>
+                <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.devices">อุปกรณ์</button>
                 <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500"><span data-i18n="tab.approvals">อนุมัติ</span> (<span id="count-pending" class="text-[11px]">0</span>)</button>
-                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500">เซนเซอร์</button>
-                <button onclick="switchAdminTab('tvoc')" id="tab-btn-tvoc" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500">TVOC</button>
+                <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.data">ข้อมูล</button>
+                <button onclick="switchAdminTab('schedule')" id="tab-btn-schedule" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.schedule">กำหนดการ</button>
                 <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.activity">ประวัติ</button>
                 <button onclick="switchAdminTab('admins')" id="tab-btn-admins" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" style="display:none" data-i18n="admin.manage">แอดมิน</button>
             </div>
 
-            <!-- API Quota Usage -->
-            <div id="api-quota-bar" class="hidden bg-white/70 rounded-2xl p-4 border border-slate-200 shadow-sm">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-bold text-slate-600">Tuya API Usage (เดือนนี้)</span>
-                    <span id="api-quota-text" class="text-sm font-bold text-emerald-700">0 / 24,000</span>
-                </div>
-                <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
-                    <div id="api-quota-fill" class="h-full rounded-full transition-all duration-500 bg-emerald-500" style="width: 0%"></div>
-                </div>
-                <p id="api-quota-warning" class="text-xs text-slate-400 mt-1"></p>
-            </div>
 
             <!-- Tab: ภาพรวม (Overview) — default active -->
             <div id="admin-overview-container" class="admin-tab-content space-y-6">
@@ -594,8 +583,19 @@
             <!-- Tab 2: บ้านกลุ่มตัวอย่าง -->
             <div id="admin-subjects-container" class="admin-tab-content hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                    <h3 class="text-2xl font-bold text-navy" data-i18n="sub.manage">จัดการกลุ่มตัวอย่าง</h3>
-                    <div class="flex items-center gap-3">
+                    <h3 class="text-2xl font-bold text-navy" data-i18n="sub.manage">จัดการกลุ่มตัวอย่าง <span id="subjects-count" class="text-[15px] text-slate-400 font-normal">(0)</span></h3>
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <select id="subjects-filter-project" onchange="renderSubjectsList()" class="custom-select px-3 py-2 rounded-xl border text-[13px] font-medium bg-white">
+                            <option value="all">ทุกโครงการ</option>
+                        </select>
+                        <select id="subjects-filter-district" onchange="renderSubjectsList()" class="custom-select px-3 py-2 rounded-xl border text-[13px] font-medium bg-white">
+                            <option value="all">ทุกอำเภอ</option>
+                        </select>
+                        <select id="subjects-filter-sensor" onchange="renderSubjectsList()" class="custom-select px-3 py-2 rounded-xl border text-[13px] font-medium bg-white">
+                            <option value="all">เซนเซอร์: ทั้งหมด</option>
+                            <option value="linked">ผูกแล้ว</option>
+                            <option value="unlinked">ยังไม่ผูก</option>
+                        </select>
                         <input id="subjects-search" type="text" oninput="renderSubjectsList()" placeholder="🔍 ค้นหาบ้าน..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="sub.add">+ เพิ่มบ้าน</button>
                     </div>
@@ -603,18 +603,17 @@
                 <div id="subjects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
 
-            <!-- Tab 3: เครื่องวัด -->
+            <!-- Tab 3: อุปกรณ์ -->
             <div id="admin-devices-container" class="admin-tab-content hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h3 class="text-2xl font-bold text-navy" data-i18n="dev.manage">จัดการเครื่องวัด</h3>
+                        <h3 class="text-2xl font-bold text-navy" data-i18n="dev.manage">จัดการอุปกรณ์</h3>
                         <p class="text-slate-500 text-sm" data-i18n="dev.subtitle">ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor</p>
                     </div>
                     <div class="flex gap-3 flex-wrap items-center">
-                        <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาเครื่องวัด..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาอุปกรณ์..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="discoverTuyaDevices()" class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-600 transition-all">🔍 ค้นหาจาก Tuya Cloud</button>
-                        <button onclick="showRegisterSensorModal()" class="bg-amber-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-amber-600 transition-all" data-i18n="reg.btn">📡 ลงทะเบียนเซนเซอร์ใหม่</button>
-                        <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ เพิ่มเครื่องวัด</button>
+                        <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ ผูกเซนเซอร์กับบ้าน</button>
                     </div>
                 </div>
                 <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
@@ -623,93 +622,107 @@
                     <div id="tuya-discover-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
                 <div class="mt-8 pt-6 border-t border-slate-200">
-                    <h4 class="text-lg font-bold text-navy mb-4">📡 <span data-i18n="reg.title">ลงทะเบียนเซนเซอร์ใหม่</span></h4>
+                    <h4 class="text-lg font-bold text-navy mb-4">📡 <span data-i18n="reg.list.title">เซนเซอร์ที่ลงทะเบียน</span></h4>
                     <div id="registered-sensors-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
-                <!-- Quiet Hours v2: Schedule + Calendar -->
-                <div class="mt-8 pt-6 border-t border-slate-200">
-                    <div class="card-styled p-6 rounded-2xl max-w-2xl">
-                        <h4 class="text-lg font-bold text-navy mb-1">ตารางเก็บข้อมูล</h4>
-                        <p class="text-slate-400 text-xs mb-5">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
+            </div>
 
-                        <!-- Section A: เวลาพักประจำวัน -->
-                        <div class="mb-6">
-                            <h5 class="text-sm font-bold text-slate-700 mb-3">เวลาพักประจำวัน (Quiet Hours)</h5>
-                            <div class="flex items-center gap-3 mb-3">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" id="quiet-hours-enabled" class="sr-only peer" checked>
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                                </label>
-                                <span class="text-sm text-slate-600">ไม่เรียก API ช่วง</span>
-                                <input type="time" id="quiet-hours-start" value="00:00" class="p-2 rounded-lg border text-sm w-36 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                                <span class="text-sm text-slate-400">ถึง</span>
-                                <input type="time" id="quiet-hours-end" value="06:00" class="p-2 rounded-lg border text-sm w-36 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                            </div>
-                            <p class="text-xs text-slate-400" id="quiet-hours-savings"></p>
-                        </div>
-
-                        <!-- Section B: วันเก็บข้อมูลประจำสัปดาห์ -->
-                        <div class="mb-6">
-                            <h5 class="text-sm font-bold text-slate-700 mb-3">วันเก็บข้อมูลประจำสัปดาห์</h5>
-                            <div class="flex flex-wrap gap-2" id="active-days-group">
-                                <label class="active-day-btn"><input type="checkbox" value="1" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">จ</span></label>
-                                <label class="active-day-btn"><input type="checkbox" value="2" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">อ</span></label>
-                                <label class="active-day-btn"><input type="checkbox" value="3" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">พ</span></label>
-                                <label class="active-day-btn"><input type="checkbox" value="4" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">พฤ</span></label>
-                                <label class="active-day-btn"><input type="checkbox" value="5" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">ศ</span></label>
-                                <label class="active-day-btn"><input type="checkbox" value="6" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">ส</span></label>
-                                <label class="active-day-btn"><input type="checkbox" value="7" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">อา</span></label>
-                            </div>
-                        </div>
-
-                        <!-- Section C: ปฏิทินเดือน -->
-                        <div class="mb-6">
-                            <div class="flex items-center justify-between mb-3">
-                                <h5 class="text-sm font-bold text-slate-700">ปฏิทินเดือน</h5>
-                                <div class="flex items-center gap-2">
-                                    <button onclick="changeCalendarMonth(-1)" class="p-1 rounded-lg hover:bg-slate-100 text-slate-500">&larr;</button>
-                                    <span id="calendar-month-label" class="text-sm font-medium text-slate-700 min-w-[120px] text-center"></span>
-                                    <button onclick="changeCalendarMonth(1)" class="p-1 rounded-lg hover:bg-slate-100 text-slate-500">&rarr;</button>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
-                                <span class="text-slate-400 font-medium">จ</span><span class="text-slate-400 font-medium">อ</span><span class="text-slate-400 font-medium">พ</span><span class="text-slate-400 font-medium">พฤ</span><span class="text-slate-400 font-medium">ศ</span><span class="text-red-300 font-medium">ส</span><span class="text-red-300 font-medium">อา</span>
-                            </div>
-                            <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
-                            <div class="flex gap-4 mt-2 text-xs text-slate-400">
-                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> เก็บ</span>
-                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-300 inline-block"></span> หยุดประจำ</span>
-                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> วันหยุดพิเศษ</span>
-                            </div>
-                        </div>
-
-                        <!-- Section D: เพิ่มวันหยุดพิเศษ -->
-                        <div class="mb-6">
-                            <h5 class="text-sm font-bold text-slate-700 mb-3">วันหยุดพิเศษ</h5>
-                            <div class="flex flex-wrap items-end gap-2 mb-3">
-                                <div>
-                                    <label class="text-xs text-slate-500 block mb-1">วันที่</label>
-                                    <input type="date" id="holiday-date" class="p-1.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-blue-200">
-                                </div>
-                                <div>
-                                    <label class="text-xs text-slate-500 block mb-1">เหตุผล</label>
-                                    <input type="text" id="holiday-reason" placeholder="เช่น สงกรานต์" class="p-1.5 rounded-lg border text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-200">
-                                </div>
-                                <button onclick="addHoliday()" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all">เพิ่ม</button>
-                            </div>
-                            <div id="holidays-list" class="space-y-1"></div>
-                        </div>
-
-                        <!-- Section E: สรุป Quota -->
-                        <div class="mb-5 p-4 bg-slate-50 rounded-xl">
-                            <h5 class="text-sm font-bold text-slate-700 mb-2">สรุป Quota เดือนนี้</h5>
-                            <div id="quota-summary" class="text-sm text-slate-600 space-y-1"></div>
-                            <div id="quota-warning" class="hidden mt-2 text-sm font-medium text-orange-600 bg-orange-50 p-2 rounded-lg"></div>
-                        </div>
-
-                        <button onclick="saveSyncConfig()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all">บันทึก</button>
-                        <span id="quiet-hours-status" class="ml-3 text-xs text-slate-400"></span>
+            <!-- Tab: กำหนดการ (Schedule) -->
+            <div id="admin-schedule" class="admin-tab-content hidden space-y-6">
+                <!-- API Quota Usage -->
+                <div id="api-quota-bar" class="bg-white/70 rounded-2xl p-4 border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-bold text-slate-600">Tuya API Usage (เดือนนี้)</span>
+                        <span id="api-quota-text" class="text-sm font-bold text-emerald-700">0 / 24,000</span>
                     </div>
+                    <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                        <div id="api-quota-fill" class="h-full rounded-full transition-all duration-500 bg-emerald-500" style="width: 0%"></div>
+                    </div>
+                    <p id="api-quota-warning" class="text-xs text-slate-400 mt-1"></p>
+                </div>
+
+                <!-- Sync Schedule Config -->
+                <div class="card-styled p-6 rounded-2xl max-w-2xl">
+                    <h4 class="text-lg font-bold text-navy mb-1">ตารางเก็บข้อมูล</h4>
+                    <p class="text-slate-400 text-xs mb-5">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
+
+                    <!-- Section A: เวลาพักประจำวัน -->
+                    <div class="mb-6">
+                        <h5 class="text-sm font-bold text-slate-700 mb-3">เวลาพักประจำวัน (Quiet Hours)</h5>
+                        <div class="flex items-center gap-3 mb-3">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="quiet-hours-enabled" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                            <span class="text-sm text-slate-600">ไม่เรียก API ช่วง</span>
+                            <input type="time" id="quiet-hours-start" value="00:00" class="p-2 rounded-lg border text-sm w-36 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                            <span class="text-sm text-slate-400">ถึง</span>
+                            <input type="time" id="quiet-hours-end" value="06:00" class="p-2 rounded-lg border text-sm w-36 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        </div>
+                        <p class="text-xs text-slate-400" id="quiet-hours-savings"></p>
+                    </div>
+
+                    <!-- Section B: วันเก็บข้อมูลประจำสัปดาห์ -->
+                    <div class="mb-6">
+                        <h5 class="text-sm font-bold text-slate-700 mb-3">วันเก็บข้อมูลประจำสัปดาห์</h5>
+                        <div class="flex flex-wrap gap-2" id="active-days-group">
+                            <label class="active-day-btn"><input type="checkbox" value="1" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">จ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="2" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">อ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="3" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">พ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="4" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">พฤ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="5" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">ศ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="6" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">ส</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="7" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">อา</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Section C: ปฏิทินเดือน -->
+                    <div class="mb-6">
+                        <div class="flex items-center justify-between mb-3">
+                            <h5 class="text-sm font-bold text-slate-700">ปฏิทินเดือน</h5>
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeCalendarMonth(-1)" class="p-1 rounded-lg hover:bg-slate-100 text-slate-500">&larr;</button>
+                                <span id="calendar-month-label" class="text-sm font-medium text-slate-700 min-w-[120px] text-center"></span>
+                                <button onclick="changeCalendarMonth(1)" class="p-1 rounded-lg hover:bg-slate-100 text-slate-500">&rarr;</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
+                            <span class="text-slate-400 font-medium">จ</span><span class="text-slate-400 font-medium">อ</span><span class="text-slate-400 font-medium">พ</span><span class="text-slate-400 font-medium">พฤ</span><span class="text-slate-400 font-medium">ศ</span><span class="text-red-300 font-medium">ส</span><span class="text-red-300 font-medium">อา</span>
+                        </div>
+                        <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                        <div class="flex gap-4 mt-2 text-xs text-slate-400">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> เก็บ</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-300 inline-block"></span> หยุดประจำ</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> วันหยุดพิเศษ</span>
+                        </div>
+                    </div>
+
+                    <!-- Section D: เพิ่มวันหยุดพิเศษ -->
+                    <div class="mb-6">
+                        <h5 class="text-sm font-bold text-slate-700 mb-3">วันหยุดพิเศษ</h5>
+                        <div class="flex flex-wrap items-end gap-2 mb-3">
+                            <div>
+                                <label class="text-xs text-slate-500 block mb-1">วันที่</label>
+                                <input type="date" id="holiday-date" class="p-1.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-blue-200">
+                            </div>
+                            <div>
+                                <label class="text-xs text-slate-500 block mb-1">เหตุผล</label>
+                                <input type="text" id="holiday-reason" placeholder="เช่น สงกรานต์" class="p-1.5 rounded-lg border text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                            </div>
+                            <button onclick="addHoliday()" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all">เพิ่ม</button>
+                        </div>
+                        <div id="holidays-list" class="space-y-1"></div>
+                    </div>
+
+                    <!-- Section E: สรุป Quota -->
+                    <div class="mb-5 p-4 bg-slate-50 rounded-xl">
+                        <h5 class="text-sm font-bold text-slate-700 mb-2">สรุป Quota เดือนนี้</h5>
+                        <div id="quota-summary" class="text-sm text-slate-600 space-y-1"></div>
+                        <div id="quota-warning" class="hidden mt-2 text-sm font-medium text-orange-600 bg-orange-50 p-2 rounded-lg"></div>
+                    </div>
+
+                    <button onclick="saveSyncConfig()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all">บันทึก</button>
+                    <span id="quiet-hours-status" class="ml-3 text-xs text-slate-400"></span>
                 </div>
             </div>
 
@@ -727,107 +740,113 @@
                 <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- Tab 5: ข้อมูลเซนเซอร์ (อัตโนมัติ) -->
-            <div id="admin-data" class="admin-tab-content hidden bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
-                <div class="p-5 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                    <span class="font-bold text-navy">📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)</span>
-                    <div class="flex items-center gap-3">
-                        <select id="sensor-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">ทุกเครื่อง</option>
-                        </select>
-                        <select id="sensor-house-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">ทุกบ้าน</option>
-                        </select>
-                        <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
-                        <button onclick="exportDailySummaries()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-indigo-700 transition-all">📋 สรุปรายวัน</button>
-                        <button onclick="exportComparisonReport()" class="bg-amber-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-amber-700 transition-all">📈 เปรียบเทียบ</button>
-                    </div>
+            <!-- Tab 5: ข้อมูล (รวม อัตโนมัติ + TVOC) -->
+            <div id="admin-data" class="admin-tab-content hidden space-y-4">
+                <!-- Sub-tab toggle -->
+                <div class="flex gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-200 shadow-inner w-fit">
+                    <button onclick="switchDataSubTab('sensor')" id="data-sub-sensor" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active">อัตโนมัติ</button>
+                    <button onclick="switchDataSubTab('tvoc')" id="data-sub-tvoc" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500">TVOC</button>
                 </div>
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table id="all-data-table" class="w-full text-left text-[13px] min-w-[800px]">
-                        <thead class="bg-slate-50 sticky top-0 z-20">
-                            <tr>
-                                <th class="p-3 whitespace-nowrap">เวลาบันทึก</th>
-                                <th class="p-3">เตา</th>
-                                <th class="p-3 text-center text-orange-500">PM2.5</th>
-                                <th class="p-3 text-center text-orange-400">PM10</th>
-                                <th class="p-3 text-center text-slate-500">CO2</th>
-                                <th class="p-3 text-center text-blue-500">AQI</th>
-                                <th class="p-3 text-center text-red-400">°C</th>
-                                <th class="p-3 text-center text-cyan-500">%RH</th>
-                                <th class="p-3 text-center text-purple-400">HCHO</th>
-                                <th class="p-3 text-center text-slate-400">เซนเซอร์</th>
-                            </tr>
-                        </thead>
-                        <tbody id="all-data-table-body" class="divide-y"></tbody>
-                    </table>
-                </div>
-            </div>
 
-            <!-- Tab 6: TVOC (บันทึกด้วยมือ) -->
-            <div id="admin-tvoc" class="admin-tab-content hidden space-y-4">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h3 class="text-2xl font-bold text-navy">TVOC — บันทึกด้วยมือ</h3>
-                        <p class="text-slate-400 text-sm" id="tvoc-tab-summary">กำลังโหลด...</p>
+                <!-- Sub: อัตโนมัติ (sensor data) -->
+                <div id="data-sub-sensor-content" class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
+                    <div class="p-5 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <span class="font-bold text-navy">📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)</span>
+                        <div class="flex items-center gap-3">
+                            <select id="sensor-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                                <option value="all">ทุกเครื่อง</option>
+                            </select>
+                            <select id="sensor-house-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                                <option value="all">ทุกบ้าน</option>
+                            </select>
+                            <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
+                            <button onclick="exportDailySummaries()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-indigo-700 transition-all">📋 สรุปรายวัน</button>
+                            <button onclick="exportComparisonReport()" class="bg-amber-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-amber-700 transition-all">📈 เปรียบเทียบ</button>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <select id="tvoc-house-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">ทุกบ้าน</option>
-                        </select>
-                        <select id="tvoc-stove-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">ทุกประเภทเตา</option>
-                            <option value="eco">🟢 Eco</option>
-                            <option value="old">🔴 เดิม</option>
-                        </select>
-                        <select id="tvoc-range-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="0">ทั้งหมด</option>
-                            <option value="24">24 ชม.</option>
-                            <option value="72">3 วัน</option>
-                            <option value="168" selected>7 วัน</option>
-                            <option value="720">30 วัน</option>
-                        </select>
-                    </div>
-                </div>
-                <!-- TVOC Stats -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="tvoc-stats-row">
-                    <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
-                        <p class="text-xs text-slate-400">จำนวนรายการ</p>
-                        <p id="tvoc-stat-count" class="text-2xl font-bold text-purple-700">--</p>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
-                        <p class="text-xs text-slate-400">ค่าเฉลี่ย</p>
-                        <p id="tvoc-stat-avg" class="text-2xl font-bold text-purple-700">-- <span class="text-sm font-normal">mg/m³</span></p>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-emerald-300 text-center">
-                        <p class="text-xs text-slate-400">ต่ำสุด</p>
-                        <p id="tvoc-stat-min" class="text-2xl font-bold text-emerald-600">-- <span class="text-sm font-normal">mg/m³</span></p>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-red-300 text-center">
-                        <p class="text-xs text-slate-400">สูงสุด</p>
-                        <p id="tvoc-stat-max" class="text-2xl font-bold text-red-500">-- <span class="text-sm font-normal">mg/m³</span></p>
-                    </div>
-                </div>
-                <!-- TVOC Chart -->
-                <div class="bg-white/60 rounded-[2.5rem] shadow-sm p-6 border-b-4 border-purple-200">
-                    <h4 class="font-bold text-sm text-navy mb-4">กราฟ TVOC ตามเวลา</h4>
-                    <div class="h-[250px]"><canvas id="tvocTabChart"></canvas></div>
-                </div>
-                <!-- TVOC Table -->
-                <div class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-purple-200">
                     <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-left text-[13px]">
-                            <thead class="bg-purple-50 sticky top-0 z-20">
+                        <table id="all-data-table" class="w-full text-left text-[13px] min-w-[800px]">
+                            <thead class="bg-slate-50 sticky top-0 z-20">
                                 <tr>
-                                    <th class="p-3 whitespace-nowrap text-purple-800">เวลา</th>
-                                    <th class="p-3 text-purple-800">บ้าน</th>
-                                    <th class="p-3 text-purple-800">เตา</th>
-                                    <th class="p-3 text-center text-purple-800 font-bold">TVOC (mg/m³)</th>
-                                    <th class="p-3 text-purple-800">ผู้บันทึก</th>
+                                    <th class="p-3 whitespace-nowrap">เวลาบันทึก</th>
+                                    <th class="p-3">เตา</th>
+                                    <th class="p-3 text-center text-orange-500">PM2.5</th>
+                                    <th class="p-3 text-center text-orange-400">PM10</th>
+                                    <th class="p-3 text-center text-slate-500">CO2</th>
+                                    <th class="p-3 text-center text-blue-500">AQI</th>
+                                    <th class="p-3 text-center text-red-400">°C</th>
+                                    <th class="p-3 text-center text-cyan-500">%RH</th>
+                                    <th class="p-3 text-center text-purple-400">HCHO</th>
+                                    <th class="p-3 text-center text-slate-400">เซนเซอร์</th>
                                 </tr>
                             </thead>
-                            <tbody id="tvoc-table-body" class="divide-y"></tbody>
+                            <tbody id="all-data-table-body" class="divide-y"></tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- Sub: TVOC (บันทึกด้วยมือ) -->
+                <div id="data-sub-tvoc-content" class="hidden space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-navy">TVOC — บันทึกด้วยมือ</h3>
+                            <p class="text-slate-400 text-sm" id="tvoc-tab-summary">กำลังโหลด...</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <select id="tvoc-house-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                                <option value="all">ทุกบ้าน</option>
+                            </select>
+                            <select id="tvoc-stove-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                                <option value="all">ทุกประเภทเตา</option>
+                                <option value="eco">🟢 Eco</option>
+                                <option value="old">🔴 เดิม</option>
+                            </select>
+                            <select id="tvoc-range-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
+                                <option value="0">ทั้งหมด</option>
+                                <option value="24">24 ชม.</option>
+                                <option value="72">3 วัน</option>
+                                <option value="168" selected>7 วัน</option>
+                                <option value="720">30 วัน</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="tvoc-stats-row">
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
+                            <p class="text-xs text-slate-400">จำนวนรายการ</p>
+                            <p id="tvoc-stat-count" class="text-2xl font-bold text-purple-700">--</p>
+                        </div>
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
+                            <p class="text-xs text-slate-400">ค่าเฉลี่ย</p>
+                            <p id="tvoc-stat-avg" class="text-2xl font-bold text-purple-700">-- <span class="text-sm font-normal">mg/m³</span></p>
+                        </div>
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-emerald-300 text-center">
+                            <p class="text-xs text-slate-400">ต่ำสุด</p>
+                            <p id="tvoc-stat-min" class="text-2xl font-bold text-emerald-600">-- <span class="text-sm font-normal">mg/m³</span></p>
+                        </div>
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-red-300 text-center">
+                            <p class="text-xs text-slate-400">สูงสุด</p>
+                            <p id="tvoc-stat-max" class="text-2xl font-bold text-red-500">-- <span class="text-sm font-normal">mg/m³</span></p>
+                        </div>
+                    </div>
+                    <div class="bg-white/60 rounded-[2.5rem] shadow-sm p-6 border-b-4 border-purple-200">
+                        <h4 class="font-bold text-sm text-navy mb-4">กราฟ TVOC ตามเวลา</h4>
+                        <div class="h-[250px]"><canvas id="tvocTabChart"></canvas></div>
+                    </div>
+                    <div class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-purple-200">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left text-[13px]">
+                                <thead class="bg-purple-50 sticky top-0 z-20">
+                                    <tr>
+                                        <th class="p-3 whitespace-nowrap text-purple-800">เวลา</th>
+                                        <th class="p-3 text-purple-800">บ้าน</th>
+                                        <th class="p-3 text-purple-800">เตา</th>
+                                        <th class="p-3 text-center text-purple-800 font-bold">TVOC (mg/m³)</th>
+                                        <th class="p-3 text-purple-800">ผู้บันทึก</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tvoc-table-body" class="divide-y"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -866,13 +885,6 @@
 
         const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
-        // Clear auth tokens BEFORE creating client to prevent SDK blocking on stale refresh
-        // After refresh, user re-logins via login modal (simpler & reliable)
-        try {
-            Object.keys(localStorage).forEach(k => {
-                if (k.startsWith('sb-') || k.includes('supabase')) localStorage.removeItem(k);
-            });
-        } catch (_) {}
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Helper: force-clear Supabase session from localStorage (fallback when signOut fails)
@@ -920,6 +932,16 @@
                 }
             } catch (e) {
                 console.warn('Auth state change error:', e);
+                // Retry after auth lock settles
+                if (e?.message?.includes('Lock') || e?.message?.includes('AbortError')) {
+                    setTimeout(async () => {
+                        try {
+                            const { data: { session } } = await supabaseClient.auth.getSession();
+                            authUser = session?.user || null;
+                            if (authUser) await checkAdminRole(authUser);
+                        } catch (_) {}
+                    }, 3000);
+                }
             }
         });
 
@@ -957,6 +979,7 @@
         }
 
         // Thai address data (cascading dropdown)
+        const NORTHERN_PROVINCES = ['เชียงราย','เชียงใหม่','น่าน','พะเยา','แพร่','แม่ฮ่องสอน','ลำปาง','ลำพูน','อุตรดิตถ์'];
         let thaiProvinces = [], thaiDistricts = [], thaiSubdistricts = [];
         async function loadThaiAddressData() {
             try {
@@ -1174,9 +1197,10 @@
             'tab.projects': { th: 'โครงการ', en: 'Projects' },
             'tab.volunteers': { th: 'อาสาสมัคร', en: 'Volunteers' },
             'tab.subjects': { th: 'บ้านกลุ่มตัวอย่าง', en: 'Subject Houses' },
-            'tab.devices': { th: 'เครื่องวัด', en: 'Devices' },
+            'tab.devices': { th: 'อุปกรณ์', en: 'Devices' },
             'tab.approvals': { th: 'รออนุมัติ', en: 'Pending' },
-            'tab.data': { th: 'ตารางข้อมูล', en: 'Data Table' },
+            'tab.data': { th: 'ข้อมูล', en: 'Data' },
+            'tab.schedule': { th: 'กำหนดการ', en: 'Schedule' },
             'tab.activity': { th: 'ประวัติกิจกรรม', en: 'Activity Log' },
             // Volunteers
             'vol.list': { th: 'รายชื่ออาสาสมัคร', en: 'Volunteer List' },
@@ -1238,14 +1262,20 @@
             'sub.no.sensor': { th: '— ไม่มีเซนเซอร์ —', en: '— No Sensor —' },
             'sub.select.conn': { th: '-- เลือกการเชื่อมต่อ --', en: '-- Select Connectivity --' },
             // Devices
-            'dev.manage': { th: 'จัดการเครื่องวัด', en: 'Manage Devices' },
+            'dev.manage': { th: 'จัดการอุปกรณ์', en: 'Manage Devices' },
             'dev.subtitle': { th: 'ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor', en: 'Register and manage Tuya Air Quality Monitors' },
-            'dev.add': { th: '+ เพิ่มเครื่องวัด', en: '+ Add Device' },
-            'dev.add.title': { th: 'เพิ่มเครื่องวัดใหม่', en: 'Add New Device' },
+            'dev.add': { th: '+ ผูกเซนเซอร์กับบ้าน', en: '+ Link Sensor to House' },
+            'dev.add.title': { th: 'ผูกเซนเซอร์กับบ้าน', en: 'Link Sensor to House' },
             'dev.add.subtitle': { th: 'เลือกเซนเซอร์จากรายการที่ลงทะเบียนไว้', en: 'Select a registered sensor' },
             'dev.select': { th: 'เลือกเซนเซอร์', en: 'Select Sensor' },
             'dev.select.ph': { th: '-- เลือกเซนเซอร์ --', en: '-- Select Sensor --' },
             'dev.no.available': { th: 'ไม่มีเซนเซอร์ว่าง', en: 'No available sensors' },
+            'dev.no.house': { th: 'ทุกบ้านผูกเซนเซอร์แล้ว', en: 'All houses already linked' },
+            'filter.project': { th: 'ทุกโครงการ', en: 'All Projects' },
+            'filter.district': { th: 'ทุกอำเภอ', en: 'All Districts' },
+            'filter.sensor.all': { th: 'เซนเซอร์: ทั้งหมด', en: 'Sensor: All' },
+            'filter.sensor.linked': { th: 'ผูกแล้ว', en: 'Linked' },
+            'filter.sensor.unlinked': { th: 'ยังไม่ผูก', en: 'Unlinked' },
             'dev.name': { th: 'ชื่อเครื่อง', en: 'Device Name' },
             'dev.name.ph': { th: 'ตั้งชื่อ (เช่น บ้านดอยสุเทพ-1)', en: 'Name (e.g. House-1)' },
             'dev.house': { th: 'ติดตั้งที่บ้าน', en: 'Install at House' },
@@ -1272,6 +1302,7 @@
             // Sensor Registration
             'reg.btn': { th: '📡 ลงทะเบียนเซนเซอร์ใหม่', en: '📡 Register New Sensor' },
             'reg.title': { th: 'ลงทะเบียนเซนเซอร์ใหม่', en: 'Register New Sensor' },
+            'reg.list.title': { th: 'เซนเซอร์ที่ลงทะเบียน', en: 'Registered Sensors' },
             'reg.subtitle': { th: 'เพิ่ม Tuya Device ID ของเครื่องวัดที่ซื้อมาใหม่', en: 'Add the Tuya Device ID of a newly purchased sensor' },
             'reg.tuya.id': { th: 'Tuya Device ID', en: 'Tuya Device ID' },
             'reg.tuya.id.ph': { th: 'เช่น a3d01864e463e3ede0hf0e', en: 'e.g. a3d01864e463e3ede0hf0e' },
@@ -1692,7 +1723,6 @@
             if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
             try {
-                // signInWithPassword with 15s timeout (increased from 10s)
                 const loginPromise = supabaseClient.auth.signInWithPassword({ email, password: pwd });
                 const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Login timeout')), 15000));
                 const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
@@ -1847,19 +1877,40 @@
             } else if (tab === 'admins') {
                 document.getElementById('admin-admins-container').classList.remove('hidden');
             } else {
-                document.getElementById(`admin-${tab}`).classList.remove('hidden');
+                const el = document.getElementById(`admin-${tab}`);
+                if (el) el.classList.remove('hidden');
             }
 
-            document.getElementById(`tab-btn-${tab}`).classList.add('tab-active');
-            document.getElementById(`tab-btn-${tab}`).classList.remove('text-slate-500');
+            const activeTabBtn = document.getElementById(`tab-btn-${tab}`);
+            if (activeTabBtn) {
+                activeTabBtn.classList.add('tab-active');
+                activeTabBtn.classList.remove('text-slate-500');
+            }
 
             // Load data for the selected tab
             if (tab === 'overview') renderOverviewTable();
-            if (tab === 'devices') loadSyncConfig();
+            if (tab === 'schedule') loadSyncConfig();
             if (tab === 'data') updateAllDataTable();
-            if (tab === 'tvoc') updateTvocTab();
             if (tab === 'activity') renderAdminActivityFeed();
             if (tab === 'admins') loadAdminsList();
+        }
+
+        // Sub-tabs within "ข้อมูล" tab
+        function switchDataSubTab(sub) {
+            document.getElementById('data-sub-sensor').classList.remove('tab-active');
+            document.getElementById('data-sub-sensor').classList.add('text-slate-500');
+            document.getElementById('data-sub-tvoc').classList.remove('tab-active');
+            document.getElementById('data-sub-tvoc').classList.add('text-slate-500');
+
+            const activeBtn = document.getElementById(`data-sub-${sub}`);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('text-slate-500');
+
+            document.getElementById('data-sub-sensor-content').classList.toggle('hidden', sub !== 'sensor');
+            document.getElementById('data-sub-tvoc-content').classList.toggle('hidden', sub !== 'tvoc');
+
+            if (sub === 'sensor') updateAllDataTable();
+            if (sub === 'tvoc') updateTvocTab();
         }
 
         // ==================== Modal ====================
@@ -1937,7 +1988,7 @@
 
         // ==================== Data Loading ====================
         let dataLoaded = false;
-        async function loadData(showSpinner) {
+        async function loadData(showSpinner, _retry) {
             if (showSpinner) showLoading('กำลังโหลดข้อมูล...');
             try {
                 // Load last 30 days only (ลด bandwidth ~90%)
@@ -2003,6 +2054,11 @@
                 else if (currentView === 'deep') updateDeepView();
             } catch (e) {
                 console.error('Error loading data:', e);
+                const msg = e?.message || '';
+                if (!_retry && (msg.includes('Lock') || msg.includes('AbortError') || msg.includes('aborted'))) {
+                    console.log('Retrying data load after auth lock settles...');
+                    setTimeout(() => loadData(false, true), 3000);
+                }
             } finally {
                 if (showSpinner) hideLoading();
             }
@@ -3297,6 +3353,7 @@
                 renderRegisteredSensors();
                 loadSyncConfig();
                 renderVolunteersList();
+                populateSubjectFilters();
                 renderSubjectsList();
                 renderProjectsList();
                 populateHouseDropdowns();
@@ -3455,7 +3512,6 @@
                     <div class="flex-1">
                         <p class="font-bold text-navy text-sm">${s.name}</p>
                         <p class="text-[11px] text-slate-400 font-mono">${s.tuyaId}</p>
-                        <p class="text-[11px] ${s.stoveType === 'eco' ? 'text-emerald-500' : 'text-amber-500'}">${s.stoveType === 'eco' ? t('reg.eco') : t('reg.old')}</p>
                     </div>
                     <button onclick="deleteRegisteredSensor('${s.tuyaId}', '${s.name.replace(/'/g, "\\'")}')" class="text-[11px] px-2 py-1 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                 </div>
@@ -3469,7 +3525,7 @@
         async function loadSyncConfig() {
             try {
                 const [configRes, holidaysRes] = await Promise.all([
-                    supabaseClient.from('sync_config').select('*').limit(1).single(),
+                    supabaseClient.from('sync_config').select('*').limit(1).maybeSingle(),
                     supabaseClient.from('sync_holidays').select('*').order('holiday_date'),
                 ]);
                 const data = configRes.data;
@@ -3740,12 +3796,11 @@
         async function registerSensor() {
             const tuyaId = document.getElementById('reg-tuya-id').value.trim();
             const name = document.getElementById('reg-name').value.trim();
-            const stoveType = document.getElementById('reg-stove-type')?.value || 'eco';
             if (!tuyaId) { showToast(t('reg.id.required'), 'warning'); return; }
             if (!name) { showToast(t('reg.name.required'), 'warning'); return; }
             if (KNOWN_SENSORS.some(s => s.tuyaId === tuyaId)) { showToast(t('reg.duplicate'), 'warning'); return; }
             try {
-                const { error } = await supabaseClient.from('registered_sensors').insert([{ tuya_device_id: tuyaId, name, stove_type: stoveType }]);
+                const { error } = await supabaseClient.from('registered_sensors').insert([{ tuya_device_id: tuyaId, name }]);
                 if (!error) {
                     closeModal();
                     await loadRegisteredSensors();
@@ -3935,19 +3990,56 @@
             });
         }
 
+        function populateSubjectFilters() {
+            // Project filter
+            const projEl = document.getElementById('subjects-filter-project');
+            if (projEl) {
+                const val = projEl.value;
+                projEl.innerHTML = `<option value="all">${t('filter.project')}</option>` + projects.map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join('');
+                projEl.value = val;
+            }
+            // District filter (from existing subjects)
+            const distEl = document.getElementById('subjects-filter-district');
+            if (distEl) {
+                const val = distEl.value;
+                const districts = [...new Set(subjects.map(s => s.district).filter(Boolean))].sort();
+                distEl.innerHTML = `<option value="all">${t('filter.district')}</option>` + districts.map(d => `<option value="${d}">อ.${d}</option>`).join('');
+                distEl.value = val;
+            }
+        }
+
         function renderSubjectsList() {
             const list = document.getElementById('subjects-list');
             const searchEl = document.getElementById('subjects-search');
             const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+            const projFilter = document.getElementById('subjects-filter-project')?.value || 'all';
+            const distFilter = document.getElementById('subjects-filter-district')?.value || 'all';
+            const sensorFilter = document.getElementById('subjects-filter-sensor')?.value || 'all';
             // Find assigned devices for each subject and available (unassigned) devices
             const unassignedDevices = devices.filter(d => !d.subject_id);
-            const filteredSubjects = q ? subjects.filter(s =>
+            const assignedSubjectIds = new Set(devices.filter(d => d.subject_id).map(d => String(d.subject_id)));
+            let filteredSubjects = subjects;
+            // Filter by project
+            if (projFilter !== 'all') {
+                const projSubIds = subjectProjects.filter(sp => String(sp.project_id) === projFilter).map(sp => sp.subject_id);
+                filteredSubjects = filteredSubjects.filter(s => projSubIds.includes(s.id));
+            }
+            // Filter by district
+            if (distFilter !== 'all') filteredSubjects = filteredSubjects.filter(s => (s.district || '') === distFilter);
+            // Filter by sensor status
+            if (sensorFilter === 'linked') filteredSubjects = filteredSubjects.filter(s => assignedSubjectIds.has(String(s.id)));
+            if (sensorFilter === 'unlinked') filteredSubjects = filteredSubjects.filter(s => !assignedSubjectIds.has(String(s.id)));
+            // Text search
+            if (q) filteredSubjects = filteredSubjects.filter(s =>
                 (s.full_name || '').toLowerCase().includes(q)
                 || (s.subdistrict || '').toLowerCase().includes(q)
                 || (s.district || '').toLowerCase().includes(q)
                 || (s.address || '').toLowerCase().includes(q)
                 || (s.volunteers?.full_name || '').toLowerCase().includes(q)
-            ) : subjects;
+            );
+            // Update count
+            const countEl = document.getElementById('subjects-count');
+            if (countEl) countEl.textContent = filteredSubjects.length;
 
             list.innerHTML = filteredSubjects.map(s => {
                 const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
@@ -3992,7 +4084,7 @@
             if (!s) return;
             const currentSp = subjectProjects.find(sp => String(sp.subject_id) === String(id));
             const currentProjectId = currentSp ? String(currentSp.project_id) : '';
-            const provinceOptions = thaiProvinces.map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === (s.province || '') ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
+            const provinceOptions = thaiProvinces.filter(p => NORTHERN_PROVINCES.includes(p.provinceNameTh)).map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === (s.province || '') ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('sub.edit')}</h3>
                 <div class="space-y-4">
@@ -4399,7 +4491,13 @@
         function showAddDeviceModal() {
             const usedIds = devices.map(d => d.tuya_device_id);
             const availableSensors = KNOWN_SENSORS.filter(s => !usedIds.includes(s.tuyaId));
-            const sensorOptions = availableSensors.map(s => `<option value="${s.tuyaId}">${s.name}</option>`).join('');
+            const sensorOptions = availableSensors.map(s => `<option value="${escAttr(s.tuyaId)}">${esc(s.name)}</option>`).join('');
+            // Hide houses that already have a sensor linked (1 house = 1 sensor)
+            const assignedSubjectIds = devices.filter(d => d.subject_id).map(d => String(d.subject_id));
+            const availableSubjects = subjects.filter(s => !assignedSubjectIds.includes(String(s.id)));
+            const houseOptions = availableSubjects.length
+                ? availableSubjects.map(s => `<option value="${s.id}">${esc(s.full_name)}</option>`).join('')
+                : `<option value="" disabled>${t('dev.no.house')}</option>`;
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-2">${t('dev.add.title')}</h3>
                 <p class="text-slate-500 text-sm mb-6">${t('dev.add.subtitle')}</p>
@@ -4419,7 +4517,7 @@
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.house')}</label>
                         <select id="new-device-subject" class="w-full p-4 rounded-2xl border custom-select">
                             <option value="">${t('dev.select.house')}</option>
-                            ${subjects.map(s => `<option value="${s.id}">${s.full_name}</option>`).join('')}
+                            ${houseOptions}
                         </select>
                     </div>
                     <button onclick="addDevice()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
@@ -4457,7 +4555,7 @@
         }
 
         function showAddSubjectModal() {
-            const provinceOptions = thaiProvinces.map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === 'เชียงใหม่' ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
+            const provinceOptions = thaiProvinces.filter(p => NORTHERN_PROVINCES.includes(p.provinceNameTh)).map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === 'เชียงใหม่' ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('sub.add.title')}</h3>
                 <div class="space-y-4">
@@ -4882,15 +4980,15 @@
                 applyLang();
                 loadThaiAddressData(); // fire-and-forget, non-blocking
 
-                // โหลด sensors + data ทันที — auth tokens ถูก clear ก่อน createClient แล้ว
                 await Promise.all([loadRegisteredSensors(), loadData()]);
-
-                // Auth tokens cleared before createClient — user re-logins after refresh
             } catch (initErr) {
                 console.error('Init error:', initErr);
             } finally {
                 hideLoading();
             }
+
+            // Fallback: if auth lock blocked initial load, retry after lock settles
+            setTimeout(() => { if (!dataLoaded) { console.log('Fallback: retrying data load...'); loadData(); } }, 8000);
             initMap();
             lastCheckTime = new Date();
             updateLastCheckDisplay();
