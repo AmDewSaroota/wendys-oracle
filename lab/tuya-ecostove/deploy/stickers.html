@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoStove — Sticker Generator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap');
+  body { font-family: 'Chakra Petch', sans-serif; }
+
+  /* ===== Sticker dimensions =====
+     Sensor top surface: 90×35mm
+     Sticker: 80×28mm (with margin)
+  */
+  :root {
+    --sticker-w: 80mm;
+    --sticker-h: 28mm;
+  }
+
+  /* ===== Print styles ===== */
+  @media print {
+    body { margin: 0; padding: 0; background: white; }
+    #controls, #info-panel { display: none !important; }
+    #sticker-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4mm;
+      padding: 0;
+      margin: 0;
+      justify-content: flex-start;
+    }
+    .sticker-card {
+      width: var(--sticker-w);
+      height: var(--sticker-h);
+      border: 0.3px dashed #bbb !important;
+      border-radius: 2mm !important;
+      box-shadow: none !important;
+      page-break-inside: avoid;
+      margin: 0;
+      padding: 2mm 3mm;
+    }
+    .sticker-card .qr-box { width: 20mm !important; height: 20mm !important; }
+    .sticker-card .qr-box canvas { width: 20mm !important; height: 20mm !important; }
+    .sticker-card .code-text { font-size: 14pt !important; }
+    .sticker-card .brand-text { font-size: 6pt !important; }
+    .sticker-card .scan-text { font-size: 5.5pt !important; }
+    @page {
+      size: A4;
+      margin: 10mm;
+    }
+  }
+
+  /* ===== Screen styles ===== */
+  @media screen {
+    .sticker-card {
+      width: 340px;
+      height: 120px;
+      border: 2px solid #d1d5db;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.15s;
+    }
+    .sticker-card:hover { transform: scale(1.03); }
+  }
+
+  /* ===== Size reference box ===== */
+  .size-ref {
+    width: 90mm; height: 35mm;
+    border: 2px dashed #9ca3af;
+    border-radius: 4px;
+    position: relative;
+  }
+  .size-ref .inner {
+    width: var(--sticker-w); height: var(--sticker-h);
+    border: 2px solid #059669;
+    border-radius: 6px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- ===== Controls ===== -->
+<div id="controls" class="bg-emerald-800 text-white sticky top-0 z-50 shadow-lg">
+  <div class="max-w-4xl mx-auto px-4 py-4">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-inner">
+        <img src="logo.png" alt="EcoStove" class="w-9 h-9 object-contain"
+             onerror="this.parentElement.innerHTML='🌿'">
+      </div>
+      <div>
+        <h1 class="text-lg font-bold">EcoStove Sticker Generator</h1>
+        <p class="text-emerald-200 text-xs">สติกเกอร์ติดด้านบนเซนเซอร์ (80×28mm)</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">Prefix</label>
+        <input id="inp-prefix" type="text" value="ES"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm font-semibold">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">จำนวน</label>
+        <input id="inp-count" type="number" value="10" min="1" max="30"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">เริ่มจากเลข</label>
+        <input id="inp-start" type="number" value="1" min="1"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">QR URL</label>
+        <input id="inp-url" type="url" value="https://biomassstove.vercel.app/volunteer.html"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-4">
+      <button onclick="generateStickers()"
+              class="bg-emerald-500 hover:bg-emerald-400 text-white font-semibold px-5 py-2 rounded-lg text-sm transition">
+        สร้างสติกเกอร์
+      </button>
+      <button onclick="window.print()"
+              class="bg-white text-emerald-800 font-semibold px-5 py-2 rounded-lg text-sm hover:bg-emerald-50 transition">
+        🖨️ พิมพ์ A4
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Size Reference ===== -->
+<div id="info-panel" class="max-w-4xl mx-auto px-6 pt-6">
+  <div class="bg-white rounded-xl shadow-sm p-4 flex items-center gap-6">
+    <div>
+      <p class="text-sm font-semibold text-gray-700 mb-1">ขนาดจริง — ด้านบนเซนเซอร์</p>
+      <p class="text-xs text-gray-400">กรอบเทา = ผิวเครื่อง 90×35mm &nbsp;|&nbsp; กรอบเขียว = สติกเกอร์ 80×28mm</p>
+    </div>
+    <div class="size-ref flex-shrink-0">
+      <div class="inner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Sticker Grid ===== -->
+<div id="sticker-grid"
+     class="max-w-4xl mx-auto p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center">
+</div>
+
+<script>
+function pad(n) { return String(n).padStart(2, '0'); }
+
+async function generateStickers() {
+  const prefix = document.getElementById('inp-prefix').value.trim() || 'ES';
+  const count  = parseInt(document.getElementById('inp-count').value) || 10;
+  const start  = parseInt(document.getElementById('inp-start').value) || 1;
+  const url    = document.getElementById('inp-url').value.trim();
+
+  const grid = document.getElementById('sticker-grid');
+  grid.innerHTML = '';
+
+  for (let i = 0; i < count; i++) {
+    const num  = start + i;
+    const code = `${prefix}-${pad(num)}`;
+
+    const card = document.createElement('div');
+    card.className = 'sticker-card bg-white p-3 flex items-center gap-3';
+    card.innerHTML = `
+      <!-- Left: QR code -->
+      <div class="qr-box flex-shrink-0" style="width:80px;height:80px;">
+        <canvas style="width:80px;height:80px;"></canvas>
+      </div>
+
+      <!-- Right: Info -->
+      <div class="flex flex-col justify-center flex-1 min-w-0">
+        <div class="flex items-center gap-1.5 mb-1">
+          <span class="text-base">🌿</span>
+          <span class="brand-text text-emerald-700 font-semibold text-xs">EcoStove</span>
+        </div>
+        <span class="code-text text-emerald-900 font-bold text-2xl leading-none tracking-wider">${code}</span>
+        <p class="scan-text text-gray-400 text-[10px] mt-1.5 leading-tight">สแกน QR เพื่อเริ่มเก็บข้อมูล</p>
+      </div>
+    `;
+
+    grid.appendChild(card);
+
+    const canvas = card.querySelector('canvas');
+    await QRCode.toCanvas(canvas, url, {
+      width: 80,
+      margin: 1,
+      color: { dark: '#065f46', light: '#ffffff' }
+    });
+  }
+}
+
+generateStickers();
+</script>
+
+</body>
+</html>

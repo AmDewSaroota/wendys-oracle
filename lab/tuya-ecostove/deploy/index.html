@@ -3732,13 +3732,6 @@
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('reg.name')}</label>
                         <input id="reg-name" placeholder="${t('reg.name.ph')}" class="w-full p-4 rounded-2xl border">
                     </div>
-                    <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">${t('reg.stove.type')}</label>
-                        <select id="reg-stove-type" class="w-full p-4 rounded-2xl border custom-select">
-                            <option value="eco">${t('reg.eco')}</option>
-                            <option value="old">${t('reg.old')}</option>
-                        </select>
-                    </div>
                     <button onclick="registerSensor()" class="w-full bg-amber-500 text-white py-4 rounded-2xl font-bold hover:bg-amber-600 transition-all">${t('common.save')}</button>
                 </div>
             `);
@@ -3747,20 +3740,27 @@
         async function registerSensor() {
             const tuyaId = document.getElementById('reg-tuya-id').value.trim();
             const name = document.getElementById('reg-name').value.trim();
-            const stoveType = document.getElementById('reg-stove-type').value;
+            const stoveType = document.getElementById('reg-stove-type')?.value || 'eco';
             if (!tuyaId) { showToast(t('reg.id.required'), 'warning'); return; }
             if (!name) { showToast(t('reg.name.required'), 'warning'); return; }
             if (KNOWN_SENSORS.some(s => s.tuyaId === tuyaId)) { showToast(t('reg.duplicate'), 'warning'); return; }
-            const { error } = await supabaseClient.from('registered_sensors').insert([{ tuya_device_id: tuyaId, name, stove_type: stoveType }]);
-            if (!error) {
-                closeModal();
-                await loadRegisteredSensors();
-                renderRegisteredSensors();
-                logActivity(t('reg.btn'), name + ' (' + (tuyaId || 'unknown').slice(0, 8) + '...)');
-                showToast(t('reg.success'));
-            } else {
-                if (error.code === '23505') showToast(t('reg.duplicate'), 'warning');
-                else showToast(t('common.error') + error.message, 'error');
+            try {
+                const { error } = await supabaseClient.from('registered_sensors').insert([{ tuya_device_id: tuyaId, name, stove_type: stoveType }]);
+                if (!error) {
+                    closeModal();
+                    await loadRegisteredSensors();
+                    renderRegisteredSensors();
+                    refreshDiscoveryStatus();
+                    logActivity(t('reg.btn'), name + ' (' + (tuyaId || 'unknown').slice(0, 8) + '...)');
+                    showToast(t('reg.success'));
+                } else {
+                    console.error('registerSensor error:', error);
+                    if (error.code === '23505') showToast(t('reg.duplicate'), 'warning');
+                    else showToast(t('common.error') + error.message, 'error');
+                }
+            } catch (e) {
+                console.error('registerSensor exception:', e);
+                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
             }
         }
 
@@ -4352,7 +4352,7 @@
 
                 listEl.innerHTML = tuyaDevices.map(d => {
                     const isRegistered = registeredIds.includes(d.id);
-                    return `<div class="bg-white/70 p-4 rounded-2xl border ${isRegistered ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-100'} flex items-center gap-3">
+                    return `<div data-tuya-id="${d.id}" class="bg-white/70 p-4 rounded-2xl border ${isRegistered ? 'border-emerald-200 bg-emerald-50/30' : 'border-slate-100'} flex items-center gap-3">
                         <span class="text-2xl">${d.online ? '📡' : '📴'}</span>
                         <div class="flex-1">
                             <p class="font-bold text-navy text-sm">${d.name || d.id}</p>
@@ -4368,6 +4368,21 @@
             } catch (e) {
                 listEl.innerHTML = '<p class="col-span-full text-red-500 text-sm py-4">เกิดข้อผิดพลาด: ' + e.message + '</p>';
             }
+        }
+
+        function refreshDiscoveryStatus() {
+            const listEl = document.getElementById('tuya-discover-list');
+            if (!listEl) return;
+            const registeredIds = KNOWN_SENSORS.map(s => s.tuyaId);
+            listEl.querySelectorAll('[data-tuya-id]').forEach(card => {
+                const id = card.dataset.tuyaId;
+                if (registeredIds.includes(id)) {
+                    const btn = card.querySelector('button');
+                    if (btn) btn.outerHTML = '<span class="text-[11px] px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-500">ลงทะเบียนแล้ว</span>';
+                    card.classList.add('border-emerald-200', 'bg-emerald-50/30');
+                    card.classList.remove('border-slate-100');
+                }
+            });
         }
 
         function registerDiscoveredSensor(tuyaId, name) {
