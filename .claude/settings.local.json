@@ -100,7 +100,11 @@
       "Bash(git branch:*)",
       "WebFetch(domain:docs.google.com)",
       "WebFetch",
-      "Task"
+      "Task",
+      "mcp__claude_ai_Vercel__web_fetch_vercel_url",
+      "mcp__claude_ai_Vercel__list_teams",
+      "mcp__claude_ai_Vercel__list_projects",
+      "WebFetch(domain:vercel.com)"
     ]
   }
 }
