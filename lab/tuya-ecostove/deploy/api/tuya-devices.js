@@ -2,7 +2,7 @@
  * EcoStove API — List Tuya Cloud Devices
  * Admin-only endpoint: discovers all sensors from Tuya Cloud account
  *
- * Auth: Supabase JWT → validate against admin_users table
+ * Auth: PIN via X-Admin-PIN header
  * Tuya: /v1.0/users/{uid}/devices
  */
 
@@ -32,58 +32,46 @@ async function getTuyaToken(accessId, secret) {
   return data.success ? data.result.access_token : null;
 }
 
-// ===== Supabase Auth Check =====
-async function validateAdmin(authHeader, sbUrl, sbKey) {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return false;
-  const jwt = authHeader.slice(7);
-
-  // Use Supabase to get user from JWT
-  const userRes = await fetch(sbUrl + '/auth/v1/user', {
-    headers: { 'Authorization': 'Bearer ' + jwt, 'apikey': sbKey },
-  });
-  if (!userRes.ok) return false;
-  const user = await userRes.json();
-  if (!user || !user.id) return false;
-
-  // Check admin_users table
-  const sbServiceKey = process.env.SUPABASE_SERVICE_KEY || sbKey;
-  const adminRes = await fetch(
-    sbUrl + '/rest/v1/admin_users?auth_id=eq.' + user.id + '&select=id',
-    {
-      headers: {
-        'apikey': sbServiceKey,
-        'Authorization': 'Bearer ' + sbServiceKey,
-        'Content-Type': 'application/json',
-      },
-    }
-  );
-  if (!adminRes.ok) return false;
-  const admins = await adminRes.json();
-  return admins && admins.length > 0;
+// ===== Admin Auth Check (personal PIN from admin_users) =====
+const crypto = require('crypto');
+async function validatePin(req) {
+  const adminId = req.headers['x-admin-id'] || '';
+  const pin = req.headers['x-admin-pin'] || '';
+  if (!adminId || !pin) return false;
+  try {
+    const sbUrl = process.env.SUPABASE_URL;
+    const sbKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
+    if (!sbUrl || !sbKey) return false;
+    const r = await fetch(sbUrl + '/rest/v1/admin_users?id=eq.' + adminId + '&select=id,role,pin_hash&limit=1', {
+      headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey },
+    });
+    const users = r.ok ? await r.json() : [];
+    if (!users.length || !users[0].pin_hash) return false;
+    const hash = crypto.createHash('sha256').update(pin).digest('hex');
+    if (hash !== users[0].pin_hash) return false;
+    return users[0].role;
+  } catch (_) { return false; }
 }
 
 module.exports = async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Admin-PIN, X-Admin-ID, Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-  const sbUrl = process.env.SUPABASE_URL;
-  const sbKey = process.env.SUPABASE_KEY;
   const tuyaId = process.env.TUYA_ACCESS_ID;
   const tuyaSecret = process.env.TUYA_ACCESS_SECRET;
-
   const tuyaAppUserUid = (process.env.TUYA_APP_USER_UID || '').trim();
 
-  if (!sbUrl || !sbKey || !tuyaId || !tuyaSecret || !tuyaAppUserUid) {
+  if (!tuyaId || !tuyaSecret || !tuyaAppUserUid) {
     return res.status(500).json({ error: 'Missing environment variables' });
   }
 
-  // Validate admin
-  const isAdmin = await validateAdmin(req.headers.authorization, sbUrl, sbKey);
-  if (!isAdmin) {
+  // Validate admin PIN
+  const role = await validatePin(req);
+  if (!role) {
     return res.status(403).json({ error: 'Admin access required' });
   }
 

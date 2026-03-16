@@ -74,9 +74,8 @@ module.exports = async function handler(req, res) {
     `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,avg_pm25,started_at,ended_at,notes`
   );
 
-  const lines = [`สรุปเก็บข้อมูลเช้า (${dateStr})`, ''];
-  const collected = [];
-  const missing = [];
+  // Categorize devices
+  const stats = { complete: 0, collecting: 0, incomplete: [], noData: [] };
 
   for (const dev of devices) {
     const name = dev.subjects?.full_name || dev.tuya_device_id.slice(-6);
@@ -86,33 +85,45 @@ module.exports = async function handler(req, res) {
     const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
 
     if (completed.length > 0) {
-      const s = completed[0];
-      const readings = s.readings_count || 0;
-      const pm25 = s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-';
-      lines.push(`✅ ${name} — เก็บแล้ว (${readings} รายการ, PM2.5 ${pm25})`);
-      collected.push(name);
+      stats.complete++;
     } else if (collecting.length > 0) {
-      const s = collecting[0];
-      lines.push(`🔄 ${name} — กำลังเก็บ (${s.readings_count || 0} รายการ)`);
-      collected.push(name);
+      stats.collecting++;
     } else if (incomplete.length > 0) {
       const s = incomplete[0];
-      const readings = s.readings_count || 0;
-      const pm25 = s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-';
       const notes = s.notes || '';
       const isTuya = notes.includes('Tuya') || notes.includes('tuya_api');
       const isOffline = notes.includes('ออฟไลน์');
-      const cause = isTuya ? ' [Tuya Cloud ขัดข้อง]' : isOffline ? ' [เซนเซอร์ออฟไลน์]' : '';
-      lines.push(`⚠️ ${name} — เก็บไม่ครบ (${readings} รายการ, PM2.5 ${pm25})${cause}`);
-      missing.push(name);
+      const cause = isTuya ? ' [Tuya ขัดข้อง]' : isOffline ? ' [ออฟไลน์]' : '';
+      stats.incomplete.push({ name, readings: s.readings_count || 0, cause });
     } else {
-      lines.push(`❌ ${name} — ยังไม่มีข้อมูล`);
-      missing.push(name);
+      stats.noData.push(name);
     }
   }
 
-  lines.push('', `เก็บได้: ${collected.length}/${devices.length} บ้าน`);
+  // Build compact summary
+  const lines = [`สรุปเก็บข้อมูลเช้า (${dateStr})`, ''];
+  const parts = [];
+  if (stats.complete > 0) parts.push(`✅ สำเร็จ ${stats.complete}`);
+  if (stats.collecting > 0) parts.push(`🔄 กำลังเก็บ ${stats.collecting}`);
+  if (stats.incomplete.length > 0) parts.push(`⚠️ ไม่ครบ ${stats.incomplete.length}`);
+  if (stats.noData.length > 0) parts.push(`❌ ไม่มีข้อมูล ${stats.noData.length}`);
+  lines.push(parts.join(' · '));
+  lines.push(`รวม ${stats.complete + stats.collecting}/${devices.length} บ้าน`);
 
+  if (stats.incomplete.length > 0) {
+    lines.push('', `⚠️ เก็บไม่ครบ (${stats.incomplete.length}):`);
+    stats.incomplete.forEach(h => lines.push(`- ${h.name} (${h.readings} รายการ)${h.cause}`));
+  }
+  if (stats.noData.length > 0) {
+    lines.push('', `❌ ไม่มีข้อมูล (${stats.noData.length}):`);
+    lines.push(stats.noData.join(', '));
+  }
+
+  if (stats.complete + stats.collecting === devices.length) {
+    lines.push('', 'ทุกบ้านเก็บข้อมูลเรียบร้อยค่ะ');
+  }
+
+  const collected = stats.complete + stats.collecting;
   const result = await lineBroadcast(lines.join('\n'));
-  return res.status(200).json({ ok: true, devices: devices.length, collected: collected.length, sessions: (sessions || []).length, result });
+  return res.status(200).json({ ok: true, devices: devices.length, collected, sessions: (sessions || []).length, result });
 };

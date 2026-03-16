@@ -76,12 +76,9 @@ module.exports = async function handler(req, res) {
     `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,avg_pm25,started_at,ended_at,notes`
   );
 
-  const lines = [`สรุปเก็บข้อมูลประจำวัน (${dateStr})`, ''];
-
+  // Categorize devices
   let totalReadings = 0;
-  let fullHouses = 0;
-  let partialHouses = 0;
-  let missingHouses = [];
+  const stats = { full: 0, partial: [], noData: [] };
 
   for (const dev of devices) {
     const name = dev.subjects?.full_name || dev.tuya_device_id.slice(-6);
@@ -90,47 +87,51 @@ module.exports = async function handler(req, res) {
     const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
     const collecting = devSessions.filter(s => s.session_status === 'collecting' || s.session_status === 'baseline');
     const total = completed.length + incomplete.length + collecting.length;
-
     const readings = devSessions.reduce((sum, s) => sum + (s.readings_count || 0), 0);
     totalReadings += readings;
 
     if (completed.length >= MAX_SESSIONS) {
-      const pm25Vals = completed.map(s => s.avg_pm25).filter(v => v != null);
-      const avgPm25 = pm25Vals.length ? (pm25Vals.reduce((a, b) => a + b, 0) / pm25Vals.length).toFixed(1) : '-';
-      lines.push(`✅ ${name} — ครบ ${completed.length}/${MAX_SESSIONS} session (${readings} รายการ, PM2.5 ${avgPm25})`);
-      fullHouses++;
+      stats.full++;
     } else if (total > 0) {
       const detail = [];
       if (completed.length > 0) detail.push(`${completed.length} สำเร็จ`);
       if (incomplete.length > 0) {
-        // Check cause of incomplete sessions
         const tuyaCount = incomplete.filter(s => (s.notes || '').includes('Tuya') || (s.notes || '').includes('tuya_api')).length;
         const offlineCount = incomplete.filter(s => (s.notes || '').includes('ออฟไลน์')).length;
-        let incLabel = `${incomplete.length} ไม่ครบ`;
-        if (tuyaCount > 0) incLabel += ` [Tuya Cloud ขัดข้อง]`;
-        else if (offlineCount > 0) incLabel += ` [เซนเซอร์ออฟไลน์]`;
-        detail.push(incLabel);
+        let cause = '';
+        if (tuyaCount > 0) cause = ' [Tuya ขัดข้อง]';
+        else if (offlineCount > 0) cause = ' [ออฟไลน์]';
+        detail.push(`${incomplete.length} ไม่ครบ${cause}`);
       }
       if (collecting.length > 0) detail.push(`${collecting.length} กำลังเก็บ`);
-      lines.push(`⚠️ ${name} — ${total}/${MAX_SESSIONS} session (${detail.join(', ')}, ${readings} รายการ)`);
-      partialHouses++;
+      stats.partial.push({ name, total, detail: detail.join(', ') });
     } else {
-      lines.push(`❌ ${name} — ไม่มีข้อมูลวันนี้`);
-      missingHouses.push(name);
+      stats.noData.push(name);
     }
   }
 
-  lines.push('', `รวม: ${totalReadings} รายการ จาก ${(sessions || []).length} session`);
-  lines.push(`ครบ: ${fullHouses}/${devices.length} บ้าน`);
+  // Build compact summary
+  const lines = [`สรุปประจำวัน (${dateStr})`, ''];
+  const parts = [];
+  if (stats.full > 0) parts.push(`✅ ครบ ${stats.full}`);
+  if (stats.partial.length > 0) parts.push(`⚠️ ไม่ครบ ${stats.partial.length}`);
+  if (stats.noData.length > 0) parts.push(`❌ ไม่มีข้อมูล ${stats.noData.length}`);
+  lines.push(parts.join(' · '));
+  lines.push(`รวม ${totalReadings.toLocaleString()} รายการ จาก ${(sessions || []).length} session`);
 
-  if (missingHouses.length > 0) {
-    lines.push(`ไม่มีข้อมูล: ${missingHouses.join(', ')}`);
+  if (stats.partial.length > 0) {
+    lines.push('', `⚠️ ไม่ครบ (${stats.partial.length}):`);
+    stats.partial.forEach(h => lines.push(`- ${h.name} — ${h.total}/${MAX_SESSIONS} session (${h.detail})`));
+  }
+  if (stats.noData.length > 0) {
+    lines.push('', `❌ ไม่มีข้อมูล (${stats.noData.length}):`);
+    lines.push(stats.noData.join(', '));
   }
 
-  if (fullHouses === devices.length) {
+  if (stats.full === devices.length) {
     lines.push('', 'ทุกบ้านเก็บข้อมูลครบถ้วนค่ะ');
   }
 
   const result = await lineBroadcast(lines.join('\n'));
-  return res.status(200).json({ ok: true, devices: devices.length, fullHouses, totalReadings, sessions: (sessions || []).length, result });
+  return res.status(200).json({ ok: true, devices: devices.length, fullHouses: stats.full, totalReadings, sessions: (sessions || []).length, result });
 };
