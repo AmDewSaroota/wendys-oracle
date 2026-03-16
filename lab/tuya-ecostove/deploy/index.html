@@ -729,6 +729,18 @@
                     <button onclick="saveSyncConfig()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all">บันทึก</button>
                     <span id="quiet-hours-status" class="ml-3 text-xs text-slate-400"></span>
                 </div>
+
+                <!-- Section F: ช่วงเก็บข้อมูล (Collection Periods) -->
+                <div class="card-styled p-6 rounded-2xl max-w-3xl">
+                    <h4 class="text-lg font-bold text-navy mb-1">ช่วงเก็บข้อมูลแต่ละบ้าน</h4>
+                    <p class="text-slate-400 text-xs mb-5">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
+                    <div id="periods-list" class="space-y-3 mb-5"></div>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="showBatchPeriodModal()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all">ตั้งค่าหลายบ้าน</button>
+                        <button onclick="showAddPeriodModal()" class="bg-slate-100 text-slate-600 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all">+ เพิ่มรายบ้าน</button>
+                        <button onclick="showBatchDeletePeriodModal()" class="bg-red-50 text-red-500 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-red-100 transition-all">ลบหลายบ้าน</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab 4: รออนุมัติ (Session-based) -->
@@ -862,6 +874,15 @@
                     <h3 class="text-2xl font-bold text-navy" data-i18n="actlog.title">ประวัติกิจกรรม Admin</h3>
                     <button onclick="renderAdminActivityFeed()" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition-all">🔄 รีเฟรช</button>
                 </div>
+                <div class="flex flex-wrap items-center gap-3 bg-white rounded-2xl p-4 border border-slate-200">
+                    <span class="text-sm font-bold text-slate-500">ช่วงเวลา</span>
+                    <input type="date" id="activity-date-from" class="px-3 py-2 rounded-xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                    <span class="text-slate-400 text-sm">ถึง</span>
+                    <input type="date" id="activity-date-to" class="px-3 py-2 rounded-xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="renderAdminActivityFeed()" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-all">ค้นหา</button>
+                    <button onclick="clearActivityFilter()" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">ล้างตัวกรอง</button>
+                </div>
+                <p id="activity-result-info" class="text-xs text-slate-400"></p>
                 <div id="admin-activity-feed" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
             </div>
 
@@ -872,7 +893,6 @@
                 </div>
                 <div id="admins-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
 
-                <!-- Change PIN moved to header button (🔑 PIN) — accessible to all admins -->
             </div>
         </section>
     </main>
@@ -1653,7 +1673,7 @@
                 <input type="text" id="reg-name" placeholder="${t('admin.reg.name')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center">
                 <input type="email" id="reg-email" placeholder="${t('admin.email')}" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center">
                 <div class="relative mb-4">
-                    <input type="password" id="reg-pin" placeholder="PIN (4+ ตัวอักษร)" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20">
+                    <input type="password" id="reg-pin" placeholder="ตั้งรหัส PIN" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20">
                     <button type="button" onclick="togglePinVis('reg-pin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
                 </div>
                 <input type="text" id="reg-invite" placeholder="${t('admin.reg.invite')}" class="w-full p-4 rounded-2xl border bg-amber-50 mb-6 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center" onkeyup="if(event.key==='Enter') registerAdmin()">
@@ -1747,6 +1767,7 @@
 
                 closeModal();
                 switchView('admin');
+                switchAdminTab('overview');
                 loadAdminData(!adminLoaded);
                 logActivity('เข้าสู่ระบบ', currentAdmin);
 
@@ -1759,25 +1780,71 @@
         }
 
         function showChangePinInline() {
-            showInputModal('🔑', 'เปลี่ยน PIN ของฉัน', 'PIN ใหม่ (4+ ตัว)', 'password', 'เปลี่ยน PIN', 'emerald', async (newPin) => {
-                if (!newPin || newPin.length < 4) {
-                    if (newPin !== '') showToast('PIN ต้องมีอย่างน้อย 4 ตัวอักษร', 'warning');
-                    return;
-                }
+            showModal(`
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🔑</div>
+                    <h3 class="text-xl font-bold text-navy">เปลี่ยน PIN ของฉัน</h3>
+                    <p class="text-sm text-slate-400 mt-1">PIN ต้องมีอย่างน้อย 4 หลัก</p>
+                </div>
+                <div class="space-y-3 mb-6">
+                    <div class="relative">
+                        <input type="password" id="pin-current" placeholder="PIN เดิม" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-slate-400 text-lg text-center font-mono tracking-[0.3em] pr-14" onkeyup="if(event.key==='Enter') document.getElementById('pin-new')?.focus()">
+                        <button type="button" onclick="togglePinVis('pin-current', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                    </div>
+                    <div class="border-t border-slate-200 my-2"></div>
+                    <div class="relative">
+                        <input type="password" id="pin-new" placeholder="PIN ใหม่" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center font-mono tracking-[0.3em] pr-14" onkeyup="if(event.key==='Enter') document.getElementById('pin-confirm')?.focus()">
+                        <button type="button" onclick="togglePinVis('pin-new', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                    </div>
+                    <div class="relative">
+                        <input type="password" id="pin-confirm" placeholder="ยืนยัน PIN ใหม่" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center font-mono tracking-[0.3em] pr-14" onkeyup="if(event.key==='Enter') document.getElementById('pin-change-btn')?.click()">
+                        <button type="button" onclick="togglePinVis('pin-confirm', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                    </div>
+                    <p id="pin-match-hint" class="text-xs text-center h-4"></p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
+                    <button id="pin-change-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">เปลี่ยน PIN</button>
+                </div>
+            `);
+            setTimeout(() => document.getElementById('pin-current')?.focus(), 100);
+            // Live match hint
+            const hintEl = document.getElementById('pin-match-hint');
+            const checkMatch = () => {
+                const a = document.getElementById('pin-new')?.value || '';
+                const b = document.getElementById('pin-confirm')?.value || '';
+                if (!b) { hintEl.textContent = ''; return; }
+                if (a === b) { hintEl.textContent = '✓ PIN ตรงกัน'; hintEl.className = 'text-xs text-center h-4 text-emerald-600 font-bold'; }
+                else { hintEl.textContent = '✗ PIN ไม่ตรงกัน'; hintEl.className = 'text-xs text-center h-4 text-red-500'; }
+            };
+            document.getElementById('pin-new').addEventListener('input', checkMatch);
+            document.getElementById('pin-confirm').addEventListener('input', checkMatch);
+            document.getElementById('pin-change-btn').onclick = async () => {
+                const currentPin = (document.getElementById('pin-current')?.value || '').trim();
+                const newPin = (document.getElementById('pin-new')?.value || '').trim();
+                const confirmPin = (document.getElementById('pin-confirm')?.value || '').trim();
+                if (!currentPin) { showToast('กรุณากรอก PIN เดิม', 'warning'); document.getElementById('pin-current')?.focus(); return; }
+                if (currentPin !== getStoredPin()) { showToast('PIN เดิมไม่ถูกต้อง', 'error'); document.getElementById('pin-current')?.focus(); return; }
+                if (!newPin || newPin.length < 4) { showToast('กรุณาตั้ง PIN อย่างน้อย 4 หลัก', 'warning'); document.getElementById('pin-new')?.focus(); return; }
+                if (newPin === currentPin) { showToast('กรุณาตั้ง PIN ที่แตกต่างจากเดิม', 'warning'); document.getElementById('pin-new')?.focus(); return; }
+                if (newPin !== confirmPin) { showToast('PIN ทั้งสองช่องไม่ตรงกัน', 'warning'); document.getElementById('pin-confirm')?.focus(); return; }
+                const btn = document.getElementById('pin-change-btn');
+                btn.disabled = true; btn.textContent = 'กำลังเปลี่ยน...';
                 try {
                     const resp = await fetch('/api/admin/change-pin', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-Admin-PIN': getStoredPin(), 'X-Admin-ID': currentAdminId },
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-PIN': currentPin, 'X-Admin-ID': currentAdminId },
                         body: JSON.stringify({ newPin }),
                     });
                     const data = await resp.json();
-                    if (!resp.ok) { showToast(data.error || 'เปลี่ยน PIN ไม่สำเร็จ', 'error'); return; }
+                    if (!resp.ok) { showToast(data.error || 'เปลี่ยน PIN ไม่สำเร็จ', 'error'); btn.disabled = false; btn.textContent = 'เปลี่ยน PIN'; return; }
                     const session = getStoredAdmin();
-                    if (session) { session.pin = newPin; storeAdminSession(session); }
+                    if (session) storeAdminSession(session.id, session.name, session.email, session.role, newPin);
+                    closeModal();
                     showToast('เปลี่ยน PIN สำเร็จ', 'success');
                     logActivity('เปลี่ยน PIN', 'เปลี่ยน PIN ส่วนตัว');
-                } catch (e) { showToast('Network error', 'error'); }
-            });
+                } catch (e) { showToast('Network error', 'error'); btn.disabled = false; btn.textContent = 'เปลี่ยน PIN'; }
+            };
         }
 
         function logoutAdmin() {
@@ -1888,37 +1955,11 @@
             });
         }
 
-        async function changeMyPin() {
-            const newPin = (document.getElementById('change-my-pin')?.value || '').trim();
-            if (!newPin || newPin.length < 4) {
-                showToast('PIN ต้องมีอย่างน้อย 4 ตัวอักษร', 'warning');
-                return;
-            }
-            try {
-                const resp = await fetch('/api/admin/change-pin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Admin-PIN': getStoredPin(),
-                        'X-Admin-ID': currentAdminId,
-                    },
-                    body: JSON.stringify({ newPin }),
-                });
-                const data = await resp.json();
-                if (!resp.ok) { showToast(data.error || 'เปลี่ยน PIN ไม่สำเร็จ', 'error'); return; }
-                // Update stored session with new PIN
-                const session = getStoredAdmin();
-                if (session) { session.pin = newPin; storeAdminSession(session); }
-                showToast(data.message || 'เปลี่ยน PIN สำเร็จ', 'success');
-                logActivity('เปลี่ยน PIN', 'เปลี่ยน PIN ส่วนตัว');
-                document.getElementById('change-my-pin').value = '';
-            } catch (e) { showToast('Network error', 'error'); }
-        }
 
         function resetAdminPin(adminId, adminName) {
-            showInputModal('🔑', 'รีเซ็ต PIN ให้ ' + adminName, 'PIN ใหม่ (4+ ตัว)', 'password', 'รีเซ็ต PIN', 'amber', async (newPin) => {
+            showInputModal('🔑', 'รีเซ็ต PIN ให้ ' + adminName, 'กรอกรหัส PIN ใหม่', 'password', 'รีเซ็ต PIN', 'amber', async (newPin) => {
                 if (!newPin || newPin.length < 4) {
-                    if (newPin !== '') showToast('PIN ต้องมีอย่างน้อย 4 ตัวอักษร', 'warning');
+                    if (newPin !== '') showToast('กรุณาตั้ง PIN อย่างน้อย 4 หลัก', 'warning');
                     return;
                 }
                 try {
@@ -1977,7 +2018,7 @@
 
             // Load data for the selected tab
             if (tab === 'overview') { renderOverviewStats(); renderOverviewTable(); }
-            if (tab === 'schedule') loadSyncConfig();
+            if (tab === 'schedule') { loadSyncConfig(); loadCollectionPeriods(); }
             if (tab === 'data') updateAllDataTable();
             if (tab === 'activity') renderAdminActivityFeed();
             if (tab === 'admins') loadAdminsList();
@@ -2985,21 +3026,46 @@
             return { icon: '📋', bg: 'bg-slate-50 border-slate-200' };
         }
 
+        function clearActivityFilter() {
+            document.getElementById('activity-date-from').value = '';
+            document.getElementById('activity-date-to').value = '';
+            renderAdminActivityFeed();
+        }
+
         async function renderAdminActivityFeed() {
             const feed = document.getElementById('admin-activity-feed');
+            const info = document.getElementById('activity-result-info');
             if (!feed) return;
 
             feed.innerHTML = '<div class="text-center py-8"><div class="loading-spinner mx-auto" style="width:24px;height:24px;border-width:2px"></div></div>';
+            if (info) info.textContent = '';
 
-            const { data: logs, error } = await supabaseClient
+            const dateFrom = document.getElementById('activity-date-from')?.value;
+            const dateTo = document.getElementById('activity-date-to')?.value;
+
+            let query = supabaseClient
                 .from('admin_activity_logs')
                 .select('*')
-                .order('created_at', { ascending: false })
-                .limit(50);
+                .order('created_at', { ascending: false });
+
+            if (dateFrom) query = query.gte('created_at', dateFrom + 'T00:00:00');
+            if (dateTo) query = query.lte('created_at', dateTo + 'T23:59:59');
+            if (!dateFrom && !dateTo) query = query.limit(50);
+
+            const { data: logs, error } = await query;
 
             if (error || !logs || logs.length === 0) {
-                feed.innerHTML = '<p class="text-slate-400 text-center py-8">' + t('actlog.no.data') + '</p>';
+                feed.innerHTML = '<p class="text-slate-400 text-center py-8">' + (dateFrom || dateTo ? 'ไม่พบรายการในช่วงเวลาที่เลือก' : t('actlog.no.data')) + '</p>';
+                if (info) info.textContent = '';
                 return;
+            }
+
+            if (info) {
+                if (dateFrom || dateTo) {
+                    info.textContent = 'แสดง ' + logs.length + ' รายการ' + (dateFrom ? ' ตั้งแต่ ' + dateFrom : '') + (dateTo ? ' ถึง ' + dateTo : '');
+                } else {
+                    info.textContent = 'แสดง 50 รายการล่าสุด';
+                }
             }
 
             feed.innerHTML = logs.map(entry => {
@@ -3870,6 +3936,445 @@
                     showToast('ไม่สามารถบันทึกได้: ' + err.message, 'error');
                 }
             });
+        }
+
+        // ==================== Collection Periods ====================
+        let collectionPeriods = [];
+
+        async function loadCollectionPeriods() {
+            const { data, error } = await supabaseClient
+                .from('collection_periods')
+                .select('*')
+                .order('subject_id')
+                .order('starts_at', { ascending: false });
+            collectionPeriods = error ? [] : (data || []);
+            renderPeriodsList();
+        }
+
+        function renderPeriodsList() {
+            const container = document.getElementById('periods-list');
+            if (!container) return;
+
+            const today = new Date().toISOString().slice(0, 10);
+            const subjectMap = {};
+            for (const s of subjects) subjectMap[s.id] = s.full_name || s.id;
+
+            // Group by subject
+            const grouped = {};
+            for (const p of collectionPeriods) {
+                if (!grouped[p.subject_id]) grouped[p.subject_id] = [];
+                grouped[p.subject_id].push(p);
+            }
+
+            // Sort periods within each house by starts_at
+            for (const sid of Object.keys(grouped)) {
+                grouped[sid].sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+            }
+
+            // Houses with sensors but no period
+            const configuredIds = new Set(Object.keys(grouped).map(Number));
+            const housesWithSensors = getHousesWithSensors();
+            const unconfigured = housesWithSensors.filter(s => !configuredIds.has(s.id));
+
+            let html = '';
+
+            // Configured houses — one card per house
+            for (const [sid, periods] of Object.entries(grouped)) {
+                const houseName = subjectMap[Number(sid)] || 'บ้าน #' + sid;
+                const hasActive = periods.some(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
+
+                html += '<div class="bg-white rounded-2xl border ' + (hasActive ? 'border-emerald-300 shadow-sm' : 'border-slate-200') + ' overflow-hidden">';
+                // House header
+                html += '<div class="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100">'
+                    + '<div class="flex items-center gap-2">'
+                    + (hasActive ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>' : '')
+                    + '<span class="font-bold text-navy text-[13px]">' + esc(houseName) + '</span>'
+                    + '</div>'
+                    + '<span class="text-[11px] text-slate-400">' + periods.length + ' ช่วง</span>'
+                    + '</div>';
+                // Period rows
+                for (const p of periods) {
+                    const isActive = p.starts_at <= today && (!p.ends_at || p.ends_at >= today);
+                    const isPast = p.ends_at && p.ends_at < today;
+                    const isOld = p.stove_type === 'old';
+                    const badge = isOld
+                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700">เตาเดิม</span>'
+                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">เตาประหยัด</span>';
+                    const dateRange = formatThaiDate(p.starts_at) + ' → ' + (p.ends_at ? formatThaiDate(p.ends_at) : 'ปัจจุบัน');
+
+                    html += '<div class="flex items-center justify-between px-4 py-2 ' + (isPast ? 'opacity-50' : '') + ' ' + (isActive ? 'bg-emerald-50/50' : '') + '">'
+                        + '<div class="flex items-center gap-2">'
+                        + badge
+                        + '<span class="text-[11px] text-slate-500">' + dateRange + (p.notes ? ' · ' + esc(p.notes) : '') + '</span>'
+                        + '</div>'
+                        + '<div class="flex items-center gap-2">'
+                        + '<button onclick="showEditPeriodModal(' + p.id + ')" class="text-[11px] text-blue-500 hover:underline">แก้ไข</button>'
+                        + '<button onclick="deletePeriod(' + p.id + ',\'' + esc(houseName) + '\')" class="text-[11px] text-red-400 hover:text-red-600">ลบ</button>'
+                        + '</div></div>';
+                }
+                html += '</div>';
+            }
+
+            // Unconfigured houses
+            if (unconfigured.length > 0) {
+                html += '<div class="mt-4 p-3 bg-amber-50 rounded-2xl border border-amber-200">'
+                    + '<p class="text-sm font-bold text-amber-700 mb-2">ยังไม่กำหนดช่วงเก็บข้อมูล</p>'
+                    + '<div class="flex flex-wrap gap-2">';
+                for (const s of unconfigured) {
+                    html += '<span class="px-3 py-1 bg-white rounded-xl text-xs text-slate-600 border">' + esc(s.full_name || 'บ้าน #' + s.id) + '</span>';
+                }
+                html += '</div></div>';
+            }
+
+            if (!html) html = '<p class="text-slate-400 text-center py-4">ยังไม่มีบ้านในระบบ</p>';
+            container.innerHTML = html;
+        }
+
+        function formatThaiDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function showAddPeriodModal(prefill) {
+            const eligible = prefill ? subjects : getHousesWithSensors();
+            const subjectOptions = eligible.map(s => {
+                const status = getHousePeriodStatus(s.id);
+                const suffix = status ? ' (' + status.label + ')' : '';
+                return '<option value="' + s.id + '"' + (prefill && prefill.subject_id === s.id ? ' selected' : '') + '>' + esc(s.full_name || 'บ้าน #' + s.id) + suffix + '</option>';
+            }).join('');
+
+            showModal(`
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">📅</div>
+                    <h3 class="text-xl font-bold text-navy">${prefill ? 'แก้ไขช่วงเก็บข้อมูล' : 'เพิ่มช่วงเก็บข้อมูล'}</h3>
+                </div>
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">บ้าน</label>
+                        <select id="period-subject" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500" ${prefill ? 'disabled' : ''}>
+                            <option value="">-- เลือกบ้าน --</option>
+                            ${subjectOptions}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-2">ประเภทเตา</label>
+                        <div class="flex gap-3">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="period-stove" value="old" class="sr-only peer" ${!prefill || prefill.stove_type === 'old' ? 'checked' : ''}>
+                                <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
+                                    <span class="font-bold text-sm">เตาเดิม</span>
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="period-stove" value="eco" class="sr-only peer" ${prefill && prefill.stove_type === 'eco' ? 'checked' : ''}>
+                                <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
+                                    <span class="font-bold text-sm">เตาประหยัด</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">วันเริ่มต้น</label>
+                            <input type="date" id="period-start" value="${prefill ? prefill.starts_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">วันสิ้นสุด <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                            <input type="date" id="period-end" value="${prefill && prefill.ends_at ? prefill.ends_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                        <input type="text" id="period-notes" value="${prefill && prefill.notes ? esc(prefill.notes) : ''}" placeholder="เช่น เริ่มเฟสเตาประหยัด" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
+                    <button id="period-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">${prefill ? 'บันทึก' : 'เพิ่ม'}</button>
+                </div>
+            `);
+            document.getElementById('period-save-btn').onclick = () => savePeriod(prefill ? prefill.id : null);
+        }
+
+        function showEditPeriodModal(id) {
+            const p = collectionPeriods.find(x => x.id === id);
+            if (!p) return;
+            showAddPeriodModal(p);
+        }
+
+        async function savePeriod(editId) {
+            const subjectId = Number(document.getElementById('period-subject')?.value);
+            const stoveType = document.querySelector('input[name="period-stove"]:checked')?.value;
+            const startsAt = document.getElementById('period-start')?.value;
+            const endsAt = document.getElementById('period-end')?.value || null;
+            const notes = (document.getElementById('period-notes')?.value || '').trim() || null;
+
+            if (!subjectId) { showToast('กรุณาเลือกบ้าน', 'warning'); return; }
+            if (!stoveType) { showToast('กรุณาเลือกประเภทเตา', 'warning'); return; }
+            if (!startsAt) { showToast('กรุณาระบุวันเริ่มต้น', 'warning'); return; }
+            if (endsAt && endsAt < startsAt) { showToast('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น', 'warning'); return; }
+
+            // Overlap check — auto-close ongoing periods, block real overlaps
+            const ongoingToClose = []; // periods with ends_at = null ที่จะปิดอัตโนมัติ
+            const realOverlaps = [];
+            for (const p of collectionPeriods) {
+                if (editId && p.id === editId) continue;
+                if (p.subject_id !== subjectId) continue;
+                const pEnd = p.ends_at || '9999-12-31';
+                const newEnd = endsAt || '9999-12-31';
+                if (startsAt <= pEnd && newEnd >= p.starts_at) {
+                    // ถ้า ongoing (ends_at=null) และ period ใหม่เริ่มหลัง period เก่า → ปิดอัตโนมัติ
+                    if (!p.ends_at && startsAt > p.starts_at) {
+                        ongoingToClose.push(p);
+                    } else {
+                        realOverlaps.push(p);
+                    }
+                }
+            }
+            if (realOverlaps.length) {
+                showToast('ช่วงเวลาซ้อนกับช่วงที่มีอยู่แล้ว', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('period-save-btn');
+            btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+
+            try {
+                // Auto-close ongoing periods (set ends_at = day before new starts_at)
+                const dayBefore = new Date(new Date(startsAt).getTime() - 86400000).toISOString().slice(0, 10);
+                for (const p of ongoingToClose) {
+                    await supabaseClient.from('collection_periods').update({ ends_at: dayBefore }).eq('id', p.id);
+                }
+
+                const row = { subject_id: subjectId, stove_type: stoveType, starts_at: startsAt, ends_at: endsAt, notes, created_by: currentAdminEmail || null };
+                let error;
+                if (editId) {
+                    ({ error } = await supabaseClient.from('collection_periods').update(row).eq('id', editId));
+                } else {
+                    ({ error } = await supabaseClient.from('collection_periods').insert(row));
+                }
+                if (error) throw error;
+                closeModal();
+                showToast(editId ? 'แก้ไขช่วงเก็บข้อมูลสำเร็จ' : 'เพิ่มช่วงเก็บข้อมูลสำเร็จ', 'success');
+                logActivity(editId ? 'แก้ไขช่วงเก็บข้อมูล' : 'เพิ่มช่วงเก็บข้อมูล', stoveType === 'old' ? 'เตาเดิม' : 'เตาประหยัด');
+                loadCollectionPeriods();
+            } catch (e) {
+                showToast('ไม่สามารถบันทึกได้: ' + e.message, 'error');
+                btn.disabled = false; btn.textContent = editId ? 'บันทึก' : 'เพิ่ม';
+            }
+        }
+
+        function deletePeriod(id, houseName) {
+            showConfirmModal('🗑️', 'ลบช่วงเก็บข้อมูล', 'ลบช่วงเก็บข้อมูลของ ' + houseName + '?', 'ลบ', 'red', async () => {
+                try {
+                    const { error } = await supabaseClient.from('collection_periods').delete().eq('id', id);
+                    if (error) throw error;
+                    showToast('ลบช่วงเก็บข้อมูลสำเร็จ', 'success');
+                    logActivity('ลบช่วงเก็บข้อมูล', houseName);
+                    loadCollectionPeriods();
+                } catch (e) { showToast('ไม่สามารถลบได้: ' + e.message, 'error'); }
+            });
+        }
+
+        function getHousesWithSensors() {
+            const activeSubjectIds = new Set(devices.filter(d => d.is_active && d.subject_id).map(d => Number(d.subject_id)));
+            return subjects.filter(s => activeSubjectIds.has(s.id));
+        }
+
+        function getHousePeriodStatus(subjectId) {
+            const periods = collectionPeriods.filter(p => p.subject_id === subjectId);
+            if (!periods.length) return null;
+            const today = new Date().toISOString().slice(0, 10);
+            const active = periods.find(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
+            if (active) return { label: active.stove_type === 'old' ? 'เตาเดิม' : 'เตาประหยัด', active: true, stove: active.stove_type, ends: active.ends_at };
+            const latest = periods[0]; // sorted desc
+            return { label: (latest.stove_type === 'old' ? 'เตาเดิม' : 'เตาประหยัด') + ' (จบแล้ว)', active: false, stove: latest.stove_type, ends: latest.ends_at };
+        }
+
+        function showBatchPeriodModal() {
+            const eligible = getHousesWithSensors();
+            if (!eligible.length) { showToast('ยังไม่มีบ้านที่ผูกเซนเซอร์', 'warning'); return; }
+
+            const checkboxes = eligible.map(s => {
+                const name = esc(s.full_name || 'บ้าน #' + s.id);
+                const status = getHousePeriodStatus(s.id);
+                const badge = status
+                    ? (status.active
+                        ? '<span class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold ' + (status.stove === 'old' ? 'bg-orange-100 text-orange-600' : 'bg-emerald-100 text-emerald-600') + '">' + status.label + '</span>'
+                        : '<span class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-400">' + status.label + '</span>')
+                    : '<span class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-500">ยังไม่กำหนด</span>';
+                return '<label class="flex items-center gap-2 p-2 rounded-xl hover:bg-slate-50 cursor-pointer">'
+                    + '<input type="checkbox" value="' + s.id + '" class="batch-house-cb w-4 h-4 accent-emerald-600" checked>'
+                    + '<span class="text-sm text-navy">' + name + '</span>' + badge + '</label>';
+            }).join('');
+
+            showModal(`
+                <div class="text-center mb-5">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏠</div>
+                    <h3 class="text-xl font-bold text-navy">ตั้งค่าหลายบ้านพร้อมกัน</h3>
+                    <p class="text-sm text-slate-400 mt-1">เลือกบ้าน แล้วกำหนดเตาและช่วงเวลาเดียวกัน</p>
+                </div>
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-[13px] font-bold text-navy">เลือกบ้าน</label>
+                            <button onclick="(function(){var s=!document.querySelectorAll('.batch-house-cb:checked').length;document.querySelectorAll('.batch-house-cb').forEach(function(c){c.checked=s})})()" class="text-xs text-blue-500 hover:underline">เลือก/ยกเลิกทั้งหมด</button>
+                        </div>
+                        <div class="max-h-[180px] overflow-y-auto border rounded-2xl p-2 bg-slate-50 custom-scrollbar">${checkboxes}</div>
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-2">ประเภทเตา</label>
+                        <div class="flex gap-3">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="batch-stove" value="old" class="sr-only peer" checked>
+                                <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
+                                    <span class="font-bold text-sm">เตาเดิม</span>
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="batch-stove" value="eco" class="sr-only peer">
+                                <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
+                                    <span class="font-bold text-sm">เตาประหยัด</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">วันเริ่มต้น</label>
+                            <input type="date" id="batch-start" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">วันสิ้นสุด <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                            <input type="date" id="batch-end" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-1">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                        <input type="text" id="batch-notes" placeholder="เช่น เริ่มเฟสเตาเดิม" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
+                    <button id="batch-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">ตั้งค่า</button>
+                </div>
+            `);
+            document.getElementById('batch-save-btn').onclick = saveBatchPeriods;
+        }
+
+        async function saveBatchPeriods() {
+            const selectedIds = [...document.querySelectorAll('.batch-house-cb:checked')].map(c => Number(c.value));
+            const stoveType = document.querySelector('input[name="batch-stove"]:checked')?.value;
+            const startsAt = document.getElementById('batch-start')?.value;
+            const endsAt = document.getElementById('batch-end')?.value || null;
+            const notes = (document.getElementById('batch-notes')?.value || '').trim() || null;
+
+            if (!selectedIds.length) { showToast('กรุณาเลือกอย่างน้อย 1 บ้าน', 'warning'); return; }
+            if (!stoveType) { showToast('กรุณาเลือกประเภทเตา', 'warning'); return; }
+            if (!startsAt) { showToast('กรุณาระบุวันเริ่มต้น', 'warning'); return; }
+            if (endsAt && endsAt < startsAt) { showToast('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น', 'warning'); return; }
+
+            // Check overlaps — auto-close ongoing, block real overlaps
+            const newEnd = endsAt || '9999-12-31';
+            const ongoingToClose = [];
+            const realOverlapHouses = [];
+            for (const sid of selectedIds) {
+                for (const p of collectionPeriods) {
+                    if (p.subject_id !== sid) continue;
+                    const pEnd = p.ends_at || '9999-12-31';
+                    if (startsAt <= pEnd && newEnd >= p.starts_at) {
+                        if (!p.ends_at && startsAt > p.starts_at) {
+                            ongoingToClose.push(p);
+                        } else {
+                            const name = subjects.find(s => s.id === sid)?.full_name || 'บ้าน #' + sid;
+                            realOverlapHouses.push(name);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (realOverlapHouses.length) {
+                showToast('ช่วงเวลาซ้อนทับ: ' + realOverlapHouses.join(', '), 'error');
+                return;
+            }
+
+            const btn = document.getElementById('batch-save-btn');
+            btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+
+            try {
+                // Auto-close ongoing periods
+                const dayBefore = new Date(new Date(startsAt).getTime() - 86400000).toISOString().slice(0, 10);
+                for (const p of ongoingToClose) {
+                    await supabaseClient.from('collection_periods').update({ ends_at: dayBefore }).eq('id', p.id);
+                }
+
+                const rows = selectedIds.map(sid => ({
+                    subject_id: sid, stove_type: stoveType, starts_at: startsAt, ends_at: endsAt, notes, created_by: currentAdminEmail || null,
+                }));
+                const { error } = await supabaseClient.from('collection_periods').insert(rows);
+                if (error) throw error;
+                closeModal();
+                showToast('ตั้งค่า ' + selectedIds.length + ' บ้านสำเร็จ', 'success');
+                logActivity('ตั้งค่าช่วงเก็บข้อมูล', selectedIds.length + ' บ้าน — ' + (stoveType === 'old' ? 'เตาเดิม' : 'เตาประหยัด'));
+                loadCollectionPeriods();
+            } catch (e) {
+                showToast('ไม่สามารถบันทึกได้: ' + e.message, 'error');
+                btn.disabled = false; btn.textContent = 'ตั้งค่า';
+            }
+        }
+
+        function showBatchDeletePeriodModal() {
+            if (!collectionPeriods.length) { showToast('ยังไม่มีช่วงเก็บข้อมูล', 'warning'); return; }
+
+            const subjectMap = {};
+            for (const s of subjects) subjectMap[s.id] = s.full_name || 'บ้าน #' + s.id;
+
+            const checkboxes = collectionPeriods.map(p => {
+                const name = esc(subjectMap[Number(p.subject_id)] || 'บ้าน #' + p.subject_id);
+                const stoveBadge = p.stove_type === 'old'
+                    ? '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-orange-100 text-orange-600">เตาเดิม</span>'
+                    : '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-600">เตาประหยัด</span>';
+                const dateRange = formatThaiDate(p.starts_at) + ' → ' + (p.ends_at ? formatThaiDate(p.ends_at) : 'ปัจจุบัน');
+                return '<label class="flex items-center gap-2 p-2 rounded-xl hover:bg-red-50 cursor-pointer">'
+                    + '<input type="checkbox" value="' + p.id + '" class="batch-del-cb w-4 h-4 accent-red-500">'
+                    + '<div class="flex-1 min-w-0"><span class="text-sm text-navy">' + name + '</span>'
+                    + '<span class="text-[11px] text-slate-400 ml-2">' + dateRange + '</span></div>'
+                    + stoveBadge + '</label>';
+            }).join('');
+
+            showModal(`
+                <div class="text-center mb-5">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🗑️</div>
+                    <h3 class="text-xl font-bold text-navy">ลบช่วงเก็บข้อมูล</h3>
+                    <p class="text-sm text-slate-400 mt-1">เลือกรายการที่ต้องการลบ</p>
+                </div>
+                <div class="mb-5">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-[13px] font-bold text-navy">เลือกรายการ</span>
+                        <button onclick="(function(){var s=!document.querySelectorAll('.batch-del-cb:checked').length;document.querySelectorAll('.batch-del-cb').forEach(function(c){c.checked=s})})()" class="text-xs text-blue-500 hover:underline">เลือก/ยกเลิกทั้งหมด</button>
+                    </div>
+                    <div class="max-h-[250px] overflow-y-auto border rounded-2xl p-2 bg-slate-50 custom-scrollbar">${checkboxes}</div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
+                    <button id="batch-del-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-red-600 hover:bg-red-700">ลบที่เลือก</button>
+                </div>
+            `);
+            document.getElementById('batch-del-btn').onclick = async () => {
+                const ids = [...document.querySelectorAll('.batch-del-cb:checked')].map(c => Number(c.value));
+                if (!ids.length) { showToast('กรุณาเลือกอย่างน้อย 1 รายการ', 'warning'); return; }
+                const btn = document.getElementById('batch-del-btn');
+                btn.disabled = true; btn.textContent = 'กำลังลบ...';
+                try {
+                    const { error } = await supabaseClient.from('collection_periods').delete().in('id', ids);
+                    if (error) throw error;
+                    closeModal();
+                    showToast('ลบ ' + ids.length + ' รายการสำเร็จ', 'success');
+                    logActivity('ลบช่วงเก็บข้อมูล', ids.length + ' รายการ');
+                    loadCollectionPeriods();
+                } catch (e) { showToast('ไม่สามารถลบได้: ' + e.message, 'error'); btn.disabled = false; btn.textContent = 'ลบที่เลือก'; }
+            };
         }
 
         function showRegisterSensorModal() {

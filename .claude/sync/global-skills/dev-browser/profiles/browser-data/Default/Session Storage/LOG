@@ -1,2 +1,3 @@
-2026/02/17-14:30:36.567 330 Creating DB C:\Users\NDFlt02\.claude\skills\dev-browser\profiles\browser-data\Default\Session Storage since it was missing.
-2026/02/17-14:30:36.583 330 Reusing MANIFEST C:\Users\NDFlt02\.claude\skills\dev-browser\profiles\browser-data\Default\Session Storage/MANIFEST-000001
+2026/03/07-10:04:40.692 5a1c Reusing MANIFEST C:\Users\CPL\wendys-oracle\.claude\sync\global-skills\dev-browser\profiles\browser-data\Default\Session Storage/MANIFEST-000001
+2026/03/07-10:04:40.702 5a1c Recovering log #3
+2026/03/07-10:04:40.703 5a1c Reusing old log C:\Users\CPL\wendys-oracle\.claude\sync\global-skills\dev-browser\profiles\browser-data\Default\Session Storage/000003.log 

@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "WebFetch(domain:github.com)",
       "Bash(cmd /c \"C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe\" auth status)",
@@ -101,10 +100,16 @@
       "WebFetch(domain:docs.google.com)",
       "WebFetch",
       "Task",
-      "mcp__claude_ai_Vercel__web_fetch_vercel_url",
+      "mcp__claude_ai_Vercel__get_project",
       "mcp__claude_ai_Vercel__list_teams",
       "mcp__claude_ai_Vercel__list_projects",
-      "WebFetch(domain:vercel.com)"
-    ]
+      "mcp__claude_ai_Vercel__get_runtime_logs",
+      "mcp__claude_ai_Vercel__list_deployments",
+      "mcp__claude_ai_Vercel__get_deployment_build_logs",
+      "mcp__claude_ai_Vercel__search_vercel_documentation",
+      "mcp__claude_ai_Vercel__web_fetch_vercel_url",
+      "mcp__claude_ai_Vercel__deploy_to_vercel"
+    ],
+    "defaultMode": "acceptEdits"
   }
 }

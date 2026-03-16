@@ -62,13 +62,40 @@ async function loadSensors(sbUrl, sbKey) {
     }
   } catch (_) {}
 
-  // 4. Build SENSORS array
+  // 4. Get active collection periods per house (stove_type from period > sensor fallback)
+  const periodMap = {}; // subject_id → stove_type
+  try {
+    const today = getThaiDate();
+    const subjectIds = [...new Set(Object.values(deviceMap).filter(Boolean))];
+    if (subjectIds.length > 0) {
+      const periodsRes = await fetch(
+        sbUrl + '/rest/v1/collection_periods'
+        + '?subject_id=in.(' + subjectIds.join(',') + ')'
+        + '&starts_at=lte.' + today
+        + '&or=(ends_at.is.null,ends_at.gte.' + today + ')'
+        + '&select=subject_id,stove_type'
+        + '&order=starts_at.desc',
+        { headers: sbHeaders(sbKey) }
+      );
+      if (periodsRes.ok) {
+        const periods = await periodsRes.json();
+        for (const p of periods) {
+          if (!periodMap[p.subject_id]) periodMap[p.subject_id] = p.stove_type;
+        }
+      }
+    }
+  } catch (_) {}
+
+  // 5. Build SENSORS array — stoveType: period > sensor fallback
   return sensors.map(s => {
     const houseId = deviceMap[s.tuya_device_id] || null;
+    const resolvedStoveType = (houseId && periodMap[houseId])
+      ? periodMap[houseId]
+      : (s.stove_type || 'old');
     return {
       id: s.tuya_device_id,
       name: s.name,
-      stoveType: s.stove_type || 'eco',
+      stoveType: resolvedStoveType,
       houseId,
       projectId: houseId ? (projectMap[houseId] || null) : null,
     };
