@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoStove - โครงการนวัตกรรมเพื่ออากาศสะอาด</title>
+    <title>Biomass Stove - โครงการนวัตกรรมเพื่ออากาศสะอาด</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -141,7 +141,7 @@
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-inner">
-                    <img src="logo.png" alt="EcoStove" class="w-11 h-11 object-contain">
+                    <img src="logo.png" alt="Biomass Stove" class="w-11 h-11 object-contain">
                 </div>
                 <div class="flex flex-col">
                     <span class="text-xl font-bold tracking-tight text-white leading-tight">Biomass Stove: <span class="text-[#c9a96e]">Alternative Energy</span></span>
@@ -225,11 +225,11 @@
 
             <!-- 3. Before/After Comparison -->
             <div class="card-styled p-6 md:p-8 rounded-[2.5rem] border-b-4 border-emerald-500">
-                <h4 class="font-bold text-lg text-navy mb-6 text-center" data-i18n="compare.title">เปรียบเทียบ: เตาเดิม vs EcoStove</h4>
+                <h4 class="font-bold text-lg text-navy mb-6 text-center" data-i18n="compare.title">เปรียบเทียบ: เตาดั้งเดิม vs เตาชีวมวล</h4>
                 <div class="grid grid-cols-3 gap-4 items-center">
                     <div class="text-center bg-orange-50 rounded-2xl p-5">
                         <div class="text-3xl mb-2">🪵</div>
-                        <p class="text-sm font-bold text-orange-600" data-i18n="compare.old">เตาเดิม</p>
+                        <p class="text-sm font-bold text-orange-600" data-i18n="compare.old">เตาดั้งเดิม</p>
                         <p class="text-3xl md:text-4xl font-bold text-orange-500 mt-2" id="basic-old-pm25">--</p>
                         <p class="text-xs text-slate-400" data-i18n="compare.avg.pm25">PM2.5 เฉลี่ย</p>
                     </div>
@@ -239,7 +239,7 @@
                     </div>
                     <div class="text-center bg-emerald-50 rounded-2xl p-5">
                         <div class="text-3xl mb-2">✨</div>
-                        <p class="text-sm font-bold text-emerald-600" data-i18n="compare.eco">EcoStove</p>
+                        <p class="text-sm font-bold text-emerald-600" data-i18n="compare.eco">เตาชีวมวล</p>
                         <p class="text-3xl md:text-4xl font-bold text-emerald-500 mt-2" id="basic-eco-pm25">--</p>
                         <p class="text-xs text-slate-400" data-i18n="compare.avg.pm25">PM2.5 เฉลี่ย</p>
                     </div>
@@ -323,23 +323,23 @@
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
                     <p class="text-[12px] font-bold text-red-600 uppercase tracking-wider"><span data-i18n="card.pm25">PM 2.5</span> <button onclick="showAqiReference()" class="text-slate-400 hover:text-blue-500 text-[10px]">ℹ️</button></p>
                     <h3 id="r-stat-pm25" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm25-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาเดิม: --%</p>
+                    <p id="r-stat-pm25-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
                     <div id="r-stat-pm25-badge" class="mt-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
                     <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">PM 10</p>
                     <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm10-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาเดิม: --%</p>
+                    <p id="r-stat-pm10-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
                     <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider" data-i18n="card.co2">CO2</p>
                     <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
-                    <p id="r-stat-co2-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาเดิม: --%</p>
+                    <p id="r-stat-co2-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
                     <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
                     <h3 id="r-stat-aqi" class="text-xl font-bold text-navy">--</h3>
-                    <p id="r-stat-aqi-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาเดิม: --%</p>
+                    <p id="r-stat-aqi-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
                 </div>
             </div>
             <!-- Research Stat Cards — Row 2 -->
@@ -359,25 +359,25 @@
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-500">
                     <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">TVOC</p>
                     <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
-                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400">vs เตาเดิม: --%</p>
+                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400">vs เตาดั้งเดิม: --%</p>
                 </div>
             </div>
 
             <!-- PM Group + Gas Group Charts -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-red-300">
-                    <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.pm">ค่า PM (เตาเดิม vs EcoStove)</h4>
+                    <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.pm">ค่า PM (เตาดั้งเดิม vs เตาชีวมวล)</h4>
                     <div class="h-[220px]"><canvas id="pmGroupChart"></canvas></div>
                 </div>
                 <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-300">
-                    <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.gas">ค่าก๊าซ (เตาเดิม vs EcoStove)</h4>
+                    <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.gas">ค่าก๊าซ (เตาดั้งเดิม vs เตาชีวมวล)</h4>
                     <div class="h-[220px]"><canvas id="gasGroupChart"></canvas></div>
                 </div>
             </div>
             <!-- TVOC Comparison Chart -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-300">
                 <div class="flex items-center justify-between mb-4">
-                    <h4 class="font-bold text-sm text-navy">ค่า TVOC (เตาเดิม vs EcoStove)</h4>
+                    <h4 class="font-bold text-sm text-navy">ค่า TVOC (เตาดั้งเดิม vs เตาชีวมวล)</h4>
                     <button onclick="showTvocReference()" class="text-xs text-purple-500 hover:text-purple-700 font-bold">ℹ️ มาตรฐาน</button>
                 </div>
                 <div class="h-[220px]"><canvas id="tvocGroupChart"></canvas></div>
@@ -386,14 +386,14 @@
 
             <!-- Reduction Summary Table -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-400">
-                <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="reduction.title">📊 สรุป % การลดมลพิษ (EcoStove vs เตาเดิม)</h4>
+                <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="reduction.title">📊 สรุป % การลดมลพิษ (เตาชีวมวล vs เตาดั้งเดิม)</h4>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead class="bg-slate-50">
                             <tr>
                                 <th class="p-3 text-left font-bold text-navy" data-i18n="reduction.param">พารามิเตอร์</th>
-                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.old.avg">เตาเดิม (เฉลี่ย)</th>
-                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.eco.avg">EcoStove (เฉลี่ย)</th>
+                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.old.avg">เตาดั้งเดิม (เฉลี่ย)</th>
+                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.eco.avg">เตาชีวมวล (เฉลี่ย)</th>
                                 <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.pct">% ลดลง</th>
                             </tr>
                         </thead>
@@ -419,6 +419,7 @@
                         <option value="0" data-i18n="filter.all">ทั้งหมด</option>
                     </select>
                 </div>
+                <div id="sensor-color-legend" class="flex flex-wrap gap-2 mb-4"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white/60 rounded-2xl p-4">
                         <h5 class="font-bold text-sm text-orange-600 mb-2">PM2.5 (µg/m³)</h5>
@@ -1000,10 +1001,10 @@
         }
 
         // ==================== i18n ====================
-        let currentLang = localStorage.getItem('ecostove_lang') || 'th';
+        let currentLang = localStorage.getItem('biomass_stove_lang') || 'th';
         const T = {
             // Page
-            'page.title': { th: 'EcoStove - โครงการนวัตกรรมเพื่ออากาศสะอาด', en: 'EcoStove - Clean Air Innovation Project' },
+            'page.title': { th: 'Biomass Stove - โครงการนวัตกรรมเพื่ออากาศสะอาด', en: 'Biomass Stove - Clean Air Innovation Project' },
             'page.subtitle': { th: 'พลังงานทางเลือกเพื่อยกระดับคุณภาพชีวิต', en: 'Alternative Energy for Better Quality of Life' },
             'page.brand': { th: 'Biomass Stove: ', en: 'Biomass Stove: ' },
             'page.brand.alt': { th: 'พลังงานทางเลือก', en: 'Alternative Energy' },
@@ -1043,7 +1044,7 @@
             'tvoc.title': { th: 'บันทึก TVOC', en: 'Record TVOC' },
             'tvoc.subtitle': { th: 'อ่านค่าจากหน้าจอเซนเซอร์แล้วกรอกที่นี่', en: 'Read value from sensor display and enter here' },
             'tvoc.select.house': { th: '-- เลือกบ้าน --', en: '-- Select House --' },
-            'tvoc.old.stove': { th: 'เตาเดิม', en: 'Old Stove' },
+            'tvoc.old.stove': { th: 'เตาดั้งเดิม', en: 'Traditional Stove' },
             'tvoc.volunteer': { th: 'ชื่อผู้บันทึก', en: 'Recorder Name' },
             'tvoc.submit': { th: 'บันทึก TVOC', en: 'Save TVOC' },
             'tvoc.saved': { th: 'บันทึกสำเร็จ', en: 'TVOC Recorded' },
@@ -1060,9 +1061,9 @@
             'card.co2': { th: 'CO2', en: 'CO2' },
             'card.temp.humidity': { th: 'อุณหภูมิ / ความชื้น', en: 'Temperature / Humidity' },
             // Before/After
-            'compare.title': { th: 'เปรียบเทียบ: เตาเดิม vs EcoStove', en: 'Comparison: Traditional vs EcoStove' },
-            'compare.old': { th: 'เตาเดิม', en: 'Traditional' },
-            'compare.eco': { th: 'EcoStove', en: 'EcoStove' },
+            'compare.title': { th: 'เปรียบเทียบ: เตาดั้งเดิม vs เตาชีวมวล', en: 'Comparison: Traditional vs Biomass' },
+            'compare.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
+            'compare.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
             'compare.avg.pm25': { th: 'PM2.5 เฉลี่ย', en: 'Avg PM2.5' },
             'compare.reduction': { th: 'ต่างกัน', en: 'Difference' },
             // Session progress
@@ -1108,19 +1109,19 @@
             'filter.30d': { th: '30 วัน', en: '30 days' },
             'filter.export': { th: '📊 Export Excel', en: '📊 Export Excel' },
             // Research stats
-            'stat.vs.old': { th: 'vs เตาเดิม: {0}%', en: 'vs Traditional: {0}%' },
-            'stat.vs.old.default': { th: 'vs เตาเดิม: --%', en: 'vs Traditional: --%' },
+            'stat.vs.old': { th: 'vs เตาดั้งเดิม: {0}%', en: 'vs Traditional: {0}%' },
+            'stat.vs.old.default': { th: 'vs เตาดั้งเดิม: --%', en: 'vs Traditional: --%' },
             'stat.temp': { th: '🌡️ อุณหภูมิ', en: '🌡️ Temperature' },
             'stat.humidity': { th: '💧 ความชื้น', en: '💧 Humidity' },
             // Chart headers
-            'chart.pm': { th: 'ค่า PM (เตาเดิม vs EcoStove)', en: 'PM Values (Traditional vs EcoStove)' },
-            'chart.gas': { th: 'ค่าก๊าซ (เตาเดิม vs EcoStove)', en: 'Gas Values (Traditional vs EcoStove)' },
-            'chart.old': { th: 'เตาเดิม', en: 'Traditional' },
+            'chart.pm': { th: 'ค่า PM (เตาดั้งเดิม vs เตาชีวมวล)', en: 'PM Values (Traditional vs Biomass)' },
+            'chart.gas': { th: 'ค่าก๊าซ (เตาดั้งเดิม vs เตาชีวมวล)', en: 'Gas Values (Traditional vs Biomass)' },
+            'chart.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
             // Reduction table
-            'reduction.title': { th: '📊 สรุป % การลดมลพิษ (EcoStove vs เตาเดิม)', en: '📊 Pollution Reduction Summary (EcoStove vs Traditional)' },
+            'reduction.title': { th: '📊 สรุป % การลดมลพิษ (เตาชีวมวล vs เตาดั้งเดิม)', en: '📊 Pollution Reduction Summary (Biomass vs Traditional)' },
             'reduction.param': { th: 'พารามิเตอร์', en: 'Parameter' },
-            'reduction.old.avg': { th: 'เตาเดิม (เฉลี่ย)', en: 'Traditional (avg)' },
-            'reduction.eco.avg': { th: 'EcoStove (เฉลี่ย)', en: 'EcoStove (avg)' },
+            'reduction.old.avg': { th: 'เตาดั้งเดิม (เฉลี่ย)', en: 'Traditional (avg)' },
+            'reduction.eco.avg': { th: 'เตาชีวมวล (เฉลี่ย)', en: 'Biomass (avg)' },
             'reduction.pct': { th: '% ต่างกัน', en: '% Diff' },
             'reduction.loading': { th: 'กำลังโหลดข้อมูล...', en: 'Loading...' },
             // Sensor charts
@@ -1156,9 +1157,9 @@
             'daily.no.sensor': { th: 'ไม่ได้เปิดเซนเซอร์', en: 'Sensor not active' },
             'map.no.gps': { th: 'ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา', en: 'No GPS data for houses yet' },
             'map.sensor.house': { th: 'บ้านที่มี Sensor', en: 'Sensor House' },
-            'map.stove.house': { th: 'บ้านที่รับเตา EcoStove', en: 'EcoStove House' },
+            'map.stove.house': { th: 'บ้านที่รับเตาชีวมวล', en: 'Biomass Stove House' },
             'map.sensor.active': { th: 'ติดตั้ง Sensor แล้ว', en: 'Sensor Installed' },
-            'map.stove.installed': { th: 'ติดตั้งเตา EcoStove แล้ว', en: 'EcoStove Installed' },
+            'map.stove.installed': { th: 'ติดตั้งเตาชีวมวลแล้ว', en: 'Biomass Stove Installed' },
             'map.with.sensor': { th: 'มี Sensor', en: 'with Sensor' },
             'map.stove.only': { th: 'รับเตาแล้ว', en: 'Stove Only' },
             'map.total': { th: 'ทั้งหมด', en: 'Total' },
@@ -1309,8 +1310,8 @@
             'reg.name': { th: 'ชื่อเซนเซอร์', en: 'Sensor Name' },
             'reg.name.ph': { th: 'เช่น บ้านนางแก้ว-1', en: 'e.g. House-Kaew-1' },
             'reg.stove.type': { th: 'ประเภทเตา', en: 'Stove Type' },
-            'reg.eco': { th: 'เตาประหยัด (Eco)', en: 'Eco Stove' },
-            'reg.old': { th: 'เตาเดิม (Old)', en: 'Old Stove' },
+            'reg.eco': { th: 'เตาชีวมวล', en: 'Biomass Stove' },
+            'reg.old': { th: 'เตาดั้งเดิม', en: 'Traditional Stove' },
             'reg.id.required': { th: 'กรุณากรอก Tuya Device ID', en: 'Please enter Tuya Device ID' },
             'reg.name.required': { th: 'กรุณากรอกชื่อเซนเซอร์', en: 'Please enter sensor name' },
             'reg.success': { th: 'ลงทะเบียนเซนเซอร์สำเร็จ', en: 'Sensor registered successfully' },
@@ -1369,7 +1370,7 @@
 
         function toggleLang() {
             currentLang = currentLang === 'th' ? 'en' : 'th';
-            localStorage.setItem('ecostove_lang', currentLang);
+            localStorage.setItem('biomass_stove_lang', currentLang);
             applyLang();
             if (currentView === 'basic') updateBasicView();
             else if (currentView === 'deep') updateDeepView();
@@ -1443,6 +1444,7 @@
 
         // Activity log stored in DB (admin_activity_logs)
         localStorage.removeItem('ecostove_activity_log'); // cleanup old localStorage log
+        localStorage.removeItem('ecostove_lang'); // cleanup old key after rename
 
         function logActivity(action, detail) {
             supabaseClient.from('admin_activity_logs').insert({
@@ -1658,12 +1660,118 @@
             showModal(`
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🔑</div>
-                    <h3 class="text-xl font-bold text-navy">ลืม PIN?</h3>
-                    <p class="text-sm text-slate-500 mt-3">กรุณาติดต่อ <span class="font-bold text-amber-600">Super Admin</span> เพื่อรีเซ็ต PIN ให้</p>
-                    <p class="text-xs text-slate-400 mt-2">Super Admin สามารถรีเซ็ต PIN ได้ที่เมนู "จัดการแอดมิน"</p>
+                    <h3 class="text-xl font-bold text-navy">รีเซ็ต PIN ผ่านอีเมล</h3>
+                    <p class="text-sm text-slate-500 mt-2">ระบบจะส่ง OTP ไปยังอีเมลที่ลงทะเบียนไว้</p>
                 </div>
-                <button onclick="closeModal(); promptAdmin()" class="w-full py-3 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all">กลับหน้า Login</button>
+                <input type="email" id="forgot-email" placeholder="Email ที่ลงทะเบียน" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center">
+                <p id="forgot-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
+                <button onclick="requestPinOtp()" id="forgot-btn" class="w-full bg-amber-600 text-white py-4 rounded-2xl font-bold shadow-xl">ส่ง OTP</button>
+                <button onclick="closeModal(); promptAdmin()" class="w-full py-3 mt-2 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all">กลับหน้า Login</button>
             `);
+            setTimeout(() => document.getElementById('forgot-email')?.focus(), 100);
+        }
+
+        async function requestPinOtp() {
+            const email = (document.getElementById('forgot-email')?.value || '').trim();
+            const errEl = document.getElementById('forgot-error');
+            const btn = document.getElementById('forgot-btn');
+            if (!email || !email.includes('@')) {
+                if (errEl) { errEl.textContent = 'กรุณากรอกอีเมล'; errEl.classList.remove('hidden'); }
+                return;
+            }
+            if (btn) { btn.disabled = true; btn.textContent = 'กำลังส่ง...'; }
+            if (errEl) errEl.classList.add('hidden');
+            try {
+                const resp = await fetch('/api/admin/forgot-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    if (errEl) { errEl.textContent = data.error || 'เกิดข้อผิดพลาด'; errEl.classList.remove('hidden'); }
+                    if (btn) { btn.disabled = false; btn.textContent = 'ส่ง OTP'; }
+                    return;
+                }
+                showOtpStep(email, data.maskedEmail || email);
+            } catch (e) {
+                if (errEl) { errEl.textContent = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์'; errEl.classList.remove('hidden'); }
+                if (btn) { btn.disabled = false; btn.textContent = 'ส่ง OTP'; }
+            }
+        }
+
+        function showOtpStep(email, maskedEmail) {
+            showModal(`
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">📧</div>
+                    <h3 class="text-xl font-bold text-navy">กรอกรหัส OTP</h3>
+                    <p class="text-sm text-slate-500 mt-2">ส่ง OTP ไปที่ <span class="font-mono font-bold text-emerald-600">${maskedEmail}</span></p>
+                    <p class="text-xs text-slate-400 mt-1">OTP หมดอายุใน 10 นาที</p>
+                </div>
+                <input type="text" id="otp-input" placeholder="รหัส OTP 6 หลัก" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-2xl text-center tracking-[0.5em] font-mono" maxlength="6" inputmode="numeric">
+                <p id="otp-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
+                <div class="relative mb-4">
+                    <input type="password" id="new-pin-input" placeholder="PIN ใหม่ (อย่างน้อย 4 ตัว)" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20">
+                    <button type="button" onclick="togglePinVis('new-pin-input', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                </div>
+                <div class="relative mb-6">
+                    <input type="password" id="confirm-pin-input" placeholder="ยืนยัน PIN ใหม่" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20" onkeyup="if(event.key==='Enter') resetPinWithOtp('${email}')">
+                    <button type="button" onclick="togglePinVis('confirm-pin-input', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                </div>
+                <button onclick="resetPinWithOtp('${email}')" id="reset-btn" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-xl">ตั้ง PIN ใหม่</button>
+                <button onclick="showForgotPinModal()" class="w-full py-3 mt-2 rounded-2xl border border-slate-200 text-slate-600 text-sm hover:bg-slate-50 transition-all">ขอ OTP ใหม่</button>
+            `);
+            setTimeout(() => document.getElementById('otp-input')?.focus(), 100);
+        }
+
+        async function resetPinWithOtp(email) {
+            const otp = (document.getElementById('otp-input')?.value || '').trim();
+            const newPin = (document.getElementById('new-pin-input')?.value || '').trim();
+            const confirmPin = (document.getElementById('confirm-pin-input')?.value || '').trim();
+            const errEl = document.getElementById('otp-error');
+            const btn = document.getElementById('reset-btn');
+
+            if (!otp || otp.length !== 6) {
+                if (errEl) { errEl.textContent = 'กรุณากรอก OTP 6 หลัก'; errEl.classList.remove('hidden'); }
+                return;
+            }
+            if (!newPin || newPin.length < 4) {
+                if (errEl) { errEl.textContent = 'PIN ใหม่ต้องมีอย่างน้อย 4 ตัว'; errEl.classList.remove('hidden'); }
+                return;
+            }
+            if (newPin !== confirmPin) {
+                if (errEl) { errEl.textContent = 'PIN ใหม่ไม่ตรงกัน'; errEl.classList.remove('hidden'); }
+                return;
+            }
+
+            if (btn) { btn.disabled = true; btn.textContent = 'กำลังตั้ง PIN...'; }
+            if (errEl) errEl.classList.add('hidden');
+
+            try {
+                const resp = await fetch('/api/admin/reset-pin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp, newPin }),
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    if (errEl) { errEl.textContent = data.error || 'เกิดข้อผิดพลาด'; errEl.classList.remove('hidden'); }
+                    if (btn) { btn.disabled = false; btn.textContent = 'ตั้ง PIN ใหม่'; }
+                    return;
+                }
+                // Success — show confirmation then go to login
+                showModal(`
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">✅</div>
+                        <h3 class="text-xl font-bold text-emerald-700">ตั้ง PIN ใหม่สำเร็จ!</h3>
+                        <p class="text-sm text-slate-500 mt-3">กรุณา Login ด้วย PIN ใหม่</p>
+                    </div>
+                    <button onclick="closeModal(); promptAdmin()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">ไปหน้า Login</button>
+                `);
+            } catch (e) {
+                if (errEl) { errEl.textContent = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์'; errEl.classList.remove('hidden'); }
+                if (btn) { btn.disabled = false; btn.textContent = 'ตั้ง PIN ใหม่'; }
+            }
         }
 
         function showRegisterModal() {
@@ -2584,7 +2692,7 @@
                                 borderRadius: 6,
                             },
                             {
-                                label: 'EcoStove',
+                                label: t('compare.eco'),
                                 data: [avg(ecoData, 'pm25_value'), avg(ecoData, 'pm10_value')],
                                 backgroundColor: 'rgba(16,185,129,0.7)',
                                 borderRadius: 6,
@@ -2615,7 +2723,7 @@
                                 borderRadius: 6,
                             },
                             {
-                                label: 'EcoStove',
+                                label: t('compare.eco'),
                                 data: [avg(ecoData, 'co2_value'), avg(ecoData, 'hcho_value')],
                                 backgroundColor: 'rgba(16,185,129,0.7)',
                                 borderRadius: 6,
@@ -2642,7 +2750,7 @@
                         labels: ['TVOC (mg/m³)'],
                         datasets: [
                             { label: t('chart.old'), data: [tvocOld], backgroundColor: 'rgba(249,115,22,0.7)', borderRadius: 6 },
-                            { label: 'EcoStove', data: [tvocEco], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 6 },
+                            { label: t('compare.eco'), data: [tvocEco], backgroundColor: 'rgba(16,185,129,0.7)', borderRadius: 6 },
                         ],
                     },
                     options: {
@@ -2703,7 +2811,7 @@
                 data: {
                     datasets: [
                         {
-                            label: 'EcoStove', data: ecoData.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
+                            label: t('compare.eco'), data: ecoData.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
                             borderColor: '#10b981', backgroundColor: '#10b98120', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: false,
                         },
                         {
@@ -2765,10 +2873,18 @@
             }));
             const totalPoints = sensorGroups.reduce((sum, g) => sum + g.data.length, 0);
 
-            const countEl = document.getElementById('sensor-chart-count');
-            if (countEl) countEl.textContent = sensorGroups.map(g => `${g.name}: ${g.data.length}`).join(' | ') + ` (รวม ${totalPoints})`;
-
             const chartColors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6'];
+
+            const countEl = document.getElementById('sensor-chart-count');
+            if (countEl) countEl.textContent = `${sensorGroups.length} เซนเซอร์ · ${totalPoints.toLocaleString()} จุดข้อมูล`;
+
+            // Render color legend badges
+            const legendEl = document.getElementById('sensor-color-legend');
+            if (legendEl) {
+                legendEl.innerHTML = sensorGroups.map((g, i) =>
+                    `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white/80 border border-slate-200 shadow-sm"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:${chartColors[i % chartColors.length]}"></span>${g.name}</span>`
+                ).join('');
+            }
 
             const chartConfigs = [
                 { id: 'sensorPm25Chart', field: 'pm25_value' },
@@ -2803,7 +2919,7 @@
                         responsive: true, maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
                         plugins: {
-                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                            legend: { display: false },
                             tooltip: { callbacks: { title: (items) => items.length ? new Date(items[0].parsed.x).toLocaleString('th-TH') : '' } }
                         },
                         scales: {
@@ -2895,6 +3011,14 @@
                 const sessNum = numMap[s.id] || '';
                 const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
 
+                // Baseline transition badge
+                let blBadge = '';
+                if (s.baseline_transition === 'auto') {
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Baseline อัตโนมัติ (อาสาไม่ได้กด)' : 'Auto baseline (volunteer did not press)') + '">AUTO</span>';
+                } else if (s.baseline_transition === 'manual') {
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Baseline เอง' : 'Volunteer pressed baseline') + '">MANUAL</span>';
+                }
+
                 // Format notes: show cause of incomplete
                 let notesHtml = '';
                 if (s.notes) {
@@ -2908,7 +3032,7 @@
                 rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + deviceName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\')">' +
                     '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
                     '<td class="p-3">' + deviceName + sessLabel + '</td>' +
-                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span>' + notesHtml + '</td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -3998,8 +4122,8 @@
                     const isPast = p.ends_at && p.ends_at < today;
                     const isOld = p.stove_type === 'old';
                     const badge = isOld
-                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700">เตาเดิม</span>'
-                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">เตาประหยัด</span>';
+                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700">เตาดั้งเดิม</span>'
+                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">เตาชีวมวล</span>';
                     const dateRange = formatThaiDate(p.starts_at) + ' → ' + (p.ends_at ? formatThaiDate(p.ends_at) : 'ปัจจุบัน');
 
                     html += '<div class="flex items-center justify-between px-4 py-2 ' + (isPast ? 'opacity-50' : '') + ' ' + (isActive ? 'bg-emerald-50/50' : '') + '">'
@@ -4063,13 +4187,13 @@
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="period-stove" value="old" class="sr-only peer" ${!prefill || prefill.stove_type === 'old' ? 'checked' : ''}>
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาเดิม</span>
+                                    <span class="font-bold text-sm">เตาดั้งเดิม</span>
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="period-stove" value="eco" class="sr-only peer" ${prefill && prefill.stove_type === 'eco' ? 'checked' : ''}>
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาประหยัด</span>
+                                    <span class="font-bold text-sm">เตาชีวมวล</span>
                                 </div>
                             </label>
                         </div>
@@ -4086,7 +4210,7 @@
                     </div>
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
-                        <input type="text" id="period-notes" value="${prefill && prefill.notes ? esc(prefill.notes) : ''}" placeholder="เช่น เริ่มเฟสเตาประหยัด" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="period-notes" value="${prefill && prefill.notes ? esc(prefill.notes) : ''}" placeholder="เช่น เริ่มเฟสเตาชีวมวล" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
                 <div class="flex gap-3">
@@ -4157,7 +4281,7 @@
                 if (error) throw error;
                 closeModal();
                 showToast(editId ? 'แก้ไขช่วงเก็บข้อมูลสำเร็จ' : 'เพิ่มช่วงเก็บข้อมูลสำเร็จ', 'success');
-                logActivity(editId ? 'แก้ไขช่วงเก็บข้อมูล' : 'เพิ่มช่วงเก็บข้อมูล', stoveType === 'old' ? 'เตาเดิม' : 'เตาประหยัด');
+                logActivity(editId ? 'แก้ไขช่วงเก็บข้อมูล' : 'เพิ่มช่วงเก็บข้อมูล', stoveType === 'old' ? 'เตาดั้งเดิม' : 'เตาชีวมวล');
                 loadCollectionPeriods();
             } catch (e) {
                 showToast('ไม่สามารถบันทึกได้: ' + e.message, 'error');
@@ -4187,9 +4311,9 @@
             if (!periods.length) return null;
             const today = new Date().toISOString().slice(0, 10);
             const active = periods.find(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
-            if (active) return { label: active.stove_type === 'old' ? 'เตาเดิม' : 'เตาประหยัด', active: true, stove: active.stove_type, ends: active.ends_at };
+            if (active) return { label: active.stove_type === 'old' ? 'เตาดั้งเดิม' : 'เตาชีวมวล', active: true, stove: active.stove_type, ends: active.ends_at };
             const latest = periods[0]; // sorted desc
-            return { label: (latest.stove_type === 'old' ? 'เตาเดิม' : 'เตาประหยัด') + ' (จบแล้ว)', active: false, stove: latest.stove_type, ends: latest.ends_at };
+            return { label: (latest.stove_type === 'old' ? 'เตาดั้งเดิม' : 'เตาชีวมวล') + ' (จบแล้ว)', active: false, stove: latest.stove_type, ends: latest.ends_at };
         }
 
         function showBatchPeriodModal() {
@@ -4229,13 +4353,13 @@
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="batch-stove" value="old" class="sr-only peer" checked>
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาเดิม</span>
+                                    <span class="font-bold text-sm">เตาดั้งเดิม</span>
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="batch-stove" value="eco" class="sr-only peer">
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาประหยัด</span>
+                                    <span class="font-bold text-sm">เตาชีวมวล</span>
                                 </div>
                             </label>
                         </div>
@@ -4252,7 +4376,7 @@
                     </div>
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
-                        <input type="text" id="batch-notes" placeholder="เช่น เริ่มเฟสเตาเดิม" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="batch-notes" placeholder="เช่น เริ่มเฟสเตาดั้งเดิม" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
                 <div class="flex gap-3">
@@ -4316,7 +4440,7 @@
                 if (error) throw error;
                 closeModal();
                 showToast('ตั้งค่า ' + selectedIds.length + ' บ้านสำเร็จ', 'success');
-                logActivity('ตั้งค่าช่วงเก็บข้อมูล', selectedIds.length + ' บ้าน — ' + (stoveType === 'old' ? 'เตาเดิม' : 'เตาประหยัด'));
+                logActivity('ตั้งค่าช่วงเก็บข้อมูล', selectedIds.length + ' บ้าน — ' + (stoveType === 'old' ? 'เตาดั้งเดิม' : 'เตาชีวมวล'));
                 loadCollectionPeriods();
             } catch (e) {
                 showToast('ไม่สามารถบันทึกได้: ' + e.message, 'error');
@@ -4333,8 +4457,8 @@
             const checkboxes = collectionPeriods.map(p => {
                 const name = esc(subjectMap[Number(p.subject_id)] || 'บ้าน #' + p.subject_id);
                 const stoveBadge = p.stove_type === 'old'
-                    ? '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-orange-100 text-orange-600">เตาเดิม</span>'
-                    : '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-600">เตาประหยัด</span>';
+                    ? '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-orange-100 text-orange-600">เตาดั้งเดิม</span>'
+                    : '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-600">เตาชีวมวล</span>';
                 const dateRange = formatThaiDate(p.starts_at) + ' → ' + (p.ends_at ? formatThaiDate(p.ends_at) : 'ปัจจุบัน');
                 return '<label class="flex items-center gap-2 p-2 rounded-xl hover:bg-red-50 cursor-pointer">'
                     + '<input type="checkbox" value="' + p.id + '" class="batch-del-cb w-4 h-4 accent-red-500">'
@@ -5318,7 +5442,7 @@
                     const ws = XLSX.utils.json_to_sheet(exportDataRows(data));
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Data');
-                    XLSX.writeFile(wb, `ecostove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
+                    XLSX.writeFile(wb, `biomass_stove_data_${new Date().toISOString().split('T')[0]}.xlsx`);
                     showToast('Export Excel สำเร็จ ' + data.length + ' รายการ');
                 } catch (e) {
                     showToast('Export ผิดพลาด: ' + e.message, 'error');
@@ -5348,7 +5472,7 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `ecostove_data_${new Date().toISOString().split('T')[0]}.csv`;
+                    a.download = `biomass_stove_data_${new Date().toISOString().split('T')[0]}.csv`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -5422,7 +5546,7 @@
                 const ws = XLSX.utils.json_to_sheet(rows);
                 const wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, 'สรุปรายวัน');
-                XLSX.writeFile(wb, `ecostove_daily_summary_${new Date().toISOString().split('T')[0]}.xlsx`);
+                XLSX.writeFile(wb, `biomass_stove_daily_summary_${new Date().toISOString().split('T')[0]}.xlsx`);
                 logActivity('Export สรุปรายวัน', data.length + ' records');
                 showToast('Export สรุปรายวัน ' + data.length + ' วัน');
             } catch (e) {
@@ -5457,11 +5581,11 @@
                         const pct = oldAvg && ecoAvg != null ? +((oldAvg - ecoAvg) / oldAvg * 100).toFixed(1) : '';
                         return {
                             'ค่าวัด': p.label,
-                            'เตาเดิม (เฉลี่ย)': oldAvg != null ? +oldAvg.toFixed(p.dec) : '',
-                            'EcoStove (เฉลี่ย)': ecoAvg != null ? +ecoAvg.toFixed(p.dec) : '',
+                            'เตาดั้งเดิม (เฉลี่ย)': oldAvg != null ? +oldAvg.toFixed(p.dec) : '',
+                            'เตาชีวมวล (เฉลี่ย)': ecoAvg != null ? +ecoAvg.toFixed(p.dec) : '',
                             'ลดลง (%)': pct,
-                            'จำนวนข้อมูลเตาเดิม': oldData.filter(d => d[p.field] != null).length,
-                            'จำนวนข้อมูล EcoStove': ecoData.filter(d => d[p.field] != null).length,
+                            'จำนวนข้อมูลเตาดั้งเดิม': oldData.filter(d => d[p.field] != null).length,
+                            'จำนวนข้อมูลเตาชีวมวล': ecoData.filter(d => d[p.field] != null).length,
                         };
                     });
 
@@ -5472,7 +5596,7 @@
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws1, 'สรุปเปรียบเทียบ');
                     XLSX.utils.book_append_sheet(wb, ws2, 'ข้อมูลดิบ');
-                    XLSX.writeFile(wb, `ecostove_comparison_${new Date().toISOString().split('T')[0]}.xlsx`);
+                    XLSX.writeFile(wb, `biomass_stove_comparison_${new Date().toISOString().split('T')[0]}.xlsx`);
                     logActivity('Export เปรียบเทียบ', filtered.length + ' records');
                     showToast('Export เปรียบเทียบสำเร็จ (2 sheets)');
                 } catch (e) {

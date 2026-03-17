@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoStove — ตั้งค่าบัญชีโครงการ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Prompt', sans-serif;
+    background: #f5f7fa;
+    color: #2d3748;
+    line-height: 1.7;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: white;
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  .intro {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-left: 4px solid #43a047;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .intro h2 {
+    font-size: 1.1rem;
+    color: #2e7d32;
+    margin-bottom: 12px;
+  }
+
+  .intro p {
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .section-number {
+    display: inline-block;
+    background: #2e7d32;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+
+  .section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  .section-desc {
+    font-size: 0.85rem;
+    color: #718096;
+    margin-bottom: 16px;
+    padding-left: 38px;
+  }
+
+  .why-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #166534;
+  }
+
+  .why-box strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .option-group {
+    margin-bottom: 16px;
+  }
+
+  .option-label {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .option-label:hover {
+    border-color: #43a047;
+    background: #f0fdf4;
+  }
+
+  .option-label input[type="radio"] {
+    margin-top: 4px;
+    margin-right: 12px;
+    accent-color: #2e7d32;
+    flex-shrink: 0;
+  }
+
+  .option-content {
+    flex: 1;
+  }
+
+  .option-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .option-desc {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-top: 2px;
+  }
+
+  .text-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'Prompt', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    margin-top: 8px;
+  }
+
+  .text-input:focus {
+    outline: none;
+    border-color: #43a047;
+  }
+
+  .text-input::placeholder {
+    color: #a0aec0;
+  }
+
+  .conditional-field {
+    display: none;
+    margin-top: 8px;
+    padding: 12px 16px;
+    background: #fafafa;
+    border-radius: 8px;
+  }
+
+  .conditional-field.show {
+    display: block;
+  }
+
+  .field-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 4px;
+  }
+
+  .current-value {
+    display: inline-block;
+    background: #edf2f7;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    color: #4a5568;
+    margin: 4px 0;
+  }
+
+  .sticker-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+  }
+
+  .sticker {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .sticker-code {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2e7d32;
+  }
+
+  .sticker-sub {
+    font-size: 0.7rem;
+    color: #718096;
+  }
+
+  .price-tag {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .free-tag {
+    display: inline-block;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .domain-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 12px 0;
+  }
+
+  .domain-card {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .domain-card:hover {
+    border-color: #43a047;
+  }
+
+  .domain-card.selected {
+    border-color: #2e7d32;
+    background: #f0fdf4;
+  }
+
+  .domain-url {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2d3748;
+    word-break: break-all;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.85rem;
+  }
+
+  .admin-table th {
+    background: #f7fafc;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 500;
+    color: #4a5568;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .admin-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #edf2f7;
+  }
+
+  .submit-section {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    color: white;
+    margin-top: 24px;
+  }
+
+  .submit-section p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 16px;
+  }
+
+  .btn-submit {
+    background: white;
+    color: #2e7d32;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-family: 'Prompt', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .btn-copy {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: 'Prompt', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.2s;
+  }
+
+  .btn-copy:hover {
+    background: rgba(255,255,255,0.3);
+  }
+
+  .warning-box {
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: #92400e;
+  }
+
+  textarea.text-input {
+    min-height: 60px;
+    resize: vertical;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 12px; }
+    .header { padding: 20px; }
+    .header h1 { font-size: 1.3rem; }
+    .section { padding: 18px; }
+    .domain-compare { grid-template-columns: 1fr; }
+    .sticker-preview { justify-content: center; }
+  }
+
+  @media print {
+    body { background: white; }
+    .section, .intro { box-shadow: none; border: 1px solid #ddd; }
+    .btn-submit, .btn-copy { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>EcoStove — ตั้งค่าบัญชีโครงการ</h1>
+    <p>กรุณากรอกข้อมูลเพื่อตั้งค่าระบบให้พร้อมใช้งาน</p>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro">
+    <h2>ทำไมต้องกรอกแบบฟอร์มนี้?</h2>
+    <p>
+      ระบบ EcoStove กำลังย้ายจากบัญชีส่วนตัวของผู้พัฒนาไปยัง<strong>บัญชีกลางของโครงการ</strong>
+      เพื่อให้ทีมโครงการจัดการได้เอง ข้อมูลด้านล่างจะใช้ในการตั้งค่าบัญชีและสิทธิ์การเข้าถึงทั้งหมด
+    </p>
+  </div>
+
+  <!-- 1. Email -->
+  <div class="section">
+    <h3><span class="section-number">1</span> อีเมลโครงการ</h3>
+    <p class="section-desc">ใช้สำหรับเข้าสู่ระบบทุก platform (Tuya IoT, Supabase, Vercel, LINE)</p>
+
+    <div class="why-box">
+      <strong>ทำไมต้องมีอีเมลโครงการ?</strong>
+      อีเมลนี้จะเป็น "กุญแจหลัก" ในการเข้าถึงทุกระบบของโครงการ เมื่อผู้พัฒนาส่งมอบงานแล้ว ผู้ดูแลโครงการจะสามารถจัดการทุกอย่างผ่านอีเมลนี้ได้เอง
+    </div>
+
+    <div class="option-group">
+      <label class="option-label">
+        <input type="radio" name="email_choice" value="dev_handle" onchange="toggleField('email-custom', false)">
+        <div class="option-content">
+          <div class="option-title">ให้ผู้พัฒนาจัดหาให้</div>
+          <div class="option-desc">จะสร้าง Gmail ใหม่สำหรับโครงการ เช่น ecostove.cmru@gmail.com</div>
+        </div>
+      </label>
+
+      <label class="option-label">
+        <input type="radio" name="email_choice" value="have_email" onchange="toggleField('email-custom', true)">
+        <div class="option-content">
+          <div class="option-title">มีอีเมลอยู่แล้ว</div>
+          <div class="option-desc">มีอีเมลที่ต้องการใช้เป็นบัญชีโครงการอยู่แล้ว</div>
+        </div>
+      </label>
+
+      <div id="email-custom" class="conditional-field">
+        <div class="field-label">อีเมลที่ต้องการใช้</div>
+        <input type="email" class="text-input" id="email_value" placeholder="เช่น ecostove@cmru.ac.th">
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Phone -->
+  <div class="section">
+    <h3><span class="section-number">2</span> เบอร์โทรศัพท์สำหรับ Recovery</h3>
+    <p class="section-desc">เบอร์โทรของผู้ดูแลโครงการ (ไม่ใช่ของผู้พัฒนา)</p>
+
+    <div class="why-box">
+      <strong>เอาไปใช้ทำอะไร?</strong>
+      <ul style="margin: 4px 0 0 18px;">
+        <li><strong>กู้คืนบัญชี Gmail</strong> — กรณีลืมรหัสผ่านหรือบัญชีถูกล็อก</li>
+        <li><strong>ยืนยันตัวตน Google</strong> — เมื่อเข้าสู่ระบบจากอุปกรณ์ใหม่</li>
+        <li><strong>Two-Factor Authentication (2FA)</strong> — รับรหัส OTP เพื่อความปลอดภัย</li>
+      </ul>
+    </div>
+
+    <div class="field-label">เบอร์โทรศัพท์</div>
+    <input type="tel" class="text-input" id="phone_value" placeholder="เช่น 08X-XXX-XXXX">
+
+    <div style="margin-top: 12px;">
+      <div class="field-label">อีเมลสำรอง (Recovery Email)</div>
+      <input type="email" class="text-input" id="recovery_email" placeholder="อีเมลของผู้ดูแลโครงการ">
+      <div style="font-size: 0.78rem; color: #718096; margin-top: 4px;">ใช้กู้คืนบัญชีโครงการกรณีฉุกเฉิน</div>
+    </div>
+  </div>
+
+  <!-- 3. Password -->
+  <div class="section">
+    <h3><span class="section-number">3</span> รหัสผ่านบัญชีโครงการ</h3>
+    <p class="section-desc">รหัสผ่านสำหรับเข้าสู่ระบบ Gmail, Tuya, Supabase, Vercel ของโครงการ</p>
+
+    <div class="warning-box">
+      รหัสผ่านนี้ใช้เข้าถึงทุก platform ของโครงการ กรุณาเก็บรักษาไว้อย่างปลอดภัย
+    </div>
+
+    <p style="font-size: 0.9rem; margin-bottom: 8px;">ปัจจุบันตั้งไว้เป็น:</p>
+    <div class="current-value">BioMass@cmru2026</div>
+
+    <div class="option-group" style="margin-top: 12px;">
+      <label class="option-label">
+        <input type="radio" name="password_choice" value="keep" onchange="toggleField('password-custom', false)">
+        <div class="option-content">
+          <div class="option-title">ใช้รหัสผ่านนี้ได้</div>
+        </div>
+      </label>
+
+      <label class="option-label">
+        <input type="radio" name="password_choice" value="change" onchange="toggleField('password-custom', true)">
+        <div class="option-content">
+          <div class="option-title">ต้องการเปลี่ยน</div>
+        </div>
+      </label>
+
+      <div id="password-custom" class="conditional-field">
+        <div class="field-label">รหัสผ่านที่ต้องการ</div>
+        <input type="text" class="text-input" id="password_value" placeholder="รหัสผ่านใหม่ (ควรมีอย่างน้อย 8 ตัวอักษร)">
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Admin System -->
+  <div class="section">
+    <h3><span class="section-number">4</span> ระบบแอดมิน (Dashboard)</h3>
+    <p class="section-desc">ตั้งค่าผู้ดูแลระบบสำหรับหน้า Dashboard จัดการข้อมูล</p>
+
+    <div class="why-box">
+      <strong>ระบบแอดมินมี 2 ระดับ</strong>
+      <table style="width: 100%; margin-top: 8px; font-size: 0.85rem; border-collapse: collapse;">
+        <tr style="border-bottom: 1px solid #bbf7d0;">
+          <td style="padding: 6px 0; font-weight: 600; width: 120px;">Super Admin</td>
+          <td style="padding: 6px 0;">จัดการทุกอย่าง — ลบข้อมูล, เพิ่ม/ลบ/รีเซ็ตรหัสแอดมินอื่น, เปลี่ยนสิทธิ์</td>
+        </tr>
+        <tr>
+          <td style="padding: 6px 0; font-weight: 600;">Admin</td>
+          <td style="padding: 6px 0;">ดูข้อมูล, จัดการเซนเซอร์ — แต่ลบข้อมูลและจัดการแอดมินคนอื่นไม่ได้</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="warning-box">
+      <strong>ขั้นตอนการตั้งค่า:</strong>
+      <ol style="margin: 4px 0 0 18px; font-size: 0.85rem;">
+        <li>ผู้พัฒนาจะสร้างบัญชี Super Admin ตามข้อมูลด้านล่าง</li>
+        <li>ตั้งค่าสิทธิ์และรหัสเข้าถึงระบบ</li>
+        <li>ทดสอบว่าเข้าสู่ระบบได้ถูกต้อง</li>
+      </ol>
+    </div>
+
+    <!-- Super Admin -->
+    <div style="margin-bottom: 20px; padding: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;">
+      <div style="font-size: 0.95rem; font-weight: 600; color: #92400e; margin-bottom: 4px;">Super Admin ของโครงการ</div>
+      <p style="font-size: 0.82rem; color: #78716c; margin-bottom: 12px;">ผู้ที่จะมีสิทธิ์สูงสุดในการจัดการระบบ (ควรมี 1 คน)</p>
+
+      <div class="field-label">ชื่อ</div>
+      <input type="text" class="text-input" id="super_admin_name" placeholder="ชื่อที่จะแสดงในระบบ">
+
+      <div class="field-label" style="margin-top: 10px;">อีเมล (ใช้สำหรับเข้าสู่ระบบ)</div>
+      <input type="email" class="text-input" id="super_admin_email" placeholder="อีเมลสำหรับ login เข้า Dashboard">
+
+      <div class="field-label" style="margin-top: 10px;">PIN ส่วนตัว (ตัวเลข 4-6 หลัก)</div>
+      <p style="font-size: 0.78rem; color: #a0aec0; margin-bottom: 4px;">ใช้คู่กับอีเมลเพื่อเข้าสู่ระบบ — เปลี่ยนเองได้ภายหลังในหน้า Dashboard</p>
+      <input type="text" class="text-input" id="super_admin_pin" placeholder="เช่น 1234 หรือ 123456" maxlength="6" inputmode="numeric" style="max-width: 200px;">
+    </div>
+
+    <!-- Invite Code -->
+    <div style="margin-bottom: 20px; padding-top: 16px; border-top: 1px solid #edf2f7;">
+      <div class="field-label" style="font-size: 0.95rem; font-weight: 600;">รหัสเข้าร่วม (Invite Code)</div>
+      <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;">
+        ใช้สำหรับให้คนอื่นลงทะเบียนเป็น Admin ด้วยตนเอง — แจกรหัสนี้ให้คนที่ต้องการเข้าถึง Dashboard
+        <br>ใครมีรหัสนี้จะสมัครเป็น Admin ได้เลยโดยไม่ต้องให้ Super Admin เพิ่มให้
+      </p>
+
+      <p style="font-size: 0.9rem; margin-bottom: 8px;">ปัจจุบันตั้งไว้เป็น:</p>
+      <div class="current-value">ecostove2026</div>
+
+      <div class="option-group" style="margin-top: 10px;">
+        <label class="option-label">
+          <input type="radio" name="invite_choice" value="keep" onchange="toggleField('invite-custom', false)">
+          <div class="option-content">
+            <div class="option-title">ใช้รหัสนี้ได้</div>
+          </div>
+        </label>
+
+        <label class="option-label">
+          <input type="radio" name="invite_choice" value="change" onchange="toggleField('invite-custom', true)">
+          <div class="option-content">
+            <div class="option-title">ต้องการเปลี่ยน</div>
+          </div>
+        </label>
+
+        <div id="invite-custom" class="conditional-field">
+          <div class="field-label">รหัสเข้าร่วมที่ต้องการ</div>
+          <input type="text" class="text-input" id="invite_value" placeholder="เช่น biomass2026">
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Admins -->
+    <div style="padding-top: 16px; border-top: 1px solid #edf2f7;">
+      <div class="field-label" style="font-size: 0.95rem; font-weight: 600;">แอดมินเพิ่มเติม (ถ้ามี)</div>
+      <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;">
+        ถ้าต้องการเพิ่มแอดมินอื่นตั้งแต่เริ่มต้น กรอกไว้ได้เลย
+        <br>หรือจะให้แต่ละคนลงทะเบียนเองทีหลังด้วย Invite Code ก็ได้
+      </p>
+      <textarea class="text-input" id="additional_admins" placeholder="ชื่อ + อีเมล (บรรทัดละ 1 คน)&#10;เช่น&#10;สมชาย — somchai@gmail.com&#10;นิดดา — nidtha@gmail.com"></textarea>
+    </div>
+  </div>
+
+  <!-- 5. Sensor Naming -->
+  <div class="section">
+    <h3><span class="section-number">5</span> ชื่อเซนเซอร์</h3>
+    <p class="section-desc">รหัสที่จะแสดงบนสติกเกอร์แปะตัวเซนเซอร์ และใช้ในระบบ</p>
+
+    <div class="why-box">
+      <strong>ใช้ทำอะไร?</strong>
+      <ul style="margin: 4px 0 0 18px;">
+        <li><strong>สติกเกอร์แปะเซนเซอร์</strong> — เพื่อระบุตัวเครื่องได้ง่าย</li>
+        <li><strong>แสดงในระบบ</strong> — หน้า Dashboard, รายงาน, LINE สรุปผล</li>
+        <li>ไม่ผูกกับบ้าน — ย้ายเครื่องได้โดยไม่ต้องเปลี่ยนชื่อ</li>
+      </ul>
+    </div>
+
+    <p style="font-size: 0.9rem; margin-bottom: 8px;">ตัวอย่างรูปแบบที่เสนอ:</p>
+
+    <div class="sticker-preview">
+      <div class="sticker">
+        <div class="sticker-code">BS-01</div>
+        <div class="sticker-sub">Biomass Stove</div>
+      </div>
+      <div class="sticker">
+        <div class="sticker-code">BS-02</div>
+        <div class="sticker-sub">Biomass Stove</div>
+      </div>
+      <div class="sticker">
+        <div class="sticker-code">BS-03</div>
+        <div class="sticker-sub">Biomass Stove</div>
+      </div>
+      <div class="sticker" style="opacity: 0.5;">
+        <div class="sticker-code">...</div>
+        <div class="sticker-sub">ถึง BS-10</div>
+      </div>
+    </div>
+
+    <div class="option-group">
+      <label class="option-label">
+        <input type="radio" name="sensor_choice" value="bs" onchange="toggleField('sensor-custom', false)">
+        <div class="option-content">
+          <div class="option-title">ใช้ BS-01 ถึง BS-10</div>
+          <div class="option-desc">BS = Biomass Stove (สั้น จำง่าย)</div>
+        </div>
+      </label>
+
+      <label class="option-label">
+        <input type="radio" name="sensor_choice" value="number_only" onchange="toggleField('sensor-custom', false)">
+        <div class="option-content">
+          <div class="option-title">ใช้แค่ตัวเลข 01 - 10</div>
+          <div class="option-desc">สั้นที่สุด ไม่มีตัวย่อ</div>
+        </div>
+      </label>
+
+      <label class="option-label">
+        <input type="radio" name="sensor_choice" value="custom" onchange="toggleField('sensor-custom', true)">
+        <div class="option-content">
+          <div class="option-title">ใช้ชื่ออื่น</div>
+          <div class="option-desc">กำหนดรูปแบบเอง</div>
+        </div>
+      </label>
+
+      <div id="sensor-custom" class="conditional-field">
+        <div class="field-label">รูปแบบที่ต้องการ</div>
+        <input type="text" class="text-input" id="sensor_value" placeholder="เช่น ECO-01, AQ-01, CMRU-01">
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Domain -->
+  <div class="section">
+    <h3><span class="section-number">6</span> โดเมน (ที่อยู่เว็บไซต์)</h3>
+    <p class="section-desc">URL สำหรับเข้าถึงระบบ EcoStove</p>
+
+    <div class="domain-compare">
+      <label class="domain-card" onclick="selectDomain(this, 'free')">
+        <input type="radio" name="domain_choice" value="free" style="display:none">
+        <div class="free-tag" style="margin-bottom: 8px;">ฟรี</div>
+        <div class="domain-url">biomassstove.vercel.app</div>
+        <div style="font-size: 0.8rem; color: #718096; margin-top: 8px;">
+          ใช้ได้ทันที ไม่มีค่าใช้จ่าย<br>
+          ใช้งานได้ตลอด ไม่ต้องต่ออายุ
+        </div>
+      </label>
+
+      <label class="domain-card" onclick="selectDomain(this, 'paid')">
+        <input type="radio" name="domain_choice" value="paid" style="display:none">
+        <div class="price-tag" style="margin-bottom: 8px;">~350-500 บาท/ปี</div>
+        <div class="domain-url">biomassstove.org</div>
+        <div style="font-size: 0.8rem; color: #718096; margin-top: 8px;">
+          ดูเป็นทางการมากกว่า<br>
+          ต้องต่ออายุทุกปี
+        </div>
+      </label>
+    </div>
+
+    <div class="option-group" style="margin-top: 4px;">
+      <label class="option-label">
+        <input type="radio" name="domain_choice" value="other_domain" onchange="toggleField('domain-custom', true)">
+        <div class="option-content">
+          <div class="option-title">ต้องการโดเมนอื่น</div>
+          <div class="option-desc">เช่น ecostove.cmru.ac.th (ต้องขอผ่าน IT มหาลัย)</div>
+        </div>
+      </label>
+
+      <div id="domain-custom" class="conditional-field">
+        <div class="field-label">โดเมนที่ต้องการ</div>
+        <input type="text" class="text-input" id="domain_value" placeholder="เช่น ecostove.cmru.ac.th">
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Notes -->
+  <div class="section">
+    <h3><span class="section-number">7</span> หมายเหตุเพิ่มเติม</h3>
+    <p class="section-desc">มีอะไรอยากแจ้งเพิ่มเติม หรือมีคำถามใดๆ</p>
+    <textarea class="text-input" id="notes" placeholder="เช่น ต้องการเพิ่มฟีเจอร์อะไร, มีข้อสงสัยอะไร"></textarea>
+  </div>
+
+  <!-- Summary / Submit -->
+  <div class="submit-section">
+    <p>กรอกครบแล้วกดปุ่มด้านล่างเพื่อสร้างสรุป แล้วส่งให้ผู้พัฒนา</p>
+    <button class="btn-submit" onclick="generateSummary()">สร้างสรุปข้อมูล</button>
+  </div>
+
+  <!-- Summary Output -->
+  <div id="summary-output" style="display: none; margin-top: 24px;">
+    <div class="section" style="border: 2px solid #2e7d32;">
+      <h3 style="color: #2e7d32; margin-bottom: 12px;">สรุปข้อมูลการตั้งค่า</h3>
+      <pre id="summary-text" style="white-space: pre-wrap; font-family: 'Prompt', sans-serif; font-size: 0.85rem; background: #f7fafc; padding: 16px; border-radius: 8px; line-height: 1.8;"></pre>
+      <div style="text-align: center; margin-top: 16px;">
+        <button class="btn-submit" onclick="copySummary()" style="background: #2e7d32; color: white;">
+          คัดลอกข้อความ
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleField(id, show) {
+  const el = document.getElementById(id);
+  if (show) {
+    el.classList.add('show');
+    const input = el.querySelector('input, textarea');
+    if (input) input.focus();
+  } else {
+    el.classList.remove('show');
+  }
+}
+
+function selectDomain(card, value) {
+  document.querySelectorAll('.domain-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  card.querySelector('input[type="radio"]').checked = true;
+  toggleField('domain-custom', false);
+}
+
+function getRadioValue(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+function generateSummary() {
+  const lines = [];
+  lines.push('=== EcoStove — สรุปข้อมูลการตั้งค่า ===\n');
+
+  // 1. Email
+  const emailChoice = getRadioValue('email_choice');
+  if (emailChoice === 'dev_handle') {
+    lines.push('1. อีเมลโครงการ: ให้ผู้พัฒนาจัดหาให้');
+  } else if (emailChoice === 'have_email') {
+    lines.push('1. อีเมลโครงการ: ' + (document.getElementById('email_value').value || '(ไม่ได้กรอก)'));
+  } else {
+    lines.push('1. อีเมลโครงการ: (ยังไม่ได้เลือก)');
+  }
+
+  // 2. Phone
+  const phone = document.getElementById('phone_value').value;
+  const recoveryEmail = document.getElementById('recovery_email').value;
+  lines.push('2. เบอร์โทร Recovery: ' + (phone || '(ไม่ได้กรอก)'));
+  lines.push('   อีเมล Recovery: ' + (recoveryEmail || '(ไม่ได้กรอก)'));
+
+  // 3. Password
+  const pwChoice = getRadioValue('password_choice');
+  if (pwChoice === 'keep') {
+    lines.push('3. รหัสผ่านโครงการ: ใช้ BioMass@cmru2026');
+  } else if (pwChoice === 'change') {
+    lines.push('3. รหัสผ่านโครงการ: ' + (document.getElementById('password_value').value || '(ไม่ได้กรอก)'));
+  } else {
+    lines.push('3. รหัสผ่านโครงการ: (ยังไม่ได้เลือก)');
+  }
+
+  // 4. Admin
+  const superName = document.getElementById('super_admin_name').value;
+  const superEmail = document.getElementById('super_admin_email').value;
+  const superPin = document.getElementById('super_admin_pin').value;
+  const inviteChoice = getRadioValue('invite_choice');
+  lines.push('4. ระบบแอดมิน:');
+  lines.push('   Super Admin: ' + (superName || '(ไม่ได้กรอก)') + ' — ' + (superEmail || '(ไม่ได้กรอก)'));
+  lines.push('   PIN: ' + (superPin || '(ไม่ได้กรอก)'));
+  if (inviteChoice === 'keep') {
+    lines.push('   Invite Code: ใช้ ecostove2026');
+  } else if (inviteChoice === 'change') {
+    lines.push('   Invite Code: ' + (document.getElementById('invite_value').value || '(ไม่ได้กรอก)'));
+  }
+  const additionalAdmins = document.getElementById('additional_admins').value.trim();
+  if (additionalAdmins) {
+    lines.push('   แอดมินเพิ่มเติม: ' + additionalAdmins.replace(/\n/g, ', '));
+  }
+
+  // 5. Sensor
+  const sensorChoice = getRadioValue('sensor_choice');
+  if (sensorChoice === 'bs') {
+    lines.push('5. ชื่อเซนเซอร์: BS-01 ถึง BS-10');
+  } else if (sensorChoice === 'number_only') {
+    lines.push('5. ชื่อเซนเซอร์: 01 ถึง 10 (ตัวเลขอย่างเดียว)');
+  } else if (sensorChoice === 'custom') {
+    lines.push('5. ชื่อเซนเซอร์: ' + (document.getElementById('sensor_value').value || '(ไม่ได้กรอก)'));
+  } else {
+    lines.push('5. ชื่อเซนเซอร์: (ยังไม่ได้เลือก)');
+  }
+
+  // 6. Domain
+  const domainChoice = getRadioValue('domain_choice');
+  if (domainChoice === 'free') {
+    lines.push('6. โดเมน: biomassstove.vercel.app (ฟรี)');
+  } else if (domainChoice === 'paid') {
+    lines.push('6. โดเมน: biomassstove.org (~350-500 บาท/ปี)');
+  } else if (domainChoice === 'other_domain') {
+    lines.push('6. โดเมน: ' + (document.getElementById('domain_value').value || '(ไม่ได้กรอก)'));
+  } else {
+    lines.push('6. โดเมน: (ยังไม่ได้เลือก)');
+  }
+
+  // 7. Notes
+  const notes = document.getElementById('notes').value.trim();
+  if (notes) {
+    lines.push('7. หมายเหตุ: ' + notes);
+  }
+
+  lines.push('\n=== สร้างเมื่อ: ' + new Date().toLocaleString('th-TH') + ' ===');
+
+  const summaryEl = document.getElementById('summary-text');
+  summaryEl.textContent = lines.join('\n');
+  document.getElementById('summary-output').style.display = 'block';
+  document.getElementById('summary-output').scrollIntoView({ behavior: 'smooth' });
+}
+
+function copySummary() {
+  const text = document.getElementById('summary-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const original = btn.textContent;
+    btn.textContent = 'คัดลอกแล้ว!';
+    setTimeout(() => btn.textContent = original, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
