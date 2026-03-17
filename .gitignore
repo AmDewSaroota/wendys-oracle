@@ -9,3 +9,7 @@ venv/
 # Secrets
 .env
 .vercel
+
+# Dev-browser skill (profiles + dependencies)
+.claude/sync/global-skills/dev-browser/profiles/browser-data/
+.claude/sync/global-skills/dev-browser/node_modules/
