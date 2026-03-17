@@ -1377,7 +1377,7 @@
             applyLang();
             if (currentView === 'basic') updateBasicView();
             else if (currentView === 'deep') updateDeepView();
-            if (isAdmin) loadAdminData();
+            if (isAdmin) { loadAdminData(); loadAdminsList(); }
         }
 
         function applyLang() {
@@ -2006,7 +2006,7 @@
                                 <button onclick="toggleAdminRole(${a.id}, '${a.name}', '${a.role}')" class="${a.role === 'super' ? 'text-blue-600 hover:bg-blue-50' : 'text-amber-600 hover:bg-amber-50'} text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${a.role === 'super' ? t('admin.demote') : t('admin.promote')}</button>
                                 <button onclick="resetAdminPin(${a.id}, '${a.name}')" class="text-emerald-600 hover:bg-emerald-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.reset.pin')}</button>
                                 <button onclick="deleteAdmin(${a.id}, '${a.name}')" class="text-red-500 hover:bg-red-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.delete.btn')}</button>
-                                ` : `<span class="text-[10px] text-slate-400 italic">${t('admin.self')}</span>`}
+                                ` : ''}
                             </div>
                         ` : ''}
                     </div>
