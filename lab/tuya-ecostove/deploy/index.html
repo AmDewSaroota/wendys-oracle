@@ -520,6 +520,7 @@
                 </div>
                 <div class="flex gap-2">
                     <button onclick="showChangePinInline()" class="px-4 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm shadow-sm hover:bg-slate-200 transition-all">🔑 PIN</button>
+                    <button onclick="showRegenerateRecovery()" class="px-4 py-3 bg-amber-50 text-amber-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-amber-100 transition-all">🛟 Recovery</button>
                     <button onclick="logoutAdmin()" class="px-8 py-3 bg-red-100 text-red-600 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all" data-i18n="admin.logout">Logout</button>
                 </div>
             </div>
@@ -1660,98 +1661,47 @@
             showModal(`
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🔑</div>
-                    <h3 class="text-xl font-bold text-navy">รีเซ็ต PIN ผ่านอีเมล</h3>
-                    <p class="text-sm text-slate-500 mt-2">ระบบจะส่ง OTP ไปยังอีเมลที่ลงทะเบียนไว้</p>
+                    <h3 class="text-xl font-bold text-navy">รีเซ็ต PIN</h3>
+                    <p class="text-sm text-slate-500 mt-2">ใช้ Recovery Code ที่ได้ตอนสมัคร</p>
                 </div>
-                <input type="email" id="forgot-email" placeholder="Email ที่ลงทะเบียน" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center">
+                <input type="email" id="forgot-email" placeholder="Email ที่ลงทะเบียน" class="w-full p-4 rounded-2xl border bg-slate-50 mb-3 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center" onkeyup="if(event.key==='Enter') document.getElementById('forgot-code')?.focus()">
+                <input type="text" id="forgot-code" placeholder="Recovery Code (เช่น ABCD-1234)" class="w-full p-4 rounded-2xl border bg-amber-50 mb-3 outline-none focus:ring-2 focus:ring-amber-500 text-xl text-center tracking-[0.2em] font-mono uppercase" maxlength="9" onkeyup="if(event.key==='Enter') document.getElementById('forgot-newpin')?.focus()">
+                <div class="relative mb-3">
+                    <input type="password" id="forgot-newpin" placeholder="PIN ใหม่ (อย่างน้อย 4 ตัว)" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20" onkeyup="if(event.key==='Enter') document.getElementById('forgot-confirm')?.focus()">
+                    <button type="button" onclick="togglePinVis('forgot-newpin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                </div>
+                <div class="relative mb-4">
+                    <input type="password" id="forgot-confirm" placeholder="ยืนยัน PIN ใหม่" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20" onkeyup="if(event.key==='Enter') resetPinWithCode()">
+                    <button type="button" onclick="togglePinVis('forgot-confirm', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
+                </div>
                 <p id="forgot-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
-                <button onclick="requestPinOtp()" id="forgot-btn" class="w-full bg-amber-600 text-white py-4 rounded-2xl font-bold shadow-xl">ส่ง OTP</button>
+                <button onclick="resetPinWithCode()" id="forgot-btn" class="w-full bg-amber-600 text-white py-4 rounded-2xl font-bold shadow-xl">ตั้ง PIN ใหม่</button>
                 <button onclick="closeModal(); promptAdmin()" class="w-full py-3 mt-2 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all">กลับหน้า Login</button>
             `);
             setTimeout(() => document.getElementById('forgot-email')?.focus(), 100);
         }
 
-        async function requestPinOtp() {
+        async function resetPinWithCode() {
             const email = (document.getElementById('forgot-email')?.value || '').trim();
+            const recoveryCode = (document.getElementById('forgot-code')?.value || '').trim();
+            const newPin = (document.getElementById('forgot-newpin')?.value || '').trim();
+            const confirmPin = (document.getElementById('forgot-confirm')?.value || '').trim();
             const errEl = document.getElementById('forgot-error');
             const btn = document.getElementById('forgot-btn');
-            if (!email || !email.includes('@')) {
-                if (errEl) { errEl.textContent = 'กรุณากรอกอีเมล'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (btn) { btn.disabled = true; btn.textContent = 'กำลังส่ง...'; }
-            if (errEl) errEl.classList.add('hidden');
-            try {
-                const resp = await fetch('/api/admin/forgot-pin', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email }),
-                });
-                const data = await resp.json();
-                if (!resp.ok) {
-                    if (errEl) { errEl.textContent = data.error || 'เกิดข้อผิดพลาด'; errEl.classList.remove('hidden'); }
-                    if (btn) { btn.disabled = false; btn.textContent = 'ส่ง OTP'; }
-                    return;
-                }
-                showOtpStep(email, data.maskedEmail || email);
-            } catch (e) {
-                if (errEl) { errEl.textContent = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์'; errEl.classList.remove('hidden'); }
-                if (btn) { btn.disabled = false; btn.textContent = 'ส่ง OTP'; }
-            }
-        }
 
-        function showOtpStep(email, maskedEmail) {
-            showModal(`
-                <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">📧</div>
-                    <h3 class="text-xl font-bold text-navy">กรอกรหัส OTP</h3>
-                    <p class="text-sm text-slate-500 mt-2">ส่ง OTP ไปที่ <span class="font-mono font-bold text-emerald-600">${maskedEmail}</span></p>
-                    <p class="text-xs text-slate-400 mt-1">OTP หมดอายุใน 10 นาที</p>
-                </div>
-                <input type="text" id="otp-input" placeholder="รหัส OTP 6 หลัก" class="w-full p-4 rounded-2xl border bg-slate-50 mb-4 outline-none focus:ring-2 focus:ring-emerald-500 text-2xl text-center tracking-[0.5em] font-mono" maxlength="6" inputmode="numeric">
-                <p id="otp-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
-                <div class="relative mb-4">
-                    <input type="password" id="new-pin-input" placeholder="PIN ใหม่ (อย่างน้อย 4 ตัว)" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20">
-                    <button type="button" onclick="togglePinVis('new-pin-input', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
-                </div>
-                <div class="relative mb-6">
-                    <input type="password" id="confirm-pin-input" placeholder="ยืนยัน PIN ใหม่" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20" onkeyup="if(event.key==='Enter') resetPinWithOtp('${email}')">
-                    <button type="button" onclick="togglePinVis('confirm-pin-input', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
-                </div>
-                <button onclick="resetPinWithOtp('${email}')" id="reset-btn" class="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold shadow-xl">ตั้ง PIN ใหม่</button>
-                <button onclick="showForgotPinModal()" class="w-full py-3 mt-2 rounded-2xl border border-slate-200 text-slate-600 text-sm hover:bg-slate-50 transition-all">ขอ OTP ใหม่</button>
-            `);
-            setTimeout(() => document.getElementById('otp-input')?.focus(), 100);
-        }
-
-        async function resetPinWithOtp(email) {
-            const otp = (document.getElementById('otp-input')?.value || '').trim();
-            const newPin = (document.getElementById('new-pin-input')?.value || '').trim();
-            const confirmPin = (document.getElementById('confirm-pin-input')?.value || '').trim();
-            const errEl = document.getElementById('otp-error');
-            const btn = document.getElementById('reset-btn');
-
-            if (!otp || otp.length !== 6) {
-                if (errEl) { errEl.textContent = 'กรุณากรอก OTP 6 หลัก'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (!newPin || newPin.length < 4) {
-                if (errEl) { errEl.textContent = 'PIN ใหม่ต้องมีอย่างน้อย 4 ตัว'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (newPin !== confirmPin) {
-                if (errEl) { errEl.textContent = 'PIN ใหม่ไม่ตรงกัน'; errEl.classList.remove('hidden'); }
-                return;
-            }
+            if (!email || !email.includes('@')) { if (errEl) { errEl.textContent = 'กรุณากรอก Email'; errEl.classList.remove('hidden'); } return; }
+            if (!recoveryCode) { if (errEl) { errEl.textContent = 'กรุณากรอก Recovery Code'; errEl.classList.remove('hidden'); } return; }
+            if (!newPin || newPin.length < 4) { if (errEl) { errEl.textContent = 'PIN ใหม่ต้องมีอย่างน้อย 4 ตัว'; errEl.classList.remove('hidden'); } return; }
+            if (newPin !== confirmPin) { if (errEl) { errEl.textContent = 'PIN ใหม่ไม่ตรงกัน'; errEl.classList.remove('hidden'); } return; }
 
             if (btn) { btn.disabled = true; btn.textContent = 'กำลังตั้ง PIN...'; }
             if (errEl) errEl.classList.add('hidden');
 
             try {
-                const resp = await fetch('/api/admin/reset-pin', {
+                const resp = await fetch('/api/admin/forgot-pin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, otp, newPin }),
+                    body: JSON.stringify({ email, recoveryCode, newPin }),
                 });
                 const data = await resp.json();
                 if (!resp.ok) {
@@ -1759,7 +1709,6 @@
                     if (btn) { btn.disabled = false; btn.textContent = 'ตั้ง PIN ใหม่'; }
                     return;
                 }
-                // Success — show confirmation then go to login
                 showModal(`
                     <div class="text-center mb-6">
                         <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">✅</div>
@@ -1827,9 +1776,24 @@
                     return;
                 }
 
-                if (successEl) { successEl.textContent = data.message + ' — เข้าสู่ระบบได้เลย'; successEl.classList.remove('hidden'); }
-                if (btn) { btn.textContent = t('admin.reg.done'); }
-                setTimeout(() => { closeModal(); if (isAdmin) { loadAdminsList(); } else { promptAdmin(); } }, 2000);
+                // Show recovery code prominently
+                if (data.recoveryCode) {
+                    showModal(`
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">✅</div>
+                            <h3 class="text-xl font-bold text-emerald-700">${data.message}</h3>
+                            <p class="text-sm text-slate-500 mt-3">นี่คือ <strong>Recovery Code</strong> ส่วนตัว</p>
+                            <p class="text-xs text-red-500 mt-1 font-bold">แสดงครั้งเดียว กรุณาจดบันทึกไว้!</p>
+                        </div>
+                        <div class="bg-slate-900 text-white text-3xl font-mono tracking-[0.3em] text-center py-5 rounded-2xl mb-4 select-all cursor-pointer" onclick="navigator.clipboard.writeText('${data.recoveryCode}'); this.style.outline='3px solid #10b981'; setTimeout(()=>this.style.outline='',1000)">${data.recoveryCode}</div>
+                        <p class="text-xs text-slate-400 text-center mb-6">คลิกเพื่อคัดลอก — ใช้รีเซ็ต PIN หากลืม</p>
+                        <button onclick="closeModal(); promptAdmin()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">จดแล้ว → ไปหน้า Login</button>
+                    `);
+                } else {
+                    if (successEl) { successEl.textContent = data.message + ' — เข้าสู่ระบบได้เลย'; successEl.classList.remove('hidden'); }
+                    if (btn) { btn.textContent = t('admin.reg.done'); }
+                    setTimeout(() => { closeModal(); if (isAdmin) { loadAdminsList(); } else { promptAdmin(); } }, 2000);
+                }
             } catch (e) {
                 if (errEl) { errEl.textContent = 'Network error'; errEl.classList.remove('hidden'); }
                 if (btn) { btn.disabled = false; btn.textContent = t('admin.reg.btn'); }
@@ -1884,6 +1848,50 @@
             } catch (e) {
                 if (errEl) { errEl.textContent = t('common.error') + (e.message || 'Unknown error'); errEl.classList.remove('hidden'); }
                 if (btn) { btn.disabled = false; btn.textContent = t('admin.login.btn'); }
+            }
+        }
+
+        async function showRegenerateRecovery() {
+            showModal(`
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🛟</div>
+                    <h3 class="text-xl font-bold text-navy">Recovery Code</h3>
+                    <p class="text-sm text-slate-500 mt-2">สร้าง Recovery Code ใหม่<br><span class="text-red-500 font-bold">อันเก่าจะใช้ไม่ได้ทันที</span></p>
+                </div>
+                <p id="regen-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
+                <button onclick="doRegenerateRecovery()" id="regen-btn" class="w-full bg-amber-600 text-white py-4 rounded-2xl font-bold shadow-xl">สร้าง Recovery Code ใหม่</button>
+                <button onclick="closeModal()" class="w-full py-3 mt-2 rounded-2xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
+            `);
+        }
+
+        async function doRegenerateRecovery() {
+            const btn = document.getElementById('regen-btn');
+            const errEl = document.getElementById('regen-error');
+            if (btn) { btn.disabled = true; btn.textContent = 'กำลังสร้าง...'; }
+            try {
+                const resp = await fetch('/api/admin/regenerate-recovery', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Admin-PIN': getStoredPin(), 'X-Admin-ID': currentAdminId },
+                });
+                const data = await resp.json();
+                if (!resp.ok) {
+                    if (errEl) { errEl.textContent = data.error || 'เกิดข้อผิดพลาด'; errEl.classList.remove('hidden'); }
+                    if (btn) { btn.disabled = false; btn.textContent = 'สร้าง Recovery Code ใหม่'; }
+                    return;
+                }
+                showModal(`
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl">🛟</div>
+                        <h3 class="text-xl font-bold text-emerald-700">Recovery Code ใหม่</h3>
+                        <p class="text-xs text-red-500 mt-2 font-bold">แสดงครั้งเดียว กรุณาจดบันทึกไว้!</p>
+                    </div>
+                    <div class="bg-slate-900 text-white text-3xl font-mono tracking-[0.3em] text-center py-5 rounded-2xl mb-4 select-all cursor-pointer" onclick="navigator.clipboard.writeText('${data.recoveryCode}'); this.style.outline='3px solid #10b981'; setTimeout(()=>this.style.outline='',1000)">${data.recoveryCode}</div>
+                    <p class="text-xs text-slate-400 text-center mb-6">คลิกเพื่อคัดลอก — ใช้รีเซ็ต PIN หากลืม</p>
+                    <button onclick="closeModal()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">จดแล้ว → ปิด</button>
+                `);
+            } catch (e) {
+                if (errEl) { errEl.textContent = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์'; errEl.classList.remove('hidden'); }
+                if (btn) { btn.disabled = false; btn.textContent = 'สร้าง Recovery Code ใหม่'; }
             }
         }
 

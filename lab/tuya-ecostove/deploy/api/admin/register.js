@@ -12,6 +12,16 @@ function hashPin(pin) {
   return crypto.createHash('sha256').update(pin).digest('hex');
 }
 
+function generateRecoveryCode() {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const bytes = crypto.randomBytes(8);
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += chars[bytes[i] % chars.length];
+  }
+  return code.slice(0, 4) + '-' + code.slice(4);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -58,11 +68,12 @@ module.exports = async function handler(req, res) {
       return res.status(409).json({ error: 'Email นี้ลงทะเบียนแล้ว' });
     }
 
-    // Insert with hashed PIN
+    // Insert with hashed PIN + recovery code
+    const recoveryCode = generateRecoveryCode();
     const insertRes = await fetch(sbUrl + '/rest/v1/admin_users', {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ name, email, role: 'admin', pin_hash: hashPin(pin) }),
+      body: JSON.stringify({ name, email, role: 'admin', pin_hash: hashPin(pin), recovery_code: recoveryCode }),
     });
 
     if (!insertRes.ok) {
@@ -72,6 +83,7 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
+      recoveryCode,
       message: 'เพิ่ม ' + name + ' เป็น Admin สำเร็จ',
     });
   } catch (err) {
