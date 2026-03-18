@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connected Ecosystem — SRT Smart Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Prompt', sans-serif;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .slide {
+    width: 960px;
+    height: 540px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  /* Decorative */
+  .deco {
+    position: absolute;
+    top: -60px; right: -30px;
+    width: 200px; height: 650px;
+    background: linear-gradient(160deg, rgba(46,116,181,0.06), transparent);
+    transform: rotate(15deg);
+  }
+  .bottom-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #1a3f6f, #2e74b5, #3a7ca5);
+  }
+
+  /* Title */
+  .header {
+    padding: 22px 36px 6px;
+    position: relative; z-index: 2;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a3f6f;
+    border-left: 4px solid #2e74b5;
+    padding-left: 12px;
+  }
+  .header p {
+    font-size: 12px;
+    color: #3a7ca5;
+    margin-top: 2px;
+    padding-left: 16px;
+  }
+
+  /* === MAIN LAYOUT === */
+  .main {
+    display: flex;
+    padding: 12px 36px 0;
+    gap: 28px;
+    position: relative; z-index: 2;
+  }
+
+  /* LEFT: Hub diagram */
+  .hub {
+    flex: 0 0 480px;
+    position: relative;
+    height: 410px;
+  }
+
+  /* Core center circle */
+  .core-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px; height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #eaf2fb, #d4e6f9);
+    border: 3px solid #2e74b5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 5;
+  }
+  .core-circle .icon { font-size: 24px; }
+  .core-circle .label { font-size: 12px; font-weight: 700; color: #1a3f6f; margin-top: 2px; }
+  .core-circle .sub { font-size: 8px; color: #3a7ca5; line-height: 1.5; margin-top: 4px; }
+
+  /* Module cards around the hub */
+  .mod {
+    position: absolute;
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: center;
+    min-width: 120px;
+    z-index: 4;
+  }
+  .mod .icon { font-size: 24px; display: block; }
+  .mod .label { font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .mod .sub { font-size: 8px; margin-top: 1px; opacity: 0.85; }
+
+  /* NDF modules - solid */
+  .mod.ndf {
+    color: white;
+  }
+  .mod.ndf.blue { background: linear-gradient(135deg, #2e74b5, #1a3f6f); }
+  .mod.ndf.orange { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .mod.ndf.green { background: linear-gradient(135deg, #27ae60, #1e8449); }
+
+  /* Partner modules - dashed outline */
+  .mod.partner {
+    background: white;
+    border: 2px dashed #8e44ad;
+    color: #8e44ad;
+  }
+  .mod.partner .sub { color: #777; }
+  .mod.partner .team {
+    font-size: 7px;
+    color: #8e44ad;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  /* Positions - clock layout around center */
+  .pos-top-left   { top: 20px;  left: 20px; }
+  .pos-top-right  { top: 20px;  right: 30px; }
+  .pos-bottom     { bottom: 40px; left: 50%; transform: translateX(-50%); }
+  .pos-bot-left   { bottom: 40px; left: 10px; }
+  .pos-bot-right  { bottom: 40px; right: 20px; }
+
+  /* Connection lines */
+  .lines {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+  }
+  .line-ndf {
+    stroke: #2e74b5;
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+    fill: none;
+    opacity: 0.3;
+  }
+  .line-partner {
+    stroke: #8e44ad;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+    fill: none;
+    opacity: 0.3;
+  }
+  .line-handoff {
+    stroke: #e67e22;
+    stroke-width: 2.5;
+    fill: none;
+    opacity: 0.6;
+  }
+
+  /* Handoff label */
+  .handoff-tag {
+    position: absolute;
+    top: 54px; left: 50%;
+    transform: translateX(-50%);
+    background: #fff3e0;
+    border: 2px solid #e67e22;
+    border-radius: 16px;
+    padding: 3px 12px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #d35400;
+    z-index: 6;
+    white-space: nowrap;
+  }
+
+  /* Legend */
+  .legend {
+    position: absolute;
+    top: 4px; left: 20px;
+    display: flex;
+    gap: 16px;
+    font-size: 8px;
+    color: #888;
+    z-index: 6;
+  }
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 3px; }
+  .dot.ndf { background: #2e74b5; }
+  .dot.partner { background: white; border: 2px dashed #8e44ad; }
+
+  /* === RIGHT: Connection list === */
+  .list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 2px;
+  }
+
+  .item {
+    border-left: 3px solid #2e74b5;
+    border-radius: 0 8px 8px 0;
+    padding: 6px 10px;
+    background: #f8fbfe;
+  }
+  .item.hl {
+    border-left-color: #e67e22;
+    background: #fff8f0;
+  }
+  .item.pt {
+    border-left-color: #8e44ad;
+    background: #faf5fc;
+  }
+
+  .item .num {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #2e74b5;
+    color: white;
+    text-align: center;
+    line-height: 16px;
+    font-size: 9px;
+    font-weight: 600;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .item.hl .num { background: #e67e22; }
+  .item.pt .num { background: #8e44ad; }
+
+  .item .t {
+    font-size: 10px;
+    font-weight: 600;
+    color: #1a3f6f;
+    vertical-align: middle;
+  }
+  .item.pt .t { color: #8e44ad; }
+
+  .item .d {
+    font-size: 8.5px;
+    color: #666;
+    margin-top: 1px;
+    margin-left: 21px;
+    line-height: 1.3;
+  }
+
+  /* Footer */
+  .footer {
+    position: absolute;
+    bottom: 12px; left: 36px;
+    font-size: 9px;
+    color: #999;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<div class="slide">
+  <div class="deco"></div>
+
+  <div class="header">
+    <h1>Connected Ecosystem</h1>
+    <p>ทุกระบบเชื่อมถึงกัน — ข้อมูลเดียว ประสบการณ์เดียว</p>
+  </div>
+
+  <div class="main">
+
+    <!-- LEFT: Hub Diagram -->
+    <div class="hub">
+      <div class="legend">
+        <span><div class="dot ndf"></div> NDF Scope</span>
+        <span><div class="dot partner"></div> ทีมพาร์ทเนอร์</span>
+      </div>
+
+      <!-- SVG Lines -->
+      <svg class="lines" viewBox="0 0 480 410">
+        <!-- Kiosk → Core -->
+        <line class="line-ndf" x1="100" y1="90" x2="205" y2="175" />
+        <!-- App → Core -->
+        <line class="line-ndf" x1="380" y1="90" x2="275" y2="175" />
+        <!-- Dashboard → Core -->
+        <line class="line-ndf" x1="240" y1="330" x2="240" y2="265" />
+        <!-- IoT → Core -->
+        <line class="line-partner" x1="75" y1="330" x2="200" y2="240" />
+        <!-- Space → Core -->
+        <line class="line-partner" x1="410" y1="330" x2="280" y2="240" />
+        <!-- Kiosk → App handoff -->
+        <line class="line-handoff" x1="145" y1="52" x2="340" y2="52"
+              marker-end="url(#arr)" />
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0 0 L10 5 L0 10z" fill="#e67e22"/>
+          </marker>
+        </defs>
+      </svg>
+
+      <!-- Handoff tag -->
+      <div class="handoff-tag">📲 Scan QR → จองต่อบนมือถือ</div>
+
+      <!-- NDF Modules -->
+      <div class="mod ndf blue pos-top-left">
+        <span class="icon">🖥️</span>
+        <div class="label">KIOSK</div>
+        <div class="sub">ถาม AI · ดูแผนที่</div>
+      </div>
+
+      <div class="mod ndf orange pos-top-right">
+        <span class="icon">📱</span>
+        <div class="label">MOBILE APP</div>
+        <div class="sub">จองตั๋ว · สะสมแต้ม</div>
+      </div>
+
+      <div class="mod ndf green pos-bottom">
+        <span class="icon">📊</span>
+        <div class="label">CORE DASHBOARD</div>
+        <div class="sub">Analytics · จัดการ Content</div>
+      </div>
+
+      <!-- Partner Modules -->
+      <div class="mod partner pos-bot-left">
+        <span class="icon">📡</span>
+        <div class="label">IoT COUNTING</div>
+        <div class="sub">นับคน · Sensor</div>
+        <div class="team">— ทีม IoT —</div>
+      </div>
+
+      <div class="mod partner pos-bot-right">
+        <span class="icon">🏪</span>
+        <div class="label">SPACE MGMT</div>
+        <div class="sub">ผู้เช่า · ร้านค้า</div>
+        <div class="team">— ทีม Space System —</div>
+      </div>
+
+      <!-- Core Circle -->
+      <div class="core-circle">
+        <span class="icon">🗄️</span>
+        <div class="label">SHARED CORE</div>
+        <div class="sub">
+          🔐 Auth (SSO)<br>
+          🤖 AI + Knowledge Base<br>
+          🚂 ตารางเดินรถ<br>
+          🎫 Booking Engine
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Connection List -->
+    <div class="list">
+      <div class="item hl">
+        <span class="num">1</span>
+        <span class="t">Scan & Go</span>
+        <div class="d">สแกน QR จาก Kiosk → จองต่อบนมือถือทันที</div>
+      </div>
+      <div class="item">
+        <span class="num">2</span>
+        <span class="t">Login ครั้งเดียว (SSO)</span>
+        <div class="d">ThaiID / Email → ใช้ได้ทั้ง App, Kiosk, Dashboard</div>
+      </div>
+      <div class="item">
+        <span class="num">3</span>
+        <span class="t">AI ฐานความรู้เดียวกัน</span>
+        <div class="d">ถามที่ Kiosk หรือ App → คำตอบเหมือนกัน</div>
+      </div>
+      <div class="item">
+        <span class="num">4</span>
+        <span class="t">Dashboard ควบคุม Kiosk</span>
+        <div class="d">เปลี่ยน Banner / Popup จากส่วนกลาง</div>
+      </div>
+      <div class="item pt">
+        <span class="num">5</span>
+        <span class="t">IoT → Heatmap</span>
+        <div class="d">Sensor นับคน (ทีม IoT) → แสดงบน Dashboard</div>
+      </div>
+      <div class="item pt">
+        <span class="num">6</span>
+        <span class="t">Space → ร้านค้าในสถานี</span>
+        <div class="d">ข้อมูลผู้เช่า (ทีม Space) → แสดงบน Kiosk + App</div>
+      </div>
+      <div class="item">
+        <span class="num">7</span>
+        <span class="t">Booking Sync</span>
+        <div class="d">จองบน App → เห็นใน Dashboard → สถานะบน Kiosk</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">NDF ดูแล Core ทั้งหมด — ทีม IoT + Space System เชื่อมผ่าน API + Auth กลาง</div>
+  <div class="bottom-bar"></div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "ecostove-line-oa",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@line/bot-sdk": "^9.0.0"
+  }
+}

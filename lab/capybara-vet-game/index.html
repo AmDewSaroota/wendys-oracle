@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Capybara Vet Clinic</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #1a1a2e;
+    --card-bg: #16213e;
+    --card-front: #0f3460;
+    --accent1: #e94560;
+    --accent2: #f59e0b;
+    --accent3: #10b981;
+    --accent4: #8b5cf6;
+    --accent5: #3b82f6;
+    --accent6: #ec4899;
+    --text: #f1f5f9;
+    --text-dim: #94a3b8;
+    --health-bg: #374151;
+    --health-fill: #10b981;
+    --gold: #fbbf24;
+    --star-empty: #4b5563;
+  }
+
+  body {
+    font-family: 'Fredoka', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    width: 100%;
+    max-width: 420px;
+    padding: 12px 16px 8px;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== CAPYBARA PATIENT ===== */
+  .patient-area {
+    width: 100%;
+    max-width: 420px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .capybara {
+    font-size: 3rem;
+    transition: transform 0.3s;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+    flex-shrink: 0;
+  }
+
+  .capybara.happy { animation: bounce 0.5s ease; }
+  .capybara.sick { filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)) saturate(0.5); }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .patient-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .patient-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent6);
+    margin-bottom: 4px;
+  }
+
+  .health-bar-wrap {
+    width: 100%;
+    height: 20px;
+    background: var(--health-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .health-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), #34d399);
+    border-radius: 10px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+
+  .health-bar::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 8px;
+    right: 8px;
+    height: 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+  }
+
+  .health-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+
+  .stats-row span { display: flex; align-items: center; gap: 3px; }
+
+  /* ===== SPEECH BUBBLE ===== */
+  .speech-bubble {
+    background: var(--card-bg);
+    border: 2px solid var(--accent4);
+    border-radius: 16px;
+    padding: 8px 14px;
+    margin: 4px 16px 8px;
+    max-width: 420px;
+    width: calc(100% - 32px);
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    position: relative;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
+  }
+
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 40px;
+    width: 14px;
+    height: 14px;
+    background: var(--card-bg);
+    border-left: 2px solid var(--accent4);
+    border-top: 2px solid var(--accent4);
+    transform: rotate(45deg);
+  }
+
+  /* ===== GAME GRID ===== */
+  .grid-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 8px 12px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  /* ===== CARD ===== */
+  .card {
+    aspect-ratio: 1;
+    perspective: 600px;
+    cursor: pointer;
+  }
+
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: 14px;
+  }
+
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .card.matched .card-inner { transform: rotateY(180deg); }
+
+  .card.matched {
+    pointer-events: none;
+  }
+
+  .card.matched .card-inner {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+  }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    font-weight: 600;
+    padding: 6px;
+    text-align: center;
+  }
+
+  .card-back {
+    background: linear-gradient(135deg, var(--card-front), #1a4a8a);
+    border: 2px solid rgba(255,255,255,0.1);
+    font-size: 1.8rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .card-back::after {
+    content: '🩺';
+    font-size: 1.6rem;
+  }
+
+  .card-front {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    border: 2px solid;
+    transform: rotateY(180deg);
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .card-front .card-label {
+    font-size: 0.55rem;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .card-front .card-value {
+    font-size: 1.3rem;
+    line-height: 1.2;
+  }
+
+  .card.type-math .card-front { border-color: var(--accent5); }
+  .card.type-english .card-front { border-color: var(--accent6); }
+
+  .card-front .card-value.emoji { font-size: 2rem; }
+
+  /* Match animation */
+  .card.match-pop .card-inner {
+    animation: matchPop 0.5s ease;
+  }
+
+  @keyframes matchPop {
+    0% { transform: rotateY(180deg) scale(1); }
+    50% { transform: rotateY(180deg) scale(1.15); }
+    100% { transform: rotateY(180deg) scale(1); }
+  }
+
+  /* Wrong shake */
+  .card.wrong .card-inner {
+    animation: wrongShake 0.4s ease;
+  }
+
+  @keyframes wrongShake {
+    0%, 100% { transform: rotateY(180deg) translateX(0); }
+    25% { transform: rotateY(180deg) translateX(-6px); }
+    75% { transform: rotateY(180deg) translateX(6px); }
+  }
+
+  /* ===== SCREENS ===== */
+  .screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+    transition: opacity 0.4s;
+  }
+
+  .screen.hidden { display: none; }
+
+  /* Start Screen */
+  .start-screen {
+    background: radial-gradient(ellipse at center, #1a2744 0%, var(--bg) 100%);
+  }
+
+  .start-capybara {
+    font-size: 5rem;
+    margin-bottom: 8px;
+    animation: floaty 3s ease-in-out infinite;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.4));
+  }
+
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+  }
+
+  .start-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-shadow: 0 3px 12px rgba(245, 158, 11, 0.4);
+    margin-bottom: 4px;
+  }
+
+  .start-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+
+  .btn {
+    padding: 14px 48px;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn:active { transform: scale(0.95); }
+
+  .btn-play {
+    background: linear-gradient(135deg, var(--accent3), #059669);
+    color: white;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4), inset 0 2px 0 rgba(255,255,255,0.2);
+  }
+
+  .btn-play:hover { box-shadow: 0 8px 28px rgba(16, 185, 129, 0.5), inset 0 2px 0 rgba(255,255,255,0.2); }
+
+  .btn-retry {
+    background: linear-gradient(135deg, var(--accent5), #2563eb);
+    color: white;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), inset 0 2px 0 rgba(255,255,255,0.2);
+  }
+
+  /* Win Screen */
+  .win-screen {
+    background: radial-gradient(ellipse at center, #1a2744 0%, var(--bg) 100%);
+  }
+
+  .win-capybara {
+    font-size: 5rem;
+    margin-bottom: 8px;
+    animation: winDance 1s ease-in-out infinite;
+  }
+
+  @keyframes winDance {
+    0%, 100% { transform: rotate(-5deg) scale(1); }
+    25% { transform: rotate(5deg) scale(1.05); }
+    50% { transform: rotate(-3deg) scale(1); }
+    75% { transform: rotate(3deg) scale(1.05); }
+  }
+
+  .win-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent3);
+    margin-bottom: 4px;
+  }
+
+  .win-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .star {
+    font-size: 2.5rem;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+    opacity: 0.3;
+    filter: grayscale(1);
+  }
+
+  .star.earned {
+    opacity: 1;
+    filter: grayscale(0);
+    animation: starPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes starPop {
+    0% { transform: scale(0) rotate(-30deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  .win-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+
+  .win-stat {
+    text-align: center;
+  }
+
+  .win-stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  .win-stat-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .win-message {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    text-align: center;
+    color: var(--accent3);
+    max-width: 300px;
+  }
+
+  /* ===== CONFETTI ===== */
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  .confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    top: -20px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ===== FLOATING PARTICLES ===== */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 150;
+    font-size: 1.5rem;
+    animation: floatUp 1s ease-out forwards;
+  }
+
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(0.5); }
+  }
+
+  /* ===== COMBO ===== */
+  .combo-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent2);
+    text-shadow: 0 4px 16px rgba(245, 158, 11, 0.5);
+    z-index: 150;
+    pointer-events: none;
+    animation: comboFade 1s ease-out forwards;
+  }
+
+  @keyframes comboFade {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+  }
+
+  /* ===== DIFFICULTY SELECT ===== */
+  .difficulty-btns {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .diff-btn {
+    padding: 10px 20px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .diff-btn:hover, .diff-btn.selected {
+    border-color: var(--accent5);
+    background: rgba(59, 130, 246, 0.15);
+  }
+
+  .diff-btn .diff-emoji { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+  .diff-btn .diff-label { font-size: 0.65rem; color: var(--text-dim); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-height: 700px) {
+    .patient-area { padding: 4px 16px; }
+    .capybara { font-size: 2.4rem; }
+    .grid { gap: 6px; }
+    .speech-bubble { padding: 6px 10px; font-size: 0.8rem; margin: 2px 16px 4px; }
+    .header { padding: 8px 16px 4px; }
+    .card-front .card-value { font-size: 1.1rem; }
+    .card-front .card-value.emoji { font-size: 1.6rem; }
+  }
+
+  @media (min-width: 500px) {
+    .grid { max-width: 380px; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== START SCREEN ===== -->
+<div id="startScreen" class="screen start-screen">
+  <div class="start-capybara">🦫</div>
+  <div class="start-title">Capybara Vet Clinic</div>
+  <div class="start-subtitle">Match cards to heal your capybara!</div>
+
+  <div class="difficulty-btns">
+    <button class="diff-btn selected" data-diff="easy" onclick="selectDifficulty('easy', this)">
+      <span class="diff-emoji">🌱</span>
+      Easy
+      <span class="diff-label">4×3 grid</span>
+    </button>
+    <button class="diff-btn" data-diff="normal" onclick="selectDifficulty('normal', this)">
+      <span class="diff-emoji">🌿</span>
+      Normal
+      <span class="diff-label">4×4 grid</span>
+    </button>
+    <button class="diff-btn" data-diff="hard" onclick="selectDifficulty('hard', this)">
+      <span class="diff-emoji">🌳</span>
+      Hard
+      <span class="diff-label">4×5 grid</span>
+    </button>
+  </div>
+
+  <button class="btn btn-play" onclick="startGame()">Play!</button>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div id="gameScreen" class="hidden">
+  <div class="header">
+    <div class="title">🩺 Capybara Vet Clinic 🩺</div>
+  </div>
+
+  <div class="patient-area">
+    <div id="capybara" class="capybara sick">🦫</div>
+    <div class="patient-info">
+      <div id="patientName" class="patient-name">Capy needs help!</div>
+      <div class="health-bar-wrap">
+        <div id="healthBar" class="health-bar" style="width: 0%"></div>
+        <div id="healthText" class="health-text">0%</div>
+      </div>
+      <div class="stats-row">
+        <span>👆 Flips: <b id="flipCount">0</b></span>
+        <span>✅ Pairs: <b id="pairCount">0</b>/<b id="totalPairs">8</b></span>
+        <span>⏱ <b id="timer">0:00</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="speechBubble" class="speech-bubble">
+    Find matching pairs to heal me! 💊
+  </div>
+
+  <div class="grid-container">
+    <div id="grid" class="grid"></div>
+  </div>
+</div>
+
+<!-- ===== WIN SCREEN ===== -->
+<div id="winScreen" class="screen win-screen hidden">
+  <div class="win-capybara">🦫</div>
+  <div class="win-title">Capybara is Healthy!</div>
+  <div class="win-subtitle">Great job, Doctor!</div>
+
+  <div class="stars">
+    <div id="star1" class="star">⭐</div>
+    <div id="star2" class="star">⭐</div>
+    <div id="star3" class="star">⭐</div>
+  </div>
+
+  <div class="win-stats">
+    <div class="win-stat">
+      <div id="winFlips" class="win-stat-value">0</div>
+      <div class="win-stat-label">Flips</div>
+    </div>
+    <div class="win-stat">
+      <div id="winTime" class="win-stat-value">0:00</div>
+      <div class="win-stat-label">Time</div>
+    </div>
+    <div class="win-stat">
+      <div id="winCombo" class="win-stat-value">0</div>
+      <div class="win-stat-label">Best Combo</div>
+    </div>
+  </div>
+
+  <div id="winMessage" class="win-message"></div>
+
+  <button class="btn btn-retry" onclick="resetGame()">Play Again!</button>
+</div>
+
+<!-- ===== CONFETTI CONTAINER ===== -->
+<div id="confettiContainer" class="confetti-container"></div>
+
+<script>
+// ===== GAME STATE =====
+let difficulty = 'easy';
+let cards = [];
+let flippedCards = [];
+let matchedPairs = 0;
+let totalPairsCount = 0;
+let flipCountVal = 0;
+let combo = 0;
+let bestCombo = 0;
+let locked = false;
+let timerInterval = null;
+let seconds = 0;
+let gameStarted = false;
+
+const capyNames = [
+  'Coconut', 'Mochi', 'Pudding', 'Biscuit', 'Nugget',
+  'Brownie', 'Waffle', 'Peanut', 'Caramel', 'Tofu'
+];
+
+const speeches = {
+  start: [
+    "Find matching pairs to heal me! 💊",
+    "I feel sick... please help me, Doctor! 🤒",
+    "Match the cards to make medicine! 💉",
+  ],
+  match: [
+    "Yay! I feel better! 🎉",
+    "That's the right medicine! 💊",
+    "You're a great vet! ⭐",
+    "Keep going, Doctor! 💪",
+    "Almost there! 🌟",
+    "Wow, so smart! 🧠",
+  ],
+  combo: [
+    "AMAZING COMBO! 🔥",
+    "You're on fire! 🔥🔥",
+    "SUPER DOCTOR! 🦸",
+    "INCREDIBLE! ⚡",
+  ],
+  wrong: [
+    "Hmm, try again! 🤔",
+    "Not quite... keep trying! 💭",
+    "So close! 👀",
+    "You can do it! 💪",
+  ],
+  win: [
+    "I'm all better! Thank you, Doctor! 🎊",
+    "You healed me! Best vet ever! 🏆",
+  ],
+};
+
+// ===== CARD DATA GENERATORS =====
+function generateMathPairs(count) {
+  const pairs = [];
+  const ops = ['+', '-'];
+  const used = new Set();
+
+  while (pairs.length < count) {
+    const op = ops[Math.floor(Math.random() * ops.length)];
+    let a, b, answer, question;
+
+    if (op === '+') {
+      a = Math.floor(Math.random() * 10) + 1;
+      b = Math.floor(Math.random() * 10) + 1;
+      answer = a + b;
+      question = `${a} + ${b}`;
+    } else {
+      answer = Math.floor(Math.random() * 10) + 1;
+      b = Math.floor(Math.random() * answer) + 1;
+      a = answer + b;
+      question = `${a} - ${b}`;
+      answer = a - b;
+    }
+
+    const key = `${question}=${answer}`;
+    if (used.has(key) || used.has(String(answer))) continue;
+    used.add(key);
+    used.add(String(answer));
+
+    pairs.push({
+      type: 'math',
+      cardA: { label: 'MATH', value: question, isEmoji: false },
+      cardB: { label: 'ANSWER', value: String(answer), isEmoji: false },
+    });
+  }
+  return pairs;
+}
+
+function generateEnglishPairs(count) {
+  const allWords = [
+    { word: 'Cat', emoji: '🐱' },
+    { word: 'Dog', emoji: '🐶' },
+    { word: 'Rabbit', emoji: '🐰' },
+    { word: 'Hamster', emoji: '🐹' },
+    { word: 'Bird', emoji: '🐦' },
+    { word: 'Fish', emoji: '🐟' },
+    { word: 'Turtle', emoji: '🐢' },
+    { word: 'Penguin', emoji: '🐧' },
+    { word: 'Frog', emoji: '🐸' },
+    { word: 'Bear', emoji: '🐻' },
+    { word: 'Monkey', emoji: '🐵' },
+    { word: 'Horse', emoji: '🐴' },
+    { word: 'Cow', emoji: '🐮' },
+    { word: 'Pig', emoji: '🐷' },
+    { word: 'Mouse', emoji: '🐭' },
+    { word: 'Lion', emoji: '🦁' },
+    { word: 'Tiger', emoji: '🐯' },
+    { word: 'Whale', emoji: '🐳' },
+    { word: 'Snake', emoji: '🐍' },
+    { word: 'Duck', emoji: '🦆' },
+  ];
+
+  const shuffled = [...allWords].sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, count);
+
+  return selected.map(item => ({
+    type: 'english',
+    cardA: { label: 'ENGLISH', value: item.word, isEmoji: false },
+    cardB: { label: 'ANIMAL', value: item.emoji, isEmoji: true },
+  }));
+}
+
+// ===== DIFFICULTY CONFIG =====
+const diffConfig = {
+  easy:   { cols: 4, rows: 3, pairs: 6,  mathCount: 3, engCount: 3 },
+  normal: { cols: 4, rows: 4, pairs: 8,  mathCount: 4, engCount: 4 },
+  hard:   { cols: 4, rows: 5, pairs: 10, mathCount: 5, engCount: 5 },
+};
+
+function selectDifficulty(diff, btn) {
+  difficulty = diff;
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// ===== GAME LOGIC =====
+function startGame() {
+  const config = diffConfig[difficulty];
+  totalPairsCount = config.pairs;
+  matchedPairs = 0;
+  flipCountVal = 0;
+  combo = 0;
+  bestCombo = 0;
+  seconds = 0;
+  locked = false;
+  flippedCards = [];
+  gameStarted = false;
+
+  // Generate pairs
+  const mathPairs = generateMathPairs(config.mathCount);
+  const engPairs = generateEnglishPairs(config.engCount);
+  const allPairs = [...mathPairs, ...engPairs];
+
+  // Create cards array
+  cards = [];
+  allPairs.forEach((pair, idx) => {
+    cards.push({ ...pair.cardA, pairId: idx, type: pair.type });
+    cards.push({ ...pair.cardB, pairId: idx, type: pair.type });
+  });
+
+  // Shuffle
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+
+  // Set patient name
+  const name = capyNames[Math.floor(Math.random() * capyNames.length)];
+  document.getElementById('patientName').textContent = `${name} needs help!`;
+
+  // Update UI
+  document.getElementById('flipCount').textContent = '0';
+  document.getElementById('pairCount').textContent = '0';
+  document.getElementById('totalPairs').textContent = totalPairsCount;
+  document.getElementById('timer').textContent = '0:00';
+  document.getElementById('healthBar').style.width = '0%';
+  document.getElementById('healthText').textContent = '0%';
+  document.getElementById('capybara').className = 'capybara sick';
+  document.getElementById('speechBubble').textContent = randomFrom(speeches.start);
+
+  // Build grid
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = `repeat(${config.cols}, 1fr)`;
+
+  cards.forEach((card, index) => {
+    const cardEl = document.createElement('div');
+    cardEl.className = `card type-${card.type}`;
+    cardEl.dataset.index = index;
+
+    cardEl.innerHTML = `
+      <div class="card-inner">
+        <div class="card-face card-back"></div>
+        <div class="card-face card-front">
+          <span class="card-label">${card.label}</span>
+          <span class="card-value ${card.isEmoji ? 'emoji' : ''}">${card.value}</span>
+        </div>
+      </div>
+    `;
+
+    cardEl.addEventListener('click', () => flipCard(index, cardEl));
+    grid.appendChild(cardEl);
+  });
+
+  // Show game screen
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('winScreen').classList.add('hidden');
+  document.getElementById('gameScreen').classList.remove('hidden');
+
+  // Clear timer
+  if (timerInterval) clearInterval(timerInterval);
+}
+
+function flipCard(index, el) {
+  if (locked) return;
+  if (el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  if (flippedCards.length >= 2) return;
+
+  // Start timer on first flip
+  if (!gameStarted) {
+    gameStarted = true;
+    timerInterval = setInterval(updateTimer, 1000);
+  }
+
+  el.classList.add('flipped');
+  flippedCards.push({ index, el });
+  flipCountVal++;
+  document.getElementById('flipCount').textContent = flipCountVal;
+
+  if (flippedCards.length === 2) {
+    locked = true;
+    checkMatch();
+  }
+}
+
+function checkMatch() {
+  const [a, b] = flippedCards;
+  const cardA = cards[a.index];
+  const cardB = cards[b.index];
+
+  if (cardA.pairId === cardB.pairId) {
+    // Match!
+    combo++;
+    if (combo > bestCombo) bestCombo = combo;
+    matchedPairs++;
+
+    setTimeout(() => {
+      a.el.classList.add('matched', 'match-pop');
+      b.el.classList.add('matched', 'match-pop');
+
+      // Update health
+      const healthPct = Math.round((matchedPairs / totalPairsCount) * 100);
+      document.getElementById('healthBar').style.width = healthPct + '%';
+      document.getElementById('healthText').textContent = healthPct + '%';
+      document.getElementById('pairCount').textContent = matchedPairs;
+
+      // Capybara reaction
+      const capy = document.getElementById('capybara');
+      capy.classList.remove('sick', 'happy');
+      void capy.offsetWidth;
+      capy.classList.add('happy');
+
+      // Speech
+      if (combo >= 3) {
+        document.getElementById('speechBubble').textContent = randomFrom(speeches.combo);
+        showComboText(combo);
+      } else {
+        document.getElementById('speechBubble').textContent = randomFrom(speeches.match);
+      }
+
+      // Particle effect
+      spawnParticle(a.el, '💊');
+      spawnParticle(b.el, '💊');
+
+      flippedCards = [];
+      locked = false;
+
+      // Check win
+      if (matchedPairs === totalPairsCount) {
+        setTimeout(winGame, 600);
+      }
+    }, 300);
+  } else {
+    // No match
+    combo = 0;
+
+    setTimeout(() => {
+      a.el.classList.add('wrong');
+      b.el.classList.add('wrong');
+      document.getElementById('speechBubble').textContent = randomFrom(speeches.wrong);
+
+      setTimeout(() => {
+        a.el.classList.remove('flipped', 'wrong');
+        b.el.classList.remove('flipped', 'wrong');
+        flippedCards = [];
+        locked = false;
+      }, 600);
+    }, 500);
+  }
+}
+
+function winGame() {
+  clearInterval(timerInterval);
+
+  const config = diffConfig[difficulty];
+  const perfectFlips = totalPairsCount * 2;
+  const ratio = perfectFlips / flipCountVal;
+
+  // Star calculation
+  let starCount;
+  if (ratio >= 0.85) starCount = 3;
+  else if (ratio >= 0.55) starCount = 2;
+  else starCount = 1;
+
+  // Show win screen
+  document.getElementById('gameScreen').classList.add('hidden');
+  document.getElementById('winScreen').classList.remove('hidden');
+
+  document.getElementById('winFlips').textContent = flipCountVal;
+  document.getElementById('winTime').textContent = formatTime(seconds);
+  document.getElementById('winCombo').textContent = bestCombo;
+
+  // Stars animation
+  ['star1', 'star2', 'star3'].forEach((id, i) => {
+    const star = document.getElementById(id);
+    star.classList.remove('earned');
+    if (i < starCount) {
+      setTimeout(() => star.classList.add('earned'), 300 + i * 300);
+    }
+  });
+
+  // Win message
+  const messages = [
+    starCount === 3 ? "Perfect! You're a genius vet! 🧠✨" :
+    starCount === 2 ? "Great job! Almost perfect! 🌟" :
+    "You did it! Keep practicing! 💪"
+  ];
+  document.getElementById('winMessage').textContent = messages[0];
+
+  // Confetti!
+  spawnConfetti();
+}
+
+function resetGame() {
+  document.getElementById('winScreen').classList.add('hidden');
+  document.getElementById('startScreen').classList.remove('hidden');
+}
+
+// ===== HELPERS =====
+function randomFrom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function updateTimer() {
+  seconds++;
+  document.getElementById('timer').textContent = formatTime(seconds);
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+function spawnParticle(el, emoji) {
+  const rect = el.getBoundingClientRect();
+  const particle = document.createElement('div');
+  particle.className = 'particle';
+  particle.textContent = emoji;
+  particle.style.left = (rect.left + rect.width / 2 - 12) + 'px';
+  particle.style.top = (rect.top + rect.height / 2 - 12) + 'px';
+  document.body.appendChild(particle);
+  setTimeout(() => particle.remove(), 1000);
+}
+
+function showComboText(combo) {
+  const el = document.createElement('div');
+  el.className = 'combo-text';
+  el.textContent = `${combo}x COMBO! 🔥`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#e94560', '#f59e0b', '#10b981', '#8b5cf6', '#3b82f6', '#ec4899', '#06b6d4'];
+
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.width = (Math.random() * 8 + 6) + 'px';
+      confetti.style.height = (Math.random() * 8 + 6) + 'px';
+      confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+      confetti.style.animationDelay = '0s';
+      if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
+      container.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 4000);
+    }, i * 30);
+  }
+}
+</script>
+</body>
+</html>
