@@ -68,7 +68,7 @@ module.exports = async function handler(req, res) {
     if (!admins.length || admins[0].pin_hash !== hashPin(pin)) {
       return res.status(401).json({ error: 'PIN ไม่ถูกต้อง' });
     }
-    if (admins[0].role !== 'super_admin') {
+    if (admins[0].role !== 'super') {
       return res.status(403).json({ error: 'เฉพาะ Super Admin เท่านั้น' });
     }
 

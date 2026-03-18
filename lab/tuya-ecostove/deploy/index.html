@@ -973,6 +973,8 @@
                     if (adminHeader) adminHeader.textContent = currentAdmin;
                     const superTab = document.getElementById('tab-btn-admins');
                     if (superTab) superTab.style.display = data.role === 'super' ? '' : 'none';
+                    const inviteBtn = document.getElementById('btn-invite-code');
+                    if (inviteBtn) inviteBtn.style.display = data.role === 'super' ? '' : 'none';
                 } else {
                     clearAdminSession();
                 }
