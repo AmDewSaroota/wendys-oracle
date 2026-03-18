@@ -152,7 +152,7 @@
             <div class="hidden md:flex space-x-10">
                 <button onclick="switchView('basic')" id="nav-basic" class="nav-active py-2 flex items-center gap-1" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
                 <button onclick="switchView('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1" data-i18n="nav.deep">ข้อมูลเชิงลึก</button>
-                <a href="/volunteer.html" target="_blank" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1.5">📱 อาสาสมัคร</a>
+                <a href="/volunteer.html" target="_blank" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1.5" data-i18n="nav.volunteer">📱 อาสาสมัคร</a>
                 <button onclick="promptAdmin()" id="nav-admin" class="text-emerald-200/70 hover:text-white font-medium py-2 flex items-center gap-1.5" data-i18n="nav.admin"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>จัดการระบบ</button>
                 <button onclick="toggleLang()" class="ml-4 px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-xl text-white text-sm font-bold transition-all"><span class="lang-toggle-text">EN</span></button>
             </div>
@@ -166,7 +166,7 @@
         <div id="mobile-menu" class="hidden md:hidden p-6 shadow-xl space-y-4" style="background-color: #043327;">
             <button onclick="switchView('basic'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.basic">ข้อมูลเบื้องต้น</button>
             <button onclick="switchView('deep'); toggleMobileMenu();" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.deep">ข้อมูลเชิงลึก</button>
-            <a href="/volunteer.html" target="_blank" class="block w-full text-left font-medium py-2 text-emerald-100">📱 อาสาสมัคร</a>
+            <a href="/volunteer.html" target="_blank" class="block w-full text-left font-medium py-2 text-emerald-100" data-i18n="nav.volunteer">📱 อาสาสมัคร</a>
             <button onclick="promptAdmin(); toggleMobileMenu();" class="block w-full text-left font-bold py-2 text-white border-t border-emerald-700 pt-4" data-i18n="nav.admin.mobile">จัดการระบบ (Admin)</button>
             <button onclick="toggleLang()" class="block w-full text-left font-medium py-2 text-emerald-100 border-t border-emerald-700 pt-4"><span class="lang-toggle-text">EN</span></button>
         </div>
@@ -359,7 +359,7 @@
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-500">
                     <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">TVOC</p>
                     <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
-                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400">vs เตาดั้งเดิม: --%</p>
+                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
                 </div>
             </div>
 
@@ -377,11 +377,11 @@
             <!-- TVOC Comparison Chart -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-300">
                 <div class="flex items-center justify-between mb-4">
-                    <h4 class="font-bold text-sm text-navy">ค่า TVOC (เตาดั้งเดิม vs เตาชีวมวล)</h4>
-                    <button onclick="showTvocReference()" class="text-xs text-purple-500 hover:text-purple-700 font-bold">ℹ️ มาตรฐาน</button>
+                    <h4 class="font-bold text-sm text-navy" data-i18n="chart.tvoc">ค่า TVOC (เตาดั้งเดิม vs เตาชีวมวล)</h4>
+                    <button onclick="showTvocReference()" class="text-xs text-purple-500 hover:text-purple-700 font-bold" data-i18n="chart.tvoc.ref">ℹ️ มาตรฐาน</button>
                 </div>
                 <div class="h-[220px]"><canvas id="tvocGroupChart"></canvas></div>
-                <p class="text-[10px] text-slate-400 mt-2">มาตรฐาน: WHO Indoor Air Quality Guidelines</p>
+                <p class="text-[10px] text-slate-400 mt-2" data-i18n="chart.tvoc.note">มาตรฐาน: WHO Indoor Air Quality Guidelines</p>
             </div>
 
             <!-- Reduction Summary Table -->
@@ -398,7 +398,7 @@
                             </tr>
                         </thead>
                         <tbody id="reduction-table-body" class="divide-y">
-                            <tr><td colspan="4" class="p-4 text-center text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                            <tr><td colspan="4" class="p-4 text-center text-slate-400" data-i18n="reduction.loading">กำลังโหลดข้อมูล...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -422,23 +422,23 @@
                 <div id="sensor-color-legend" class="flex flex-wrap gap-2 mb-4"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-orange-600 mb-2">PM2.5 (µg/m³)</h5>
+                        <h5 class="font-bold text-sm text-orange-600 mb-2" data-i18n="chart.sensor.pm25">PM2.5 (µg/m³)</h5>
                         <div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div>
                     </div>
                     <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-emerald-600 mb-2">CO2 (ppm)</h5>
+                        <h5 class="font-bold text-sm text-emerald-600 mb-2" data-i18n="chart.sensor.co2">CO2 (ppm)</h5>
                         <div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div>
                     </div>
                     <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-red-500 mb-2">Temperature (°C)</h5>
+                        <h5 class="font-bold text-sm text-red-500 mb-2" data-i18n="chart.sensor.temp">อุณหภูมิ (°C)</h5>
                         <div class="h-[220px]"><canvas id="sensorTempChart"></canvas></div>
                     </div>
                     <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-blue-500 mb-2">AQI</h5>
+                        <h5 class="font-bold text-sm text-blue-500 mb-2" data-i18n="chart.sensor.aqi">AQI</h5>
                         <div class="h-[220px]"><canvas id="sensorAqiChart"></canvas></div>
                     </div>
                     <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-purple-600 mb-2">TVOC (mg/m³) — บันทึกด้วยมือ</h5>
+                        <h5 class="font-bold text-sm text-purple-600 mb-2" data-i18n="chart.sensor.tvoc">TVOC (mg/m³) — บันทึกด้วยมือ</h5>
                         <div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div>
                     </div>
                 </div>
@@ -465,9 +465,9 @@
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="session.device">อุปกรณ์</th>
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.status">สถานะ</th>
                                 <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.duration">ระยะเวลา</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Readings</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg PM2.5</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center">Avg CO2</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.readings">รายการ</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.avg.pm25">PM2.5 เฉลี่ย</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.avg.co2">CO2 เฉลี่ย</th>
                             </tr>
                         </thead>
                         <tbody id="sessions-table-body" class="divide-y"></tbody>
@@ -519,15 +519,15 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="showInviteCodeModal()" id="btn-invite-code" class="px-4 py-3 bg-emerald-50 text-emerald-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-emerald-100 transition-all" style="display:none">Invite Code</button>
-                    <button onclick="showChangePinInline()" class="px-4 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm shadow-sm hover:bg-slate-200 transition-all">🔑 PIN</button>
-                    <button onclick="showRegenerateRecovery()" class="px-4 py-3 bg-amber-50 text-amber-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-amber-100 transition-all">Recovery</button>
+                    <button onclick="showInviteCodeModal()" id="btn-invite-code" class="px-4 py-3 bg-emerald-50 text-emerald-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-emerald-100 transition-all" style="display:none" data-i18n="admin.invite.code">Invite Code</button>
+                    <button onclick="showChangePinInline()" class="px-4 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm shadow-sm hover:bg-slate-200 transition-all" data-i18n="admin.pin">🔑 PIN</button>
+                    <button onclick="showRegenerateRecovery()" class="px-4 py-3 bg-amber-50 text-amber-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-amber-100 transition-all" data-i18n="admin.recovery">Recovery</button>
                     <button onclick="logoutAdmin()" class="px-8 py-3 bg-red-100 text-red-600 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all" data-i18n="admin.logout">Logout</button>
                 </div>
             </div>
 
             <div class="flex flex-wrap gap-1.5 bg-white/50 p-1.5 rounded-[1.5rem] border border-slate-200 shadow-inner">
-                <button onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] tab-active">ภาพรวม</button>
+                <button onclick="switchAdminTab('overview')" id="tab-btn-overview" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] tab-active" data-i18n="tab.overview">ภาพรวม</button>
                 <button onclick="switchAdminTab('projects')" id="tab-btn-projects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.projects">โครงการ</button>
                 <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.volunteers">อาสา</button>
                 <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.subjects">บ้าน</button>
@@ -545,21 +545,21 @@
                 <!-- Stat Cards -->
                 <div id="overview-stats" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-3">
-                    <h3 class="text-2xl font-bold text-navy">ภาพรวมระบบ</h3>
+                    <h3 class="text-2xl font-bold text-navy" data-i18n="overview.title">ภาพรวมระบบ</h3>
                     <div class="flex items-center gap-3">
-                        <input id="overview-search" type="text" oninput="renderOverviewTable()" placeholder="🔍 ค้นหาบ้าน, อาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-48 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                        <button onclick="loadAdminData(true)" class="text-[13px] px-4 py-2 rounded-xl bg-slate-100 text-slate-500 font-bold hover:bg-slate-200 transition-all">🔄 รีเฟรช</button>
+                        <input id="overview-search" type="text" oninput="renderOverviewTable()" data-i18n="overview.search" placeholder="🔍 ค้นหาบ้าน, อาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-48 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <button onclick="loadAdminData(true)" class="text-[13px] px-4 py-2 rounded-xl bg-slate-100 text-slate-500 font-bold hover:bg-slate-200 transition-all" data-i18n="overview.refresh">🔄 รีเฟรช</button>
                     </div>
                 </div>
                 <div class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
                     <table class="w-full text-left text-[13px] min-w-[700px]">
                         <thead class="bg-slate-50 border-b">
                             <tr>
-                                <th onclick="sortOverviewTable('name')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider cursor-pointer hover:text-emerald-600 select-none">บ้าน <span id="sort-arrow-name" class="text-[10px]"></span></th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">เซนเซอร์</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider">อาสาสมัคร</th>
-                                <th onclick="sortOverviewTable('status')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none">สถานะ <span id="sort-arrow-status" class="text-[10px]"></span></th>
-                                <th onclick="sortOverviewTable('project')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none">โครงการ <span id="sort-arrow-project" class="text-[10px]"></span></th>
+                                <th onclick="sortOverviewTable('name')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.house">บ้าน</span> <span id="sort-arrow-name" class="text-[10px]"></span></th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="overview.sensor">เซนเซอร์</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="overview.volunteer">อาสาสมัคร</th>
+                                <th onclick="sortOverviewTable('status')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.status">สถานะ</span> <span id="sort-arrow-status" class="text-[10px]"></span></th>
+                                <th onclick="sortOverviewTable('project')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.project">โครงการ</span> <span id="sort-arrow-project" class="text-[10px]"></span></th>
                             </tr>
                         </thead>
                         <tbody id="overview-table-body" class="divide-y"></tbody>
@@ -581,7 +581,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="vol.list">รายชื่ออาสาสมัคร</h3>
                     <div class="flex items-center gap-3">
-                        <input id="volunteers-search" type="text" oninput="renderVolunteersList()" placeholder="🔍 ค้นหาอาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="volunteers-search" type="text" oninput="renderVolunteersList()" placeholder="🔍 ค้นหาอาสา..." data-i18n="vol.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="vol.add">+ เพิ่มอาสา</button>
                     </div>
                 </div>
@@ -594,17 +594,17 @@
                     <h3 class="text-2xl font-bold text-navy" data-i18n="sub.manage">จัดการกลุ่มตัวอย่าง <span id="subjects-count" class="text-[15px] text-slate-400 font-normal">(0)</span></h3>
                     <div class="flex items-center gap-3 flex-wrap">
                         <select id="subjects-filter-project" onchange="renderSubjectsList()" class="custom-select px-3 py-2 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">ทุกโครงการ</option>
+                            <option value="all" data-i18n="filter.all.projects">ทุกโครงการ</option>
                         </select>
                         <select id="subjects-filter-district" onchange="renderSubjectsList()" class="custom-select px-3 py-2 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">ทุกอำเภอ</option>
+                            <option value="all" data-i18n="filter.all.districts">ทุกอำเภอ</option>
                         </select>
                         <select id="subjects-filter-sensor" onchange="renderSubjectsList()" class="custom-select px-3 py-2 rounded-xl border text-[13px] font-medium bg-white">
-                            <option value="all">เซนเซอร์: ทั้งหมด</option>
-                            <option value="linked">ผูกแล้ว</option>
-                            <option value="unlinked">ยังไม่ผูก</option>
+                            <option value="all" data-i18n="filter.sensor.all">เซนเซอร์: ทั้งหมด</option>
+                            <option value="linked" data-i18n="filter.sensor.linked">ผูกแล้ว</option>
+                            <option value="unlinked" data-i18n="filter.sensor.unlinked">ยังไม่ผูก</option>
                         </select>
-                        <input id="subjects-search" type="text" oninput="renderSubjectsList()" placeholder="🔍 ค้นหาบ้าน..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="subjects-search" type="text" oninput="renderSubjectsList()" placeholder="🔍 ค้นหาบ้าน..." data-i18n="sub.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="sub.add">+ เพิ่มบ้าน</button>
                     </div>
                 </div>
@@ -620,19 +620,19 @@
                     </div>
                     <div class="flex gap-3 flex-wrap items-center">
                         <select id="devices-filter" onchange="renderDevicesList()" class="px-3 py-2 rounded-xl border text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-200 custom-select">
-                            <option value="all">ทั้งหมด</option>
-                            <option value="active">เปิดใช้งาน</option>
-                            <option value="inactive">ปิดใช้งาน</option>
-                            <option value="unassigned">ยังไม่ผูกบ้าน</option>
+                            <option value="all" data-i18n="dev.filter.all">ทั้งหมด</option>
+                            <option value="active" data-i18n="dev.filter.active">เปิดใช้งาน</option>
+                            <option value="inactive" data-i18n="dev.filter.inactive">ปิดใช้งาน</option>
+                            <option value="unassigned" data-i18n="dev.filter.unassigned">ยังไม่ผูกบ้าน</option>
                         </select>
-                        <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาอุปกรณ์..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                        <button onclick="discoverTuyaDevices()" class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-600 transition-all">🔍 ค้นหาจาก Tuya Cloud</button>
+                        <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาอุปกรณ์..." data-i18n="dev.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <button onclick="discoverTuyaDevices()" class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-600 transition-all" data-i18n="dev.tuya.discover">🔍 ค้นหาจาก Tuya Cloud</button>
                         <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ ผูกเซนเซอร์กับบ้าน</button>
                     </div>
                 </div>
                 <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 <div id="tuya-discover-container" class="hidden mt-4 pt-6 border-t border-slate-200">
-                    <h4 class="text-lg font-bold text-navy mb-4">🔍 เซนเซอร์จาก Tuya Cloud</h4>
+                    <h4 class="text-lg font-bold text-navy mb-4" data-i18n="dev.tuya.title">🔍 เซนเซอร์จาก Tuya Cloud</h4>
                     <div id="tuya-discover-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
                 <div class="mt-8 pt-6 border-t border-slate-200">
@@ -646,7 +646,7 @@
                 <!-- API Quota Usage -->
                 <div id="api-quota-bar" class="bg-white/70 rounded-2xl p-4 border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-bold text-slate-600">Tuya API Usage (เดือนนี้)</span>
+                        <span class="text-sm font-bold text-slate-600" data-i18n="sched.api.usage">Tuya API Usage (เดือนนี้)</span>
                         <span id="api-quota-text" class="text-sm font-bold text-emerald-700">0 / 24,000</span>
                     </div>
                     <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
@@ -657,20 +657,20 @@
 
                 <!-- Sync Schedule Config -->
                 <div class="card-styled p-6 rounded-2xl max-w-2xl">
-                    <h4 class="text-lg font-bold text-navy mb-1">ตารางเก็บข้อมูล</h4>
-                    <p class="text-slate-400 text-xs mb-5">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
+                    <h4 class="text-lg font-bold text-navy mb-1" data-i18n="sched.title">ตารางเก็บข้อมูล</h4>
+                    <p class="text-slate-400 text-xs mb-5" data-i18n="sched.subtitle">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
 
                     <!-- Section A: เวลาพักประจำวัน -->
                     <div class="mb-6">
-                        <h5 class="text-sm font-bold text-slate-700 mb-3">เวลาพักประจำวัน (Quiet Hours)</h5>
+                        <h5 class="text-sm font-bold text-slate-700 mb-3" data-i18n="sched.quiet">เวลาพักประจำวัน (Quiet Hours)</h5>
                         <div class="flex items-center gap-3 mb-3">
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="quiet-hours-enabled" class="sr-only peer" checked>
                                 <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
                             </label>
-                            <span class="text-sm text-slate-600">ไม่เรียก API ช่วง</span>
+                            <span class="text-sm text-slate-600" data-i18n="sched.quiet.label">ไม่เรียก API ช่วง</span>
                             <input type="time" id="quiet-hours-start" value="00:00" class="p-2 rounded-lg border text-sm w-36 focus:outline-none focus:ring-2 focus:ring-emerald-200">
-                            <span class="text-sm text-slate-400">ถึง</span>
+                            <span class="text-sm text-slate-400" data-i18n="sched.quiet.to">ถึง</span>
                             <input type="time" id="quiet-hours-end" value="06:00" class="p-2 rounded-lg border text-sm w-36 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         </div>
                         <p class="text-xs text-slate-400" id="quiet-hours-savings"></p>
@@ -678,22 +678,22 @@
 
                     <!-- Section B: วันเก็บข้อมูลประจำสัปดาห์ -->
                     <div class="mb-6">
-                        <h5 class="text-sm font-bold text-slate-700 mb-3">วันเก็บข้อมูลประจำสัปดาห์</h5>
+                        <h5 class="text-sm font-bold text-slate-700 mb-3" data-i18n="sched.days">วันเก็บข้อมูลประจำสัปดาห์</h5>
                         <div class="flex flex-wrap gap-2" id="active-days-group">
-                            <label class="active-day-btn"><input type="checkbox" value="1" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">จ</span></label>
-                            <label class="active-day-btn"><input type="checkbox" value="2" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">อ</span></label>
-                            <label class="active-day-btn"><input type="checkbox" value="3" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">พ</span></label>
-                            <label class="active-day-btn"><input type="checkbox" value="4" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">พฤ</span></label>
-                            <label class="active-day-btn"><input type="checkbox" value="5" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">ศ</span></label>
-                            <label class="active-day-btn"><input type="checkbox" value="6" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">ส</span></label>
-                            <label class="active-day-btn"><input type="checkbox" value="7" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400">อา</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="1" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.mon">จ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="2" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.tue">อ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="3" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.wed">พ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="4" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.thu">พฤ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="5" class="sr-only peer" checked><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.fri">ศ</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="6" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.sat">ส</span></label>
+                            <label class="active-day-btn"><input type="checkbox" value="7" class="sr-only peer"><span class="px-3 py-1.5 rounded-full text-sm font-medium border cursor-pointer transition-all peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 bg-white text-slate-500 border-slate-300 hover:border-emerald-400" data-i18n="day.sun">อา</span></label>
                         </div>
                     </div>
 
                     <!-- Section C: ปฏิทินเดือน -->
                     <div class="mb-6">
                         <div class="flex items-center justify-between mb-3">
-                            <h5 class="text-sm font-bold text-slate-700">ปฏิทินเดือน</h5>
+                            <h5 class="text-sm font-bold text-slate-700" data-i18n="sched.calendar">ปฏิทินเดือน</h5>
                             <div class="flex items-center gap-2">
                                 <button onclick="changeCalendarMonth(-1)" class="p-1 rounded-lg hover:bg-slate-100 text-slate-500">&larr;</button>
                                 <span id="calendar-month-label" class="text-sm font-medium text-slate-700 min-w-[120px] text-center"></span>
@@ -701,53 +701,53 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-7 gap-1 text-center text-xs mb-1">
-                            <span class="text-slate-400 font-medium">จ</span><span class="text-slate-400 font-medium">อ</span><span class="text-slate-400 font-medium">พ</span><span class="text-slate-400 font-medium">พฤ</span><span class="text-slate-400 font-medium">ศ</span><span class="text-red-300 font-medium">ส</span><span class="text-red-300 font-medium">อา</span>
+                            <span class="text-slate-400 font-medium" data-i18n="day.mon">จ</span><span class="text-slate-400 font-medium" data-i18n="day.tue">อ</span><span class="text-slate-400 font-medium" data-i18n="day.wed">พ</span><span class="text-slate-400 font-medium" data-i18n="day.thu">พฤ</span><span class="text-slate-400 font-medium" data-i18n="day.fri">ศ</span><span class="text-red-300 font-medium" data-i18n="day.sat">ส</span><span class="text-red-300 font-medium" data-i18n="day.sun">อา</span>
                         </div>
                         <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
                         <div class="flex gap-4 mt-2 text-xs text-slate-400">
-                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> เก็บ</span>
-                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-300 inline-block"></span> หยุดประจำ</span>
-                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> วันหยุดพิเศษ</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> <span data-i18n="sched.legend.collect">เก็บ</span></span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-300 inline-block"></span> <span data-i18n="sched.legend.off">หยุดประจำ</span></span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-blue-500 inline-block"></span> <span data-i18n="sched.legend.holiday">วันหยุดพิเศษ</span></span>
                         </div>
                     </div>
 
                     <!-- Section D: เพิ่มวันหยุดพิเศษ -->
                     <div class="mb-6">
-                        <h5 class="text-sm font-bold text-slate-700 mb-3">วันหยุดพิเศษ</h5>
+                        <h5 class="text-sm font-bold text-slate-700 mb-3" data-i18n="sched.holiday">วันหยุดพิเศษ</h5>
                         <div class="flex flex-wrap items-end gap-2 mb-3">
                             <div>
-                                <label class="text-xs text-slate-500 block mb-1">วันที่</label>
+                                <label class="text-xs text-slate-500 block mb-1" data-i18n="sched.holiday.date">วันที่</label>
                                 <input type="date" id="holiday-date" class="p-1.5 rounded-lg border text-sm focus:outline-none focus:ring-2 focus:ring-blue-200">
                             </div>
                             <div>
-                                <label class="text-xs text-slate-500 block mb-1">เหตุผล</label>
-                                <input type="text" id="holiday-reason" placeholder="เช่น สงกรานต์" class="p-1.5 rounded-lg border text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                                <label class="text-xs text-slate-500 block mb-1" data-i18n="sched.holiday.reason">เหตุผล</label>
+                                <input type="text" id="holiday-reason" placeholder="เช่น สงกรานต์" data-i18n="sched.holiday.ph" class="p-1.5 rounded-lg border text-sm w-40 focus:outline-none focus:ring-2 focus:ring-blue-200">
                             </div>
-                            <button onclick="addHoliday()" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all">เพิ่ม</button>
+                            <button onclick="addHoliday()" class="bg-blue-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition-all" data-i18n="sched.holiday.add">เพิ่ม</button>
                         </div>
                         <div id="holidays-list" class="space-y-1"></div>
                     </div>
 
                     <!-- Section E: สรุป Quota -->
                     <div class="mb-5 p-4 bg-slate-50 rounded-xl">
-                        <h5 class="text-sm font-bold text-slate-700 mb-2">สรุป Quota เดือนนี้</h5>
+                        <h5 class="text-sm font-bold text-slate-700 mb-2" data-i18n="sched.quota">สรุป Quota เดือนนี้</h5>
                         <div id="quota-summary" class="text-sm text-slate-600 space-y-1"></div>
                         <div id="quota-warning" class="hidden mt-2 text-sm font-medium text-orange-600 bg-orange-50 p-2 rounded-lg"></div>
                     </div>
 
-                    <button onclick="saveSyncConfig()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all">บันทึก</button>
+                    <button onclick="saveSyncConfig()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all" data-i18n="sched.save">บันทึก</button>
                     <span id="quiet-hours-status" class="ml-3 text-xs text-slate-400"></span>
                 </div>
 
                 <!-- Section F: ช่วงเก็บข้อมูล (Collection Periods) -->
                 <div class="card-styled p-6 rounded-2xl max-w-3xl">
-                    <h4 class="text-lg font-bold text-navy mb-1">ช่วงเก็บข้อมูลแต่ละบ้าน</h4>
-                    <p class="text-slate-400 text-xs mb-5">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
+                    <h4 class="text-lg font-bold text-navy mb-1" data-i18n="sched.periods">ช่วงเก็บข้อมูลแต่ละบ้าน</h4>
+                    <p class="text-slate-400 text-xs mb-5" data-i18n="sched.periods.sub">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
                     <div id="periods-list" class="space-y-3 mb-5"></div>
                     <div class="flex flex-wrap gap-3">
-                        <button onclick="showBatchPeriodModal()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all">ตั้งค่าหลายบ้าน</button>
-                        <button onclick="showAddPeriodModal()" class="bg-slate-100 text-slate-600 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all">+ เพิ่มรายบ้าน</button>
-                        <button onclick="showBatchDeletePeriodModal()" class="bg-red-50 text-red-500 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-red-100 transition-all">ลบหลายบ้าน</button>
+                        <button onclick="showBatchPeriodModal()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all" data-i18n="sched.batch">ตั้งค่าหลายบ้าน</button>
+                        <button onclick="showAddPeriodModal()" class="bg-slate-100 text-slate-600 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all" data-i18n="sched.add.single">+ เพิ่มรายบ้าน</button>
+                        <button onclick="showBatchDeletePeriodModal()" class="bg-red-50 text-red-500 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-red-100 transition-all" data-i18n="sched.batch.delete">ลบหลายบ้าน</button>
                     </div>
                 </div>
             </div>
@@ -756,14 +756,14 @@
             <div id="admin-approvals" class="admin-tab-content hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h3 class="text-2xl font-bold text-navy">รออนุมัติข้อมูล</h3>
-                        <p class="text-slate-500 text-sm" id="approval-summary-text">กำลังโหลด...</p>
+                        <h3 class="text-2xl font-bold text-navy" data-i18n="approval.title">รออนุมัติข้อมูล</h3>
+                        <p class="text-slate-500 text-sm" id="approval-summary-text" data-i18n="common.loading">กำลังโหลด...</p>
                     </div>
                     <div class="flex gap-3">
-                        <button onclick="batchRejectAll()" id="btn-reject-all" class="bg-red-100 text-red-600 px-6 py-3 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all hidden">
+                        <button onclick="batchRejectAll()" id="btn-reject-all" class="bg-red-100 text-red-600 px-6 py-3 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all hidden" data-i18n="approval.batch.reject">
                             ✕ ไม่อนุมัติทั้งหมด
                         </button>
-                        <button onclick="batchApproveAll()" id="btn-approve-all" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition-all hidden">
+                        <button onclick="batchApproveAll()" id="btn-approve-all" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition-all hidden" data-i18n="approval.batch.approve">
                             ✓ อนุมัติทั้งหมด
                         </button>
                     </div>
@@ -775,31 +775,27 @@
             <div id="admin-data" class="admin-tab-content hidden space-y-4">
                 <!-- Sub-tab toggle -->
                 <div class="flex gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-200 shadow-inner w-fit">
-                    <button onclick="switchDataSubTab('sensor')" id="data-sub-sensor" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active">อัตโนมัติ</button>
+                    <button onclick="switchDataSubTab('sensor')" id="data-sub-sensor" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active" data-i18n="data.sub.sensor">อัตโนมัติ</button>
                     <button onclick="switchDataSubTab('tvoc')" id="data-sub-tvoc" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500">TVOC</button>
                 </div>
 
                 <!-- Sub: อัตโนมัติ (sensor data) -->
                 <div id="data-sub-sensor-content" class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
                     <div class="p-5 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <span class="font-bold text-navy">📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)</span>
+                        <span class="font-bold text-navy" data-i18n="data.sensor.title">📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)</span>
                         <div class="flex items-center gap-3">
-                            <select id="sensor-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                                <option value="all">ทุกเครื่อง</option>
-                            </select>
                             <select id="sensor-house-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                                <option value="all">ทุกบ้าน</option>
+                                <option value="all" data-i18n="data.filter.all.houses">ทุกบ้าน</option>
                             </select>
                             <button onclick="exportToExcel()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
-                            <button onclick="exportDailySummaries()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-indigo-700 transition-all">📋 สรุปรายวัน</button>
+                            <button onclick="exportDailySummaries()" class="bg-indigo-600 text-white px-5 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-indigo-700 transition-all" data-i18n="data.export.daily">📋 สรุปรายวัน</button>
                         </div>
                     </div>
                     <div class="overflow-x-auto custom-scrollbar">
                         <table id="all-data-table" class="w-full text-left text-[13px] min-w-[800px]">
                             <thead class="bg-slate-50 sticky top-0 z-20">
                                 <tr>
-                                    <th class="p-3 whitespace-nowrap">เวลาบันทึก</th>
-                                    <th class="p-3">เตา</th>
+                                    <th class="p-3 whitespace-nowrap" data-i18n="data.header.time">เวลาบันทึก</th>
                                     <th class="p-3 text-center text-orange-500">PM2.5</th>
                                     <th class="p-3 text-center text-orange-400">PM10</th>
                                     <th class="p-3 text-center text-slate-500">CO2</th>
@@ -807,7 +803,7 @@
                                     <th class="p-3 text-center text-red-400">°C</th>
                                     <th class="p-3 text-center text-cyan-500">%RH</th>
                                     <th class="p-3 text-center text-purple-400">HCHO</th>
-                                    <th class="p-3 text-center text-slate-400">เซนเซอร์</th>
+                                    <th class="p-3 text-center text-slate-400" data-i18n="data.header.house">บ้าน</th>
                                 </tr>
                             </thead>
                             <tbody id="all-data-table-body" class="divide-y"></tbody>
@@ -819,47 +815,47 @@
                 <div id="data-sub-tvoc-content" class="hidden space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
-                            <h3 class="text-2xl font-bold text-navy">TVOC — บันทึกด้วยมือ</h3>
+                            <h3 class="text-2xl font-bold text-navy" data-i18n="tvoc.tab.title">TVOC — บันทึกด้วยมือ</h3>
                             <p class="text-slate-400 text-sm" id="tvoc-tab-summary">กำลังโหลด...</p>
                         </div>
                         <div class="flex items-center gap-3">
                             <select id="tvoc-house-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                                <option value="all">ทุกบ้าน</option>
+                                <option value="all" data-i18n="data.filter.all.houses">ทุกบ้าน</option>
                             </select>
                             <select id="tvoc-stove-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                                <option value="all">ทุกประเภทเตา</option>
+                                <option value="all" data-i18n="tvoc.filter.all.stove">ทุกประเภทเตา</option>
                                 <option value="eco">🟢 Eco</option>
-                                <option value="old">🔴 เดิม</option>
+                                <option value="old" data-i18n="tvoc.filter.old">🔴 เดิม</option>
                             </select>
                             <select id="tvoc-range-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                                <option value="0">ทั้งหมด</option>
-                                <option value="24">24 ชม.</option>
-                                <option value="72">3 วัน</option>
-                                <option value="168" selected>7 วัน</option>
-                                <option value="720">30 วัน</option>
+                                <option value="0" data-i18n="tvoc.filter.all">ทั้งหมด</option>
+                                <option value="24" data-i18n="filter.24h">24 ชม.</option>
+                                <option value="72" data-i18n="filter.3d">3 วัน</option>
+                                <option value="168" selected data-i18n="filter.7d">7 วัน</option>
+                                <option value="720" data-i18n="filter.30d">30 วัน</option>
                             </select>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="tvoc-stats-row">
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
-                            <p class="text-xs text-slate-400">จำนวนรายการ</p>
+                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.count">จำนวนรายการ</p>
                             <p id="tvoc-stat-count" class="text-2xl font-bold text-purple-700">--</p>
                         </div>
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
-                            <p class="text-xs text-slate-400">ค่าเฉลี่ย</p>
+                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.avg">ค่าเฉลี่ย</p>
                             <p id="tvoc-stat-avg" class="text-2xl font-bold text-purple-700">-- <span class="text-sm font-normal">mg/m³</span></p>
                         </div>
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-emerald-300 text-center">
-                            <p class="text-xs text-slate-400">ต่ำสุด</p>
+                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.min">ต่ำสุด</p>
                             <p id="tvoc-stat-min" class="text-2xl font-bold text-emerald-600">-- <span class="text-sm font-normal">mg/m³</span></p>
                         </div>
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-red-300 text-center">
-                            <p class="text-xs text-slate-400">สูงสุด</p>
+                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.max">สูงสุด</p>
                             <p id="tvoc-stat-max" class="text-2xl font-bold text-red-500">-- <span class="text-sm font-normal">mg/m³</span></p>
                         </div>
                     </div>
                     <div class="bg-white/60 rounded-[2.5rem] shadow-sm p-6 border-b-4 border-purple-200">
-                        <h4 class="font-bold text-sm text-navy mb-4">กราฟ TVOC ตามเวลา</h4>
+                        <h4 class="font-bold text-sm text-navy mb-4" data-i18n="tvoc.chart.title">กราฟ TVOC ตามเวลา</h4>
                         <div class="h-[250px]"><canvas id="tvocTabChart"></canvas></div>
                     </div>
                     <div class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-purple-200">
@@ -867,11 +863,11 @@
                             <table class="w-full text-left text-[13px]">
                                 <thead class="bg-purple-50 sticky top-0 z-20">
                                     <tr>
-                                        <th class="p-3 whitespace-nowrap text-purple-800">เวลา</th>
-                                        <th class="p-3 text-purple-800">บ้าน</th>
-                                        <th class="p-3 text-purple-800">เตา</th>
+                                        <th class="p-3 whitespace-nowrap text-purple-800" data-i18n="tvoc.table.time">เวลา</th>
+                                        <th class="p-3 text-purple-800" data-i18n="tvoc.table.house">บ้าน</th>
+                                        <th class="p-3 text-purple-800" data-i18n="tvoc.table.stove">เตา</th>
                                         <th class="p-3 text-center text-purple-800 font-bold">TVOC (mg/m³)</th>
-                                        <th class="p-3 text-purple-800">ผู้บันทึก</th>
+                                        <th class="p-3 text-purple-800" data-i18n="tvoc.table.recorder">ผู้บันทึก</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tvoc-table-body" class="divide-y"></tbody>
@@ -885,15 +881,15 @@
             <div id="admin-activity" class="admin-tab-content hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="actlog.title">ประวัติกิจกรรม Admin</h3>
-                    <button onclick="renderAdminActivityFeed()" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition-all">🔄 รีเฟรช</button>
+                    <button onclick="renderAdminActivityFeed()" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-blue-100 hover:text-blue-600 transition-all" data-i18n="actlog.refresh">🔄 รีเฟรช</button>
                 </div>
                 <div class="flex flex-wrap items-center gap-3 bg-white rounded-2xl p-4 border border-slate-200">
-                    <span class="text-sm font-bold text-slate-500">ช่วงเวลา</span>
+                    <span class="text-sm font-bold text-slate-500" data-i18n="actlog.range">ช่วงเวลา</span>
                     <input type="date" id="activity-date-from" class="px-3 py-2 rounded-xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-                    <span class="text-slate-400 text-sm">ถึง</span>
+                    <span class="text-slate-400 text-sm" data-i18n="actlog.to">ถึง</span>
                     <input type="date" id="activity-date-to" class="px-3 py-2 rounded-xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-                    <button onclick="renderAdminActivityFeed()" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-all">ค้นหา</button>
-                    <button onclick="clearActivityFilter()" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all">ล้างตัวกรอง</button>
+                    <button onclick="renderAdminActivityFeed()" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-all" data-i18n="actlog.search">ค้นหา</button>
+                    <button onclick="clearActivityFilter()" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all" data-i18n="actlog.clear.filter">ล้างตัวกรอง</button>
                 </div>
                 <p id="activity-result-info" class="text-xs text-slate-400"></p>
                 <div id="admin-activity-feed" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2"></div>
@@ -1144,20 +1140,21 @@
             // Session timeline
             'session.timeline': { th: 'Session Timeline', en: 'Session Timeline' },
             'session.start': { th: 'เริ่ม', en: 'Start' },
-            'session.device': { th: 'อุปกรณ์', en: 'Device' },
+            'session.device': { th: 'บ้าน', en: 'House' },
             'session.status': { th: 'สถานะ', en: 'Status' },
             'session.duration': { th: 'ระยะเวลา', en: 'Duration' },
             'session.in.progress': { th: 'กำลังดำเนินการ...', en: 'In progress...' },
             'session.view.daily': { th: 'รายวัน', en: 'By Day' },
             'session.view.session': { th: 'รายเซสชัน', en: 'By Session' },
             'session.no.data': { th: 'ยังไม่มี session', en: 'No sessions yet' },
+            'session.no.today': { th: 'ยังไม่มีข้อมูลวันนี้', en: 'No data for today' },
             'session.all.devices': { th: 'ทุกเครื่อง', en: 'All devices' },
             'session.last.7d': { th: '7 วันล่าสุด', en: 'Last 7 days' },
             'session.last.30d': { th: '30 วันล่าสุด', en: 'Last 30 days' },
             // Daily summary
             'daily.title': { th: 'สรุปรายวัน', en: 'Daily Summary' },
             'daily.date': { th: 'วันที่', en: 'Date' },
-            'daily.device': { th: 'อุปกรณ์', en: 'Device' },
+            'daily.device': { th: 'บ้าน', en: 'House' },
             'daily.sessions': { th: 'เซสชัน', en: 'Sessions' },
             'daily.readings': { th: 'รายการ', en: 'Readings' },
             'daily.status': { th: 'สถานะ', en: 'Status' },
@@ -1343,6 +1340,9 @@
             'approval.actions': { th: 'จัดการ', en: 'Actions' },
             'approval.approve': { th: '✓ อนุมัติ', en: '✓ Approve' },
             'approval.reject': { th: '✕ ไม่อนุมัติ', en: '✕ Reject' },
+            'approval.title': { th: 'รออนุมัติข้อมูล', en: 'Pending Approval' },
+            'approval.batch.approve': { th: '✓ อนุมัติทั้งหมด', en: '✓ Approve All' },
+            'approval.batch.reject': { th: '✕ ไม่อนุมัติทั้งหมด', en: '✕ Reject All' },
             'approval.no.data': { th: 'ไม่มีรายการรออนุมัติ', en: 'No pending items' },
             'approval.approved': { th: 'อนุมัติแล้ว', en: 'Approved' },
             'approval.rejected': { th: 'ไม่อนุมัติแล้ว', en: 'Rejected' },
@@ -1375,6 +1375,271 @@
             'export.temp': { th: 'อุณหภูมิ', en: 'Temperature' },
             'export.humidity': { th: 'ความชื้น', en: 'Humidity' },
             'export.no.data': { th: 'ไม่มีข้อมูล', en: 'No data' },
+            // Nav extra
+            'nav.volunteer': { th: '📱 อาสาสมัคร', en: '📱 Volunteers' },
+            // Deep view charts
+            'chart.tvoc': { th: 'ค่า TVOC (เตาดั้งเดิม vs เตาชีวมวล)', en: 'TVOC Values (Traditional vs Biomass)' },
+            'chart.tvoc.ref': { th: 'ℹ️ มาตรฐาน', en: 'ℹ️ Reference' },
+            'chart.tvoc.note': { th: 'มาตรฐาน: WHO Indoor Air Quality Guidelines', en: 'Standard: WHO Indoor Air Quality Guidelines' },
+            'chart.sensor.pm25': { th: 'PM2.5 (µg/m³)', en: 'PM2.5 (µg/m³)' },
+            'chart.sensor.co2': { th: 'CO2 (ppm)', en: 'CO2 (ppm)' },
+            'chart.sensor.temp': { th: 'อุณหภูมิ (°C)', en: 'Temperature (°C)' },
+            'chart.sensor.aqi': { th: 'AQI', en: 'AQI' },
+            'chart.sensor.tvoc': { th: 'TVOC (mg/m³) — บันทึกด้วยมือ', en: 'TVOC (mg/m³) — Manual entry' },
+            // Session table headers
+            'session.readings': { th: 'รายการ', en: 'Readings' },
+            'session.avg.pm25': { th: 'PM2.5 เฉลี่ย', en: 'Avg PM2.5' },
+            'session.avg.co2': { th: 'CO2 เฉลี่ย', en: 'Avg CO2' },
+            // Admin buttons
+            'admin.invite.code': { th: 'Invite Code', en: 'Invite Code' },
+            'admin.pin': { th: '🔑 PIN', en: '🔑 PIN' },
+            'admin.recovery': { th: 'Recovery', en: 'Recovery' },
+            // Admin overview
+            'tab.overview': { th: 'ภาพรวม', en: 'Overview' },
+            'overview.title': { th: 'ภาพรวมระบบ', en: 'System Overview' },
+            'overview.refresh': { th: '🔄 รีเฟรช', en: '🔄 Refresh' },
+            'overview.search': { th: '🔍 ค้นหาบ้าน, อาสา...', en: '🔍 Search house, volunteer...' },
+            'overview.house': { th: 'บ้าน', en: 'House' },
+            'overview.sensor': { th: 'เซนเซอร์', en: 'Sensor' },
+            'overview.volunteer': { th: 'อาสาสมัคร', en: 'Volunteer' },
+            'overview.status': { th: 'สถานะ', en: 'Status' },
+            'overview.project': { th: 'โครงการ', en: 'Project' },
+            // Subject filters
+            'filter.all.projects': { th: 'ทุกโครงการ', en: 'All Projects' },
+            'filter.all.districts': { th: 'ทุกอำเภอ', en: 'All Districts' },
+            // Device filters
+            'dev.filter.all': { th: 'ทั้งหมด', en: 'All' },
+            'dev.filter.active': { th: 'เปิดใช้งาน', en: 'Active' },
+            'dev.filter.inactive': { th: 'ปิดใช้งาน', en: 'Inactive' },
+            'dev.filter.unassigned': { th: 'ยังไม่ผูกบ้าน', en: 'Unassigned' },
+            'dev.search': { th: '🔍 ค้นหาอุปกรณ์...', en: '🔍 Search device...' },
+            'dev.tuya.discover': { th: '🔍 ค้นหาจาก Tuya Cloud', en: '🔍 Discover from Tuya Cloud' },
+            'dev.tuya.title': { th: '🔍 เซนเซอร์จาก Tuya Cloud', en: '🔍 Sensors from Tuya Cloud' },
+            'vol.search': { th: '🔍 ค้นหาอาสา...', en: '🔍 Search volunteer...' },
+            'sub.search': { th: '🔍 ค้นหาบ้าน...', en: '🔍 Search house...' },
+            // Schedule tab
+            'sched.api.usage': { th: 'Tuya API Usage (เดือนนี้)', en: 'Tuya API Usage (this month)' },
+            'sched.title': { th: 'ตารางเก็บข้อมูล', en: 'Collection Schedule' },
+            'sched.subtitle': { th: 'จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ', en: 'Manage quiet hours, collection days, and holidays' },
+            'sched.quiet': { th: 'เวลาพักประจำวัน (Quiet Hours)', en: 'Daily Quiet Hours' },
+            'sched.quiet.label': { th: 'ไม่เรียก API ช่วง', en: 'No API calls during' },
+            'sched.quiet.to': { th: 'ถึง', en: 'to' },
+            'sched.days': { th: 'วันเก็บข้อมูลประจำสัปดาห์', en: 'Weekly Collection Days' },
+            'sched.calendar': { th: 'ปฏิทินเดือน', en: 'Monthly Calendar' },
+            'sched.legend.collect': { th: 'เก็บ', en: 'Collect' },
+            'sched.legend.off': { th: 'หยุดประจำ', en: 'Regular off' },
+            'sched.legend.holiday': { th: 'วันหยุดพิเศษ', en: 'Special holiday' },
+            'sched.holiday': { th: 'วันหยุดพิเศษ', en: 'Special Holidays' },
+            'sched.holiday.date': { th: 'วันที่', en: 'Date' },
+            'sched.holiday.reason': { th: 'เหตุผล', en: 'Reason' },
+            'sched.holiday.ph': { th: 'เช่น สงกรานต์', en: 'e.g. Songkran' },
+            'sched.holiday.add': { th: 'เพิ่ม', en: 'Add' },
+            'sched.quota': { th: 'สรุป Quota เดือนนี้', en: "This Month's Quota Summary" },
+            'sched.save': { th: 'บันทึก', en: 'Save' },
+            'sched.periods': { th: 'ช่วงเก็บข้อมูลแต่ละบ้าน', en: 'Collection Periods by House' },
+            'sched.periods.sub': { th: 'กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์', en: 'Define which stove type each house uses — system uses this instead of reading from sensor' },
+            'sched.batch': { th: 'ตั้งค่าหลายบ้าน', en: 'Batch Setup' },
+            'sched.add.single': { th: '+ เพิ่มรายบ้าน', en: '+ Add per house' },
+            'sched.batch.delete': { th: 'ลบหลายบ้าน', en: 'Delete Multiple' },
+            // Day abbreviations
+            'day.mon': { th: 'จ', en: 'Mon' },
+            'day.tue': { th: 'อ', en: 'Tue' },
+            'day.wed': { th: 'พ', en: 'Wed' },
+            'day.thu': { th: 'พฤ', en: 'Thu' },
+            'day.fri': { th: 'ศ', en: 'Fri' },
+            'day.sat': { th: 'ส', en: 'Sat' },
+            'day.sun': { th: 'อา', en: 'Sun' },
+            // Common loading
+            'common.loading': { th: 'กำลังโหลด...', en: 'Loading...' },
+            'common.processing': { th: 'กำลังดำเนินการ...', en: 'Processing...' },
+            // Pending card status badges
+            'approval.status.collecting': { th: '🔄 กำลังเก็บ', en: '🔄 Collecting' },
+            'approval.status.complete': { th: '✅ เก็บเสร็จ', en: '✅ Complete' },
+            'approval.status.tuya.error': { th: '🔴 Tuya Cloud ขัดข้อง', en: '🔴 Tuya Cloud Error' },
+            'approval.status.offline': { th: 'เซนเซอร์ออฟไลน์', en: 'Sensor Offline' },
+            'approval.status.incomplete': { th: '⚠️ เก็บไม่ครบ', en: '⚠️ Incomplete' },
+            'approval.complete.but': { th: '⚠️ ครบแล้ว แต่ ', en: '⚠️ Complete but ' },
+            'approval.collected.of': { th: 'เก็บได้ {0}/24 รายการ — ', en: 'Collected {0}/24 — ' },
+            'approval.data.latest': { th: 'ข้อมูลล่าสุด {0} น. ({1}ที่แล้ว)', en: 'Latest data {0} ({1} ago)' },
+            'approval.still.collecting': { th: 'กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน', en: 'Still collecting — wait until done' },
+            // Baseline info
+            'baseline.auto': { th: 'Baseline: ระบบตัดให้อัตโนมัติ', en: 'Baseline: Auto-cut by system' },
+            'baseline.auto.note': { th: '(อาสาไม่ได้กด)', en: '(Volunteer did not press)' },
+            'baseline.manual': { th: 'Baseline: อาสากดตัดเอง', en: 'Baseline: Volunteer pressed manually' },
+            'baseline.none': { th: 'ไม่มีข้อมูล Baseline', en: 'No Baseline data' },
+            // Stat labels
+            'stat.min': { th: 'ต่ำสุด', en: 'Min' },
+            'stat.avg': { th: 'เฉลี่ย', en: 'Avg' },
+            'stat.max': { th: 'สูงสุด', en: 'Max' },
+            'stat.pm25.peak': { th: 'PM2.5 พีค', en: 'PM2.5 Peak' },
+            'stat.pm25.avg': { th: 'PM2.5 เฉลี่ย', en: 'PM2.5 Avg' },
+            'stat.co2.peak': { th: 'CO2 พีค', en: 'CO2 Peak' },
+            'stat.co2.avg': { th: 'CO2 เฉลี่ย', en: 'CO2 Avg' },
+            // Approval summary
+            'approval.sensor.count': { th: '{0} รายการเซนเซอร์ ({1} เซสชัน)', en: '{0} sensor records ({1} sessions)' },
+            'approval.manual.count': { th: '{0} รายการบันทึกด้วยมือ ({1} เซสชัน)', en: '{0} manual records ({1} sessions)' },
+            'approval.no.pending': { th: 'ไม่มีข้อมูลรออนุมัติ', en: 'No pending data' },
+            // Approval actions
+            'approval.approving': { th: 'กำลังอนุมัติ {0} รายการ...', en: 'Approving {0} records...' },
+            'approval.approved.count': { th: 'อนุมัติ {0} รายการ', en: 'Approved {0} records' },
+            'approval.rejecting': { th: 'กำลังดำเนินการ...', en: 'Processing...' },
+            'approval.rejected.count': { th: 'ปฏิเสธ {0} รายการ', en: 'Rejected {0} records' },
+            'approval.approving.all': { th: 'กำลังอนุมัติทั้งหมด...', en: 'Approving all...' },
+            'approval.approved.all': { th: 'อนุมัติทั้งหมด {0} รายการ', en: 'Approved all {0} records' },
+            'approval.approved.stopped': { th: ' (หยุด {0} เซสชัน)', en: ' (stopped {0} sessions)' },
+            'approval.rejected.all': { th: 'ไม่อนุมัติทั้งหมด {0} รายการ', en: 'Rejected all {0} records' },
+            // Batch warnings
+            'approval.active.warn': { th: '⚠️ ยังมี {0} เซสชันที่กำลังเก็บข้อมูลอยู่:', en: '⚠️ {0} sessions still collecting:' },
+            'approval.active.action': { th: '→ ถ้ากดตกลง จะหยุดเซสชันเหล่านี้ก่อนอนุมัติ', en: '→ If confirmed, these sessions will be stopped before approval' },
+            'approval.incomplete.warn': { th: '⚠️ มี {0} เซสชันที่ข้อมูลไม่สมบูรณ์:', en: '⚠️ {0} sessions with incomplete data:' },
+            'approval.incomplete.action': { th: '→ ข้อมูลจากเซสชันเหล่านี้จะถูกอนุมัติด้วย', en: '→ Data from these sessions will also be approved' },
+            'approval.reject.confirm': { th: 'ไม่อนุมัติทั้งหมด {0} รายการ?\n\nข้อมูลจะถูกทำเครื่องหมาย "ไม่อนุมัติ" และจะไม่แสดงในกราฟ', en: 'Reject all {0} records?\n\nData will be marked "rejected" and won\'t appear in charts' },
+            // Session status
+            'status.baseline': { th: 'เตรียมเก็บข้อมูล', en: 'Preparing' },
+            'status.collecting': { th: 'กำลังเก็บ', en: 'Collecting' },
+            'status.complete': { th: 'ครบ', en: 'Complete' },
+            'status.incomplete': { th: 'ไม่ครบ', en: 'Incomplete' },
+            'status.cancelled': { th: 'ยกเลิก', en: 'Cancelled' },
+            // Session info
+            'session.count.info': { th: '{0} เซสชัน ({1} บ้าน)', en: '{0} sessions ({1} houses)' },
+            // Time units
+            'time.hours.short': { th: ' ชม.', en: 'h' },
+            'time.mins.short': { th: ' นาที', en: 'm' },
+            'time.ago': { th: 'ที่แล้ว', en: ' ago' },
+            // Stove labels
+            'stove.old.short': { th: '🔴 เดิม', en: '🔴 Traditional' },
+            // Activity log entries
+            'actlog.approve': { th: 'อนุมัติเซสชัน', en: 'Approved session' },
+            'actlog.reject': { th: 'ปฏิเสธเซสชัน', en: 'Rejected session' },
+            'actlog.stop': { th: 'หยุดเซสชัน', en: 'Stopped sessions' },
+            'actlog.approve.all': { th: 'อนุมัติทั้งหมด', en: 'Approved all' },
+            'actlog.reject.all': { th: 'ไม่อนุมัติทั้งหมด', en: 'Rejected all' },
+            // House fallback
+            'house.unassigned': { th: 'ไม่ระบุบ้าน', en: 'Unassigned house' },
+            // Overview stats
+            'overview.stat.houses': { th: 'บ้านทั้งหมด', en: 'Total Houses' },
+            'overview.stat.sensors': { th: 'เซนเซอร์จับคู่แล้ว', en: 'Paired Sensors' },
+            'overview.stat.online': { th: 'ออนไลน์', en: 'Online' },
+            'overview.stat.volunteers': { th: 'อาสาสมัคร', en: 'Volunteers' },
+            'overview.stat.projects': { th: 'โครงการ', en: 'Projects' },
+            'overview.no.results': { th: 'ไม่พบผลลัพธ์', en: 'No results found' },
+            'overview.no.sensor': { th: '— ยังไม่จับคู่ —', en: '— No sensor —' },
+            'overview.no.volunteer': { th: '— ยังไม่มีอาสา —', en: '— No volunteer —' },
+            'common.saved': { th: 'บันทึกแล้ว', en: 'Saved' },
+            // Health status
+            'health.online': { th: 'ออนไลน์', en: 'Online' },
+            'health.waiting': { th: 'รอข้อมูล', en: 'Waiting' },
+            'health.offline': { th: 'ออฟไลน์', en: 'Offline' },
+            // Data sub-tabs & headers
+            'data.sub.sensor': { th: 'อัตโนมัติ', en: 'Auto' },
+            'data.sensor.title': { th: '📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)', en: '📡 Sensor Data (Auto)' },
+            'data.filter.all.devices': { th: 'ทุกเครื่อง', en: 'All Devices' },
+            'data.filter.all.houses': { th: 'ทุกบ้าน', en: 'All Houses' },
+            'data.export.daily': { th: '📋 สรุปรายวัน', en: '📋 Daily Summary' },
+            'data.header.time': { th: 'เวลาบันทึก', en: 'Recorded' },
+            'data.header.house': { th: 'บ้าน', en: 'House' },
+            'data.stove.old': { th: 'เดิม', en: 'Traditional' },
+            // TVOC tab
+            'tvoc.tab.title': { th: 'TVOC — บันทึกด้วยมือ', en: 'TVOC — Manual Entry' },
+            'tvoc.filter.all.stove': { th: 'ทุกประเภทเตา', en: 'All Stove Types' },
+            'tvoc.filter.all': { th: 'ทั้งหมด', en: 'All' },
+            'tvoc.filter.old': { th: '🔴 เดิม', en: '🔴 Traditional' },
+            'tvoc.stat.count': { th: 'จำนวนรายการ', en: 'Records' },
+            'tvoc.stat.avg': { th: 'ค่าเฉลี่ย', en: 'Average' },
+            'tvoc.stat.min': { th: 'ต่ำสุด', en: 'Min' },
+            'tvoc.stat.max': { th: 'สูงสุด', en: 'Max' },
+            'tvoc.chart.title': { th: 'กราฟ TVOC ตามเวลา', en: 'TVOC Over Time' },
+            'tvoc.table.time': { th: 'เวลา', en: 'Time' },
+            'tvoc.table.house': { th: 'บ้าน', en: 'House' },
+            'tvoc.table.stove': { th: 'เตา', en: 'Stove' },
+            'tvoc.table.recorder': { th: 'ผู้บันทึก', en: 'Recorder' },
+            // Activity Log UI
+            'actlog.refresh': { th: '🔄 รีเฟรช', en: '🔄 Refresh' },
+            'actlog.range': { th: 'ช่วงเวลา', en: 'Date Range' },
+            'actlog.to': { th: 'ถึง', en: 'to' },
+            'actlog.search': { th: 'ค้นหา', en: 'Search' },
+            'actlog.clear.filter': { th: 'ล้างตัวกรอง', en: 'Clear Filter' },
+            'actlog.no.results': { th: 'ไม่พบรายการในช่วงเวลาที่เลือก', en: 'No records in selected range' },
+            'actlog.showing': { th: 'แสดง {0} รายการ', en: 'Showing {0} records' },
+            'actlog.showing.from': { th: ' ตั้งแต่ {0}', en: ' from {0}' },
+            'actlog.showing.to': { th: ' ถึง {0}', en: ' to {0}' },
+            'actlog.showing.latest': { th: 'แสดง 50 รายการล่าสุด', en: 'Showing latest 50 records' },
+            // Schedule - collection periods
+            'sched.periods.count': { th: '{0} ช่วง', en: '{0} periods' },
+            'sched.stove.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
+            'sched.stove.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
+            'sched.edit': { th: 'แก้ไข', en: 'Edit' },
+            'sched.delete': { th: 'ลบ', en: 'Delete' },
+            'sched.current': { th: 'ปัจจุบัน', en: 'Present' },
+            'sched.no.periods': { th: 'ยังไม่กำหนดช่วงเก็บข้อมูล', en: 'No collection periods set' },
+            'sched.no.houses': { th: 'ยังไม่มีบ้านในระบบ', en: 'No houses in system' },
+            'sched.house.fallback': { th: 'บ้าน #', en: 'House #' },
+            // Period modal
+            'period.select.house': { th: '-- เลือกบ้าน --', en: '-- Select House --' },
+            'period.stove.type': { th: 'ประเภทเตา', en: 'Stove Type' },
+            'period.stove.old': { th: 'เตาดั้งเดิม', en: 'Traditional Stove' },
+            'period.stove.eco': { th: 'เตาชีวมวล', en: 'Biomass Stove' },
+            'period.start.date': { th: 'วันเริ่มต้น', en: 'Start Date' },
+            'period.end.date': { th: 'วันสิ้นสุด', en: 'End Date' },
+            'period.end.opt': { th: '(ไม่บังคับ)', en: '(optional)' },
+            'period.notes': { th: 'หมายเหตุ', en: 'Notes' },
+            'period.notes.ph': { th: 'เช่น เริ่มเฟสเตาชีวมวล', en: 'e.g. Start biomass phase' },
+            'period.save': { th: 'บันทึก', en: 'Save' },
+            'period.add': { th: 'เพิ่ม', en: 'Add' },
+            'period.saving': { th: 'กำลังบันทึก...', en: 'Saving...' },
+            'period.select.house.warn': { th: 'กรุณาเลือกบ้าน', en: 'Please select a house' },
+            'period.select.stove.warn': { th: 'กรุณาเลือกประเภทเตา', en: 'Please select stove type' },
+            'period.select.start.warn': { th: 'กรุณาระบุวันเริ่มต้น', en: 'Please set start date' },
+            'period.end.before.start': { th: 'วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น', en: 'End date must not be before start date' },
+            'period.overlap': { th: 'ช่วงเวลาซ้อนกับช่วงที่มีอยู่แล้ว', en: 'Period overlaps with existing' },
+            // Sensor chart info
+            'sensor.count.info': { th: '{0} เซนเซอร์ · {1} จุดข้อมูล', en: '{0} sensors · {1} data points' },
+            // Export daily
+            'export.daily.no.data': { th: 'ไม่มีข้อมูลสรุปรายวัน', en: 'No daily summary data' },
+            'export.daily.date': { th: 'วันที่', en: 'Date' },
+            'export.daily.house': { th: 'บ้าน', en: 'House' },
+            'export.daily.sess.ok': { th: 'เซสชันสำเร็จ', en: 'Completed Sessions' },
+            'export.daily.sess.total': { th: 'เซสชันทั้งหมด', en: 'Total Sessions' },
+            'export.daily.readings': { th: 'จำนวนรายการ', en: 'Readings' },
+            'export.daily.pm25.avg': { th: 'PM2.5 เฉลี่ย', en: 'Avg PM2.5' },
+            'export.daily.pm25.max': { th: 'PM2.5 สูงสุด', en: 'Max PM2.5' },
+            'export.daily.pm10.avg': { th: 'PM10 เฉลี่ย', en: 'Avg PM10' },
+            'export.daily.co2.avg': { th: 'CO2 เฉลี่ย', en: 'Avg CO2' },
+            'export.daily.temp': { th: 'อุณหภูมิ', en: 'Temperature' },
+            'export.daily.humidity': { th: 'ความชื้น', en: 'Humidity' },
+            'export.daily.status': { th: 'สถานะ', en: 'Status' },
+            'export.daily.sheet': { th: 'สรุปรายวัน', en: 'Daily Summary' },
+            // Holiday & quota
+            'holiday.none': { th: 'ยังไม่มีวันหยุดพิเศษ', en: 'No special holidays' },
+            'holiday.delete': { th: 'ลบ', en: 'Delete' },
+            'holiday.tooltip': { th: 'วันหยุดพิเศษ', en: 'Special holiday' },
+            'holiday.rest.tooltip': { th: 'วันหยุดประจำ', en: 'Regular day off' },
+            'quota.collect': { th: 'เก็บ', en: 'Collect' },
+            'quota.days': { th: 'วัน', en: 'days' },
+            'quota.rest': { th: 'หยุดประจำ', en: 'regular off' },
+            'quota.holiday': { th: 'วันหยุดพิเศษ', en: 'holidays' },
+            'quota.of': { th: 'ของ', en: 'of' },
+            'quota.saved': { th: 'ประหยัดไป', en: 'Saved' },
+            'quota.saved.from': { th: 'จากวันหยุด+เวลาพัก', en: 'from holidays + quiet hours' },
+            'quota.warn': { th: 'โควต้าอาจเกิน 80% — ลองเพิ่มวันหยุดหรือขยายเวลาพัก', en: 'Quota may exceed 80% — try adding holidays or extending quiet hours' },
+            // Activity log action translations
+            'action.login': { th: 'เข้าสู่ระบบ', en: 'Logged in' },
+            'action.logout': { th: 'ออกจากระบบ', en: 'Logged out' },
+            'action.approve.session': { th: 'อนุมัติเซสชัน', en: 'Approved session' },
+            'action.reject.session': { th: 'ปฏิเสธเซสชัน', en: 'Rejected session' },
+            'action.stop.session': { th: 'หยุดเซสชัน', en: 'Stopped session' },
+            'action.approve.all': { th: 'อนุมัติทั้งหมด', en: 'Approved all' },
+            'action.reject.all': { th: 'ไม่อนุมัติทั้งหมด', en: 'Rejected all' },
+            'action.change.pin': { th: 'เปลี่ยน PIN', en: 'Changed PIN' },
+            'action.change.invite': { th: 'เปลี่ยน Invite Code', en: 'Changed Invite Code' },
+            'action.reset.pin': { th: 'รีเซ็ต PIN', en: 'Reset PIN' },
+            'action.delete.admin': { th: 'ลบแอดมิน', en: 'Deleted admin' },
+            'action.delete.period': { th: 'ลบช่วงเก็บข้อมูล', en: 'Deleted collection period' },
+            'action.set.period': { th: 'ตั้งค่าช่วงเก็บข้อมูล', en: 'Set collection period' },
+            'action.export.excel': { th: 'Export Excel', en: 'Export Excel' },
+            'action.export.csv': { th: 'Export CSV', en: 'Export CSV' },
+            'action.export.daily': { th: 'Export สรุปรายวัน', en: 'Export Daily Summary' },
+            'action.export.compare': { th: 'Export เปรียบเทียบ', en: 'Export Comparison' },
         };
 
         function t(key, ...args) {
@@ -1390,7 +1655,30 @@
             applyLang();
             if (currentView === 'basic') updateBasicView();
             else if (currentView === 'deep') updateDeepView();
-            if (isAdmin) { loadAdminData(); loadAdminsList(); }
+            if (isAdmin) {
+                loadAdminData(); loadAdminsList();
+                // Re-render schedule/calendar/periods if loaded
+                if (typeof calendarYear !== 'undefined') renderCalendar(calendarYear, calendarMonth);
+                if (typeof collectionPeriods !== 'undefined' && collectionPeriods.length) renderPeriodsList();
+                updateAllDataTable();
+            }
+        }
+
+        // Translate known session note patterns for EN display
+        function translateNote(note) {
+            if (!note || currentLang === 'th') return note;
+            return note
+                .replace(/อาสากดเริ่มจุดเตา/g, 'Volunteer started stove')
+                .replace(/อาสากดจุดเตา/g, 'Volunteer started stove')
+                .replace(/อาสากด Baseline/g, 'Volunteer pressed Baseline')
+                .replace(/ระบบตัด Baseline อัตโนมัติ/g, 'System auto-cut Baseline')
+                .replace(/ระบบตัด Baseline/g, 'System cut Baseline')
+                .replace(/เซนเซอร์ออฟไลน์/g, 'Sensor offline')
+                .replace(/เซนเซอร์กลับมาออนไลน์/g, 'Sensor back online')
+                .replace(/กำลังเก็บข้อมูล/g, 'Collecting data')
+                .replace(/เก็บข้อมูลเสร็จ/g, 'Collection complete')
+                .replace(/หยุดเก็บข้อมูล/g, 'Collection stopped')
+                .replace(/(\d{2}:\d{2})\s*น\./g, '$1');
         }
 
         function applyLang() {
@@ -1429,7 +1717,7 @@
         }
 
         function populateSensorDropdowns() {
-            const selectors = ['session-device-filter', 'sensor-filter'];
+            const selectors = ['session-device-filter'];
             for (const selId of selectors) {
                 const sel = document.getElementById(selId);
                 if (!sel) continue;
@@ -1444,16 +1732,28 @@
         }
 
         function populateHouseDropdowns() {
-            const selectors = ['sensor-house-filter', 'tvoc-house-filter'];
-            for (const selId of selectors) {
-                const sel = document.getElementById(selId);
-                if (!sel) continue;
-                while (sel.options.length > 1) sel.remove(1);
+            // Houses with sensors — for sensor data tab
+            const housesWithSensor = new Set(Object.values(DEVICE_HOUSE).map(String));
+            const sensorSel = document.getElementById('sensor-house-filter');
+            if (sensorSel) {
+                while (sensorSel.options.length > 1) sensorSel.remove(1);
+                for (const s of (subjects || [])) {
+                    if (!housesWithSensor.has(String(s.id))) continue;
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.textContent = s.full_name || t('sched.house.fallback') + s.id;
+                    sensorSel.appendChild(opt);
+                }
+            }
+            // All houses — for TVOC tab
+            const tvocSel = document.getElementById('tvoc-house-filter');
+            if (tvocSel) {
+                while (tvocSel.options.length > 1) tvocSel.remove(1);
                 for (const s of (subjects || [])) {
                     const opt = document.createElement('option');
                     opt.value = s.id;
-                    opt.textContent = s.full_name || 'บ้าน #' + s.id;
-                    sel.appendChild(opt);
+                    opt.textContent = s.full_name || t('sched.house.fallback') + s.id;
+                    tvocSel.appendChild(opt);
                 }
             }
         }
@@ -1476,6 +1776,7 @@
             'a3b9c2e4bdfe69ad7ekytn': 'MT29-01',
         };
         let HOUSE_NAMES = {};
+        let DEVICE_HOUSE = {}; // tuya_device_id → subject_id mapping for house filter
 
         // ==================== AQI Helper ====================
         // Calculate AQI from PM2.5 using Thai PCD breakpoints (กรมควบคุมมลพิษ พ.ศ.2566)
@@ -1950,7 +2251,7 @@
                 const newCode = (document.getElementById('invite-new')?.value || '').trim();
                 if (!newCode) { showToast('กรุณากรอก Invite Code ใหม่', 'warning'); return; }
                 const btn = document.getElementById('invite-save-btn');
-                btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+                btn.disabled = true; btn.textContent = t('period.saving');
                 try {
                     const resp = await fetch('/api/admin/settings', {
                         method: 'PUT',
@@ -2171,7 +2472,7 @@
         function switchAdminTab(tab) {
             // Super-admin-only tab guard
             if (tab === 'admins' && currentAdminRole !== 'super') {
-                showToast('เฉพาะ Super Admin', 'warning');
+                showToast(currentLang === 'th' ? 'เฉพาะ Super Admin' : 'Super Admin only', 'warning');
                 return;
             }
             document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
@@ -2365,7 +2666,10 @@
                 // Load house names from devices → subjects (use separate var to avoid overwriting admin-loaded devices)
                 try {
                     const { data: devs } = await supabaseClient.from('devices').select('tuya_device_id, subject_id, subjects(full_name)');
-                    if (devs) devs.forEach(d => { if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name; });
+                    if (devs) devs.forEach(d => {
+                        if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name;
+                        if (d.tuya_device_id && d.subject_id) DEVICE_HOUSE[d.tuya_device_id] = d.subject_id;
+                    });
                     if (!isAdmin) devices = devs || []; // only overwrite if not in admin mode
                 } catch (_) {}
 
@@ -2599,7 +2903,7 @@
                     </div>`);
                 }
 
-                breakdownEl.innerHTML = rows.length > 0 ? rows.join('') : '<p class="text-center text-slate-400 text-sm py-2">ยังไม่มีข้อมูลวันนี้</p>';
+                breakdownEl.innerHTML = rows.length > 0 ? rows.join('') : '<p class="text-center text-slate-400 text-sm py-2">' + t('session.no.today') + '</p>';
 
                 // Overall progress
                 const totalCompleted = (summaries || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
@@ -2947,7 +3251,7 @@
             const sensorIds = [...new Set(sensorData.map(d => d.tuya_device_id))];
             const sensorGroups = sensorIds.map(id => ({
                 id,
-                name: DEVICE_NAMES[id] || (id || 'unknown').slice(-6),
+                name: HOUSE_NAMES[id] || DEVICE_NAMES[id] || (id || 'unknown').slice(-6),
                 data: sensorData.filter(d => d.tuya_device_id === id).reverse(),
             }));
             const totalPoints = sensorGroups.reduce((sum, g) => sum + g.data.length, 0);
@@ -2955,7 +3259,7 @@
             const chartColors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6'];
 
             const countEl = document.getElementById('sensor-chart-count');
-            if (countEl) countEl.textContent = `${sensorGroups.length} เซนเซอร์ · ${totalPoints.toLocaleString()} จุดข้อมูล`;
+            if (countEl) countEl.textContent = t('sensor.count.info', sensorGroups.length, totalPoints.toLocaleString());
 
             // Render color legend badges
             const legendEl = document.getElementById('sensor-color-legend');
@@ -3037,7 +3341,7 @@
                 'cancelled': 'bg-red-100 text-red-700',
             };
             const statusIcons = { 'baseline': '🔵', 'collecting': '🟡', 'complete': '✅', 'incomplete': '⚠️', 'cancelled': '❌' };
-            const statusThai = { 'baseline': 'เตรียมเก็บข้อมูล', 'collecting': 'กำลังเก็บ', 'complete': 'ครบ', 'incomplete': 'ไม่ครบ', 'cancelled': 'ยกเลิก' };
+            const statusThai = { 'baseline': t('status.baseline'), 'collecting': t('status.collecting'), 'complete': t('status.complete'), 'incomplete': t('status.incomplete'), 'cancelled': t('status.cancelled') };
 
             const tbody = document.getElementById('sessions-table-body');
             if (!tbody) return;
@@ -3057,7 +3361,7 @@
             if (infoEl && latestDate) {
                 const uniqueDevices = new Set(todaySessions.map(s => s.device_id));
                 const dateLabel = new Date(latestDate + 'T00:00:00').toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-                infoEl.textContent = dateLabel + ' — ' + todaySessions.length + (currentLang === 'th' ? ' เซสชัน' : ' sessions') + ' (' + uniqueDevices.size + (currentLang === 'th' ? ' บ้าน)' : ' houses)');
+                infoEl.textContent = dateLabel + ' — ' + t('session.count.info', todaySessions.length, uniqueDevices.size);
             } else if (infoEl) {
                 infoEl.textContent = currentLang === 'th' ? 'ไม่มีข้อมูล' : 'No data';
             }
@@ -3085,7 +3389,8 @@
                 const colorClass = statusColors[s.session_status] || 'bg-slate-100 text-slate-500';
                 const icon = statusIcons[s.session_status] || '❓';
                 const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
-                const deviceName = DEVICE_NAMES[s.device_id] || s.device_id;
+                const sensorName = DEVICE_NAMES[s.device_id] || s.device_id;
+                const houseName = HOUSE_NAMES[s.device_id] || sensorName;
                 const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const sessNum = numMap[s.id] || '';
                 const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
@@ -3098,19 +3403,30 @@
                     blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Baseline เอง' : 'Volunteer pressed baseline') + '">MANUAL</span>';
                 }
 
-                // Format notes: show cause of incomplete
+                // Format notes: shorten, remove GPS, format timestamp
                 let notesHtml = '';
                 if (s.notes) {
-                    const isTuyaError = s.notes.includes('Tuya');
-                    const isOffline = s.notes.includes('ออฟไลน์');
-                    const noteColor = isTuyaError ? 'text-red-500' : isOffline ? 'text-amber-500' : 'text-slate-400';
-                    const noteIcon = isTuyaError ? '🔴' : isOffline ? '📡' : 'ℹ️';
-                    notesHtml = '<div class="text-[10px] ' + noteColor + ' mt-0.5">' + noteIcon + ' ' + s.notes + '</div>';
+                    let shortNote = s.notes;
+                    // Remove GPS coordinates
+                    shortNote = shortNote.replace(/\s*GPS:[0-9.,\-]+/g, '');
+                    // Remove technical metadata (tuya_api_errors:N etc.)
+                    shortNote = shortNote.replace(/\s*tuya_api_errors:\d+/g, '');
+                    // Format ISO timestamps to readable time
+                    shortNote = shortNote.replace(/\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}):\d{2}\.\d+Z/g, '$1 น.');
+                    shortNote = shortNote.trim();
+                    if (!shortNote) shortNote = null;
+                    if (shortNote) {
+                        const isTuyaError = shortNote.includes('Tuya');
+                        const isOffline = shortNote.includes('ออฟไลน์');
+                        const noteColor = isTuyaError ? 'text-red-500' : isOffline ? 'text-amber-500' : 'text-slate-400';
+                        const noteIcon = isTuyaError ? '🔴' : isOffline ? '📡' : 'ℹ️';
+                        notesHtml = '<div class="text-[10px] ' + noteColor + ' mt-0.5">' + noteIcon + ' ' + translateNote(shortNote) + '</div>';
+                    }
                 }
 
-                rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + deviceName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\')">' +
+                rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + houseName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\')">' +
                     '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
-                    '<td class="p-3">' + deviceName + sessLabel + '</td>' +
+                    '<td class="p-3">' + houseName + sessLabel + '</td>' +
                     '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
@@ -3133,7 +3449,7 @@
             if (!tbody) return;
 
             tbody.innerHTML = (data || []).map(d => {
-                const deviceName = DEVICE_NAMES[d.device_id] || d.device_id;
+                const houseName = HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id;
                 const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
                 const completed = d.sessions_completed || 0;
                 const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : total > 0 ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500';
@@ -3141,7 +3457,7 @@
                 const statusText = completed >= 2 ? t('daily.complete') : completed >= 1 ? completed + '/2' : total > 0 ? t('daily.incomplete') : t('daily.no.sensor');
                 return '<tr class="hover:bg-slate-50/50">' +
                     '<td class="p-2">' + d.summary_date + '</td>' +
-                    '<td class="p-2">' + deviceName + '</td>' +
+                    '<td class="p-2">' + houseName + '</td>' +
                     '<td class="p-2 text-center font-bold">' + completed + '/' + total + '</td>' +
                     '<td class="p-2 text-center">' + (d.total_readings || 0) + '</td>' +
                     '<td class="p-2 text-center">' + (d.avg_pm25 != null ? d.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -3235,6 +3551,32 @@
             renderAdminActivityFeed();
         }
 
+        // Translate activity log action names
+        const ACTION_MAP = {
+            'เข้าสู่ระบบ': 'action.login',
+            'ออกจากระบบ': 'action.logout',
+            'อนุมัติเซสชัน': 'action.approve.session',
+            'ปฏิเสธเซสชัน': 'action.reject.session',
+            'หยุดเซสชัน': 'action.stop.session',
+            'อนุมัติทั้งหมด': 'action.approve.all',
+            'ไม่อนุมัติทั้งหมด': 'action.reject.all',
+            'เปลี่ยน PIN': 'action.change.pin',
+            'เปลี่ยน Invite Code': 'action.change.invite',
+            'รีเซ็ต PIN': 'action.reset.pin',
+            'ลบแอดมิน': 'action.delete.admin',
+            'ลบช่วงเก็บข้อมูล': 'action.delete.period',
+            'ตั้งค่าช่วงเก็บข้อมูล': 'action.set.period',
+            'Export Excel': 'action.export.excel',
+            'Export CSV': 'action.export.csv',
+            'Export สรุปรายวัน': 'action.export.daily',
+            'Export เปรียบเทียบ': 'action.export.compare',
+        };
+        function translateAction(action) {
+            if (currentLang === 'th') return action;
+            const key = ACTION_MAP[action];
+            return key ? t(key) : action;
+        }
+
         async function renderAdminActivityFeed() {
             const feed = document.getElementById('admin-activity-feed');
             const info = document.getElementById('activity-result-info');
@@ -3258,16 +3600,16 @@
             const { data: logs, error } = await query;
 
             if (error || !logs || logs.length === 0) {
-                feed.innerHTML = '<p class="text-slate-400 text-center py-8">' + (dateFrom || dateTo ? 'ไม่พบรายการในช่วงเวลาที่เลือก' : t('actlog.no.data')) + '</p>';
+                feed.innerHTML = '<p class="text-slate-400 text-center py-8">' + (dateFrom || dateTo ? t('actlog.no.results') : t('actlog.no.data')) + '</p>';
                 if (info) info.textContent = '';
                 return;
             }
 
             if (info) {
                 if (dateFrom || dateTo) {
-                    info.textContent = 'แสดง ' + logs.length + ' รายการ' + (dateFrom ? ' ตั้งแต่ ' + dateFrom : '') + (dateTo ? ' ถึง ' + dateTo : '');
+                    info.textContent = t('actlog.showing', logs.length) + (dateFrom ? t('actlog.showing.from', dateFrom) : '') + (dateTo ? t('actlog.showing.to', dateTo) : '');
                 } else {
-                    info.textContent = 'แสดง 50 รายการล่าสุด';
+                    info.textContent = t('actlog.showing.latest');
                 }
             }
 
@@ -3276,7 +3618,7 @@
                 return `<div class="flex items-center gap-4 p-4 ${style.bg} rounded-2xl border">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0">${style.icon}</div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-[13px] font-bold text-navy truncate">${esc(entry.action)}</p>
+                        <p class="text-[13px] font-bold text-navy truncate">${esc(translateAction(entry.action))}</p>
                         <p class="text-[11px] text-slate-400">${esc(entry.admin_name || '-')} · ${new Date(entry.created_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
                     </div>
                     <div class="text-right">
@@ -3291,24 +3633,26 @@
             const tbody = document.getElementById('all-data-table-body');
             if (!tbody) return;
 
-            const deviceFilter = document.getElementById('sensor-filter')?.value || 'all';
             const houseFilter = document.getElementById('sensor-house-filter')?.value || 'all';
 
             // Only sensor (auto) data — exclude manual TVOC
             let filtered = (allDataWithPending || []).filter(d => d.data_source === 'sensor');
-            if (deviceFilter !== 'all') filtered = filtered.filter(d => d.tuya_device_id === deviceFilter);
-            if (houseFilter !== 'all') filtered = filtered.filter(d => d.house_id == houseFilter);
+            if (houseFilter !== 'all') filtered = filtered.filter(d => {
+                // Check house_id first, fallback to device→subject mapping
+                const hid = d.house_id || DEVICE_HOUSE[d.tuya_device_id];
+                return String(hid) === String(houseFilter);
+            });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
                 return;
             }
 
             tbody.innerHTML = filtered.map(d => {
                 const pm25Class = (d.pm25_value || 0) > 35 ? 'text-red-500 font-bold' : 'text-orange-500';
+                const houseName = HOUSE_NAMES[d.tuya_device_id] || d.house_name || t('house.unassigned');
                 return `<tr class="hover:bg-slate-50">
                     <td class="p-3 text-[13px] whitespace-nowrap">${new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</td>
-                    <td class="p-3">${d.stove_type === 'eco' ? '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[11px] font-bold">Eco</span>' : '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-[11px] font-bold">เดิม</span>'}</td>
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
                     <td class="p-3 text-center text-orange-400">${d.pm10_value ?? '-'}</td>
                     <td class="p-3 text-center text-slate-600">${d.co2_value ?? '-'}</td>
@@ -3316,7 +3660,7 @@
                     <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
                     <td class="p-3 text-center text-cyan-500">${d.humidity ?? '-'}</td>
                     <td class="p-3 text-center text-purple-400">${d.hcho_value ?? '-'}</td>
-                    <td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold bg-blue-100 text-blue-600">${getDeviceName(d)}</span></td>
+                    <td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold bg-blue-100 text-blue-600">${esc(houseName)}</span></td>
                 </tr>`;
             }).join('');
         }
@@ -3350,7 +3694,9 @@
             document.getElementById('tvoc-stat-avg').innerHTML = avgVal + ' <span class="text-sm font-normal">mg/m³</span>';
             document.getElementById('tvoc-stat-min').innerHTML = minVal + ' <span class="text-sm font-normal">mg/m³</span>';
             document.getElementById('tvoc-stat-max').innerHTML = maxVal + ' <span class="text-sm font-normal">mg/m³</span>';
-            document.getElementById('tvoc-tab-summary').textContent = count + ' รายการ' + (houseFilter !== 'all' ? '' : ' จากทุกบ้าน');
+            document.getElementById('tvoc-tab-summary').textContent = currentLang === 'th'
+                ? count + ' รายการ' + (houseFilter !== 'all' ? '' : ' จากทุกบ้าน')
+                : count + ' records' + (houseFilter !== 'all' ? '' : ' from all houses');
 
             // House name lookup
             const houseNameMap = {};
@@ -3359,16 +3705,16 @@
             // Table
             const tbody = document.getElementById('tvoc-table-body');
             if (count === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">ไม่มีข้อมูล TVOC ในช่วงที่เลือก</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">' + t('common.no.data') + '</td></tr>';
             } else {
                 tbody.innerHTML = tvocData.map(d => {
                     const stoveTag = d.stove_type === 'eco'
                         ? '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[11px] font-bold">Eco</span>'
-                        : '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-[11px] font-bold">เดิม</span>';
+                        : '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-[11px] font-bold">' + t('data.stove.old') + '</span>';
                     const houseName = houseNameMap[d.house_id] || '-';
                     const vol = (d.volunteer_id && volunteerNameMap[d.volunteer_id]) ? volunteerNameMap[d.volunteer_id] : '-';
                     return '<tr class="hover:bg-purple-50/50"><td class="p-3 whitespace-nowrap text-[13px]">' +
-                        new Date(d.recorded_at).toLocaleString('th-TH') + '</td><td class="p-3 text-[13px]">' +
+                        new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td><td class="p-3 text-[13px]">' +
                         houseName + '</td><td class="p-3">' + stoveTag + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
                         Number(d.tvoc_value).toFixed(3) + '</td><td class="p-3 text-[13px] text-slate-500">' +
                         vol + '</td></tr>';
@@ -3437,7 +3783,7 @@
         }
 
         async function loadAdminData(showSpinner) {
-            if (showSpinner) showLoading('กำลังโหลดข้อมูล Admin...');
+            if (showSpinner) showLoading(t('common.loading'));
             loadApiQuota();
             try {
                 const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false });
@@ -3493,12 +3839,16 @@
 
                 // Fetch session notes for each group (use session_id from logs)
                 const sessionNotes = {};
+                const sessionBaseline = {};
                 const uniqueSessionIds = [...new Set(sensorData.map(d => d.session_id).filter(Boolean))];
                 if (uniqueSessionIds.length > 0) {
                     const { data: sessRows } = await supabaseClient.from('sessions')
-                        .select('id, notes, session_status')
+                        .select('id, notes, session_status, baseline_transition')
                         .in('id', uniqueSessionIds);
-                    (sessRows || []).forEach(sr => { sessionNotes[sr.id] = sr.notes; });
+                    (sessRows || []).forEach(sr => {
+                        sessionNotes[sr.id] = sr.notes;
+                        sessionBaseline[sr.id] = sr.baseline_transition;
+                    });
                 }
 
                 const container = document.getElementById('pending-sessions-list');
@@ -3534,13 +3884,13 @@
 
                 if (!hasAny) {
                     container.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400 text-lg">' + t('approval.no.data') + '</div>';
-                    summaryEl.textContent = 'ไม่มีข้อมูลรออนุมัติ';
+                    summaryEl.textContent = t('approval.no.pending');
                     btnAll.classList.add('hidden');
                     if (btnRejectAll) btnRejectAll.classList.add('hidden');
                 } else {
                     const parts = [];
-                    if (sensorData.length > 0) parts.push(`${sensorData.length} รายการเซนเซอร์ (${sessions.length} เซสชัน)`);
-                    if (manualData.length > 0) parts.push(`${manualData.length} รายการบันทึกด้วยมือ (${manualSessions.length} เซสชัน)`);
+                    if (sensorData.length > 0) parts.push(t('approval.sensor.count', sensorData.length, sessions.length));
+                    if (manualData.length > 0) parts.push(t('approval.manual.count', manualData.length, manualSessions.length));
                     summaryEl.textContent = parts.join(' + ');
                     btnAll.classList.remove('hidden');
                     if (btnRejectAll) btnRejectAll.classList.remove('hidden');
@@ -3570,9 +3920,9 @@
                     // Render manual session cards
                     const manualCardsHtml = manualSessions.map(ms => {
                         const houseInfo = manualHouseMap[ms.houseId] || {};
-                        const houseName = houseInfo.name || 'ไม่ระบุบ้าน';
+                        const houseName = houseInfo.name || t('house.unassigned');
                         const volunteerName = houseInfo.volunteer || '';
-                        const stoveLabel = ms.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
+                        const stoveLabel = ms.stoveType === 'eco' ? '🟢 Eco' : t('stove.old.short');
                         const tvocValues = ms.logs.map(d => d.tvoc_value).filter(v => v != null);
                         const tvocTimes = ms.logs.filter(d => d.tvoc_value != null).map(d => new Date(d.recorded_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
                         const avgTvoc = tvocValues.length > 0 ? (tvocValues.reduce((a,b) => a+b, 0) / tvocValues.length).toFixed(3) : '--';
@@ -3596,13 +3946,13 @@
                                 <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px]">📝 ${ms.logs.length}</span>
                             </div>
                             <div class="flex gap-1.5 text-center">
-                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">ต่ำสุด</div><div class="text-sm font-bold text-emerald-600">${minTvoc}</div></div>
-                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">เฉลี่ย</div><div class="text-sm font-bold text-purple-700">${avgTvoc}</div></div>
-                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">สูงสุด</div><div class="text-sm font-bold text-red-500">${maxTvoc}</div></div>
+                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.min')}</div><div class="text-sm font-bold text-emerald-600">${minTvoc}</div></div>
+                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.avg')}</div><div class="text-sm font-bold text-purple-700">${avgTvoc}</div></div>
+                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.max')}</div><div class="text-sm font-bold text-red-500">${maxTvoc}</div></div>
                             </div>
                             ${sparkHtml ? '<div class="bg-slate-50 rounded-lg p-1.5">' + sparkHtml + '</div>' : ''}
                             <div class="flex gap-1.5">
-                                <button onclick="approveSession([${idsStr}])" class="flex-1 px-2 py-1.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-xl font-bold text-xs transition-all">✓ อนุมัติ</button>
+                                <button onclick="approveSession([${idsStr}])" class="flex-1 px-2 py-1.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
                                 <button onclick="rejectSession([${idsStr}])" class="px-2 py-1.5 bg-red-100 text-red-500 hover:bg-red-200 rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
                         </div>`;
@@ -3612,7 +3962,7 @@
                     const sensorCardsHtml = sessions.map((s, sIdx) => {
                         const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
                         const houseName = DEVICE_NAMES[s.device] || sensorName;
-                        const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : '🔴 เดิม';
+                        const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : t('stove.old.short');
                         const sKey = 'ps_' + (s.device || 'unknown').slice(-6) + '_' + s.date.replace(/-/g,'') + '_' + sIdx;
                         window[sKey] = s.ids;
                         window[sKey + '_logs'] = s.logs;
@@ -3647,33 +3997,45 @@
 
                         // Get session notes from DB (match by session_id of first log)
                         const logSessionId = firstLog ? firstLog.session_id : null;
-                        const sessNote = logSessionId ? (sessionNotes[logSessionId] || '') : '';
-                        const isTuyaIssue = sessNote.includes('Tuya') || sessNote.includes('tuya_api');
-                        const isOfflineIssue = sessNote.includes('ออฟไลน์');
+                        const rawNote = logSessionId ? (sessionNotes[logSessionId] || '') : '';
+                        const sessNote = translateNote(rawNote.replace(/\s*tuya_api_errors:\d+/g, '').replace(/\s*GPS:[0-9.,\-]+/g, '').replace(/\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}):\d{2}\.\d+Z/g, '$1').trim());
+                        const isTuyaIssue = rawNote.includes('Tuya') || rawNote.includes('tuya_api');
+                        const isOfflineIssue = rawNote.includes('ออฟไลน์');
+
+                        // Baseline transition info bar
+                        const blTrans = logSessionId ? sessionBaseline[logSessionId] : null;
+                        let blInfoBar = '';
+                        if (blTrans === 'auto') {
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200"><span class="text-amber-500 text-sm">⚡</span><span class="text-[11px] text-amber-700 font-medium">' + t('baseline.auto') + ' <span class="text-amber-500">' + t('baseline.auto.note') + '</span></span></div>';
+                        } else if (blTrans === 'manual') {
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200"><span class="text-emerald-500 text-sm">✋</span><span class="text-[11px] text-emerald-700 font-medium">' + t('baseline.manual') + '</span></div>';
+                        } else {
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200"><span class="text-slate-400 text-sm">—</span><span class="text-[11px] text-slate-500">' + t('baseline.none') + '</span></div>';
+                        }
 
                         let statusBadge, borderColor, statusNote;
                         if (isStillCollecting) {
-                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs animate-pulse">🔄 กำลังเก็บ</span>';
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs animate-pulse">' + t('approval.status.collecting') + '</span>';
                             borderColor = 'border-blue-400';
                             statusNote = '';
                         } else if (isComplete) {
-                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">✅ เก็บเสร็จ</span>';
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">' + t('approval.status.complete') + '</span>';
                             borderColor = 'border-emerald-400';
-                            statusNote = isTuyaIssue ? '<div class="text-[11px] text-amber-500 bg-amber-50 rounded-lg px-3 py-1.5">⚠️ ครบแล้ว แต่ ' + sessNote + '</div>' : '';
+                            statusNote = isTuyaIssue ? '<div class="text-[11px] text-amber-500 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.complete.but') + sessNote + '</div>' : '';
                         } else {
-                            const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + ' ชม.' : minutesAgo + ' นาที';
+                            const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + t('time.hours.short') : minutesAgo + t('time.mins.short');
                             if (isTuyaIssue) {
-                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">🔴 Tuya Cloud ขัดข้อง</span>';
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">' + t('approval.status.tuya.error') + '</span>';
                                 borderColor = 'border-red-400';
-                                statusNote = '<div class="text-[11px] text-red-500 bg-red-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/24 รายการ — ' + sessNote + '</div>';
+                                statusNote = '<div class="text-[11px] text-red-500 bg-red-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
                             } else if (isOfflineIssue) {
-                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">เซนเซอร์ออฟไลน์</span>';
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">' + t('approval.status.offline') + '</span>';
                                 borderColor = 'border-amber-400';
-                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/24 รายการ — ' + sessNote + '</div>';
+                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
                             } else {
-                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">⚠️ เก็บไม่ครบ</span>';
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">' + t('approval.status.incomplete') + '</span>';
                                 borderColor = 'border-amber-400';
-                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">เก็บได้ ' + s.logs.length + '/24 รายการ — ข้อมูลล่าสุด ' + timeEnd + ' น. (' + agoText + 'ที่แล้ว)</div>';
+                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + t('approval.data.latest', timeEnd, agoText + t('time.ago')) + '</div>';
                             }
                         }
 
@@ -3687,16 +4049,17 @@
                                 ${statusBadge}
                             </div>
                             ${statusNote}
+                            ${blInfoBar}
                             <div class="flex gap-1.5 text-center">
-                                <div class="flex-1 bg-orange-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">PM2.5 พีค</div><div class="text-sm font-bold text-orange-600">${peakPM != null ? peakPM.toFixed(1) : '-'}</div></div>
-                                <div class="flex-1 bg-orange-50/50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">PM2.5 เฉลี่ย</div><div class="text-sm font-bold text-orange-400">${avgPM}</div></div>
-                                <div class="flex-1 bg-blue-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">CO2 พีค</div><div class="text-sm font-bold text-blue-600">${peakCO2 != null ? peakCO2 : '-'}</div></div>
-                                <div class="flex-1 bg-blue-50/50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">CO2 เฉลี่ย</div><div class="text-sm font-bold text-blue-400">${avgCO2}</div></div>
+                                <div class="flex-1 bg-orange-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.pm25.peak')}</div><div class="text-sm font-bold text-orange-600">${peakPM != null ? peakPM.toFixed(1) : '-'}</div></div>
+                                <div class="flex-1 bg-orange-50/50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.pm25.avg')}</div><div class="text-sm font-bold text-orange-400">${avgPM}</div></div>
+                                <div class="flex-1 bg-blue-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.co2.peak')}</div><div class="text-sm font-bold text-blue-600">${peakCO2 != null ? peakCO2 : '-'}</div></div>
+                                <div class="flex-1 bg-blue-50/50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.co2.avg')}</div><div class="text-sm font-bold text-blue-400">${avgCO2}</div></div>
                             </div>
                             <div class="flex gap-1.5">
                                 <button onclick="showLogsChart('${sKey}')" class="flex-none px-2 py-1.5 bg-slate-100 text-slate-600 rounded-xl text-[11px] font-bold hover:bg-slate-200 transition-all">📊</button>
-                                <button onclick="approveSession(window.${sKey})" ${isStillCollecting ? 'disabled title="กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน"' : ''} class="flex-1 px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">✓ อนุมัติ</button>
-                                <button onclick="rejectSession(window.${sKey})" ${isStillCollecting ? 'disabled title="กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน"' : ''} class="px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
+                                <button onclick="approveSession(window.${sKey})" ${isStillCollecting ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="flex-1 px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
+                                <button onclick="rejectSession(window.${sKey})" ${isStillCollecting ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
                         </div>`;
                     }).join('');
@@ -3736,25 +4099,25 @@
         }
 
         async function approveSession(ids) {
-            showLoading('กำลังอนุมัติ ' + ids.length + ' รายการ...');
+            showLoading(t('approval.approving', ids.length));
             try {
                 await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
-                logActivity('อนุมัติเซสชัน', ids.length + ' รายการ');
+                logActivity(t('actlog.approve'), ids.length + ' records');
                 await Promise.all([loadAdminData(), loadData()]);
-                showToast('อนุมัติ ' + ids.length + ' รายการ');
+                showToast(t('approval.approved.count', ids.length));
             } catch (e) {
-                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+                showToast(t('common.error') + e.message, 'error');
             } finally { hideLoading(); }
         }
         async function rejectSession(ids) {
-            showLoading('กำลังดำเนินการ...');
+            showLoading(t('common.processing'));
             try {
                 await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).in('id', ids);
-                logActivity('ปฏิเสธเซสชัน', ids.length + ' รายการ');
+                logActivity(t('actlog.reject'), ids.length + ' records');
                 await Promise.all([loadAdminData(), loadData()]);
-                showToast('ปฏิเสธ ' + ids.length + ' รายการ');
+                showToast(t('approval.rejected.count', ids.length));
             } catch (e) {
-                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+                showToast(t('common.error') + e.message, 'error');
             } finally { hideLoading(); }
         }
         async function batchApproveAll() {
@@ -3778,34 +4141,35 @@
                 .eq('status', 'pending');
 
             if (!pendingLogs || pendingLogs.length === 0) {
-                showToast('ไม่มีข้อมูลรออนุมัติ'); return;
+                showToast(t('approval.no.pending')); return;
             }
 
             let warnings = [];
 
             if (activeSessions && activeSessions.length > 0) {
                 const names = activeSessions.map(s => {
-                    const name = DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
+                    const name = HOUSE_NAMES[s.device_id] || DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
                     return '  • ' + name + ' (' + (s.readings_count || 0) + ' readings)';
                 }).join('\n');
-                warnings.push('⚠️ ยังมี ' + activeSessions.length + ' เซสชันที่กำลังเก็บข้อมูลอยู่:\n' + names
-                    + '\n→ ถ้ากดตกลง จะหยุดเซสชันเหล่านี้ก่อนอนุมัติ');
+                warnings.push(t('approval.active.warn', activeSessions.length) + '\n' + names
+                    + '\n' + t('approval.active.action'));
             }
 
             if (incompleteSessions && incompleteSessions.length > 0) {
                 const names = incompleteSessions.map(s => {
-                    const name = DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
-                    const date = s.started_at ? new Date(s.started_at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }) : '?';
+                    const name = HOUSE_NAMES[s.device_id] || DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
+                    const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
+                    const date = s.started_at ? new Date(s.started_at).toLocaleDateString(locale, { day: 'numeric', month: 'short' }) : '?';
                     return '  • ' + name + ' — ' + date + ' (' + (s.readings_count || 0) + ' readings)';
                 }).join('\n');
-                warnings.push('⚠️ มี ' + incompleteSessions.length + ' เซสชันที่ข้อมูลไม่สมบูรณ์:\n' + names
-                    + '\n→ ข้อมูลจากเซสชันเหล่านี้จะถูกอนุมัติด้วย');
+                warnings.push(t('approval.incomplete.warn', incompleteSessions.length) + '\n' + names
+                    + '\n' + t('approval.incomplete.action'));
             }
 
             const confirmed = await showApproveModal(pendingLogs.length, warnings);
             if (!confirmed) return;
 
-            showLoading('กำลังอนุมัติทั้งหมด...');
+            showLoading(t('approval.approving.all'));
             try {
                 // Close active sessions first
                 if (activeSessions && activeSessions.length > 0) {
@@ -3818,18 +4182,18 @@
                             updated_at: new Date().toISOString(),
                         }).eq('id', s.id);
                     }
-                    logActivity('หยุดเซสชัน', activeSessions.length + ' เซสชัน');
+                    logActivity(t('actlog.stop'), activeSessions.length + ' sessions');
                 }
 
                 // Approve all pending logs
                 const ids = pendingLogs.map(d => d.id);
                 await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
-                logActivity('อนุมัติทั้งหมด', pendingLogs.length + ' รายการ');
+                logActivity(t('actlog.approve.all'), pendingLogs.length + ' records');
                 await Promise.all([loadAdminData(), loadData()]);
-                showToast('อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ' +
-                    (activeSessions?.length ? ' (หยุด ' + activeSessions.length + ' เซสชัน)' : ''));
+                showToast(t('approval.approved.all', pendingLogs.length) +
+                    (activeSessions?.length ? t('approval.approved.stopped', activeSessions.length) : ''));
             } catch (e) {
-                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+                showToast(t('common.error') + e.message, 'error');
             } finally { hideLoading(); }
         }
 
@@ -3839,18 +4203,18 @@
                 .select('id')
                 .eq('status', 'pending');
             if (!pendingLogs || pendingLogs.length === 0) {
-                showToast('ไม่มีข้อมูลรออนุมัติ'); return;
+                showToast(t('approval.no.pending')); return;
             }
-            showConfirm('ไม่อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?\n\nข้อมูลจะถูกทำเครื่องหมาย "ไม่อนุมัติ" และจะไม่แสดงในกราฟ', async () => {
-                showLoading('กำลังดำเนินการ...');
+            showConfirm(t('approval.reject.confirm', pendingLogs.length), async () => {
+                showLoading(t('common.processing'));
                 try {
                     const ids = pendingLogs.map(d => d.id);
                     await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).in('id', ids);
-                    logActivity('ไม่อนุมัติทั้งหมด', pendingLogs.length + ' รายการ');
+                    logActivity(t('actlog.reject.all'), pendingLogs.length + ' records');
                     await Promise.all([loadAdminData(), loadData()]);
-                    showToast('ไม่อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ');
+                    showToast(t('approval.rejected.all', pendingLogs.length));
                 } catch (e) {
-                    showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+                    showToast(t('common.error') + e.message, 'error');
                 } finally { hideLoading(); }
             });
         }
@@ -3884,7 +4248,7 @@
                     <p class="text-[13px] text-slate-500">${t('dev.house.label')}${esc(d.subjects?.full_name) || t('dev.unassigned')}</p>
                     <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'}">${d.is_active ? t('dev.active') : t('dev.inactive')}</p>
                 </div>
-            `).join('') || '<p class="text-slate-400">' + (q ? 'ไม่พบผลลัพธ์' : t('dev.no.data')) + '</p>';
+            `).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('dev.no.data')) + '</p>';
         }
 
         async function toggleDevice(id, active) {
@@ -3911,7 +4275,7 @@
                     </div>
                     <button onclick="deleteRegisteredSensor('${s.tuyaId}', '${s.name.replace(/'/g, "\\'")}')" class="text-[11px] px-2 py-1 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                 </div>
-            `).join('') || '<p class="text-slate-400 text-sm">ไม่มีเซนเซอร์</p>';
+            `).join('') || '<p class="text-slate-400 text-sm">' + t('dev.no.data') + '</p>';
         }
 
         // ===== Sync Schedule Config (v2) =====
@@ -3974,8 +4338,13 @@
             const grid = document.getElementById('calendar-grid');
             const label = document.getElementById('calendar-month-label');
             if (!grid || !label) return;
-            const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-            label.textContent = thaiMonths[month] + ' ' + (year + 543);
+            if (currentLang === 'th') {
+                const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+                label.textContent = thaiMonths[month] + ' ' + (year + 543);
+            } else {
+                const enMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                label.textContent = enMonths[month] + ' ' + year;
+            }
 
             const activeDays = getActiveDays();
             const today = new Date(); today.setHours(0,0,0,0);
@@ -4006,7 +4375,7 @@
                 const ring = isToday ? ' ring-2 ring-emerald-500' : '';
                 const cursor = (!isPast && !isRestDay) ? ' cursor-pointer hover:ring-2 hover:ring-blue-400' : '';
                 const onclick = (!isPast && !isRestDay) ? ` onclick="toggleHoliday('${dateStr}')"` : '';
-                const tooltip = holiday ? ` title="${esc(holiday.reason || 'วันหยุดพิเศษ')}"` : isRestDay ? ' title="วันหยุดประจำ"' : '';
+                const tooltip = holiday ? ` title="${esc(holiday.reason || t('holiday.tooltip'))}"` : isRestDay ? ` title="${t('holiday.rest.tooltip')}"` : '';
 
                 html += `<div class="p-1.5 rounded-lg text-center text-xs font-medium ${bgClass}${ring}${cursor}"${onclick}${tooltip}>${d}</div>`;
             }
@@ -4074,7 +4443,7 @@
             const today = new Date().toISOString().slice(0, 10);
             const upcoming = syncHolidays.filter(h => h.holiday_date >= today);
             if (upcoming.length === 0) {
-                list.innerHTML = '<p class="text-xs text-slate-400">ยังไม่มีวันหยุดพิเศษ</p>';
+                list.innerHTML = '<p class="text-xs text-slate-400">' + t('holiday.none') + '</p>';
                 return;
             }
             list.innerHTML = upcoming.map(h => {
@@ -4082,7 +4451,7 @@
                 return `<div class="flex items-center gap-2 text-sm">
                     <span class="text-blue-600 font-medium">${h.holiday_date}</span>
                     <span class="text-slate-500">${esc(h.reason || '-')}</span>
-                    ${canDelete ? `<button onclick="deleteHoliday(${h.id})" class="text-xs text-red-400 hover:text-red-600 ml-auto">ลบ</button>` : ''}
+                    ${canDelete ? `<button onclick="deleteHoliday(${h.id})" class="text-xs text-red-400 hover:text-red-600 ml-auto">${t('sched.delete')}</button>` : ''}
                 </div>`;
             }).join('');
         }
@@ -4129,14 +4498,14 @@
             const pct = Math.round(projected / 24000 * 100);
 
             el.innerHTML = `
-                <p>เก็บ <strong>${activeDayCount} วัน</strong> / หยุดประจำ ${restDayCount} วัน / วันหยุดพิเศษ ${holidayCount} วัน</p>
-                <p>Projected: ~<strong>${projected.toLocaleString()} calls</strong> (${pct}% ของ 24,000)</p>
-                <p class="text-xs text-slate-400">ประหยัดไป ~${saved.toLocaleString()} calls จากวันหยุด+เวลาพัก</p>
+                <p>${t('quota.collect')} <strong>${activeDayCount} ${t('quota.days')}</strong> / ${t('quota.rest')} ${restDayCount} ${t('quota.days')} / ${t('quota.holiday')} ${holidayCount} ${t('quota.days')}</p>
+                <p>Projected: ~<strong>${projected.toLocaleString()} calls</strong> (${pct}% ${t('quota.of')} 24,000)</p>
+                <p class="text-xs text-slate-400">${t('quota.saved')} ~${saved.toLocaleString()} calls ${t('quota.saved.from')}</p>
             `;
 
             if (warnEl) {
                 if (pct >= 80) {
-                    warnEl.textContent = 'โควต้าอาจเกิน 80% — ลองเพิ่มวันหยุดหรือขยายเวลาพัก';
+                    warnEl.textContent = t('quota.warn');
                     warnEl.classList.remove('hidden');
                 } else {
                     warnEl.classList.add('hidden');
@@ -4214,7 +4583,7 @@
 
             // Configured houses — one card per house
             for (const [sid, periods] of Object.entries(grouped)) {
-                const houseName = subjectMap[Number(sid)] || 'บ้าน #' + sid;
+                const houseName = subjectMap[Number(sid)] || t('sched.house.fallback') + sid;
                 const hasActive = periods.some(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
 
                 html += '<div class="bg-white rounded-2xl border ' + (hasActive ? 'border-emerald-300 shadow-sm' : 'border-slate-200') + ' overflow-hidden">';
@@ -4224,7 +4593,7 @@
                     + (hasActive ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>' : '')
                     + '<span class="font-bold text-navy text-[13px]">' + esc(houseName) + '</span>'
                     + '</div>'
-                    + '<span class="text-[11px] text-slate-400">' + periods.length + ' ช่วง</span>'
+                    + '<span class="text-[11px] text-slate-400">' + t('sched.periods.count', periods.length) + '</span>'
                     + '</div>';
                 // Period rows
                 for (const p of periods) {
@@ -4232,9 +4601,9 @@
                     const isPast = p.ends_at && p.ends_at < today;
                     const isOld = p.stove_type === 'old';
                     const badge = isOld
-                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700">เตาดั้งเดิม</span>'
-                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">เตาชีวมวล</span>';
-                    const dateRange = formatThaiDate(p.starts_at) + ' → ' + (p.ends_at ? formatThaiDate(p.ends_at) : 'ปัจจุบัน');
+                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700">' + t('sched.stove.old') + '</span>'
+                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">' + t('sched.stove.eco') + '</span>';
+                    const dateRange = formatLocaleDate(p.starts_at) + ' → ' + (p.ends_at ? formatLocaleDate(p.ends_at) : t('sched.current'));
 
                     html += '<div class="flex items-center justify-between px-4 py-2 ' + (isPast ? 'opacity-50' : '') + ' ' + (isActive ? 'bg-emerald-50/50' : '') + '">'
                         + '<div class="flex items-center gap-2">'
@@ -4242,8 +4611,8 @@
                         + '<span class="text-[11px] text-slate-500">' + dateRange + (p.notes ? ' · ' + esc(p.notes) : '') + '</span>'
                         + '</div>'
                         + '<div class="flex items-center gap-2">'
-                        + '<button onclick="showEditPeriodModal(' + p.id + ')" class="text-[11px] text-blue-500 hover:underline">แก้ไข</button>'
-                        + '<button onclick="deletePeriod(' + p.id + ',\'' + esc(houseName) + '\')" class="text-[11px] text-red-400 hover:text-red-600">ลบ</button>'
+                        + '<button onclick="showEditPeriodModal(' + p.id + ')" class="text-[11px] text-blue-500 hover:underline">' + t('sched.edit') + '</button>'
+                        + '<button onclick="deletePeriod(' + p.id + ',\'' + esc(houseName) + '\')" class="text-[11px] text-red-400 hover:text-red-600">' + t('sched.delete') + '</button>'
                         + '</div></div>';
                 }
                 html += '</div>';
@@ -4252,15 +4621,15 @@
             // Unconfigured houses
             if (unconfigured.length > 0) {
                 html += '<div class="mt-4 p-3 bg-amber-50 rounded-2xl border border-amber-200">'
-                    + '<p class="text-sm font-bold text-amber-700 mb-2">ยังไม่กำหนดช่วงเก็บข้อมูล</p>'
+                    + '<p class="text-sm font-bold text-amber-700 mb-2">' + t('sched.no.periods') + '</p>'
                     + '<div class="flex flex-wrap gap-2">';
                 for (const s of unconfigured) {
-                    html += '<span class="px-3 py-1 bg-white rounded-xl text-xs text-slate-600 border">' + esc(s.full_name || 'บ้าน #' + s.id) + '</span>';
+                    html += '<span class="px-3 py-1 bg-white rounded-xl text-xs text-slate-600 border">' + esc(s.full_name || t('sched.house.fallback') + s.id) + '</span>';
                 }
                 html += '</div></div>';
             }
 
-            if (!html) html = '<p class="text-slate-400 text-center py-4">ยังไม่มีบ้านในระบบ</p>';
+            if (!html) html = '<p class="text-slate-400 text-center py-4">' + t('sched.no.houses') + '</p>';
             container.innerHTML = html;
         }
 
@@ -4269,63 +4638,69 @@
             const d = new Date(dateStr + 'T00:00:00');
             return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
         }
+        function formatLocaleDate(dateStr) {
+            if (!dateStr) return '-';
+            const d = new Date(dateStr + 'T00:00:00');
+            const loc = currentLang === 'th' ? 'th-TH' : 'en-US';
+            return d.toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' });
+        }
 
         function showAddPeriodModal(prefill) {
             const eligible = prefill ? subjects : getHousesWithSensors();
             const subjectOptions = eligible.map(s => {
                 const status = getHousePeriodStatus(s.id);
                 const suffix = status ? ' (' + status.label + ')' : '';
-                return '<option value="' + s.id + '"' + (prefill && prefill.subject_id === s.id ? ' selected' : '') + '>' + esc(s.full_name || 'บ้าน #' + s.id) + suffix + '</option>';
+                return '<option value="' + s.id + '"' + (prefill && prefill.subject_id === s.id ? ' selected' : '') + '>' + esc(s.full_name || t('sched.house.fallback') + s.id) + suffix + '</option>';
             }).join('');
 
             showModal(`
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">📅</div>
-                    <h3 class="text-xl font-bold text-navy">${prefill ? 'แก้ไขช่วงเก็บข้อมูล' : 'เพิ่มช่วงเก็บข้อมูล'}</h3>
+                    <h3 class="text-xl font-bold text-navy">${prefill ? (currentLang === 'th' ? 'แก้ไขช่วงเก็บข้อมูล' : 'Edit Collection Period') : (currentLang === 'th' ? 'เพิ่มช่วงเก็บข้อมูล' : 'Add Collection Period')}</h3>
                 </div>
                 <div class="space-y-4 mb-6">
                     <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">บ้าน</label>
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('data.header.house')}</label>
                         <select id="period-subject" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500" ${prefill ? 'disabled' : ''}>
-                            <option value="">-- เลือกบ้าน --</option>
+                            <option value="">${t('period.select.house')}</option>
                             ${subjectOptions}
                         </select>
                     </div>
                     <div>
-                        <label class="text-[13px] font-bold text-navy block mb-2">ประเภทเตา</label>
+                        <label class="text-[13px] font-bold text-navy block mb-2">${t('period.stove.type')}</label>
                         <div class="flex gap-3">
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="period-stove" value="old" class="sr-only peer" ${!prefill || prefill.stove_type === 'old' ? 'checked' : ''}>
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาดั้งเดิม</span>
+                                    <span class="font-bold text-sm">${t('period.stove.old')}</span>
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="period-stove" value="eco" class="sr-only peer" ${prefill && prefill.stove_type === 'eco' ? 'checked' : ''}>
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาชีวมวล</span>
+                                    <span class="font-bold text-sm">${t('period.stove.eco')}</span>
                                 </div>
                             </label>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">วันเริ่มต้น</label>
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.start.date')}</label>
                             <input type="date" id="period-start" value="${prefill ? prefill.starts_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                         <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">วันสิ้นสุด <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.end.date')} <span class="text-slate-400 font-normal">${t('period.end.opt')}</span></label>
                             <input type="date" id="period-end" value="${prefill && prefill.ends_at ? prefill.ends_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                     </div>
                     <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
-                        <input type="text" id="period-notes" value="${prefill && prefill.notes ? esc(prefill.notes) : ''}" placeholder="เช่น เริ่มเฟสเตาชีวมวล" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('period.notes')} <span class="text-slate-400 font-normal">${t('period.end.opt')}</span></label>
+                        <input type="text" id="period-notes" value="${prefill && prefill.notes ? esc(prefill.notes) : ''}" placeholder="${t('period.notes.ph')}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
-                    <button id="period-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">${prefill ? 'บันทึก' : 'เพิ่ม'}</button>
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">${t('common.cancel')}</button>
+                    <button id="period-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">${prefill ? t('period.save') : t('period.add')}</button>
                 </div>
             `);
             document.getElementById('period-save-btn').onclick = () => savePeriod(prefill ? prefill.id : null);
@@ -4344,10 +4719,10 @@
             const endsAt = document.getElementById('period-end')?.value || null;
             const notes = (document.getElementById('period-notes')?.value || '').trim() || null;
 
-            if (!subjectId) { showToast('กรุณาเลือกบ้าน', 'warning'); return; }
-            if (!stoveType) { showToast('กรุณาเลือกประเภทเตา', 'warning'); return; }
-            if (!startsAt) { showToast('กรุณาระบุวันเริ่มต้น', 'warning'); return; }
-            if (endsAt && endsAt < startsAt) { showToast('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น', 'warning'); return; }
+            if (!subjectId) { showToast(t('period.select.house.warn'), 'warning'); return; }
+            if (!stoveType) { showToast(t('period.select.stove.warn'), 'warning'); return; }
+            if (!startsAt) { showToast(t('period.select.start.warn'), 'warning'); return; }
+            if (endsAt && endsAt < startsAt) { showToast(t('period.end.before.start'), 'warning'); return; }
 
             // Overlap check — auto-close ongoing periods, block real overlaps
             const ongoingToClose = []; // periods with ends_at = null ที่จะปิดอัตโนมัติ
@@ -4367,12 +4742,12 @@
                 }
             }
             if (realOverlaps.length) {
-                showToast('ช่วงเวลาซ้อนกับช่วงที่มีอยู่แล้ว', 'error');
+                showToast(t('period.overlap'), 'error');
                 return;
             }
 
             const btn = document.getElementById('period-save-btn');
-            btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+            btn.disabled = true; btn.textContent = t('period.saving');
 
             try {
                 // Auto-close ongoing periods (set ends_at = day before new starts_at)
@@ -4446,14 +4821,14 @@
             showModal(`
                 <div class="text-center mb-5">
                     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏠</div>
-                    <h3 class="text-xl font-bold text-navy">ตั้งค่าหลายบ้านพร้อมกัน</h3>
-                    <p class="text-sm text-slate-400 mt-1">เลือกบ้าน แล้วกำหนดเตาและช่วงเวลาเดียวกัน</p>
+                    <h3 class="text-xl font-bold text-navy">${currentLang === 'th' ? 'ตั้งค่าหลายบ้านพร้อมกัน' : 'Batch Setup'}</h3>
+                    <p class="text-sm text-slate-400 mt-1">${currentLang === 'th' ? 'เลือกบ้าน แล้วกำหนดเตาและช่วงเวลาเดียวกัน' : 'Select houses, then set stove type and period'}</p>
                 </div>
                 <div class="space-y-4 mb-6">
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-[13px] font-bold text-navy">เลือกบ้าน</label>
-                            <button onclick="(function(){var s=!document.querySelectorAll('.batch-house-cb:checked').length;document.querySelectorAll('.batch-house-cb').forEach(function(c){c.checked=s})})()" class="text-xs text-blue-500 hover:underline">เลือก/ยกเลิกทั้งหมด</button>
+                            <label class="text-[13px] font-bold text-navy">${currentLang === 'th' ? 'เลือกบ้าน' : 'Select Houses'}</label>
+                            <button onclick="(function(){var s=!document.querySelectorAll('.batch-house-cb:checked').length;document.querySelectorAll('.batch-house-cb').forEach(function(c){c.checked=s})})()" class="text-xs text-blue-500 hover:underline">${currentLang === 'th' ? 'เลือก/ยกเลิกทั้งหมด' : 'Select/Deselect All'}</button>
                         </div>
                         <div class="max-h-[180px] overflow-y-auto border rounded-2xl p-2 bg-slate-50 custom-scrollbar">${checkboxes}</div>
                     </div>
@@ -4463,35 +4838,35 @@
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="batch-stove" value="old" class="sr-only peer" checked>
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาดั้งเดิม</span>
+                                    <span class="font-bold text-sm">${t('period.stove.old')}</span>
                                 </div>
                             </label>
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="batch-stove" value="eco" class="sr-only peer">
                                 <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
-                                    <span class="font-bold text-sm">เตาชีวมวล</span>
+                                    <span class="font-bold text-sm">${t('period.stove.eco')}</span>
                                 </div>
                             </label>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">วันเริ่มต้น</label>
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.start.date')}</label>
                             <input type="date" id="batch-start" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                         <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">วันสิ้นสุด <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.end.date')} <span class="text-slate-400 font-normal">${t('period.end.opt')}</span></label>
                             <input type="date" id="batch-end" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                     </div>
                     <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></label>
-                        <input type="text" id="batch-notes" placeholder="เช่น เริ่มเฟสเตาดั้งเดิม" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('period.notes')} <span class="text-slate-400 font-normal">${t('period.end.opt')}</span></label>
+                        <input type="text" id="batch-notes" placeholder="${t('period.notes.ph')}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
-                    <button id="batch-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">ตั้งค่า</button>
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">${t('common.cancel')}</button>
+                    <button id="batch-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">${currentLang === 'th' ? 'ตั้งค่า' : 'Apply'}</button>
                 </div>
             `);
             document.getElementById('batch-save-btn').onclick = saveBatchPeriods;
@@ -4504,10 +4879,10 @@
             const endsAt = document.getElementById('batch-end')?.value || null;
             const notes = (document.getElementById('batch-notes')?.value || '').trim() || null;
 
-            if (!selectedIds.length) { showToast('กรุณาเลือกอย่างน้อย 1 บ้าน', 'warning'); return; }
-            if (!stoveType) { showToast('กรุณาเลือกประเภทเตา', 'warning'); return; }
-            if (!startsAt) { showToast('กรุณาระบุวันเริ่มต้น', 'warning'); return; }
-            if (endsAt && endsAt < startsAt) { showToast('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น', 'warning'); return; }
+            if (!selectedIds.length) { showToast(t('period.select.house.warn'), 'warning'); return; }
+            if (!stoveType) { showToast(t('period.select.stove.warn'), 'warning'); return; }
+            if (!startsAt) { showToast(t('period.select.start.warn'), 'warning'); return; }
+            if (endsAt && endsAt < startsAt) { showToast(t('period.end.before.start'), 'warning'); return; }
 
             // Check overlaps — auto-close ongoing, block real overlaps
             const newEnd = endsAt || '9999-12-31';
@@ -4521,7 +4896,7 @@
                         if (!p.ends_at && startsAt > p.starts_at) {
                             ongoingToClose.push(p);
                         } else {
-                            const name = subjects.find(s => s.id === sid)?.full_name || 'บ้าน #' + sid;
+                            const name = subjects.find(s => s.id === sid)?.full_name || t('sched.house.fallback') + sid;
                             realOverlapHouses.push(name);
                             break;
                         }
@@ -4529,12 +4904,12 @@
                 }
             }
             if (realOverlapHouses.length) {
-                showToast('ช่วงเวลาซ้อนทับ: ' + realOverlapHouses.join(', '), 'error');
+                showToast(t('period.overlap') + ': ' + realOverlapHouses.join(', '), 'error');
                 return;
             }
 
             const btn = document.getElementById('batch-save-btn');
-            btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+            btn.disabled = true; btn.textContent = t('period.saving');
 
             try {
                 // Auto-close ongoing periods
@@ -4651,7 +5026,7 @@
                 }
             } catch (e) {
                 console.error('registerSensor exception:', e);
-                showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+                showToast(t('common.error') + e.message, 'error');
             }
         }
 
@@ -4727,7 +5102,7 @@
                     </div>
                     <p class="text-[13px] text-slate-500">${esc(p.description) || '-'}</p>
                     ${p.notes ? `<p class="text-[12px] text-slate-400 mt-1">📝 ${esc(p.notes)}</p>` : ''}
-                    <p class="text-[13px] text-indigo-500 font-bold mt-1">🏠 ${houseCount} ${currentLang === 'th' ? 'บ้าน' : 'houses'}</p>
+                    <p class="text-[13px] text-indigo-500 font-bold mt-1">🏠 ${houseCount} ${t('overview.house')}</p>
                 </div>`;
             }).join('') || '<p class="text-slate-400">' + t('project.no.data') + '</p>';
         }
@@ -4797,7 +5172,7 @@
                     <p class="text-[13px] text-slate-500">📞 ${esc(v.phone_contact) || '-'}</p>
                     <p class="text-[13px] text-emerald-500">${t('vol.active')}</p>
                 </div>
-            `).join('') || '<p class="text-slate-400">' + (q ? 'ไม่พบผลลัพธ์' : t('vol.no.data')) + '</p>';
+            `).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('vol.no.data')) + '</p>';
         }
 
         function showEditVolunteerModal(id, name, phone) {
@@ -4822,7 +5197,7 @@
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
                 const { error } = await supabaseClient.from('volunteers').delete().eq('id', String(id));
                 if (!error) { logActivity(t('dev.delete'), name); loadAdminData(); showToast(t('vol.deleted')); }
-                else { showToast('ลบไม่ได้: ' + error.message, 'error'); }
+                else { showToast(t('common.error') + error.message, 'error'); }
             });
         }
 
@@ -4912,7 +5287,7 @@
                         </select>
                     </div>
                 </div>`;
-            }).join('') || '<p class="text-slate-400">' + (q ? 'ไม่พบผลลัพธ์' : t('sub.no.data')) + '</p>';
+            }).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('sub.no.data')) + '</p>';
         }
 
         function showEditSubjectModal(id) {
@@ -5064,7 +5439,7 @@
             showConfirm(t('dev.delete') + ' "' + name + '" ?', async () => {
                 const { error } = await supabaseClient.from('subjects').delete().eq('id', String(id));
                 if (!error) { logActivity(t('dev.delete'), name); loadAdminData(); showToast(t('sub.deleted')); }
-                else { showToast('ลบไม่ได้: ' + error.message, 'error'); }
+                else { showToast(t('common.error') + error.message, 'error'); }
             });
         }
 
@@ -5105,27 +5480,27 @@
                 const activeSession = activeSessionMap[tuyaId];
 
                 if (!latestLog) {
-                    sensorHealthMap[tuyaId] = { status: 'none', label: 'ไม่มีข้อมูล', color: 'bg-slate-200 text-slate-500', emoji: '⚪' };
+                    sensorHealthMap[tuyaId] = { status: 'none', label: t('common.no.data'), color: 'bg-slate-200 text-slate-500', emoji: '⚪' };
                     return;
                 }
 
                 const minutesAgo = (now - new Date(latestLog.recorded_at).getTime()) / 60000;
 
                 if (minutesAgo < 6) {
-                    sensorHealthMap[tuyaId] = { status: 'online', label: 'ออนไลน์', color: 'bg-emerald-100 text-emerald-700', emoji: '🟢', minutesAgo: Math.round(minutesAgo) };
+                    sensorHealthMap[tuyaId] = { status: 'online', label: t('health.online'), color: 'bg-emerald-100 text-emerald-700', emoji: '🟢', minutesAgo: Math.round(minutesAgo) };
                 } else if (minutesAgo < 30 && activeSession) {
-                    sensorHealthMap[tuyaId] = { status: 'waiting', label: 'รอข้อมูล', color: 'bg-amber-100 text-amber-700', emoji: '🟡', minutesAgo: Math.round(minutesAgo) };
+                    sensorHealthMap[tuyaId] = { status: 'waiting', label: t('health.waiting'), color: 'bg-amber-100 text-amber-700', emoji: '🟡', minutesAgo: Math.round(minutesAgo) };
                 } else {
                     const hrs = Math.floor(minutesAgo / 60);
-                    const agoStr = hrs > 0 ? hrs + ' ชม.' : Math.round(minutesAgo) + ' นาที';
-                    sensorHealthMap[tuyaId] = { status: 'offline', label: 'ออฟไลน์ · ' + agoStr + ' ที่แล้ว', color: 'bg-red-100 text-red-600', emoji: '🔴', minutesAgo: Math.round(minutesAgo) };
+                    const agoStr = hrs > 0 ? hrs + t('time.hours.short') : Math.round(minutesAgo) + t('time.mins.short');
+                    sensorHealthMap[tuyaId] = { status: 'offline', label: t('health.offline') + ' · ' + agoStr + ' ' + t('time.ago'), color: 'bg-red-100 text-red-600', emoji: '🔴', minutesAgo: Math.round(minutesAgo) };
                 }
             });
         }
 
         function renderHealthBadge(tuyaId) {
             const h = sensorHealthMap[tuyaId];
-            if (!h) return '<span class="text-[11px] px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400">⚪ ไม่มีข้อมูล</span>';
+            if (!h) return '<span class="text-[11px] px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400">⚪ ' + t('common.no.data') + '</span>';
             return `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${h.color}" title="${h.label}">${h.emoji} ${h.label}</span>`;
         }
 
@@ -5141,10 +5516,10 @@
             const onlineSensors = devices.filter(d => sensorHealthMap[d.tuya_device_id]?.status === 'online').length;
 
             const cards = [
-                { icon: '🏠', label: 'บ้านทั้งหมด', value: totalHouses, color: 'emerald' },
-                { icon: '📡', label: 'เซนเซอร์จับคู่แล้ว', value: assignedSensors + '/' + devices.length, sub: onlineSensors > 0 ? '🟢 ออนไลน์ ' + onlineSensors : '', color: 'blue' },
-                { icon: '👤', label: 'อาสาสมัคร', value: totalVolunteers, color: 'amber' },
-                { icon: '📋', label: 'โครงการ', value: totalProjects, color: 'purple' },
+                { icon: '🏠', label: t('overview.stat.houses'), value: totalHouses, color: 'emerald' },
+                { icon: '📡', label: t('overview.stat.sensors'), value: assignedSensors + '/' + devices.length, sub: onlineSensors > 0 ? '🟢 ' + t('overview.stat.online') + ' ' + onlineSensors : '', color: 'blue' },
+                { icon: '👤', label: t('overview.stat.volunteers'), value: totalVolunteers, color: 'amber' },
+                { icon: '📋', label: t('overview.stat.projects'), value: totalProjects, color: 'purple' },
             ];
 
             const colorMap = {
@@ -5169,7 +5544,7 @@
             if (!tbody) return;
 
             if (subjects.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">ยังไม่มีบ้านกลุ่มตัวอย่าง</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">' + t('sub.no.data') + '</td></tr>';
                 return;
             }
 
@@ -5219,7 +5594,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">ไม่พบผลลัพธ์</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">' + t('overview.no.results') + '</td></tr>';
                 return;
             }
 
@@ -5230,12 +5605,12 @@
 
                 // Sensor dropdown
                 const unassignedDevices = devices.filter(d => !d.subject_id);
-                const sensorOpts = '<option value="">— ยังไม่จับคู่ —</option>' +
+                const sensorOpts = '<option value="">' + t('overview.no.sensor') + '</option>' +
                     (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
                     unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + d.name + '</option>').join('');
 
                 // Volunteer dropdown
-                const volOpts = '<option value="">— ยังไม่มีอาสา —</option>' +
+                const volOpts = '<option value="">' + t('overview.no.volunteer') + '</option>' +
                     volunteers.map(v => '<option value="' + v.id + '" ' + (String(s.volunteer_id) === String(v.id) ? 'selected' : '') + '>' + v.full_name + '</option>').join('');
 
                 return `<tr class="hover:bg-slate-50/50 transition-colors">
@@ -5278,10 +5653,10 @@
                 .update({ volunteer_id: volunteerId || null })
                 .eq('id', String(subjectId));
             if (!error) {
-                showToast('บันทึกแล้ว');
+                showToast(t('common.saved'));
                 loadAdminData();
             } else {
-                showToast('เกิดข้อผิดพลาด: ' + error.message, 'error');
+                showToast(t('common.error') + error.message, 'error');
             }
         }
 
@@ -5327,7 +5702,7 @@
                     </div>`;
                 }).join('');
             } catch (e) {
-                listEl.innerHTML = '<p class="col-span-full text-red-500 text-sm py-4">เกิดข้อผิดพลาด: ' + e.message + '</p>';
+                listEl.innerHTML = '<p class="col-span-full text-red-500 text-sm py-4">' + t('common.error') + e.message + '</p>';
             }
         }
 
@@ -5633,29 +6008,29 @@
                     .order('summary_date', { ascending: false })
                     .limit(30);
                 if (error) throw error;
-                if (!data || data.length === 0) { showToast('ไม่มีข้อมูลสรุปรายวัน', 'warning'); hideLoading(); return; }
+                if (!data || data.length === 0) { showToast(t('export.daily.no.data'), 'warning'); hideLoading(); return; }
 
                 const rows = data.map(d => {
                     const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
                     return {
-                        'วันที่': d.summary_date,
-                        'อุปกรณ์': DEVICE_NAMES[d.device_id] || d.device_id,
-                        'เซสชันสำเร็จ': d.sessions_completed || 0,
-                        'เซสชันทั้งหมด': total,
-                        'จำนวนรายการ': d.total_readings || 0,
-                        'PM2.5 เฉลี่ย': d.avg_pm25 != null ? +d.avg_pm25.toFixed(2) : '',
-                        'PM2.5 สูงสุด': d.max_pm25 != null ? +d.max_pm25.toFixed(2) : '',
-                        'PM10 เฉลี่ย': d.avg_pm10 != null ? +d.avg_pm10.toFixed(2) : '',
-                        'CO2 เฉลี่ย': d.avg_co2 != null ? +d.avg_co2.toFixed(0) : '',
-                        'อุณหภูมิ': d.avg_temperature != null ? +d.avg_temperature.toFixed(1) : '',
-                        'ความชื้น': d.avg_humidity != null ? +d.avg_humidity.toFixed(1) : '',
-                        'สถานะ': d.compliance_status || '',
+                        [t('export.daily.date')]: d.summary_date,
+                        [t('export.daily.house')]: HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id,
+                        [t('export.daily.sess.ok')]: d.sessions_completed || 0,
+                        [t('export.daily.sess.total')]: total,
+                        [t('export.daily.readings')]: d.total_readings || 0,
+                        [t('export.daily.pm25.avg')]: d.avg_pm25 != null ? +d.avg_pm25.toFixed(2) : '',
+                        [t('export.daily.pm25.max')]: d.max_pm25 != null ? +d.max_pm25.toFixed(2) : '',
+                        [t('export.daily.pm10.avg')]: d.avg_pm10 != null ? +d.avg_pm10.toFixed(2) : '',
+                        [t('export.daily.co2.avg')]: d.avg_co2 != null ? +d.avg_co2.toFixed(0) : '',
+                        [t('export.daily.temp')]: d.avg_temperature != null ? +d.avg_temperature.toFixed(1) : '',
+                        [t('export.daily.humidity')]: d.avg_humidity != null ? +d.avg_humidity.toFixed(1) : '',
+                        [t('export.daily.status')]: d.compliance_status || '',
                     };
                 });
 
                 const ws = XLSX.utils.json_to_sheet(rows);
                 const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'สรุปรายวัน');
+                XLSX.utils.book_append_sheet(wb, ws, t('export.daily.sheet'));
                 XLSX.writeFile(wb, `biomass_stove_daily_summary_${new Date().toISOString().split('T')[0]}.xlsx`);
                 logActivity('Export สรุปรายวัน', data.length + ' records');
                 showToast('Export สรุปรายวัน ' + data.length + ' วัน');
