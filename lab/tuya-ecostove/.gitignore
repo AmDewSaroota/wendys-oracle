@@ -7,3 +7,7 @@ __pycache__/
 *.pyc
 venv/
 .vercel
+
+# Supabase temp
+supabase/.temp/
+supabase/supabase/
