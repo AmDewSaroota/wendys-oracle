@@ -17,7 +17,7 @@ function getThaiDate() {
 }
 
 const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
-const SESSION_GAP_MINUTES = 30; // gap > 30 min = close old session, start new
+// SESSION_GAP_MINUTES removed — sessions now close only on 130 min timer
 const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
 const SESSION_COOLDOWN_MINUTES = 300; // 5hr cooldown before next session
 const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
@@ -26,9 +26,9 @@ const BASELINE_MINUTES = 10; // baseline phase duration (~2 readings at 5min int
 
 // SENSORS loaded dynamically from Supabase (registered_sensors + devices)
 async function loadSensors(sbUrl, sbKey) {
-  // 1. Get all registered sensors (tuya_device_id, name, stove_type)
+  // 1. Get all registered sensors (tuya_device_id, name)
   const sensorsRes = await fetch(
-    sbUrl + '/rest/v1/registered_sensors?select=tuya_device_id,name,stove_type',
+    sbUrl + '/rest/v1/registered_sensors?select=tuya_device_id,name',
     { headers: sbHeaders(sbKey) }
   );
   if (!sensorsRes.ok) return [];
@@ -86,12 +86,12 @@ async function loadSensors(sbUrl, sbKey) {
     }
   } catch (_) {}
 
-  // 5. Build SENSORS array — stoveType: period > sensor fallback
+  // 5. Build SENSORS array — stoveType from collection_period only
   return sensors.map(s => {
     const houseId = deviceMap[s.tuya_device_id] || null;
     const resolvedStoveType = (houseId && periodMap[houseId])
       ? periodMap[houseId]
-      : (s.stove_type || 'old');
+      : null;
     return {
       id: s.tuya_device_id,
       name: s.name,
@@ -252,7 +252,7 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId)
     aqi: calculateAqiFromPm25(readings.pm25_value),
     data_source: 'sensor',
     tuya_device_id: deviceId,
-    stove_type: stoveType || 'eco',
+    stove_type: stoveType || null,
     status: 'pending',
     recorded_at: new Date().toISOString(),
     session_id: sessionId || null,
@@ -361,7 +361,7 @@ async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId, project
     device_id: deviceId,
     session_status: 'baseline',
     session_number: countToday + 1,
-    stove_type: stoveType || 'eco',
+    stove_type: stoveType || null,
     house_id: houseId || null,
     project_id: projectId || null,
     started_at: new Date().toISOString(),
@@ -439,7 +439,7 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
     if (!isComplete) {
       let reason = closeReason || 'readings ไม่ถึง 24';
       if (tuyaErrorCount > 0) {
-        reason += ' (Tuya Cloud ขัดข้อง ' + tuyaErrorCount + ' ครั้ง — ไม่ใช่เซนเซอร์)';
+        reason += ' (Tuya Cloud ขัดข้อง ' + tuyaErrorCount + ' ครั้ง — ปัญหาจากระบบ Cloud)';
       }
       finalNotes = reason;
     } else if (tuyaErrorCount > 0) {
@@ -530,7 +530,7 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
       avg_co2: avgOf(completed, 'avg_co2'),
       avg_temperature: avgOf(completed, 'avg_temperature'),
       avg_humidity: avgOf(completed, 'avg_humidity'),
-      stove_type: stoveType || 'eco',
+      stove_type: stoveType || null,
       project_id: projectId || null,
       updated_at: new Date().toISOString(),
     };
@@ -605,18 +605,12 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
     const active = cachedActive !== undefined ? cachedActive : await getActiveSession(sbUrl, sbKey, deviceId);
 
     if (active) {
-      const lastUpdate = new Date(active.updated_at || active.started_at);
-      const minutesAgo = (Date.now() - lastUpdate.getTime()) / 60000;
       const sessionAge = (Date.now() - new Date(active.started_at).getTime()) / 60000;
 
       if (sessionAge >= SESSION_MAX_MINUTES) {
         // Session reached 2h10m — close, do NOT start new
         await closeSession(sbUrl, sbKey, active, 'ครบเวลา ' + Math.round(sessionAge) + ' นาที');
         return { action: 'auto-cutoff', sessionId: active.id, minutes: Math.round(sessionAge) };
-      } else if (minutesAgo >= SESSION_GAP_MINUTES) {
-        // Gap too long — close old, enter cooldown
-        await closeSession(sbUrl, sbKey, active, 'เซนเซอร์ออฟไลน์เกิน ' + Math.round(minutesAgo) + ' นาที');
-        return { action: 'cooldown (after close)', minutesLeft: SESSION_COOLDOWN_MINUTES };
       } else if (!isOnline) {
         // Device offline mid-session — skip this tick, don't inflate readings_count
         return { action: 'device-offline', sessionId: active.id };
@@ -785,19 +779,13 @@ module.exports = async function handler(req, res) {
 
         if (active) {
           const sessionAge = (Date.now() - new Date(active.started_at).getTime()) / 60000;
-          const lastUpdate = new Date(active.updated_at || active.started_at);
-          const minutesAgo = (Date.now() - lastUpdate.getTime()) / 60000;
 
           if (sessionAge >= SESSION_MAX_MINUTES) {
             await closeSession(sbUrl, sbKey, active, 'ครบเวลา ' + Math.round(sessionAge) + ' นาที');
             results.push({ sensor: sensor.name, status: 'skipped', reason: 'auto-cutoff', session: { action: 'auto-cutoff', sessionId: active.id, minutes: Math.round(sessionAge) } });
             continue;
           }
-          if (minutesAgo >= SESSION_GAP_MINUTES) {
-            await closeSession(sbUrl, sbKey, active, 'เซนเซอร์ออฟไลน์เกิน ' + Math.round(minutesAgo) + ' นาที');
-            results.push({ sensor: sensor.name, status: 'skipped', reason: 'gap-close', session: { action: 'cooldown (after close)' } });
-            continue;
-          }
+          // gap-based closing removed — session stays open until 130 min timer
           cachedSessions[sensor.id] = active;
           sensorsNeedingTuya.push(sensor);
         } else {
@@ -862,7 +850,7 @@ module.exports = async function handler(req, res) {
     const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds);
     tuyaCalls += deviceInfoMap._attempts || 1;
 
-    // If Tuya API itself failed, keep sessions alive (update updated_at) to prevent false gap-close
+    // If Tuya API itself failed, track error count in session notes
     if (deviceInfoMap._apiError) {
       console.error('Phase 4: Tuya API failed — ' + deviceInfoMap._errorMsg + '. Keeping sessions alive.');
       for (const sensor of sensorsNeedingTuya) {

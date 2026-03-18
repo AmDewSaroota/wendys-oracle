@@ -186,16 +186,42 @@
                 </select>
             </div>
 
-            <!-- 1. Hero AQI Card -->
-            <div id="hero-aqi" class="aqi-unknown rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+            <!-- 1. Hero: Project Banner + Comparison -->
+            <div class="rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-gradient-to-br from-emerald-700 via-teal-600 to-emerald-800">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                 <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
-                <div class="relative z-10 text-center">
-                    <div class="text-6xl mb-2" id="hero-aqi-emoji">🌤️</div>
-                    <div class="text-7xl md:text-8xl font-bold mb-2" id="hero-aqi-value">--</div>
-                    <div class="text-2xl font-bold mb-1" id="hero-aqi-label" data-i18n="aqi.loading">กำลังโหลด...</div>
-                    <div class="text-lg opacity-80" id="hero-aqi-advice" data-i18n="aqi.waiting">รอข้อมูลจาก Sensor</div>
-                    <div class="mt-4 text-sm opacity-60" id="hero-aqi-time">--</div>
+                <div class="relative z-10 p-6 md:p-8">
+                    <!-- Project title + status -->
+                    <div class="text-center mb-5">
+                        <p class="text-emerald-200 text-sm font-medium tracking-wider" data-i18n="hero.project.label">โครงการ</p>
+                        <h2 class="text-xl md:text-2xl font-bold text-white mt-1" data-i18n="hero.project.name">นวัตกรรมเพื่ออากาศสะอาด</h2>
+                        <p class="text-emerald-100 text-sm mt-2" id="hero-status">--</p>
+                    </div>
+                    <!-- Comparison: Old vs Eco -->
+                    <div class="grid grid-cols-3 gap-3 items-center">
+                        <div class="text-center bg-white/15 backdrop-blur rounded-2xl p-4">
+                            <div class="text-2xl mb-1">🪵</div>
+                            <p class="text-xs font-bold text-orange-200" data-i18n="compare.old">เตาดั้งเดิม</p>
+                            <p class="text-3xl md:text-4xl font-bold text-white mt-1" id="basic-old-pm25">--</p>
+                            <p class="text-[10px] text-emerald-200" data-i18n="compare.avg.pm25">PM2.5 เฉลี่ย</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl md:text-4xl font-bold text-white" id="basic-reduction">--%</div>
+                            <p class="text-xs text-emerald-200" data-i18n="compare.reduction">ลดลง</p>
+                        </div>
+                        <div class="text-center bg-white/15 backdrop-blur rounded-2xl p-4">
+                            <div class="text-2xl mb-1">✨</div>
+                            <p class="text-xs font-bold text-emerald-200" data-i18n="compare.eco">เตาชีวมวล</p>
+                            <p class="text-3xl md:text-4xl font-bold text-white mt-1" id="basic-eco-pm25">--</p>
+                            <p class="text-[10px] text-emerald-200" data-i18n="compare.avg.pm25">PM2.5 เฉลี่ย</p>
+                        </div>
+                    </div>
+                    <!-- Bottom stats -->
+                    <div class="flex justify-center gap-6 mt-4 text-emerald-100 text-xs">
+                        <span id="hero-houses">📡 -- บ้าน</span>
+                        <span id="hero-readings">📊 -- readings</span>
+                        <span id="hero-updated">🕐 --</span>
+                    </div>
                 </div>
             </div>
 
@@ -223,28 +249,7 @@
                 </div>
             </div>
 
-            <!-- 3. Before/After Comparison -->
-            <div class="card-styled p-6 md:p-8 rounded-[2.5rem] border-b-4 border-emerald-500">
-                <h4 class="font-bold text-lg text-navy mb-6 text-center" data-i18n="compare.title">เปรียบเทียบ: เตาดั้งเดิม vs เตาชีวมวล</h4>
-                <div class="grid grid-cols-3 gap-4 items-center">
-                    <div class="text-center bg-orange-50 rounded-2xl p-5">
-                        <div class="text-3xl mb-2">🪵</div>
-                        <p class="text-sm font-bold text-orange-600" data-i18n="compare.old">เตาดั้งเดิม</p>
-                        <p class="text-3xl md:text-4xl font-bold text-orange-500 mt-2" id="basic-old-pm25">--</p>
-                        <p class="text-xs text-slate-400" data-i18n="compare.avg.pm25">PM2.5 เฉลี่ย</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-4xl md:text-5xl font-bold text-emerald-600" id="basic-reduction">--%</div>
-                        <p class="text-sm text-slate-400" data-i18n="compare.reduction">ลดลง</p>
-                    </div>
-                    <div class="text-center bg-emerald-50 rounded-2xl p-5">
-                        <div class="text-3xl mb-2">✨</div>
-                        <p class="text-sm font-bold text-emerald-600" data-i18n="compare.eco">เตาชีวมวล</p>
-                        <p class="text-3xl md:text-4xl font-bold text-emerald-500 mt-2" id="basic-eco-pm25">--</p>
-                        <p class="text-xs text-slate-400" data-i18n="compare.avg.pm25">PM2.5 เฉลี่ย</p>
-                    </div>
-                </div>
-            </div>
+            <!-- 3. Before/After Comparison (moved to hero) -->
 
             <!-- 4. Today's Collection Summary (Expanded) -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-400">
@@ -302,7 +307,7 @@
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
                     <label class="flex items-center gap-2 text-sm bg-white/70 px-3 py-2 rounded-xl border cursor-pointer">
-                        <input type="checkbox" id="baseline-toggle" onchange="updateDeepView()" class="w-4 h-4 rounded accent-blue-600">
+                        <input type="checkbox" id="baseline-toggle" onchange="updateDeepView()" class="w-4 h-4 rounded accent-blue-600" checked>
                         <span data-i18n="baseline.toggle" class="font-medium text-[13px]">หักค่า Baseline</span>
                     </label>
                     <select id="project-filter" onchange="updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
@@ -319,27 +324,28 @@
             </div>
 
             <!-- Research Stat Cards — Row 1 -->
+            <p id="deep-range-label" class="text-[11px] text-slate-400 mb-1"></p>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
                     <p class="text-[12px] font-bold text-red-600 uppercase tracking-wider"><span data-i18n="card.pm25">PM 2.5</span> <button onclick="showAqiReference()" class="text-slate-400 hover:text-blue-500 text-[10px]">ℹ️</button></p>
                     <h3 id="r-stat-pm25" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm25-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
+                    <p id="r-stat-pm25-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
                     <div id="r-stat-pm25-badge" class="mt-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
                     <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">PM 10</p>
                     <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm10-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
+                    <p id="r-stat-pm10-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
                     <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider" data-i18n="card.co2">CO2</p>
                     <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
-                    <p id="r-stat-co2-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
+                    <p id="r-stat-co2-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
                     <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
                     <h3 id="r-stat-aqi" class="text-xl font-bold text-navy">--</h3>
-                    <p id="r-stat-aqi-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
+                    <p id="r-stat-aqi-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
                 </div>
             </div>
             <!-- Research Stat Cards — Row 2 -->
@@ -359,7 +365,7 @@
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-500">
                     <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">TVOC</p>
                     <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
-                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">vs เตาดั้งเดิม: --%</p>
+                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
                 </div>
             </div>
 
@@ -630,7 +636,7 @@
                         <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ ผูกเซนเซอร์กับบ้าน</button>
                     </div>
                 </div>
-                <div id="devices-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+                <div id="devices-list" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"></div>
                 <div id="tuya-discover-container" class="hidden mt-4 pt-6 border-t border-slate-200">
                     <h4 class="text-lg font-bold text-navy mb-4" data-i18n="dev.tuya.title">🔍 เซนเซอร์จาก Tuya Cloud</h4>
                     <div id="tuya-discover-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -822,11 +828,7 @@
                             <select id="tvoc-house-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                                 <option value="all" data-i18n="data.filter.all.houses">ทุกบ้าน</option>
                             </select>
-                            <select id="tvoc-stove-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
-                                <option value="all" data-i18n="tvoc.filter.all.stove">ทุกประเภทเตา</option>
-                                <option value="eco">🟢 Eco</option>
-                                <option value="old" data-i18n="tvoc.filter.old">🔴 เดิม</option>
-                            </select>
+                            <!-- stove filter removed: stove_type comes from collection_period, not sensor -->
                             <select id="tvoc-range-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                                 <option value="0" data-i18n="tvoc.filter.all">ทั้งหมด</option>
                                 <option value="24" data-i18n="filter.24h">24 ชม.</option>
@@ -865,7 +867,7 @@
                                     <tr>
                                         <th class="p-3 whitespace-nowrap text-purple-800" data-i18n="tvoc.table.time">เวลา</th>
                                         <th class="p-3 text-purple-800" data-i18n="tvoc.table.house">บ้าน</th>
-                                        <th class="p-3 text-purple-800" data-i18n="tvoc.table.stove">เตา</th>
+                                        <!-- stove column removed -->
                                         <th class="p-3 text-center text-purple-800 font-bold">TVOC (mg/m³)</th>
                                         <th class="p-3 text-purple-800" data-i18n="tvoc.table.recorder">ผู้บันทึก</th>
                                     </tr>
@@ -1032,7 +1034,7 @@
             'aqi.good.advice': { th: 'เปิดหน้าต่างได้สบายๆ', en: 'Safe to open windows' },
             'aqi.moderate': { th: 'อากาศปานกลาง', en: 'Moderate Air Quality' },
             'aqi.moderate.advice': { th: 'คนแพ้ง่ายควรระวัง', en: 'Sensitive people should be cautious' },
-            'aqi.unhealthy': { th: 'เริ่มมีผลกระทบต่อสุขภาพ', en: 'Unhealthy Air' },
+            'aqi.unhealthy': { th: 'มีผลกระทบต่อสุขภาพ', en: 'Unhealthy Air' },
             'aqi.unhealthy.advice': { th: 'ควรลดกิจกรรมกลางแจ้ง', en: 'Reduce outdoor activities' },
             'aqi.hazardous': { th: 'มีผลกระทบต่อสุขภาพ', en: 'Hazardous Air' },
             'aqi.hazardous.advice': { th: 'หลีกเลี่ยงกิจกรรมกลางแจ้ง', en: 'Avoid outdoor activities' },
@@ -1042,8 +1044,8 @@
             'aqi.level.excellent': { th: 'ดีมาก', en: 'Excellent' },
             'aqi.level.good': { th: 'ดี', en: 'Good' },
             'aqi.level.moderate': { th: 'ปานกลาง', en: 'Moderate' },
-            'aqi.level.unhealthy': { th: 'เริ่มมีผล', en: 'Unhealthy' },
-            'aqi.level.very.unhealthy': { th: 'มีผลกระทบ', en: 'Very Unhealthy' },
+            'aqi.level.unhealthy': { th: 'มีผลต่อสุขภาพ', en: 'Unhealthy' },
+            'aqi.level.very.unhealthy': { th: 'อันตรายต่อสุขภาพ', en: 'Very Unhealthy' },
             'aqi.level.hazardous': { th: 'อันตราย', en: 'Hazardous' },
             'aqi.ref.title': { th: 'ดัชนีคุณภาพอากาศ (AQI) — มาตรฐานไทย', en: 'Air Quality Index (AQI) — Thai Standard' },
             'aqi.ref.aqi': { th: 'ดัชนี AQI', en: 'AQI Index' },
@@ -1071,6 +1073,8 @@
             'card.co2': { th: 'CO2', en: 'CO2' },
             'card.temp.humidity': { th: 'อุณหภูมิ / ความชื้น', en: 'Temperature / Humidity' },
             // Before/After
+            'hero.project.label': { th: 'โครงการ', en: 'Project' },
+            'hero.project.name': { th: 'นวัตกรรมเพื่ออากาศสะอาด', en: 'Clean Air Innovation' },
             'compare.title': { th: 'เปรียบเทียบ: เตาดั้งเดิม vs เตาชีวมวล', en: 'Comparison: Traditional vs Biomass' },
             'compare.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
             'compare.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
@@ -1119,8 +1123,16 @@
             'filter.30d': { th: '30 วัน', en: '30 days' },
             'filter.export': { th: '📊 Export Excel', en: '📊 Export Excel' },
             // Research stats
-            'stat.vs.old': { th: 'vs เตาดั้งเดิม: {0}%', en: 'vs Traditional: {0}%' },
-            'stat.vs.old.default': { th: 'vs เตาดั้งเดิม: --%', en: 'vs Traditional: --%' },
+            'stat.range.all': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — ทั้งหมด', en: '📊 Biomass Avg — All Data' },
+            'stat.range.24h': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 24 ชม.ล่าสุด', en: '📊 Biomass Avg — Last 24h' },
+            'stat.range.3d': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 3 วันล่าสุด', en: '📊 Biomass Avg — Last 3 Days' },
+            'stat.range.7d': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 7 วันล่าสุด', en: '📊 Biomass Avg — Last 7 Days' },
+            'stat.range.30d': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 30 วันล่าสุด', en: '📊 Biomass Avg — Last 30 Days' },
+            'stat.vs.old.lower': { th: 'ลดลง {0}% จากเตาเก่า', en: '{0}% lower than traditional' },
+            'stat.vs.old.higher': { th: 'สูงกว่าเตาเก่า {0}%', en: '{0}% higher than traditional' },
+            'stat.vs.old.default': { th: 'เทียบเตาเก่า: รอข้อมูล', en: 'vs Traditional: awaiting data' },
+            'stat.vs.old.nodata': { th: 'เทียบเตาเก่า: ข้อมูลไม่เพียงพอ', en: 'vs Traditional: insufficient data' },
+            'stat.insufficient': { th: 'ข้อมูลไม่เพียงพอ', en: 'Insufficient data' },
             'stat.temp': { th: '🌡️ อุณหภูมิ', en: '🌡️ Temperature' },
             'stat.humidity': { th: '💧 ความชื้น', en: '💧 Humidity' },
             // Chart headers
@@ -1506,8 +1518,7 @@
             'time.hours.short': { th: ' ชม.', en: 'h' },
             'time.mins.short': { th: ' นาที', en: 'm' },
             'time.ago': { th: 'ที่แล้ว', en: ' ago' },
-            // Stove labels
-            'stove.old.short': { th: '🔴 เดิม', en: '🔴 Traditional' },
+            // (stove sensor-level labels removed)
             // Activity log entries
             'actlog.approve': { th: 'อนุมัติเซสชัน', en: 'Approved session' },
             'actlog.reject': { th: 'ปฏิเสธเซสชัน', en: 'Rejected session' },
@@ -1538,12 +1549,10 @@
             'data.export.daily': { th: '📋 สรุปรายวัน', en: '📋 Daily Summary' },
             'data.header.time': { th: 'เวลาบันทึก', en: 'Recorded' },
             'data.header.house': { th: 'บ้าน', en: 'House' },
-            'data.stove.old': { th: 'เดิม', en: 'Traditional' },
+            // data.stove.old removed
             // TVOC tab
             'tvoc.tab.title': { th: 'TVOC — บันทึกด้วยมือ', en: 'TVOC — Manual Entry' },
-            'tvoc.filter.all.stove': { th: 'ทุกประเภทเตา', en: 'All Stove Types' },
             'tvoc.filter.all': { th: 'ทั้งหมด', en: 'All' },
-            'tvoc.filter.old': { th: '🔴 เดิม', en: '🔴 Traditional' },
             'tvoc.stat.count': { th: 'จำนวนรายการ', en: 'Records' },
             'tvoc.stat.avg': { th: 'ค่าเฉลี่ย', en: 'Average' },
             'tvoc.stat.min': { th: 'ต่ำสุด', en: 'Min' },
@@ -1551,7 +1560,7 @@
             'tvoc.chart.title': { th: 'กราฟ TVOC ตามเวลา', en: 'TVOC Over Time' },
             'tvoc.table.time': { th: 'เวลา', en: 'Time' },
             'tvoc.table.house': { th: 'บ้าน', en: 'House' },
-            'tvoc.table.stove': { th: 'เตา', en: 'Stove' },
+            // tvoc.table.stove removed
             'tvoc.table.recorder': { th: 'ผู้บันทึก', en: 'Recorder' },
             // Activity Log UI
             'actlog.refresh': { th: '🔄 รีเฟรช', en: '🔄 Refresh' },
@@ -1697,8 +1706,8 @@
 
         // Known sensors — loaded from Supabase registered_sensors, with hardcoded fallback
         let KNOWN_SENSORS = [
-            { tuyaId: 'a3d01864e463e3ede0hf0e', name: 'MT13W-01', stoveType: 'eco' },
-            { tuyaId: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29-01', stoveType: 'old' },
+            { tuyaId: 'a3d01864e463e3ede0hf0e', name: 'MT13W-01' },
+            { tuyaId: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29-01' },
         ];
 
         async function loadRegisteredSensors() {
@@ -1708,7 +1717,6 @@
                     KNOWN_SENSORS = data.map(s => ({
                         tuyaId: s.tuya_device_id,
                         name: s.name,
-                        stoveType: s.stove_type
                     }));
                     data.forEach(s => { DEVICE_NAMES[s.tuya_device_id] = s.name; });
                 }
@@ -1771,10 +1779,7 @@
             }).then(() => {}).catch(e => console.warn('Activity log failed:', e.message));
         }
 
-        let DEVICE_NAMES = {
-            'a3d01864e463e3ede0hf0e': 'MT13W-01',
-            'a3b9c2e4bdfe69ad7ekytn': 'MT29-01',
-        };
+        let DEVICE_NAMES = {};
         let HOUSE_NAMES = {};
         let DEVICE_HOUSE = {}; // tuya_device_id → subject_id mapping for house filter
 
@@ -1965,7 +1970,7 @@
                     <input type="password" id="admin-pin" placeholder="PIN" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-[#064e3b] text-2xl text-center tracking-[0.5em] font-mono pr-14" onkeyup="if(event.key==='Enter') loginAdmin()" maxlength="20">
                     <button type="button" onclick="togglePinVis('admin-pin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
                 </div>
-                <p class="text-xs text-slate-400 text-center -mt-3 mb-4" title="ตัวเลข ตัวอักษร หรือผสมก็ได้ อย่างน้อย 4 ตัว">ℹ️ PIN คืออะไร? — รหัสส่วนตัวที่ตั้งตอนสมัคร (ไม่ใช่รหัสผ่าน Gmail)</p>
+                <!-- PIN hint moved to register form only -->
                 <p id="login-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
                 <button onclick="loginAdmin()" id="login-btn" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">${t('admin.login.btn')}</button>
                 <p class="text-center mt-3 text-sm"><button onclick="closeModal(); showForgotPinModal()" class="text-amber-600 hover:underline">ลืม PIN?</button></p>
@@ -2050,7 +2055,7 @@
                     <input type="password" id="reg-pin" placeholder="ตั้งรหัส PIN" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20">
                     <button type="button" onclick="togglePinVis('reg-pin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
                 </div>
-                <p class="text-xs text-slate-400 text-center -mt-2 mb-3">ℹ️ อย่างน้อย 4 ตัว — ตัวเลข ตัวอักษร หรือผสมก็ได้</p>
+                <p class="text-xs text-slate-400 text-center -mt-2 mb-3">ℹ️ ตั้งรหัส PIN ส่วนตัว (ไม่ใช่รหัสผ่าน Gmail) — อย่างน้อย 4 ตัว ตัวเลข ตัวอักษร หรือผสมก็ได้</p>
                 <input type="text" id="reg-invite" placeholder="${t('admin.reg.invite')}" class="w-full p-4 rounded-2xl border bg-amber-50 mb-6 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center" onkeyup="if(event.key==='Enter') registerAdmin()">
                 <p id="reg-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
                 <p id="reg-success" class="text-emerald-600 text-sm mb-4 hidden text-center"></p>
@@ -2646,14 +2651,25 @@
         async function loadData(showSpinner, _retry) {
             if (showSpinner) showLoading('กำลังโหลดข้อมูล...');
             try {
-                // Load last 30 days only (ลด bandwidth ~90%)
-                const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-                const { data: allRecords, error } = await supabaseClient
-                    .from('pollution_logs')
-                    .select('*')
-                    .gte('recorded_at', cutoff)
-                    .order('recorded_at', { ascending: false })
-                    .limit(10000);
+                // Load last 60 days with pagination to get complete dataset
+                const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+                let allRecords = [];
+                let page = 0;
+                const pageSize = 5000;
+                while (true) {
+                    const { data: batch, error: bErr } = await supabaseClient
+                        .from('pollution_logs')
+                        .select('*')
+                        .gte('recorded_at', cutoff)
+                        .order('recorded_at', { ascending: false })
+                        .range(page * pageSize, (page + 1) * pageSize - 1);
+                    if (bErr) throw bErr;
+                    if (!batch || !batch.length) break;
+                    allRecords = allRecords.concat(batch);
+                    if (batch.length < pageSize) break;
+                    page++;
+                }
+                const error = null;
 
                 if (error) {
                     throw error;
@@ -2693,7 +2709,7 @@
                 // Load baseline data from sessions
                 try {
                     const { data: sessData } = await supabaseClient.from('sessions')
-                        .select('id, baseline_avg_pm25, baseline_avg_co2, baseline_avg_temperature, baseline_avg_humidity')
+                        .select('id, baseline_avg_pm25, baseline_avg_co2, baseline_avg_temperature, baseline_avg_humidity, baseline_ended_at')
                         .not('baseline_avg_pm25', 'is', null);
                     sessionBaselines = {};
                     if (sessData) sessData.forEach(s => { sessionBaselines[s.id] = s; });
@@ -2763,21 +2779,21 @@
 
         function updateHeroAqi() {
             const filteredPending = getFilteredData(allDataWithPending);
-            // Recalculate AQI from avg PM2.5 using Thai PCD standard (not stored US EPA aqi field)
-            const avgPm25 = avg(filteredPending, 'pm25_value');
-            const aqiVal = calculateThaiAqi(avgPm25);
-            const status = getAqiStatus(aqiVal);
-
-            const hero = document.getElementById('hero-aqi');
-            hero.className = status.cls + ' rounded-[2.5rem] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden';
-            document.getElementById('hero-aqi-emoji').textContent = status.emoji;
-            document.getElementById('hero-aqi-value').textContent = aqiVal ?? '--';
-            document.getElementById('hero-aqi-label').textContent = status.label;
-            document.getElementById('hero-aqi-advice').textContent = status.advice;
+            const sensorIds = new Set(filteredPending.map(d => d.tuya_device_id).filter(Boolean));
+            const el = (id) => document.getElementById(id);
+            if (el('hero-houses')) el('hero-houses').textContent = '📡 ' + sensorIds.size + (currentLang === 'th' ? ' บ้าน' : ' houses');
+            if (el('hero-readings')) el('hero-readings').textContent = '📊 ' + filteredPending.length.toLocaleString() + ' readings';
             const latest = filteredPending[0];
-            document.getElementById('hero-aqi-time').textContent = filteredPending.length > 0
-                ? (currentLang === 'th' ? 'ค่าเฉลี่ยจาก ' : 'Average of ') + filteredPending.length + (currentLang === 'th' ? ' รายการ' : ' records')
-                : '--';
+            if (el('hero-updated')) el('hero-updated').textContent = latest
+                ? '🕐 ' + new Date(latest.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })
+                : '🕐 --';
+            if (el('hero-status')) {
+                const ecoCount = filteredPending.filter(d => d.stove_type === 'eco').length;
+                const oldCount = filteredPending.filter(d => d.stove_type === 'old').length;
+                el('hero-status').textContent = currentLang === 'th'
+                    ? 'เตาเก่า ' + oldCount.toLocaleString() + ' · เตาใหม่ ' + ecoCount.toLocaleString() + ' รายการ'
+                    : 'Old ' + oldCount.toLocaleString() + ' · Eco ' + ecoCount.toLocaleString() + ' records';
+            }
         }
 
         function updateBigNumbers() {
@@ -2817,8 +2833,13 @@
             document.getElementById('basic-old-pm25').textContent = avgOld != null ? avgOld.toFixed(1) : '--';
 
             if (avgOld && avgEco && avgOld > 0) {
-                const reduction = ((avgOld - avgEco) / avgOld * 100).toFixed(0);
-                document.getElementById('basic-reduction').textContent = reduction > 0 ? `-${reduction}%` : `+${Math.abs(reduction)}%`;
+                const rawReduction = ((avgOld - avgEco) / avgOld * 100);
+                if (Math.abs(rawReduction) > 999) {
+                    document.getElementById('basic-reduction').textContent = 'N/A';
+                } else {
+                    const reduction = rawReduction.toFixed(0);
+                    document.getElementById('basic-reduction').textContent = reduction > 0 ? `-${reduction}%` : `+${Math.abs(reduction)}%`;
+                }
             } else {
                 document.getElementById('basic-reduction').textContent = '--%';
             }
@@ -2863,7 +2884,7 @@
                     const summary = (summaries || []).find(s => s.device_id === dev.tuya_device_id);
                     const completed = summary?.sessions_completed || 0;
                     const incomplete = summary?.sessions_incomplete || 0;
-                    const houseName = dev.subjects?.full_name || dev.name;
+                    const houseName = dev.subjects?.full_name || DEVICE_NAMES[dev.tuya_device_id] || dev.name;
                     const stoveBadge = '';
 
                     let statusIcon, statusText, statusClass, pulseDot = '';
@@ -2959,6 +2980,15 @@
 
         // ==================== DEEP VIEW ====================
         function updateDeepView() {
+            // Update range label on stat cards
+            const rangeSelect = document.getElementById('deep-range-filter');
+            const rangeLabelEl = document.getElementById('deep-range-label');
+            if (rangeLabelEl && rangeSelect) {
+                const hours = parseInt(rangeSelect.value);
+                const rangeMap = { 0: t('stat.range.all'), 24: t('stat.range.24h'), 72: t('stat.range.3d'), 168: t('stat.range.7d'), 720: t('stat.range.30d') };
+                rangeLabelEl.textContent = rangeMap[hours] || '';
+            }
+
             updateResearchStats();
             renderGroupCharts();
             updateReductionTable();
@@ -2974,7 +3004,14 @@
         function applyBaselineSubtraction(data) {
             const toggle = document.getElementById('baseline-toggle');
             if (!toggle || !toggle.checked) return data;
-            return data.map(d => {
+            // Filter out baseline-phase readings, then subtract baseline averages from cooking-phase readings
+            return data.filter(d => {
+                if (!d.session_id) return true;
+                const bl = sessionBaselines[d.session_id];
+                if (!bl || !bl.baseline_ended_at) return true;
+                // Exclude readings recorded during baseline phase
+                return d.recorded_at >= bl.baseline_ended_at;
+            }).map(d => {
                 if (!d.session_id) return d;
                 const bl = sessionBaselines[d.session_id];
                 if (!bl) return d;
@@ -3011,9 +3048,17 @@
                 valEl.innerHTML = (ecoAvg != null ? ecoAvg.toFixed(1) : '--') + ' ' + unitText;
 
                 if (changeEl && oldAvg && ecoAvg != null) {
-                    const change = ((oldAvg - ecoAvg) / oldAvg * 100).toFixed(1);
-                    changeEl.textContent = t('stat.vs.old', (change > 0 ? '-' : '+') + Math.abs(change));
-                    changeEl.className = `text-[12px] ${change > 0 ? 'text-emerald-500' : 'text-red-500'}`;
+                    const rawChange = ((oldAvg - ecoAvg) / oldAvg * 100);
+                    if (Math.abs(rawChange) > 999) {
+                        changeEl.textContent = t('stat.vs.old.nodata');
+                        changeEl.className = 'text-[12px] text-slate-400';
+                    } else if (rawChange > 0) {
+                        changeEl.textContent = t('stat.vs.old.lower', rawChange.toFixed(1));
+                        changeEl.className = 'text-[12px] text-emerald-500';
+                    } else {
+                        changeEl.textContent = t('stat.vs.old.higher', Math.abs(rawChange).toFixed(1));
+                        changeEl.className = 'text-[12px] text-red-500';
+                    }
                 }
                 // AQI badge for PM2.5
                 const badgeEl = document.getElementById(`r-stat-${f.id}-badge`);
@@ -3047,9 +3092,17 @@
                 tvocEl.innerHTML = (tvocAvg != null ? tvocAvg.toFixed(3) : '--') + ' ' + unitText;
             }
             if (tvocChangeEl && tvocOldAvg && tvocEcoAvg != null) {
-                const change = ((tvocOldAvg - tvocEcoAvg) / tvocOldAvg * 100).toFixed(1);
-                tvocChangeEl.textContent = t('stat.vs.old', (change > 0 ? '-' : '+') + Math.abs(change));
-                tvocChangeEl.className = `text-[12px] ${change > 0 ? 'text-emerald-500' : 'text-red-500'}`;
+                const rawChange = ((tvocOldAvg - tvocEcoAvg) / tvocOldAvg * 100);
+                if (Math.abs(rawChange) > 999) {
+                    tvocChangeEl.textContent = t('stat.vs.old.nodata');
+                    tvocChangeEl.className = 'text-[12px] text-slate-400';
+                } else if (rawChange > 0) {
+                    tvocChangeEl.textContent = t('stat.vs.old.lower', rawChange.toFixed(1));
+                    tvocChangeEl.className = 'text-[12px] text-emerald-500';
+                } else {
+                    tvocChangeEl.textContent = t('stat.vs.old.higher', Math.abs(rawChange).toFixed(1));
+                    tvocChangeEl.className = 'text-[12px] text-red-500';
+                }
             }
         }
 
@@ -3165,13 +3218,24 @@
             tbody.innerHTML = params.map(p => {
                 const oldAvg = avg(oldData, p.field);
                 const ecoAvg = avg(ecoData, p.field);
-                const pct = oldAvg && ecoAvg != null ? ((oldAvg - ecoAvg) / oldAvg * 100).toFixed(1) : '--';
-                const pctClass = pct !== '--' && pct > 0 ? 'text-emerald-600 font-bold' : pct !== '--' ? 'text-red-500 font-bold' : 'text-slate-400';
+                const rawPct = oldAvg && ecoAvg != null ? ((oldAvg - ecoAvg) / oldAvg * 100) : null;
+                let pctText, pctClass;
+                if (rawPct == null) {
+                    pctText = '--'; pctClass = 'text-slate-400';
+                } else if (Math.abs(rawPct) > 999) {
+                    pctText = t('stat.insufficient'); pctClass = 'text-slate-400 text-[11px]';
+                } else if (rawPct > 0) {
+                    pctText = 'ลดลง ' + rawPct.toFixed(1) + '%';
+                    pctClass = 'text-emerald-600 font-bold';
+                } else {
+                    pctText = 'สูงกว่า ' + Math.abs(rawPct).toFixed(1) + '%';
+                    pctClass = 'text-red-500 font-bold';
+                }
                 return `<tr class="hover:bg-slate-50">
                     <td class="p-3 font-medium">${p.label}</td>
                     <td class="p-3 text-center text-orange-500">${oldAvg != null ? oldAvg.toFixed(p.dec) : '--'}</td>
                     <td class="p-3 text-center text-emerald-600">${ecoAvg != null ? ecoAvg.toFixed(p.dec) : '--'}</td>
-                    <td class="p-3 text-center ${pctClass}">${pct !== '--' ? (pct > 0 ? '-' + pct + '%' : '+' + Math.abs(pct) + '%') : '--'}</td>
+                    <td class="p-3 text-center ${pctClass}">${pctText}</td>
                 </tr>`;
             }).join('');
         }
@@ -3256,7 +3320,7 @@
             }));
             const totalPoints = sensorGroups.reduce((sum, g) => sum + g.data.length, 0);
 
-            const chartColors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6'];
+            const chartColors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6', '#dc2626', '#0d9488', '#7c3aed', '#ca8a04', '#be185d', '#4f46e5'];
 
             const countEl = document.getElementById('sensor-chart-count');
             if (countEl) countEl.textContent = t('sensor.count.info', sensorGroups.length, totalPoints.toLocaleString());
@@ -3264,9 +3328,13 @@
             // Render color legend badges
             const legendEl = document.getElementById('sensor-color-legend');
             if (legendEl) {
-                legendEl.innerHTML = sensorGroups.map((g, i) =>
-                    `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white/80 border border-slate-200 shadow-sm"><span class="w-2.5 h-2.5 rounded-full inline-block" style="background:${chartColors[i % chartColors.length]}"></span>${g.name}</span>`
-                ).join('');
+                legendEl.innerHTML = sensorGroups.map((g, i) => {
+                    const sensorName = DEVICE_NAMES[g.id] || g.id?.slice(-6);
+                    const houseName = HOUSE_NAMES[g.id];
+                    const label = houseName ? houseName : sensorName;
+                    const sub = houseName && sensorName !== houseName ? ` <span class="text-[10px] text-slate-400">(${sensorName})</span>` : '';
+                    return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white/80 border border-slate-200 shadow-sm max-w-[180px]" title="${label} ${sensorName} — ${g.id}"><span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background:${chartColors[i % chartColors.length]}"></span><span class="truncate">${label}${sub}</span></span>`;
+                }).join('');
             }
 
             const chartConfigs = [
@@ -3303,7 +3371,16 @@
                         interaction: { mode: 'index', intersect: false },
                         plugins: {
                             legend: { display: false },
-                            tooltip: { callbacks: { title: (items) => items.length ? new Date(items[0].parsed.x).toLocaleString('th-TH') : '' } }
+                            tooltip: { callbacks: {
+                                title: (items) => items.length ? new Date(items[0].parsed.x).toLocaleString('th-TH') : '',
+                                label: (ctx) => {
+                                    const g = sensorGroups[ctx.datasetIndex];
+                                    const sName = DEVICE_NAMES[g?.id] || '';
+                                    const hName = HOUSE_NAMES[g?.id] || '';
+                                    const prefix = hName && sName ? hName + ' (' + sName + ')' : (hName || sName || ctx.dataset.label);
+                                    return prefix + ': ' + (ctx.parsed.y != null ? ctx.parsed.y.toFixed(1) : '-');
+                                },
+                            } }
                         },
                         scales: {
                             x: { type: 'time', time: { tooltipFormat: 'dd/MM/yyyy HH:mm' }, ticks: { font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
@@ -3426,7 +3503,7 @@
 
                 rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + houseName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\')">' +
                     '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
-                    '<td class="p-3">' + houseName + sessLabel + '</td>' +
+                    '<td class="p-3 max-w-[160px]"><span class="truncate block" title="' + houseName + '">' + houseName + sessLabel + '</span></td>' +
                     '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
@@ -3457,7 +3534,7 @@
                 const statusText = completed >= 2 ? t('daily.complete') : completed >= 1 ? completed + '/2' : total > 0 ? t('daily.incomplete') : t('daily.no.sensor');
                 return '<tr class="hover:bg-slate-50/50">' +
                     '<td class="p-2">' + d.summary_date + '</td>' +
-                    '<td class="p-2">' + houseName + '</td>' +
+                    '<td class="p-2 max-w-[160px]"><span class="truncate block" title="' + houseName + '">' + houseName + '</span></td>' +
                     '<td class="p-2 text-center font-bold">' + completed + '/' + total + '</td>' +
                     '<td class="p-2 text-center">' + (d.total_readings || 0) + '</td>' +
                     '<td class="p-2 text-center">' + (d.avg_pm25 != null ? d.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -3669,15 +3746,12 @@
         let tvocTabChartInstance = null;
         function updateTvocTab() {
             const houseFilter = document.getElementById('tvoc-house-filter')?.value || 'all';
-            const stoveFilter = document.getElementById('tvoc-stove-filter')?.value || 'all';
+            // stove filter removed
             const rangeHours = parseInt(document.getElementById('tvoc-range-filter')?.value || '168');
 
             let tvocData = (allDataWithPending || []).filter(d => d.data_source === 'manual' && d.tvoc_value != null);
             if (houseFilter !== 'all') tvocData = tvocData.filter(d => d.house_id == houseFilter);
-            if (stoveFilter !== 'all') {
-                if (stoveFilter === 'old') tvocData = tvocData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
-                else tvocData = tvocData.filter(d => d.stove_type === stoveFilter);
-            }
+            // stove filter logic removed
             if (rangeHours > 0) {
                 const cutoff = new Date(Date.now() - rangeHours * 3600000).toISOString();
                 tvocData = tvocData.filter(d => d.recorded_at >= cutoff);
@@ -3705,17 +3779,14 @@
             // Table
             const tbody = document.getElementById('tvoc-table-body');
             if (count === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">' + t('common.no.data') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">' + t('common.no.data') + '</td></tr>';
             } else {
                 tbody.innerHTML = tvocData.map(d => {
-                    const stoveTag = d.stove_type === 'eco'
-                        ? '<span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[11px] font-bold">Eco</span>'
-                        : '<span class="px-2 py-1 bg-orange-100 text-orange-700 rounded-lg text-[11px] font-bold">' + t('data.stove.old') + '</span>';
                     const houseName = houseNameMap[d.house_id] || '-';
                     const vol = (d.volunteer_id && volunteerNameMap[d.volunteer_id]) ? volunteerNameMap[d.volunteer_id] : '-';
                     return '<tr class="hover:bg-purple-50/50"><td class="p-3 whitespace-nowrap text-[13px]">' +
                         new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td><td class="p-3 text-[13px]">' +
-                        houseName + '</td><td class="p-3">' + stoveTag + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
+                        houseName + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
                         Number(d.tvoc_value).toFixed(3) + '</td><td class="p-3 text-[13px] text-slate-500">' +
                         vol + '</td></tr>';
                 }).join('');
@@ -3922,7 +3993,7 @@
                         const houseInfo = manualHouseMap[ms.houseId] || {};
                         const houseName = houseInfo.name || t('house.unassigned');
                         const volunteerName = houseInfo.volunteer || '';
-                        const stoveLabel = ms.stoveType === 'eco' ? '🟢 Eco' : t('stove.old.short');
+                        // stove_type now comes from collection_period, not sensor
                         const tvocValues = ms.logs.map(d => d.tvoc_value).filter(v => v != null);
                         const tvocTimes = ms.logs.filter(d => d.tvoc_value != null).map(d => new Date(d.recorded_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
                         const avgTvoc = tvocValues.length > 0 ? (tvocValues.reduce((a,b) => a+b, 0) / tvocValues.length).toFixed(3) : '--';
@@ -3941,7 +4012,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="font-bold text-navy text-sm leading-tight">🏠 ${houseName}</p>
-                                    <p class="text-[11px] text-slate-400">${volunteerName ? '👤 ' + volunteerName + ' · ' : ''}${stoveLabel} · ${dateStr} · ${timeRange} น.</p>
+                                    <p class="text-[11px] text-slate-400">${volunteerName ? '👤 ' + volunteerName + ' · ' : ''}${dateStr} · ${timeRange} น.</p>
                                 </div>
                                 <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px]">📝 ${ms.logs.length}</span>
                             </div>
@@ -3961,8 +4032,8 @@
                     // Render sensor session cards
                     const sensorCardsHtml = sessions.map((s, sIdx) => {
                         const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
-                        const houseName = DEVICE_NAMES[s.device] || sensorName;
-                        const stoveLabel = s.stoveType === 'eco' ? '🟢 Eco' : t('stove.old.short');
+                        const houseName = HOUSE_NAMES[s.device] || sensorName;
+                        // stove_type now comes from collection_period, not sensor
                         const sKey = 'ps_' + (s.device || 'unknown').slice(-6) + '_' + s.date.replace(/-/g,'') + '_' + sIdx;
                         window[sKey] = s.ids;
                         window[sKey + '_logs'] = s.logs;
@@ -4041,12 +4112,12 @@
 
                         return `
                         <div class="card-styled p-3 rounded-2xl border-l-4 ${borderColor} flex flex-col gap-1.5">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <p class="font-bold text-navy text-sm leading-tight">🏠 ${houseName}</p>
-                                    <p class="text-[11px] text-slate-400">📡 ${sensorName} · ${stoveLabel} · ${timeStart}–${timeEnd} · ${s.logs.length} logs</p>
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-bold text-navy text-sm leading-tight truncate" title="${houseName}">🏠 ${houseName}</p>
+                                    <p class="text-[11px] text-slate-400 truncate" title="${sensorName} · ${timeStart}–${timeEnd}">📡 ${sensorName} · ${timeStart}–${timeEnd} · ${s.logs.length} logs</p>
                                 </div>
-                                ${statusBadge}
+                                <div class="flex-shrink-0">${statusBadge}</div>
                             </div>
                             ${statusNote}
                             ${blInfoBar}
@@ -4230,23 +4301,27 @@
             else if (f === 'inactive') filtered = filtered.filter(d => !d.is_active);
             else if (f === 'unassigned') filtered = filtered.filter(d => !d.subject_id);
             if (q) filtered = filtered.filter(d =>
-                (d.name || '').toLowerCase().includes(q)
+                (DEVICE_NAMES[d.tuya_device_id] || d.name || '').toLowerCase().includes(q)
+                || (d.name || '').toLowerCase().includes(q)
                 || (d.tuya_device_id || '').toLowerCase().includes(q)
                 || (d.subjects?.full_name || '').toLowerCase().includes(q)
             );
             list.innerHTML = filtered.map(d => `
-                <div class="card-styled p-6 rounded-2xl">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="text-3xl">📡</span>
-                        <div class="flex-1"><p class="font-bold text-navy">${esc(d.name)}</p><p class="text-[12px] text-slate-400 font-mono">${esc(d.tuya_device_id)}</p></div>
-                        <div class="flex gap-2">
-                            <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${d.is_active ? t('dev.off') : t('dev.on')}</button>
-                            <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(d.name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                <div class="card-styled p-4 sm:p-6 rounded-2xl">
+                    <div class="flex items-start gap-3 mb-3">
+                        <span class="text-2xl sm:text-3xl">📡</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-navy truncate">${esc(DEVICE_NAMES[d.tuya_device_id] || d.name)}</p>
+                            <p class="text-[11px] sm:text-[12px] text-slate-400 truncate">${esc(d.name)} <span class="font-mono opacity-60">${esc(d.tuya_device_id?.slice(-8))}</span></p>
                         </div>
                     </div>
-                    <p class="text-[13px] text-slate-500">${t('dev.house.label')}${esc(d.subjects?.full_name) || t('dev.unassigned')}</p>
-                    <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'}">${d.is_active ? t('dev.active') : t('dev.inactive')}</p>
+                    <p class="text-[13px] text-slate-500 mb-1">${t('dev.house.label')}${esc(d.subjects?.full_name) || t('dev.unassigned')}</p>
+                    <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'} mb-3">${d.is_active ? t('dev.active') : t('dev.inactive')}</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
+                        <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${d.is_active ? t('dev.off') : t('dev.on')}</button>
+                        <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(DEVICE_NAMES[d.tuya_device_id] || d.name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                    </div>
                 </div>
             `).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('dev.no.data')) + '</p>';
         }
@@ -4267,11 +4342,11 @@
             const list = document.getElementById('registered-sensors-list');
             if (!list) return;
             list.innerHTML = KNOWN_SENSORS.map(s => `
-                <div class="bg-white/70 p-4 rounded-2xl border border-slate-100 flex items-center gap-3">
+                <div class="bg-white/70 p-4 rounded-2xl border border-slate-100 flex flex-wrap items-center gap-3">
                     <span class="text-2xl">📡</span>
-                    <div class="flex-1">
-                        <p class="font-bold text-navy text-sm">${s.name}</p>
-                        <p class="text-[11px] text-slate-400 font-mono">${s.tuyaId}</p>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-navy text-sm truncate">${s.name}</p>
+                        <p class="text-[11px] text-slate-400 font-mono truncate">${s.tuyaId}</p>
                     </div>
                     <button onclick="deleteRegisteredSensor('${s.tuyaId}', '${s.name.replace(/'/g, "\\'")}')" class="text-[11px] px-2 py-1 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                 </div>
@@ -5255,8 +5330,8 @@
             list.innerHTML = filteredSubjects.map(s => {
                 const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
                 const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>' +
-                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
-                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + d.name + '</option>').join('');
+                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + (DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) + '</option>' : '') +
+                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + (DEVICE_NAMES[d.tuya_device_id] || d.name) + '</option>').join('');
                 const projName = getSubjectProjectName(s.id);
                 const addrParts = [s.subdistrict ? 'ต.' + s.subdistrict : '', s.district ? 'อ.' + s.district : '', s.province ? 'จ.' + s.province : ''].filter(Boolean).join(' ');
                 const displayAddr = addrParts || s.address || '-';
@@ -5606,8 +5681,8 @@
                 // Sensor dropdown
                 const unassignedDevices = devices.filter(d => !d.subject_id);
                 const sensorOpts = '<option value="">' + t('overview.no.sensor') + '</option>' +
-                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + assignedDevice.name + '</option>' : '') +
-                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + d.name + '</option>').join('');
+                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + (DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) + '</option>' : '') +
+                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + (DEVICE_NAMES[d.tuya_device_id] || d.name) + '</option>').join('');
 
                 // Volunteer dropdown
                 const volOpts = '<option value="">' + t('overview.no.volunteer') + '</option>' +
@@ -5969,74 +6044,153 @@
             }, 50);
         }
 
-        function exportToExcel() {
-            if (!allData.length) { showToast(t('export.no.data'), 'warning'); return; }
-            const filterEl = document.getElementById('sensor-filter');
-            const filterVal = filterEl ? filterEl.value : 'all';
-            const isFiltered = filterVal && filterVal !== 'all';
-            const sensorName = isFiltered ? (filterEl.options[filterEl.selectedIndex]?.text || filterVal) : '';
-            const filteredData = isFiltered ? allData.filter(d => d.tuya_device_id === filterVal) : allData;
-            const dataLabel = isFiltered ? filteredData.length + ' รายการ (เฉพาะ ' + sensorName + ')' : allData.length + ' รายการ (ทั้งหมด)';
+        // ==================== Export: Date Range Modal ====================
+        function showExportModal(type) {
+            const today = new Date().toISOString().split('T')[0];
+            const d7 = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+            const d30 = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+            const isRaw = type === 'raw';
+            const icon = isRaw ? '📊' : '📋';
+            const title = isRaw ? 'Export ข้อมูลดิบ' : 'Export สรุปรายวัน';
+            const defaultStart = isRaw ? d30 : today;
 
             showModal(`
-                <div class="text-center py-4">
-                    <div class="text-4xl mb-3">📊</div>
-                    <h3 class="text-xl font-bold text-navy mb-2">Export ข้อมูล</h3>
-                    <p class="text-slate-500 text-sm mb-6">${dataLabel}</p>
-                    ${isFiltered ? `<p class="text-slate-400 text-xs mb-4">filter: <b>${sensorName}</b> · ${filteredData.length} จาก ${allData.length} รายการ</p>` : ''}
-                    <div class="flex flex-col gap-3">
-                        <div class="flex gap-3">
-                            <button onclick="doExport(window._exportData); closeModal()" class="flex-1 px-5 py-3 bg-[#064e3b] text-white rounded-xl font-bold text-sm hover:bg-[#043327] transition">📊 Excel (.xlsx)</button>
-                            <button onclick="doExportCSV(window._exportData); closeModal()" class="flex-1 px-5 py-3 bg-[#1e40af] text-white rounded-xl font-bold text-sm hover:bg-[#1e3a8a] transition">📄 CSV (.csv)</button>
-                        </div>
-                        ${isFiltered ? `<button onclick="window._exportData = allData; doExport(allData); closeModal()" class="w-full px-5 py-3 bg-slate-100 text-navy rounded-xl font-bold text-sm hover:bg-slate-200 transition">📊 Excel ทั้งหมด (${allData.length} รายการ)</button>
-                        <button onclick="window._exportData = allData; doExportCSV(allData); closeModal()" class="w-full px-5 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-100 transition">📄 CSV ทั้งหมด (${allData.length} รายการ)</button>` : ''}
-                        <button onclick="closeModal()" class="w-full px-4 py-2 text-slate-400 text-sm hover:text-slate-600 transition">ยกเลิก</button>
+                <div class="py-2">
+                    <div class="text-center mb-4">
+                        <div class="text-3xl mb-2">${icon}</div>
+                        <h3 class="text-lg font-bold text-navy">${title}</h3>
                     </div>
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-slate-600 mb-2">ช่วงเวลา</p>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <button onclick="setExportRange('${today}','${today}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition">${isRaw ? 'วันนี้' : 'วันนี้'}</button>
+                            <button onclick="setExportRange('${d7}','${today}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition">7 วัน</button>
+                            <button onclick="setExportRange('${d30}','${today}')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition">30 วัน</button>
+                            <button onclick="setExportRange('','')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-600 hover:bg-amber-100 transition">ทั้งหมด</button>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <input type="date" id="export-start" value="${defaultStart}" class="flex-1 px-3 py-2 border rounded-xl text-sm">
+                            <span class="text-slate-400 text-sm">ถึง</span>
+                            <input type="date" id="export-end" value="${today}" class="flex-1 px-3 py-2 border rounded-xl text-sm">
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="doExportWithRange('${type}','xlsx')" class="flex-1 px-4 py-3 bg-[#064e3b] text-white rounded-xl font-bold text-sm hover:bg-[#043327] transition">📊 Excel</button>
+                        <button onclick="doExportWithRange('${type}','csv')" class="flex-1 px-4 py-3 bg-[#1e40af] text-white rounded-xl font-bold text-sm hover:bg-[#1e3a8a] transition">📄 CSV</button>
+                    </div>
+                    <button onclick="closeModal()" class="w-full mt-2 px-4 py-2 text-slate-400 text-sm hover:text-slate-600 transition">ยกเลิก</button>
                 </div>
             `);
-            window._exportData = isFiltered ? filteredData : allData;
         }
 
-        // ==================== Export: Daily Summary ====================
-        async function exportDailySummaries() {
-            showLoading('กำลังดึงข้อมูลสรุปรายวัน...');
+        function setExportRange(start, end) {
+            document.getElementById('export-start').value = start;
+            document.getElementById('export-end').value = end;
+        }
+
+        function exportToExcel() { showExportModal('raw'); }
+        function exportDailySummaries() { showExportModal('daily'); }
+
+        async function doExportWithRange(type, format) {
+            const startVal = document.getElementById('export-start').value;
+            const endVal = document.getElementById('export-end').value;
+            closeModal();
+            showLoading('กำลังดึงข้อมูล...');
+
             try {
-                const { data, error } = await supabaseClient
-                    .from('daily_summaries')
-                    .select('*')
-                    .order('summary_date', { ascending: false })
-                    .limit(30);
-                if (error) throw error;
-                if (!data || data.length === 0) { showToast(t('export.daily.no.data'), 'warning'); hideLoading(); return; }
-
-                const rows = data.map(d => {
-                    const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
-                    return {
-                        [t('export.daily.date')]: d.summary_date,
-                        [t('export.daily.house')]: HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id,
-                        [t('export.daily.sess.ok')]: d.sessions_completed || 0,
-                        [t('export.daily.sess.total')]: total,
-                        [t('export.daily.readings')]: d.total_readings || 0,
-                        [t('export.daily.pm25.avg')]: d.avg_pm25 != null ? +d.avg_pm25.toFixed(2) : '',
-                        [t('export.daily.pm25.max')]: d.max_pm25 != null ? +d.max_pm25.toFixed(2) : '',
-                        [t('export.daily.pm10.avg')]: d.avg_pm10 != null ? +d.avg_pm10.toFixed(2) : '',
-                        [t('export.daily.co2.avg')]: d.avg_co2 != null ? +d.avg_co2.toFixed(0) : '',
-                        [t('export.daily.temp')]: d.avg_temperature != null ? +d.avg_temperature.toFixed(1) : '',
-                        [t('export.daily.humidity')]: d.avg_humidity != null ? +d.avg_humidity.toFixed(1) : '',
-                        [t('export.daily.status')]: d.compliance_status || '',
-                    };
-                });
-
-                const ws = XLSX.utils.json_to_sheet(rows);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, t('export.daily.sheet'));
-                XLSX.writeFile(wb, `biomass_stove_daily_summary_${new Date().toISOString().split('T')[0]}.xlsx`);
-                logActivity('Export สรุปรายวัน', data.length + ' records');
-                showToast('Export สรุปรายวัน ' + data.length + ' วัน');
+                if (type === 'raw') {
+                    await doExportRawWithRange(startVal, endVal, format);
+                } else {
+                    await doExportDailyWithRange(startVal, endVal, format);
+                }
             } catch (e) {
                 showToast('Export ผิดพลาด: ' + e.message, 'error');
             } finally { hideLoading(); }
+        }
+
+        async function doExportRawWithRange(startDate, endDate, format) {
+            let query = supabaseClient.from('pollution_logs').select('*')
+                .eq('status', 'approved')
+                .order('recorded_at', { ascending: false });
+
+            if (startDate) query = query.gte('recorded_at', startDate + 'T00:00:00');
+            if (endDate) query = query.lte('recorded_at', endDate + 'T23:59:59');
+
+            // Paginate to get all data
+            let allRows = [];
+            let from = 0;
+            const pageSize = 5000;
+            while (true) {
+                const { data, error } = await query.range(from, from + pageSize - 1);
+                if (error) throw error;
+                if (!data || data.length === 0) break;
+                allRows = allRows.concat(data);
+                if (data.length < pageSize) break;
+                from += pageSize;
+            }
+
+            if (!allRows.length) { showToast(t('export.no.data'), 'warning'); return; }
+
+            const rows = exportDataRows(allRows);
+            const rangeLabel = startDate && endDate ? startDate + '_' + endDate : 'all';
+            const fileName = 'biomass_stove_raw_' + rangeLabel;
+
+            if (format === 'csv') {
+                doExportCSV(allRows);
+            } else {
+                const ws = XLSX.utils.json_to_sheet(rows);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Sensor Data');
+                XLSX.writeFile(wb, fileName + '.xlsx');
+            }
+            logActivity('Export ข้อมูลดิบ', allRows.length + ' records (' + rangeLabel + ')');
+            showToast('Export ' + allRows.length.toLocaleString() + ' รายการ');
+        }
+
+        async function doExportDailyWithRange(startDate, endDate, format) {
+            let query = supabaseClient.from('daily_summaries').select('*')
+                .order('summary_date', { ascending: false });
+
+            if (startDate) query = query.gte('summary_date', startDate);
+            if (endDate) query = query.lte('summary_date', endDate);
+
+            const { data, error } = await query;
+            if (error) throw error;
+            if (!data || data.length === 0) { showToast(t('export.daily.no.data'), 'warning'); return; }
+
+            const rows = data.map(d => {
+                const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
+                return {
+                    [t('export.daily.date')]: d.summary_date,
+                    [t('export.daily.house')]: HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id,
+                    [t('export.daily.sess.ok')]: d.sessions_completed || 0,
+                    [t('export.daily.sess.total')]: total,
+                    [t('export.daily.readings')]: d.total_readings || 0,
+                    [t('export.daily.pm25.avg')]: d.avg_pm25 != null ? +d.avg_pm25.toFixed(2) : '',
+                    [t('export.daily.pm25.max')]: d.max_pm25 != null ? +d.max_pm25.toFixed(2) : '',
+                    [t('export.daily.pm10.avg')]: d.avg_pm10 != null ? +d.avg_pm10.toFixed(2) : '',
+                    [t('export.daily.co2.avg')]: d.avg_co2 != null ? +d.avg_co2.toFixed(0) : '',
+                    [t('export.daily.temp')]: d.avg_temperature != null ? +d.avg_temperature.toFixed(1) : '',
+                    [t('export.daily.humidity')]: d.avg_humidity != null ? +d.avg_humidity.toFixed(1) : '',
+                    [t('export.daily.status')]: d.compliance_status || '',
+                };
+            });
+
+            const rangeLabel = startDate && endDate ? startDate + '_' + endDate : 'all';
+            const fileName = 'biomass_stove_daily_summary_' + rangeLabel;
+
+            if (format === 'csv') {
+                const csvContent = '\ufeff' + Object.keys(rows[0]).join(',') + '\n' + rows.map(r => Object.values(r).map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName + '.csv'; a.click();
+            } else {
+                const ws = XLSX.utils.json_to_sheet(rows);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, t('export.daily.sheet'));
+                XLSX.writeFile(wb, fileName + '.xlsx');
+            }
+            logActivity('Export สรุปรายวัน', data.length + ' records (' + rangeLabel + ')');
+            showToast('Export สรุปรายวัน ' + data.length + ' รายการ');
         }
 
         // ==================== Export: Comparison Report ====================
@@ -6104,7 +6258,7 @@
             // Load subjects + devices with name for popup
             const [subRes, devRes] = await Promise.all([
                 supabaseClient.from('subjects').select('id, full_name, gps_lat, gps_long, status, connectivity, has_sensor').not('gps_lat', 'is', null).not('gps_long', 'is', null),
-                supabaseClient.from('devices').select('subject_id, name').not('subject_id', 'is', null),
+                supabaseClient.from('devices').select('subject_id, name, tuya_device_id').not('subject_id', 'is', null),
             ]);
             const data = subRes.data;
             if (subRes.error || !data || !data.length) {
@@ -6112,9 +6266,9 @@
                 L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(map);
                 return;
             }
-            // Map subject_id → device name
+            // Map subject_id → device name (prefer registered name)
             const sensorMap = {};
-            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = d.name; });
+            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = DEVICE_NAMES[d.tuya_device_id] || d.name; });
             const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
             const bounds = [];
             let sensorCount = 0, stoveCount = 0;
@@ -6174,7 +6328,7 @@
             if (!mapDeep) return;
             const [subRes, devRes] = await Promise.all([
                 supabaseClient.from('subjects').select('id, full_name, gps_lat, gps_long, status, connectivity, has_sensor, volunteers(full_name)').not('gps_lat', 'is', null).not('gps_long', 'is', null),
-                supabaseClient.from('devices').select('subject_id, name').not('subject_id', 'is', null),
+                supabaseClient.from('devices').select('subject_id, name, tuya_device_id').not('subject_id', 'is', null),
             ]);
             const data = subRes.data;
             if (subRes.error || !data || !data.length) {
@@ -6183,7 +6337,7 @@
                 return;
             }
             const sensorMap = {};
-            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = d.name; });
+            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = DEVICE_NAMES[d.tuya_device_id] || d.name; });
             const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
             const bounds = [];
             data.forEach(s => {
