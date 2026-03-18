@@ -33,7 +33,6 @@ async function getTuyaToken(accessId, secret) {
 }
 
 // ===== Admin Auth Check (personal PIN from admin_users) =====
-const crypto = require('crypto');
 async function validatePin(req) {
   const adminId = req.headers['x-admin-id'] || '';
   const pin = req.headers['x-admin-pin'] || '';
