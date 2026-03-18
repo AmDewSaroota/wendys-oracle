@@ -619,6 +619,12 @@
                         <p class="text-slate-500 text-sm" data-i18n="dev.subtitle">ลงทะเบียนและจัดการอุปกรณ์ Tuya Air Quality Monitor</p>
                     </div>
                     <div class="flex gap-3 flex-wrap items-center">
+                        <select id="devices-filter" onchange="renderDevicesList()" class="px-3 py-2 rounded-xl border text-[13px] focus:outline-none focus:ring-2 focus:ring-emerald-200 custom-select">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="active">เปิดใช้งาน</option>
+                            <option value="inactive">ปิดใช้งาน</option>
+                            <option value="unassigned">ยังไม่ผูกบ้าน</option>
+                        </select>
                         <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาอุปกรณ์..." class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="discoverTuyaDevices()" class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-600 transition-all">🔍 ค้นหาจาก Tuya Cloud</button>
                         <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ ผูกเซนเซอร์กับบ้าน</button>
@@ -3822,12 +3828,18 @@
         function renderDevicesList() {
             const list = document.getElementById('devices-list');
             const searchEl = document.getElementById('devices-search');
+            const filterEl = document.getElementById('devices-filter');
             const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
-            const filtered = q ? devices.filter(d =>
+            const f = filterEl ? filterEl.value : 'all';
+            let filtered = devices;
+            if (f === 'active') filtered = filtered.filter(d => d.is_active);
+            else if (f === 'inactive') filtered = filtered.filter(d => !d.is_active);
+            else if (f === 'unassigned') filtered = filtered.filter(d => !d.subject_id);
+            if (q) filtered = filtered.filter(d =>
                 (d.name || '').toLowerCase().includes(q)
                 || (d.tuya_device_id || '').toLowerCase().includes(q)
                 || (d.subjects?.full_name || '').toLowerCase().includes(q)
-            ) : devices;
+            );
             list.innerHTML = filtered.map(d => `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center gap-3 mb-4">
