@@ -1,21 +1,21 @@
 /**
- * EcoStove — Auto Sync Sensors to Supabase (every 5 min)
+ * Biomass Stove — Auto Sync Sensors to Supabase (every 5 min)
  * เปิดเซนเซอร์ + เปิดคอม = เก็บข้อมูลอัตโนมัติ
  *
  * วิธีใช้: node auto_sync_mt13w.js
  * หยุด: Ctrl+C
  */
 
+require('./_env');
 const crypto = require('crypto');
 
-// ===== Tuya Config =====
-const ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const TUYA_BASE = 'https://openapi-sg.iotbing.com';
+// ===== Config (from .env) =====
+const ACCESS_ID = process.env.TUYA_ACCESS_ID;
+const ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET;
+const TUYA_BASE = process.env.TUYA_BASE_URL || 'https://openapi-sg.iotbing.com';
 
-// ===== Supabase Edge Function =====
-const EDGE_FUNCTION_URL = 'https://zijybzjstjlqvhmckgor.supabase.co/functions/v1/fetch-sensor';
-const SB_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA';
+const EDGE_FUNCTION_URL = (process.env.SUPABASE_URL || '') + '/functions/v1/fetch-sensor';
+const SB_ANON_KEY = process.env.SUPABASE_KEY;
 
 // ===== Devices =====
 const DEVICES = [
@@ -124,7 +124,7 @@ async function syncAll() {
 
 async function main() {
   console.log('=========================================');
-  console.log('  EcoStove Auto-Sync');
+  console.log('  Biomass Stove Auto-Sync');
   console.log(`  Devices: ${DEVICES.map(d => d.name).join(', ')}`);
   console.log(`  Interval: every ${INTERVAL_MS / 60000} min`);
   console.log('  Ctrl+C to stop');

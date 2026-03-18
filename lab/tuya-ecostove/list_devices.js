@@ -5,9 +5,10 @@
 
 import crypto from 'crypto';
 
-const ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const BASE_URL = 'https://openapi-sg.iotbing.com';
+// Credentials (from .env — bun auto-loads)
+const ACCESS_ID = process.env.TUYA_ACCESS_ID;
+const ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET;
+const BASE_URL = process.env.TUYA_BASE_URL || 'https://openapi-sg.iotbing.com';
 
 function generateSign(method, path, timestamp, accessToken = '', body = '') {
   const contentHash = crypto.createHash('sha256').update(body).digest('hex');

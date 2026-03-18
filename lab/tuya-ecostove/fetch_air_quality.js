@@ -1,5 +1,5 @@
 /**
- * EcoStove - Tuya Air Quality Fetcher
+ * Biomass Stove - Tuya Air Quality Fetcher
  * ดึงข้อมูลจากเครื่อง ZN-MT29 ผ่าน Tuya API
  *
  * วิธีใช้: bun fetch_air_quality.js
@@ -7,11 +7,11 @@
 
 import crypto from 'crypto';
 
-// Credentials
-const ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
+// Credentials (from .env — bun auto-loads)
+const ACCESS_ID = process.env.TUYA_ACCESS_ID;
+const ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET;
 const DEVICE_ID = 'a3b9c2e4bdfe69ad7ekytn';
-const BASE_URL = 'https://openapi-sg.iotbing.com'; // Singapore Data Center
+const BASE_URL = process.env.TUYA_BASE_URL || 'https://openapi-sg.iotbing.com';
 
 /**
  * สร้าง signature สำหรับ Tuya API (v2.0 method)
@@ -97,7 +97,7 @@ async function getDeviceStatus(token) {
  * Main
  */
 async function main() {
-  console.log('🌬️  EcoStove Air Quality Monitor');
+  console.log('🌬️  Biomass Stove Air Quality Monitor');
   console.log('='.repeat(40));
   console.log(`Device ID: ${DEVICE_ID}`);
   console.log(`Endpoint: ${BASE_URL}`);

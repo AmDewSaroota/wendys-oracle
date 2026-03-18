@@ -8,8 +8,18 @@ venv/
 
 # Secrets
 .env
+.env.*
+!.env.example
 .vercel
+
+# Windows artifacts
+NUL
+
+# Temp files
+*.log
+.temp/
 
 # Dev-browser skill (profiles + dependencies)
 .claude/sync/global-skills/dev-browser/profiles/browser-data/
 .claude/sync/global-skills/dev-browser/node_modules/
+.claude/sync/global-skills/dev-browser/tmp/

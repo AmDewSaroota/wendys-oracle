@@ -1,8 +1,10 @@
+require('./_env');
 const crypto = require('crypto');
 
-const ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const BASE_URL = 'https://openapi-sg.iotbing.com';
+// Config (from .env)
+const ACCESS_ID = process.env.TUYA_ACCESS_ID;
+const ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET;
+const BASE_URL = process.env.TUYA_BASE_URL || 'https://openapi-sg.iotbing.com';
 const DEVICE_ID = 'a3d01864e463e3ede0hf0e';
 
 function generateSign(method, path, timestamp, accessToken, body) {

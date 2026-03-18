@@ -1,5 +1,5 @@
 @echo off
-title EcoStove Sensor Monitor
+title BiomassStove Sensor Monitor
 cd /d "C:\Users\CPL\wendys-oracle\lab\tuya-ecostove"
 
 :: Check if already running on port 3456
@@ -12,7 +12,7 @@ if %errorlevel%==0 (
 )
 
 echo =========================================
-echo   EcoStove Sensor Monitor
+echo   BiomassStove Sensor Monitor
 echo   Ctrl+C to stop
 echo =========================================
 echo.

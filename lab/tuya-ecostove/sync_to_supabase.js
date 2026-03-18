@@ -1,5 +1,5 @@
 /**
- * EcoStove Daemon - Sync Tuya → Supabase (2 sensors)
+ * Biomass Stove Daemon - Sync Tuya → Supabase (2 sensors)
  * รันค้างไว้ ลูปดึงข้อมูลทุก 5 นาที
  *
  * วิธีใช้:
@@ -7,22 +7,23 @@
  *   node sync_to_supabase.js --once   # รันครั้งเดียวแล้วจบ
  */
 
+require('./_env');
 const crypto = require('crypto');
 
-// ===== Config =====
+// ===== Config (from .env) =====
 const INTERVAL_MS = 5 * 60 * 1000; // 5 นาที
 
-const TUYA_ACCESS_ID     = process.env.TUYA_ACCESS_ID     || '7dudg9tg3cwvrf8dx9na';
-const TUYA_ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET || 'f51fa230ddf343478ae5616c52b51111';
-const TUYA_BASE_URL      = 'https://openapi-sg.iotbing.com';
+const TUYA_ACCESS_ID     = process.env.TUYA_ACCESS_ID;
+const TUYA_ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET;
+const TUYA_BASE_URL      = process.env.TUYA_BASE_URL || 'https://openapi-sg.iotbing.com';
 
 const SENSORS = [
   { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29 (เดิม)', stoveType: 'old' },
   { id: 'a3d01864e463e3ede0hf0e', name: 'MT13W (ใหม่)', stoveType: 'eco' },
 ];
 
-const SB_URL = process.env.SUPABASE_URL || 'https://zijybzjstjlqvhmckgor.supabase.co';
-const SB_KEY = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA';
+const SB_URL = process.env.SUPABASE_URL;
+const SB_KEY = process.env.SUPABASE_KEY;
 
 // ===== Tuya Functions =====
 function generateSign(method, path, timestamp, accessToken, body) {
@@ -177,7 +178,7 @@ async function syncOnce() {
 const runOnce = process.argv.includes('--once');
 
 async function main() {
-  console.log('EcoStove Daemon');
+  console.log('Biomass Stove Daemon');
   console.log('Sensors: ' + SENSORS.map(s => s.name).join(', '));
   console.log('Mode: ' + (runOnce ? 'single run' : 'loop every ' + (INTERVAL_MS / 1000) + 's'));
   console.log('='.repeat(50));

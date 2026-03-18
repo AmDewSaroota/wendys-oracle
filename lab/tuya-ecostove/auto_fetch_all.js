@@ -1,14 +1,15 @@
 /**
- * EcoStove — Auto Fetch All 3 Sensors (every 5 min)
+ * Biomass Stove — Auto Fetch All 3 Sensors (every 5 min)
  * วิธีใช้: bun auto_fetch_all.js
  * หยุด: Ctrl+C
  */
 
 import crypto from 'crypto';
 
-const ACCESS_ID = '7dudg9tg3cwvrf8dx9na';
-const ACCESS_SECRET = 'f51fa230ddf343478ae5616c52b51111';
-const BASE_URL = 'https://openapi-sg.iotbing.com';
+// Credentials (from .env — bun auto-loads)
+const ACCESS_ID = process.env.TUYA_ACCESS_ID;
+const ACCESS_SECRET = process.env.TUYA_ACCESS_SECRET;
+const BASE_URL = process.env.TUYA_BASE_URL || 'https://openapi-sg.iotbing.com';
 
 const DEVICES = [
   { id: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT15/MT29 (เดิม)' },
@@ -112,7 +113,7 @@ async function fetchAll() {
 }
 
 async function main() {
-  console.log('EcoStove — Auto Fetch All Sensors');
+  console.log('Biomass Stove — Auto Fetch All Sensors');
   console.log(`Interval: every ${INTERVAL_MS / 60000} minutes`);
   console.log(`Devices: ${DEVICES.length}`);
   console.log('Press Ctrl+C to stop');
