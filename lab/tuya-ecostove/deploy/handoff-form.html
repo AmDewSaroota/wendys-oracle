@@ -440,7 +440,7 @@
 
       <div id="email-custom" class="conditional-field">
         <div class="field-label">อีเมลที่ต้องการใช้แทน</div>
-        <input type="email" class="text-input" id="email_value" placeholder="เช่น ecostove@cmru.ac.th">
+        <input type="email" class="text-input" id="email_value" placeholder="เช่น biomassstove@cmru.ac.th">
       </div>
     </div>
   </div>
@@ -535,7 +535,7 @@
       </p>
 
       <p style="font-size: 0.9rem; margin-bottom: 8px;">ปัจจุบันตั้งไว้เป็น:</p>
-      <div class="current-value">ecostove2026</div>
+      <div class="current-value">biomassstove2026</div>
 
       <div class="option-group" style="margin-top: 10px;">
         <label class="option-label">
@@ -660,13 +660,13 @@
         <input type="radio" name="domain_choice" value="other_domain" onchange="toggleField('domain-custom', true)">
         <div class="option-content">
           <div class="option-title">ต้องการโดเมนอื่น</div>
-          <div class="option-desc">เช่น ecostove.cmru.ac.th — ต้องประสานงาน IT มหาวิทยาลัย (ทางทีมโครงการเป็นผู้ดำเนินการ)</div>
+          <div class="option-desc">เช่น biomassstove.cmru.ac.th — ต้องประสานงาน IT มหาวิทยาลัย (ทางทีมโครงการเป็นผู้ดำเนินการ)</div>
         </div>
       </label>
 
       <div id="domain-custom" class="conditional-field">
         <div class="field-label">โดเมนที่ต้องการ</div>
-        <input type="text" class="text-input" id="domain_value" placeholder="เช่น ecostove.cmru.ac.th">
+        <input type="text" class="text-input" id="domain_value" placeholder="เช่น biomassstove.cmru.ac.th">
       </div>
     </div>
   </div>
@@ -762,7 +762,7 @@ function generateSummary() {
   // 4. Invite Code
   const inviteChoice = getRadioValue('invite_choice');
   if (inviteChoice === 'keep') {
-    lines.push('4. Invite Code: ใช้ ecostove2026');
+    lines.push('4. Invite Code: ใช้ biomassstove2026');
   } else if (inviteChoice === 'change') {
     lines.push('4. Invite Code: ' + (document.getElementById('invite_value').value || '(ไม่ได้กรอก)'));
   } else {
