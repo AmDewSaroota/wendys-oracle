@@ -39,12 +39,6 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'PIN ต้องมีอย่างน้อย 4 ตัวอักษร' });
   }
 
-  // Validate invite code
-  const validCode = process.env.ADMIN_INVITE_CODE;
-  if (!validCode || inviteCode !== validCode) {
-    return res.status(403).json({ error: 'รหัสเชิญไม่ถูกต้อง' });
-  }
-
   const sbUrl = process.env.SUPABASE_URL;
   const sbKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
   if (!sbUrl || !sbKey) {
@@ -56,6 +50,22 @@ module.exports = async function handler(req, res) {
     'Authorization': 'Bearer ' + sbKey,
     'Content-Type': 'application/json',
   };
+
+  // Validate invite code — check DB first, fallback to env var
+  let validCode = process.env.ADMIN_INVITE_CODE;
+  try {
+    const settingsRes = await fetch(
+      sbUrl + '/rest/v1/app_settings?key=eq.invite_code&select=value',
+      { headers }
+    );
+    if (settingsRes.ok) {
+      const rows = await settingsRes.json();
+      if (rows.length && rows[0].value) validCode = rows[0].value;
+    }
+  } catch (_) { /* fallback to env */ }
+  if (!validCode || inviteCode !== validCode) {
+    return res.status(403).json({ error: 'รหัสเชิญไม่ถูกต้อง' });
+  }
 
   try {
     // Check duplicate email

@@ -519,6 +519,7 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
+                    <button onclick="showInviteCodeModal()" id="btn-invite-code" class="px-4 py-3 bg-emerald-50 text-emerald-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-emerald-100 transition-all" style="display:none">Invite Code</button>
                     <button onclick="showChangePinInline()" class="px-4 py-3 bg-slate-100 text-slate-600 rounded-2xl font-bold text-sm shadow-sm hover:bg-slate-200 transition-all">🔑 PIN</button>
                     <button onclick="showRegenerateRecovery()" class="px-4 py-3 bg-amber-50 text-amber-700 rounded-2xl font-bold text-sm shadow-sm hover:bg-amber-100 transition-all">Recovery</button>
                     <button onclick="logoutAdmin()" class="px-8 py-3 bg-red-100 text-red-600 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all" data-i18n="admin.logout">Logout</button>
@@ -1651,6 +1652,7 @@
                     <input type="password" id="admin-pin" placeholder="PIN" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-[#064e3b] text-2xl text-center tracking-[0.5em] font-mono pr-14" onkeyup="if(event.key==='Enter') loginAdmin()" maxlength="20">
                     <button type="button" onclick="togglePinVis('admin-pin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
                 </div>
+                <p class="text-xs text-slate-400 text-center -mt-3 mb-4" title="ตัวเลข ตัวอักษร หรือผสมก็ได้ อย่างน้อย 4 ตัว">ℹ️ PIN คืออะไร? — รหัสส่วนตัวที่ตั้งตอนสมัคร (ไม่ใช่รหัสผ่าน Gmail)</p>
                 <p id="login-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
                 <button onclick="loginAdmin()" id="login-btn" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">${t('admin.login.btn')}</button>
                 <p class="text-center mt-3 text-sm"><button onclick="closeModal(); showForgotPinModal()" class="text-amber-600 hover:underline">ลืม PIN?</button></p>
@@ -1735,6 +1737,7 @@
                     <input type="password" id="reg-pin" placeholder="ตั้งรหัส PIN" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-xl text-center tracking-[0.3em] font-mono pr-14" maxlength="20">
                     <button type="button" onclick="togglePinVis('reg-pin', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>
                 </div>
+                <p class="text-xs text-slate-400 text-center -mt-2 mb-3">ℹ️ อย่างน้อย 4 ตัว — ตัวเลข ตัวอักษร หรือผสมก็ได้</p>
                 <input type="text" id="reg-invite" placeholder="${t('admin.reg.invite')}" class="w-full p-4 rounded-2xl border bg-amber-50 mb-6 outline-none focus:ring-2 focus:ring-amber-500 text-lg text-center" onkeyup="if(event.key==='Enter') registerAdmin()">
                 <p id="reg-error" class="text-red-500 text-sm mb-4 hidden text-center"></p>
                 <p id="reg-success" class="text-emerald-600 text-sm mb-4 hidden text-center"></p>
@@ -1847,6 +1850,8 @@
 
                 const superTab = document.getElementById('tab-btn-admins');
                 if (superTab) superTab.style.display = currentAdminRole === 'super' ? '' : 'none';
+                const inviteBtn = document.getElementById('btn-invite-code');
+                if (inviteBtn) inviteBtn.style.display = currentAdminRole === 'super' ? '' : 'none';
             } catch (e) {
                 if (errEl) { errEl.textContent = t('common.error') + (e.message || 'Unknown error'); errEl.classList.remove('hidden'); }
                 if (btn) { btn.disabled = false; btn.textContent = t('admin.login.btn'); }
@@ -1895,6 +1900,58 @@
                 if (errEl) { errEl.textContent = 'ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์'; errEl.classList.remove('hidden'); }
                 if (btn) { btn.disabled = false; btn.textContent = 'สร้าง Recovery Code ใหม่'; }
             }
+        }
+
+        async function showInviteCodeModal() {
+            if (currentAdminRole !== 'super') { showToast('เฉพาะ Super Admin', 'error'); return; }
+            // Fetch current invite code
+            let currentCode = '...';
+            try {
+                const resp = await fetch('/api/admin/settings', {
+                    headers: { 'X-Admin-ID': currentAdminId, 'X-Admin-PIN': getStoredPin() },
+                });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const found = (data.settings || []).find(s => s.key === 'invite_code');
+                    if (found) currentCode = found.value;
+                }
+            } catch (_) {}
+            showModal(`
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🎟️</div>
+                    <h3 class="text-xl font-bold text-navy">Invite Code</h3>
+                    <p class="text-sm text-slate-400 mt-1">รหัสสำหรับให้คนอื่นสมัครเป็น Admin</p>
+                </div>
+                <div class="text-center mb-4">
+                    <span class="text-xs text-slate-400">ปัจจุบัน</span>
+                    <div id="invite-current" class="text-2xl font-mono font-bold text-emerald-700 tracking-wider mt-1">${currentCode}</div>
+                </div>
+                <div class="border-t border-slate-200 my-4"></div>
+                <input type="text" id="invite-new" placeholder="Invite Code ใหม่" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center font-mono tracking-wider mb-4" onkeyup="if(event.key==='Enter') document.getElementById('invite-save-btn')?.click()">
+                <div class="flex gap-3">
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
+                    <button id="invite-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">บันทึก</button>
+                </div>
+            `);
+            setTimeout(() => document.getElementById('invite-new')?.focus(), 100);
+            document.getElementById('invite-save-btn').onclick = async () => {
+                const newCode = (document.getElementById('invite-new')?.value || '').trim();
+                if (!newCode) { showToast('กรุณากรอก Invite Code ใหม่', 'warning'); return; }
+                const btn = document.getElementById('invite-save-btn');
+                btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+                try {
+                    const resp = await fetch('/api/admin/settings', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'X-Admin-ID': currentAdminId, 'X-Admin-PIN': getStoredPin() },
+                        body: JSON.stringify({ key: 'invite_code', value: newCode }),
+                    });
+                    const data = await resp.json();
+                    if (!resp.ok) { showToast(data.error || 'บันทึกไม่สำเร็จ', 'error'); btn.disabled = false; btn.textContent = 'บันทึก'; return; }
+                    closeModal();
+                    showToast('เปลี่ยน Invite Code สำเร็จ', 'success');
+                    logActivity('เปลี่ยน Invite Code', 'เปลี่ยนเป็น ' + newCode);
+                } catch (e) { showToast('Network error', 'error'); btn.disabled = false; btn.textContent = 'บันทึก'; }
+            };
         }
 
         function showChangePinInline() {
