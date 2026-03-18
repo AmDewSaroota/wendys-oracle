@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EcoStove — ระบบจัดการแอดมิน</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>BiomassStove — ระบบจัดการแอดมิน</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --green-dark: #064e3b;
@@ -495,11 +495,11 @@
 
 <!-- ==================== SLIDE 1: Title ==================== -->
 <div class="slide bg-gradient active">
-  <span class="tag">EcoStove Project</span>
-  <h1>ระบบจัดการแอดมิน</h1>
+  <span class="tag">BiomassStove Project</span>
+  <h1>ตั้งค่าบัญชีโครงการ</h1>
   <p class="subtitle">ภาพรวม Auth Flow + คำถามสำหรับทีมโครงการ</p>
   <div style="margin-top: 40px; font-size: 0.9rem; opacity: 0.6;">
-    Biomass Stove — นวัตกรรมเพื่ออากาศสะอาด<br>
+    BiomassStove — นวัตกรรมเพื่ออากาศสะอาด<br>
     มีนาคม 2569
   </div>
   <div class="slide-number">1 / 11</div>
@@ -965,10 +965,11 @@
   <span class="tag">ต้องการข้อมูล</span>
   <h2>คำถามสำหรับทีมโครงการ</h2>
 
-  <div style="background: rgba(255,255,255,0.08); border-radius: 16px; padding: 8px 0; max-height: 50vh; overflow-y: auto;">
+  <div style="background: rgba(255,255,255,0.08); border-radius: 16px; padding: 8px 0; max-height: 54vh; overflow-y: auto;">
     <ol class="q-list" style="color: #fff;">
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
-        <strong>อีเมลโครงการ</strong> — สร้างใหม่ หรือใช้อันที่มี?
+        <strong>อีเมลโครงการ</strong> — ปัจจุบันใช้อันนี้อยู่ จะเปลี่ยนมั้ย?
+        <span style="display: block; margin-top: 6px; font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', 'Consolas', monospace; font-size: 1rem; background: rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 8px; letter-spacing: 0.02em; color: #fff; font-weight: 500;">biomassstove.cmru@gmail.com</span>
         <span class="q-sub" style="color: rgba(255,255,255,0.6);">ใช้เข้าสู่ระบบทุก platform (Tuya, Supabase, Vercel, LINE)</span>
       </li>
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
@@ -981,19 +982,21 @@
       </li>
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
         <strong>รหัสผ่านบัญชีโครงการ</strong> — ใช้ค่าเริ่มต้นได้ หรือต้องการเปลี่ยน?
+        <span style="display: block; margin-top: 6px; font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', 'Consolas', monospace; font-size: 1.15rem; background: rgba(255,255,255,0.12); padding: 8px 14px; border-radius: 8px; letter-spacing: 0.08em; color: #fef3c7; font-weight: 600;">BioMass@cmru2026</span>
         <span class="q-sub" style="color: rgba(255,255,255,0.6);">รหัสผ่านนี้ใช้เข้าถึงทุก platform ของโครงการ</span>
       </li>
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
-        <strong>Invite Code</strong> — ใช้ค่าเริ่มต้นได้ หรือต้องการเปลี่ยน?
+        <strong>รหัสเข้าร่วม (Invite Code)</strong> — ใช้ค่าเริ่มต้นได้ หรือต้องการเปลี่ยน?
+        <span style="display: block; margin-top: 6px; font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', 'Consolas', monospace; font-size: 1.15rem; background: rgba(255,255,255,0.12); padding: 8px 14px; border-radius: 8px; letter-spacing: 0.08em; color: #fef3c7; font-weight: 600;">ecostove2026</span>
         <span class="q-sub" style="color: rgba(255,255,255,0.6);">รหัสสำหรับให้คนอื่นลงทะเบียนเป็น Admin ด้วยตนเอง</span>
       </li>
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
-        <strong>ชื่อเซนเซอร์</strong> — BS-01 ถึง BS-10 หรือต้องการรูปแบบอื่น?
+        <strong>ชื่อเซนเซอร์</strong> — ES-01 ถึง ES-10 หรือต้องการรูปแบบอื่น?
         <span class="q-sub" style="color: rgba(255,255,255,0.6);">แสดงบนสติกเกอร์แปะเซนเซอร์ และในระบบ Dashboard</span>
       </li>
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
-        <strong>โดเมน</strong> — ใช้ .vercel.app (ฟรี) หรือ .org (~350-500 บาท/ปี)?
-        <span class="q-sub" style="color: rgba(255,255,255,0.6);">ที่อยู่เว็บไซต์สำหรับเข้าถึงระบบ</span>
+        <strong>โดเมน (ที่อยู่เว็บไซต์)</strong> — ใช้ .vercel.app (ฟรี) หรือ .org (~350-500 บาท/ปี)?
+        <span class="q-sub" style="color: rgba(255,255,255,0.6);">ใช้เข้าถึง Dashboard + ทำ QR Code แปะสติกเกอร์ที่เซนเซอร์</span>
       </li>
     </ol>
   </div>

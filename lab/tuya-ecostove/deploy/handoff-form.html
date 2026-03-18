@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EcoStove — ตั้งค่าบัญชีโครงการ</title>
+<title>BiomassStove — ตั้งค่าบัญชีโครงการ</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -198,13 +198,15 @@
 
   .current-value {
     display: inline-block;
-    background: #edf2f7;
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-family: 'Courier New', monospace;
-    color: #4a5568;
-    margin: 4px 0;
+    background: #1e293b;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    font-family: 'Fira Code', 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+    color: #fbbf24;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 6px 0;
   }
 
   .sticker-preview {
@@ -394,7 +396,7 @@
 
   <!-- Header -->
   <div class="header">
-    <h1>EcoStove — ตั้งค่าบัญชีโครงการ</h1>
+    <h1>BiomassStove — ตั้งค่าบัญชีโครงการ</h1>
     <p>กรุณากรอกข้อมูลเพื่อตั้งค่าระบบให้พร้อมใช้งาน</p>
   </div>
 
@@ -402,7 +404,7 @@
   <div class="intro">
     <h2>ทำไมต้องกรอกแบบฟอร์มนี้?</h2>
     <p>
-      ระบบ EcoStove กำลังย้ายจากบัญชีส่วนตัวของผู้พัฒนาไปยัง<strong>บัญชีกลางของโครงการ</strong>
+      ระบบ BiomassStove กำลังย้ายจากบัญชีส่วนตัวของผู้พัฒนาไปยัง<strong>บัญชีกลางของโครงการ</strong>
       เพื่อให้ทีมโครงการจัดการได้เอง ข้อมูลด้านล่างจะใช้ในการตั้งค่าบัญชีและสิทธิ์การเข้าถึงทั้งหมด
     </p>
   </div>
@@ -417,25 +419,27 @@
       อีเมลนี้จะเป็น "กุญแจหลัก" ในการเข้าถึงทุกระบบของโครงการ เมื่อผู้พัฒนาส่งมอบงานแล้ว ผู้ดูแลโครงการจะสามารถจัดการทุกอย่างผ่านอีเมลนี้ได้เอง
     </div>
 
-    <div class="option-group">
+    <p style="font-size: 0.9rem; margin-bottom: 8px;">ปัจจุบันสร้างไว้แล้ว:</p>
+    <div class="current-value">biomassstove.cmru@gmail.com</div>
+
+    <div class="option-group" style="margin-top: 12px;">
       <label class="option-label">
-        <input type="radio" name="email_choice" value="dev_handle" onchange="toggleField('email-custom', false)">
+        <input type="radio" name="email_choice" value="keep" onchange="toggleField('email-custom', false)">
         <div class="option-content">
-          <div class="option-title">ให้ผู้พัฒนาจัดหาให้</div>
-          <div class="option-desc">จะสร้าง Gmail ใหม่สำหรับโครงการ เช่น ecostove.cmru@gmail.com</div>
+          <div class="option-title">ใช้อีเมลนี้ได้</div>
         </div>
       </label>
 
       <label class="option-label">
         <input type="radio" name="email_choice" value="have_email" onchange="toggleField('email-custom', true)">
         <div class="option-content">
-          <div class="option-title">มีอีเมลอยู่แล้ว</div>
-          <div class="option-desc">มีอีเมลที่ต้องการใช้เป็นบัญชีโครงการอยู่แล้ว</div>
+          <div class="option-title">ต้องการเปลี่ยน</div>
+          <div class="option-desc">มีอีเมลอื่นที่ต้องการใช้แทน</div>
         </div>
       </label>
 
       <div id="email-custom" class="conditional-field">
-        <div class="field-label">อีเมลที่ต้องการใช้</div>
+        <div class="field-label">อีเมลที่ต้องการใช้แทน</div>
         <input type="email" class="text-input" id="email_value" placeholder="เช่น ecostove@cmru.ac.th">
       </div>
     </div>
@@ -444,7 +448,7 @@
   <!-- 2. Phone -->
   <div class="section">
     <h3><span class="section-number">2</span> เบอร์โทรศัพท์สำหรับ Recovery</h3>
-    <p class="section-desc">เบอร์โทรของผู้ดูแลโครงการ (ไม่ใช่ของผู้พัฒนา)</p>
+    <p class="section-desc">ปัจจุบันยังใช้ของผู้พัฒนาอยู่ — จะเปลี่ยนเป็นของผู้ดูแลโครงการเมื่อส่งมอบ</p>
 
     <div class="why-box">
       <strong>เอาไปใช้ทำอะไร?</strong>
@@ -455,7 +459,7 @@
       </ul>
     </div>
 
-    <div class="field-label">เบอร์โทรศัพท์</div>
+    <div class="field-label">เบอร์โทรศัพท์ของผู้ดูแลโครงการ</div>
     <input type="tel" class="text-input" id="phone_value" placeholder="เช่น 08X-XXX-XXXX">
 
     <div style="margin-top: 12px;">
@@ -575,29 +579,29 @@
 
     <div class="sticker-preview">
       <div class="sticker">
-        <div class="sticker-code">BS-01</div>
-        <div class="sticker-sub">Biomass Stove</div>
+        <div class="sticker-code">ES-01</div>
+        <div class="sticker-sub">EcoStove</div>
       </div>
       <div class="sticker">
-        <div class="sticker-code">BS-02</div>
-        <div class="sticker-sub">Biomass Stove</div>
+        <div class="sticker-code">ES-02</div>
+        <div class="sticker-sub">EcoStove</div>
       </div>
       <div class="sticker">
-        <div class="sticker-code">BS-03</div>
-        <div class="sticker-sub">Biomass Stove</div>
+        <div class="sticker-code">ES-03</div>
+        <div class="sticker-sub">EcoStove</div>
       </div>
       <div class="sticker" style="opacity: 0.5;">
         <div class="sticker-code">...</div>
-        <div class="sticker-sub">ถึง BS-10</div>
+        <div class="sticker-sub">ถึง ES-10</div>
       </div>
     </div>
 
     <div class="option-group">
       <label class="option-label">
-        <input type="radio" name="sensor_choice" value="bs" onchange="toggleField('sensor-custom', false)">
+        <input type="radio" name="sensor_choice" value="es" onchange="toggleField('sensor-custom', false)">
         <div class="option-content">
-          <div class="option-title">ใช้ BS-01 ถึง BS-10</div>
-          <div class="option-desc">BS = Biomass Stove (สั้น จำง่าย)</div>
+          <div class="option-title">ใช้ ES-01 ถึง ES-10</div>
+          <div class="option-desc">ES = EcoStove (สั้น จำง่าย)</div>
         </div>
       </label>
 
@@ -627,7 +631,7 @@
   <!-- 6. Domain -->
   <div class="section">
     <h3><span class="section-number">6</span> โดเมน (ที่อยู่เว็บไซต์)</h3>
-    <p class="section-desc">URL สำหรับเข้าถึงระบบ EcoStove</p>
+    <p class="section-desc">URL สำหรับเข้าถึง Dashboard + ใช้ทำ QR Code แปะสติกเกอร์ที่เซนเซอร์</p>
 
     <div class="domain-compare">
       <label class="domain-card" onclick="selectDomain(this, 'free')">
@@ -656,7 +660,7 @@
         <input type="radio" name="domain_choice" value="other_domain" onchange="toggleField('domain-custom', true)">
         <div class="option-content">
           <div class="option-title">ต้องการโดเมนอื่น</div>
-          <div class="option-desc">เช่น ecostove.cmru.ac.th (ต้องขอผ่าน IT มหาลัย)</div>
+          <div class="option-desc">เช่น ecostove.cmru.ac.th — ต้องประสานงาน IT มหาวิทยาลัย (ทางทีมโครงการเป็นผู้ดำเนินการ)</div>
         </div>
       </label>
 
@@ -676,8 +680,11 @@
 
   <!-- Summary / Submit -->
   <div class="submit-section">
-    <p>กรอกครบแล้วกดปุ่มด้านล่างเพื่อสร้างสรุป แล้วส่งให้ผู้พัฒนา</p>
-    <button class="btn-submit" onclick="generateSummary()">สร้างสรุปข้อมูล</button>
+    <p>กรอกครบแล้ว กดส่งอีเมลได้เลย หรือดูตัวอย่างสรุปก่อนก็ได้</p>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-submit" onclick="generateAndSendEmail()">ส่งทางอีเมล</button>
+      <button class="btn-copy" onclick="generateSummary()">ดูสรุปก่อน</button>
+    </div>
   </div>
 
   <!-- Summary Output -->
@@ -685,8 +692,11 @@
     <div class="section" style="border: 2px solid #2e7d32;">
       <h3 style="color: #2e7d32; margin-bottom: 12px;">สรุปข้อมูลการตั้งค่า</h3>
       <pre id="summary-text" style="white-space: pre-wrap; font-family: 'Prompt', sans-serif; font-size: 0.85rem; background: #f7fafc; padding: 16px; border-radius: 8px; line-height: 1.8;"></pre>
-      <div style="text-align: center; margin-top: 16px;">
-        <button class="btn-submit" onclick="copySummary()" style="background: #2e7d32; color: white;">
+      <div style="text-align: center; margin-top: 16px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn-submit" onclick="generateAndSendEmail()" style="background: #2e7d32; color: white;">
+          ส่งทางอีเมล
+        </button>
+        <button class="btn-submit" onclick="copySummary()" style="background: #4a5568; color: white;">
           คัดลอกข้อความ
         </button>
       </div>
@@ -721,12 +731,12 @@ function getRadioValue(name) {
 
 function generateSummary() {
   const lines = [];
-  lines.push('=== EcoStove — สรุปข้อมูลการตั้งค่า ===\n');
+  lines.push('=== BiomassStove — สรุปข้อมูลการตั้งค่า ===\n');
 
   // 1. Email
   const emailChoice = getRadioValue('email_choice');
-  if (emailChoice === 'dev_handle') {
-    lines.push('1. อีเมลโครงการ: ให้ผู้พัฒนาจัดหาให้');
+  if (emailChoice === 'keep') {
+    lines.push('1. อีเมลโครงการ: ใช้ biomassstove.cmru@gmail.com');
   } else if (emailChoice === 'have_email') {
     lines.push('1. อีเมลโครงการ: ' + (document.getElementById('email_value').value || '(ไม่ได้กรอก)'));
   } else {
@@ -761,8 +771,8 @@ function generateSummary() {
 
   // 5. Sensor
   const sensorChoice = getRadioValue('sensor_choice');
-  if (sensorChoice === 'bs') {
-    lines.push('5. ชื่อเซนเซอร์: BS-01 ถึง BS-10');
+  if (sensorChoice === 'es') {
+    lines.push('5. ชื่อเซนเซอร์: ES-01 ถึง ES-10');
   } else if (sensorChoice === 'number_only') {
     lines.push('5. ชื่อเซนเซอร์: 01 ถึง 10 (ตัวเลขอย่างเดียว)');
   } else if (sensorChoice === 'custom') {
@@ -795,6 +805,13 @@ function generateSummary() {
   summaryEl.textContent = lines.join('\n');
   document.getElementById('summary-output').style.display = 'block';
   document.getElementById('summary-output').scrollIntoView({ behavior: 'smooth' });
+}
+
+function generateAndSendEmail() {
+  generateSummary();
+  const subject = encodeURIComponent('BiomassStove — สรุปข้อมูลการตั้งค่า');
+  const body = encodeURIComponent(document.getElementById('summary-text').textContent);
+  window.open('mailto:dews.cnx@gmail.com?subject=' + subject + '&body=' + body);
 }
 
 function copySummary() {
