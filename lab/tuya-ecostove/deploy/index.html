@@ -2651,23 +2651,23 @@
         async function loadData(showSpinner, _retry) {
             if (showSpinner) showLoading('กำลังโหลดข้อมูล...');
             try {
-                // Load last 60 days with pagination to get complete dataset
+                // Load last 60 days with pagination (Supabase max 1000 rows/query)
                 const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
                 let allRecords = [];
-                let page = 0;
-                const pageSize = 5000;
+                let offset = 0;
+                const pageSize = 1000;
                 while (true) {
                     const { data: batch, error: bErr } = await supabaseClient
                         .from('pollution_logs')
                         .select('*')
                         .gte('recorded_at', cutoff)
                         .order('recorded_at', { ascending: false })
-                        .range(page * pageSize, (page + 1) * pageSize - 1);
+                        .range(offset, offset + pageSize - 1);
                     if (bErr) throw bErr;
                     if (!batch || !batch.length) break;
                     allRecords = allRecords.concat(batch);
                     if (batch.length < pageSize) break;
-                    page++;
+                    offset += pageSize;
                 }
                 const error = null;
 
