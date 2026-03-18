@@ -414,18 +414,9 @@
 
             <!-- Sensor Time-Series Charts -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-400">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <div>
-                        <h4 class="font-bold text-lg text-navy flex items-center gap-2" data-i18n="sensor.compare">📈 เปรียบเทียบ Sensor ตามเวลา</h4>
-                        <p class="text-slate-400 text-sm" id="sensor-chart-count" data-i18n="sensor.loading">กำลังโหลด...</p>
-                    </div>
-                    <select id="sensor-chart-range" onchange="updateSensorCharts()" class="px-4 py-2 rounded-xl border bg-white text-sm">
-                        <option value="24" data-i18n="filter.24h">24 ชม.</option>
-                        <option value="72" data-i18n="filter.3d">3 วัน</option>
-                        <option value="168" selected data-i18n="filter.7d">7 วัน</option>
-                        <option value="720" data-i18n="filter.30d">30 วัน</option>
-                        <option value="0" data-i18n="filter.all">ทั้งหมด</option>
-                    </select>
+                <div class="mb-6">
+                    <h4 class="font-bold text-lg text-navy flex items-center gap-2" data-i18n="sensor.compare">📈 เปรียบเทียบ Sensor ตามเวลา</h4>
+                    <p class="text-slate-400 text-sm" id="sensor-chart-count" data-i18n="sensor.loading">กำลังโหลด...</p>
                 </div>
                 <div id="sensor-color-legend" class="flex flex-wrap gap-2 mb-4"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -3002,12 +2993,21 @@
         }
 
         // ==================== DEEP VIEW ====================
+        function getDeepRangeHours() {
+            const el = document.getElementById('deep-range-filter');
+            return el ? parseInt(el.value) : 0;
+        }
+        function applyDeepRangeFilter(data) {
+            const hours = getDeepRangeHours();
+            if (hours <= 0) return data;
+            const cutoff = new Date(Date.now() - hours * 3600000).toISOString();
+            return data.filter(d => d.recorded_at >= cutoff);
+        }
         function updateDeepView() {
             // Update range label on stat cards
-            const rangeSelect = document.getElementById('deep-range-filter');
+            const hours = getDeepRangeHours();
             const rangeLabelEl = document.getElementById('deep-range-label');
-            if (rangeLabelEl && rangeSelect) {
-                const hours = parseInt(rangeSelect.value);
+            if (rangeLabelEl) {
                 const rangeMap = { 0: t('stat.range.all'), 24: t('stat.range.24h'), 72: t('stat.range.3d'), 168: t('stat.range.7d'), 720: t('stat.range.30d') };
                 rangeLabelEl.textContent = rangeMap[hours] || '';
             }
@@ -3020,8 +3020,9 @@
             loadSessionsTab();
             loadDailySummaries();
 
+            const filtered = applyDeepRangeFilter(getFilteredData());
             const countEl = document.getElementById('deep-data-count');
-            if (countEl) countEl.textContent = t('deep.count', allData.length);
+            if (countEl) countEl.textContent = t('deep.count', filtered.length);
         }
 
         function applyBaselineSubtraction(data) {
@@ -3048,7 +3049,7 @@
         }
 
         function updateResearchStats() {
-            const baseData = applyBaselineSubtraction(getFilteredData());
+            const baseData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
             const ecoData = baseData.filter(d => d.stove_type === 'eco');
             const oldData = baseData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
@@ -3131,7 +3132,7 @@
 
         let groupCharts = {};
         function renderGroupCharts() {
-            const filtered = applyBaselineSubtraction(getFilteredData());
+            const filtered = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
             const ecoData = filtered.filter(d => d.stove_type === 'eco');
             const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
@@ -3223,7 +3224,7 @@
         }
 
         function updateReductionTable() {
-            const filtered = applyBaselineSubtraction(getFilteredData());
+            const filtered = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
             const ecoData = filtered.filter(d => d.stove_type === 'eco');
             const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
             const tbody = document.getElementById('reduction-table-body');
@@ -3269,7 +3270,7 @@
             if (tvocTimeChartInstance) tvocTimeChartInstance.destroy();
             const canvas = document.getElementById('tvocTimeChart');
             if (!canvas) return;
-            const tvocData = applyBaselineSubtraction(getFilteredData()).filter(d => d.tvoc_value != null);
+            const tvocData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData())).filter(d => d.tvoc_value != null);
             if (!tvocData.length) {
                 tvocTimeChartInstance = null;
                 return;
@@ -3323,16 +3324,7 @@
         // ==================== Sensor Charts ====================
         let sensorCharts = {};
         function updateSensorCharts() {
-            const rangeEl = document.getElementById('sensor-chart-range');
-            if (!rangeEl) return;
-            const hours = parseInt(rangeEl.value);
-            const now = new Date();
-
-            let sensorData = applyBaselineSubtraction(getFilteredData()).filter(d => d.data_source === 'sensor' && d.tuya_device_id);
-            if (hours > 0) {
-                const cutoff = new Date(now.getTime() - hours * 60 * 60 * 1000);
-                sensorData = sensorData.filter(d => new Date(d.recorded_at) >= cutoff);
-            }
+            let sensorData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData())).filter(d => d.data_source === 'sensor' && d.tuya_device_id);
 
             // Group data by sensor dynamically (no hardcoded IDs)
             const sensorIds = [...new Set(sensorData.map(d => d.tuya_device_id))];
