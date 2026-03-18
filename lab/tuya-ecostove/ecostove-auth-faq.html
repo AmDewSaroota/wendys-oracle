@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biomass Stove — ระบบล็อคอินใหม่ (FAQ)</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #064e3b;
+    --green: #059669;
+    --green-light: #d1fae5;
+    --green-50: #ecfdf5;
+    --orange: #e67e22;
+    --red: #dc2626;
+    --yellow: #f59e0b;
+    --blue: #2563eb;
+    --purple: #7c3aed;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Prompt', sans-serif;
+    background: #111;
+    color: var(--gray-900);
+    overflow: hidden;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 80px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    overflow: hidden;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  .bg-white { background: #fff; }
+  .bg-green { background: var(--green-dark); color: #fff; }
+  .bg-gradient {
+    background: linear-gradient(135deg, var(--green-dark) 0%, #0f766e 50%, #115e59 100%);
+    color: #fff;
+  }
+  .bg-blue {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 50%, #2563eb 100%);
+    color: #fff;
+  }
+  .bg-red {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #dc2626 100%);
+    color: #fff;
+  }
+  .bg-light { background: var(--green-50); }
+  .bg-gray { background: var(--gray-50); }
+  .bg-amber {
+    background: linear-gradient(135deg, #78350f 0%, #92400e 50%, #b45309 100%);
+    color: #fff;
+  }
+
+  .slide-number {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    font-weight: 300;
+  }
+  .bg-green .slide-number,
+  .bg-gradient .slide-number,
+  .bg-blue .slide-number,
+  .bg-red .slide-number,
+  .bg-amber .slide-number { color: rgba(255,255,255,0.4); }
+
+  h1 { font-size: 2.8rem; font-weight: 700; line-height: 1.3; margin-bottom: 16px; }
+  h2 { font-size: 2rem; font-weight: 600; margin-bottom: 24px; color: var(--green-dark); }
+  .bg-green h2, .bg-gradient h2, .bg-blue h2, .bg-red h2, .bg-amber h2 { color: #fff; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 12px; color: var(--green-dark); }
+
+  .subtitle { font-size: 1.3rem; font-weight: 300; color: var(--gray-500); margin-bottom: 8px; }
+  .bg-green .subtitle, .bg-gradient .subtitle, .bg-blue .subtitle, .bg-red .subtitle, .bg-amber .subtitle { color: rgba(255,255,255,0.7); }
+
+  .tag {
+    display: inline-block;
+    background: var(--green-light);
+    color: var(--green-dark);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .bg-green .tag, .bg-gradient .tag, .bg-blue .tag, .bg-red .tag, .bg-amber .tag { background: rgba(255,255,255,0.15); color: #fff; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  th {
+    background: var(--green-dark);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  th:first-child { border-radius: 10px 0 0 0; }
+  th:last-child { border-radius: 0 10px 0 0; }
+  td { padding: 10px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--gray-50); }
+  tr:last-child td { border-bottom: none; }
+  .table-wrap {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .card-grid { display: grid; gap: 20px; }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 4px solid var(--green);
+  }
+  .card.orange { border-top-color: var(--orange); }
+  .card.blue { border-top-color: var(--blue); }
+  .card.red { border-top-color: var(--red); }
+  .card.yellow { border-top-color: var(--yellow); }
+  .card.purple { border-top-color: var(--purple); }
+
+  .card .icon { font-size: 2rem; margin-bottom: 10px; }
+  .card h3 { font-size: 1.05rem; margin-bottom: 8px; }
+  .card p, .card li { font-size: 0.88rem; color: var(--gray-500); line-height: 1.6; font-weight: 300; }
+  .card ul { list-style: none; padding: 0; }
+  .card li::before { content: '→ '; color: var(--green); font-weight: 500; }
+  .card.red li::before { color: var(--red); }
+  .card.orange li::before { color: var(--orange); }
+  .card.blue li::before { color: var(--blue); }
+  .card.purple li::before { color: var(--purple); }
+
+  .flow { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+  .flow-step {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 22px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    min-width: 120px;
+  }
+  .bg-green .flow-step, .bg-gradient .flow-step, .bg-blue .flow-step, .bg-red .flow-step, .bg-amber .flow-step { background: rgba(255,255,255,0.1); }
+  .flow-step .icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .flow-step .label { font-size: 0.82rem; font-weight: 400; }
+  .flow-arrow { font-size: 1.5rem; color: var(--green); font-weight: 300; }
+  .bg-green .flow-arrow, .bg-gradient .flow-arrow, .bg-blue .flow-arrow, .bg-red .flow-arrow, .bg-amber .flow-arrow { color: rgba(255,255,255,0.5); }
+
+  .highlight-row { display: flex; gap: 20px; margin-top: 20px; }
+  .highlight-box {
+    flex: 1;
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .bg-green .highlight-box, .bg-gradient .highlight-box, .bg-blue .highlight-box, .bg-red .highlight-box, .bg-amber .highlight-box { background: rgba(255,255,255,0.1); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  .vs-box {
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .vs-old { background: #fef2f2; border: 2px solid #fecaca; }
+  .vs-new { background: #ecfdf5; border: 2px solid #a7f3d0; }
+
+  .qa-item {
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 16px;
+  }
+  .qa-q {
+    font-weight: 600;
+    color: var(--green-dark);
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .qa-a {
+    font-weight: 300;
+    color: var(--gray-700);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ========== SLIDE 1: ปก ========== -->
+<div class="slide bg-gradient active">
+  <span class="tag">Biomass Stove Platform</span>
+  <h1>ระบบล็อคอินใหม่</h1>
+  <p class="subtitle">ทำไมต้องเปลี่ยน? เปลี่ยนเป็นอะไร? ปลอดภัยไหม?</p>
+  <p class="subtitle" style="margin-top: 24px; font-size: 0.9rem; opacity: 0.5;">เอกสารเตรียมคำตอบ — เผื่ออาจารย์ถาม</p>
+  <div class="slide-number">1 / 7</div>
+</div>
+
+<!-- ========== SLIDE 2: ปัญหาที่เจอ ========== -->
+<div class="slide bg-white">
+  <span class="tag" style="background:#fef2f2; color:#dc2626;">🔴 ปัญหาที่เจอซ้ำๆ</span>
+  <h2 style="color:#dc2626;">ระบบค้างระหว่างใช้งาน — บันทึกข้อมูลไม่ได้</h2>
+
+  <div class="two-col" style="margin-bottom: 24px;">
+    <div>
+      <h3 style="color:#dc2626;">เกิดอะไรขึ้น?</h3>
+      <div style="font-size:0.9rem; line-height:1.8; color:var(--gray-700); font-weight:300;">
+        ระบบเดิมใช้ <strong>Supabase Authentication</strong> ซึ่งออก<strong>"ตั๋วเข้าใช้งาน" (JWT Token)</strong> ให้ทุกครั้งที่ล็อคอิน
+        <br><br>
+        ตั๋วนี้มี<strong>วันหมดอายุ</strong> — พอหมดอายุระหว่างใช้งาน ทั้งระบบจะค้าง
+        <br><br>
+        <strong>ไม่ใช่แค่เขียนข้อมูลไม่ได้</strong> แม้แต่การอ่านข้อมูลก็พังไปด้วย เพราะตั๋วเสียทำพิษกับทุก request
+      </div>
+    </div>
+    <div>
+      <h3 style="color:#dc2626;">แก้มากี่รอบแล้ว?</h3>
+      <div style="background:#fef2f2; border-radius:14px; padding:20px; font-size:0.88rem; line-height:2; color:var(--gray-700);">
+        <div>❌ รอบ 1 — เพิ่ม auto-refresh token → ยังพัง</div>
+        <div>❌ รอบ 2 — ลบ token เก่าอัตโนมัติ → ยังพัง</div>
+        <div>❌ รอบ 3 — retry เมื่อ token เสีย → ยังพัง</div>
+        <div style="margin-top:12px; padding-top:12px; border-top:2px solid #fecaca; font-weight:600; color:#dc2626;">
+          ปัญหาอยู่ที่ตัวระบบ Supabase Auth เอง<br>ไม่ใช่โค้ดของเรา — แก้จากฝั่งเราไม่ได้
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-number">2 / 7</div>
+</div>
+
+<!-- ========== SLIDE 3: เปรียบเทียบ เก่า vs ใหม่ ========== -->
+<div class="slide bg-gray">
+  <span class="tag">🔄 เปรียบเทียบ</span>
+  <h2>ระบบเดิม vs ระบบใหม่</h2>
+
+  <div class="two-col">
+    <div class="vs-box vs-old">
+      <h3 style="color:#dc2626; margin-bottom:16px;">❌ ระบบเดิม (Supabase Auth)</h3>
+      <div style="font-size:0.88rem; line-height:2; color:var(--gray-700); font-weight:300;">
+        <div>ออกแบบมาสำหรับแอปขนาดใหญ่ (ผู้ใช้หลักพัน-หมื่น)</div>
+        <div>ล็อคอินด้วย <strong>email + password ส่วนตัว</strong></div>
+        <div>ออกตั๋ว JWT ที่ <strong style="color:#dc2626;">หมดอายุทุกชั่วโมง</strong></div>
+        <div>ตั๋วหมดอายุ → <strong style="color:#dc2626;">ทั้งเว็บพัง</strong></div>
+        <div>ลืมรหัส → ต้องรีเซ็ตผ่าน email</div>
+        <div>ซับซ้อนเกินความจำเป็นสำหรับทีมเล็ก</div>
+      </div>
+    </div>
+    <div class="vs-box vs-new">
+      <h3 style="color:var(--green-dark); margin-bottom:16px;">✅ ระบบใหม่ (PIN ส่วนตัว)</h3>
+      <div style="font-size:0.88rem; line-height:2; color:var(--gray-700); font-weight:300;">
+        <div>ออกแบบให้เหมาะกับทีมเล็ก (10-15 คน)</div>
+        <div>ล็อคอินด้วย <strong>ชื่อ + PIN 4 หลัก</strong></div>
+        <div><strong style="color:var(--green);">ไม่มีตั๋ว ไม่มีวันหมดอายุ</strong></div>
+        <div>ใช้งานได้ตลอด <strong style="color:var(--green);">ไม่มีค้าง</strong></div>
+        <div>ลืม PIN → แอดมินรีเซ็ตให้ต่อหน้า</div>
+        <div>เรียบง่าย เข้าใจง่าย ใช้ง่าย</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-number">3 / 7</div>
+</div>
+
+<!-- ========== SLIDE 4: Flow การใช้งาน ========== -->
+<div class="slide bg-white">
+  <span class="tag">👤 วิธีใช้งาน</span>
+  <h2>ขั้นตอนสำหรับผู้ใช้</h2>
+
+  <h3 style="margin-bottom:8px;">สมัครครั้งแรก (ทำแค่ครั้งเดียว)</h3>
+  <div class="flow" style="margin-bottom:32px;">
+    <div class="flow-step"><div class="icon">📝</div><div class="label">ใส่ชื่อ</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">🔑</div><div class="label">ใส่รหัสสมัคร</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">🔢</div><div class="label">ตั้ง PIN 4 หลัก</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border:2px solid var(--green);"><div class="icon">✅</div><div class="label">เข้าใช้งานได้</div></div>
+  </div>
+
+  <h3 style="margin-bottom:8px;">ล็อคอินทุกครั้ง</h3>
+  <div class="flow" style="margin-bottom:32px;">
+    <div class="flow-step"><div class="icon">👤</div><div class="label">เลือกชื่อ</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">🔢</div><div class="label">ใส่ PIN</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step" style="border:2px solid var(--green);"><div class="icon">✅</div><div class="label">เข้าใช้งานได้<br><span style="font-size:0.7rem; color:var(--green);">ไม่หมดอายุ</span></div></div>
+  </div>
+
+  <div style="display:flex; gap:16px;">
+    <div style="flex:1; background:#eff6ff; border-radius:12px; padding:14px 18px; border-left:4px solid var(--blue);">
+      <div style="font-size:0.85rem; font-weight:600; color:#1e40af;">🔑 รหัสสมัคร</div>
+      <div style="font-size:0.8rem; color:var(--gray-700); font-weight:300; margin-top:4px;">ใช้แค่ตอนสมัครครั้งแรก ไม่ใช้ตอน Login</div>
+    </div>
+    <div style="flex:1; background:var(--green-50); border-radius:12px; padding:14px 18px; border-left:4px solid var(--green);">
+      <div style="font-size:0.85rem; font-weight:600; color:var(--green-dark);">🔢 PIN ส่วนตัว</div>
+      <div style="font-size:0.8rem; color:var(--gray-700); font-weight:300; margin-top:4px;">คนละ PIN → สวมรอยกันไม่ได้</div>
+    </div>
+    <div style="flex:1; background:#fef3c7; border-radius:12px; padding:14px 18px; border-left:4px solid var(--yellow);">
+      <div style="font-size:0.85rem; font-weight:600; color:#92400e;">🛡️ 2 ชั้น</div>
+      <div style="font-size:0.8rem; color:var(--gray-700); font-weight:300; margin-top:4px;">ตั้งค่าระบบต้องใส่รหัส Super Admin เพิ่ม</div>
+    </div>
+  </div>
+
+  <div class="slide-number">4 / 7</div>
+</div>
+
+<!-- ========== SLIDE 5: ความปลอดภัย ========== -->
+<div class="slide bg-light">
+  <span class="tag">🛡️ ความปลอดภัย</span>
+  <h2>ระบบป้องกัน 2 ชั้น</h2>
+
+  <div class="two-col" style="margin-bottom: 24px;">
+    <div style="background:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06); border-top:4px solid var(--blue);">
+      <div style="font-size:1.8rem; margin-bottom:10px;">🔒</div>
+      <h3 style="color:#1e40af;">ชั้นที่ 1 — ผู้ใช้งานทั่วไป</h3>
+      <div style="font-size:0.88rem; line-height:1.8; color:var(--gray-500); font-weight:300;">
+        <div>→ ล็อคอินด้วย <strong>ชื่อ + PIN ส่วนตัว</strong></div>
+        <div>→ เพิ่ม/แก้ไขข้อมูล (บ้าน, เซนเซอร์, อาสา)</div>
+        <div>→ ดูรายงานและส่งออกข้อมูล</div>
+        <div style="margin-top:12px; background:#eff6ff; border-radius:8px; padding:10px 14px; font-size:0.8rem;">
+          <strong>ทำไม่ได้:</strong> เปลี่ยนรหัสสมัคร, ลบแอดมินคนอื่น, เข้าตั้งค่าระบบ
+        </div>
+      </div>
+    </div>
+    <div style="background:#fff; border-radius:16px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.06); border-top:4px solid var(--orange);">
+      <div style="font-size:1.8rem; margin-bottom:10px;">🔐</div>
+      <h3 style="color:#c2410c;">ชั้นที่ 2 — Super Admin</h3>
+      <div style="font-size:0.88rem; line-height:1.8; color:var(--gray-500); font-weight:300;">
+        <div>→ ต้องใส่ <strong>รหัส Super Admin</strong> เพิ่มอีกชั้น</div>
+        <div>→ เปลี่ยนรหัสสมัคร (เมื่อนักศึกษาจบ)</div>
+        <div>→ ลบแอดมินออกจากระบบ</div>
+        <div>→ รีเซ็ต PIN ให้คนที่ลืม</div>
+        <div style="margin-top:12px; background:#fff7ed; border-radius:8px; padding:10px 14px; font-size:0.8rem;">
+          <strong>เฉพาะ:</strong> อาจารย์ หรือผู้ดูแลระบบหลักเท่านั้น
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-number">5 / 7</div>
+</div>
+
+<!-- ========== SLIDE 6: จัดการคนเข้า-ออก ========== -->
+<div class="slide bg-white">
+  <span class="tag">👥 จัดการทีม</span>
+  <h2>เมื่อนักศึกษาจบ / คนใหม่เข้ามา</h2>
+
+  <div class="card-grid cols-3">
+    <div class="card blue">
+      <div class="icon">🎓</div>
+      <h3>นักศึกษาจบ</h3>
+      <ul>
+        <li>Super Admin ลบชื่อออก</li>
+        <li>เปลี่ยนรหัสสมัคร</li>
+        <li>คนเก่าเข้าไม่ได้อีก</li>
+        <li>ทำเองได้ในหน้าเว็บ</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="icon">🆕</div>
+      <h3>คนใหม่เข้ามา</h3>
+      <ul>
+        <li>ได้รับรหัสสมัครจากอาจารย์</li>
+        <li>สมัคร + ตั้ง PIN เอง</li>
+        <li>ใช้งานได้ทันที</li>
+        <li>ไม่ต้องพึ่งโปรแกรมเมอร์</li>
+      </ul>
+    </div>
+    <div class="card orange">
+      <div class="icon">🔑</div>
+      <h3>ลืม PIN</h3>
+      <ul>
+        <li>มาบอก Super Admin ต่อหน้า</li>
+        <li>Super Admin กดรีเซ็ต</li>
+        <li>ตั้ง PIN ใหม่</li>
+        <li>ยืนยันตัวตนจริงเท่านั้น</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="background:#f0fdf4; border:2px solid #bbf7d0; border-radius:14px; padding:16px 20px; margin-top:24px;">
+    <div style="font-size:0.9rem; color:var(--green-dark); line-height:1.6;">
+      ✅ <strong>ทุกอย่างทำได้เองในหน้าเว็บ</strong> — ไม่ต้องเข้า Supabase, ไม่ต้องเข้า Vercel, ไม่ต้องรอโปรแกรมเมอร์
+    </div>
+  </div>
+
+  <div class="slide-number">6 / 7</div>
+</div>
+
+<!-- ========== SLIDE 7: FAQ ========== -->
+<div class="slide bg-gray">
+  <span class="tag">❓ คำถามที่อาจถูกถาม</span>
+  <h2>FAQ — เผื่ออาจารย์ถาม</h2>
+
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div class="qa-item">
+      <div class="qa-q">ปลอดภัยไหม?</div>
+      <div class="qa-a">ปลอดภัยเพียงพอสำหรับข้อมูลคุณภาพอากาศ (ไม่ใช่ข้อมูลการเงินหรือข้อมูลส่วนบุคคลที่ละเอียดอ่อน) มีการป้องกัน 2 ชั้น แอดมินทั่วไปเข้าตั้งค่าระบบไม่ได้</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">แยกได้ไหมว่าใครทำอะไร?</div>
+      <div class="qa-a">ได้ ทุกการกระทำบันทึกชื่อผู้ทำไว้ในระบบ (Activity Log) ดูย้อนหลังได้ว่าใครเพิ่ม/แก้/ลบอะไร เมื่อไหร่</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">ทำไมไม่แก้ระบบเดิม?</div>
+      <div class="qa-a">แก้มาแล้ว 3 รอบ ปัญหาอยู่ที่ตัว Supabase Auth เอง ซึ่งออกแบบมาสำหรับแอปขนาดใหญ่ (ผู้ใช้หลักพัน-หมื่น) ทีมเรามีแค่ 10-15 คน ใช้ระบบที่เหมาะสมกว่า</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">ถ้ามีคนใช้เยอะขึ้นในอนาคต?</div>
+      <div class="qa-a">ถ้าขยายเป็น 50+ คน สามารถเปลี่ยนกลับไปใช้ระบบ Auth ที่ซับซ้อนกว่าได้ เพราะโครงสร้างฐานข้อมูลไม่ได้เปลี่ยน เปลี่ยนแค่วิธีล็อคอิน</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">สวมรอยกันได้ไหม?</div>
+      <div class="qa-a">ไม่ได้ เพราะแต่ละคนมี PIN ส่วนตัว ถึงรู้ชื่อคนอื่น แต่ไม่รู้ PIN ก็เข้าไม่ได้</div>
+    </div>
+    <div class="qa-item">
+      <div class="qa-q">ข้อมูลเก่าหายไหม?</div>
+      <div class="qa-a">ไม่หาย ฐานข้อมูลเดิมทั้งหมด เปลี่ยนแค่วิธีล็อคอินเข้าหน้าแอดมิน ข้อมูลคุณภาพอากาศ, บ้าน, เซนเซอร์ ทุกอย่างยังอยู่ครบ</div>
+    </div>
+  </div>
+
+  <div class="slide-number">7 / 7</div>
+</div>
+
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let cur = 0;
+  const total = slides.length;
+
+  function show(i) {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+  }
+
+  function go(dir) {
+    cur = Math.max(0, Math.min(total - 1, cur + dir));
+    show(cur);
+  }
+
+  show(0);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') { e.preventDefault(); cur = 0; show(0); }
+    if (e.key === 'End') { e.preventDefault(); cur = total - 1; show(cur); }
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 50) go(diff < 0 ? 1 : -1);
+  });
+</script>
+</body>
+</html>

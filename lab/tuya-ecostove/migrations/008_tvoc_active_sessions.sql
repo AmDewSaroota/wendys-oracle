@@ -1,5 +1,5 @@
 -- ============================================================
--- EcoStove Migration 008: TVOC Active Sessions (Live Tracking)
+-- Biomass Stove Migration 008: TVOC Active Sessions (Live Tracking)
 -- Run in Supabase SQL Editor
 -- Date: 2026-03-07
 -- ============================================================

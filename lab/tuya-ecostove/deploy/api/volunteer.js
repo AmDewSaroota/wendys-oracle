@@ -1,5 +1,5 @@
 /**
- * EcoStove Volunteer API
+ * Biomass Stove Volunteer API
  * Handles volunteer actions: cooking-start (baseline transition), session status
  *
  * Env vars (same as sync.js):
@@ -89,6 +89,7 @@ module.exports = async function handler(req, res) {
       const update = {
         session_status: 'collecting',
         baseline_ended_at: now,
+        baseline_transition: 'manual',
         baseline_avg_pm25: avg(logs, 'pm25_value'),
         baseline_avg_co2: avg(logs, 'co2_value'),
         baseline_avg_temperature: avg(logs, 'temperature'),

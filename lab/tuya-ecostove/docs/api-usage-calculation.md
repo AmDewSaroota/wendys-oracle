@@ -1,4 +1,4 @@
-# Tuya Cloud API — การคำนวณ Usage สำหรับ EcoStove
+# Tuya Cloud API — การคำนวณ Usage สำหรับ Biomass Stove
 
 > เอกสารประกอบการตัดสินใจ
 > สร้าง: 2026-01-26
@@ -109,4 +109,4 @@ API calls/เดือน = (นาทีต่อ session ÷ ช่วงเก
 ---
 
 *สร้างโดย WEnDyS Oracle*
-*สำหรับโปรเจค EcoStove*
+*สำหรับโปรเจค Biomass Stove*

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>EcoStove — อาสาสมัคร</title>
+<title>Biomass Stove — อาสาสมัคร</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -30,10 +30,10 @@
 <header class="bg-emerald-800 text-white px-4 py-4 shadow-lg sticky top-0 z-50">
   <div class="max-w-md mx-auto flex items-center gap-3">
     <div class="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-inner">
-      <img src="logo.png" alt="EcoStove" class="w-9 h-9 object-contain">
+      <img src="logo.png" alt="Biomass Stove" class="w-9 h-9 object-contain">
     </div>
     <div>
-      <h1 class="text-lg font-bold leading-tight">EcoStove อาสาสมัคร</h1>
+      <h1 class="text-lg font-bold leading-tight">Biomass Stove อาสาสมัคร</h1>
       <p class="text-emerald-200 text-xs">ระบบเก็บข้อมูลภาคสนาม</p>
     </div>
     <div id="demo-badge" class="hidden bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-lg">DEMO</div>
@@ -294,10 +294,10 @@ const MIN_BASELINE_READINGS = 2; // ต้องเก็บ baseline อย่�
 // ================================================
 async function init() {
   // Generate or reuse browser ID
-  browserId = localStorage.getItem('ecostove_browser_id');
+  browserId = localStorage.getItem('biomass_stove_browser_id');
   if (!browserId) {
     browserId = crypto.randomUUID ? crypto.randomUUID() : 'b-' + Date.now() + '-' + Math.random().toString(36).slice(2);
-    localStorage.setItem('ecostove_browser_id', browserId);
+    localStorage.setItem('biomass_stove_browser_id', browserId);
   }
 
   // Cleanup lock on page close

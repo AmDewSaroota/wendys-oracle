@@ -1,5 +1,5 @@
 /**
- * EcoStove Sync — Vercel Serverless Function
+ * Biomass Stove Sync — Vercel Serverless Function
  * Fetches sensor data from Tuya Cloud → inserts to Supabase + manages sessions
  *
  * Env vars required (set in Vercel dashboard):
@@ -631,6 +631,7 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
         const update = {
           session_status: 'collecting',
           baseline_ended_at: new Date().toISOString(),
+          baseline_transition: 'auto',
           baseline_avg_pm25: blAvg(baselineLogs, 'pm25_value'),
           baseline_avg_co2: blAvg(baselineLogs, 'co2_value'),
           baseline_avg_temperature: blAvg(baselineLogs, 'temperature'),

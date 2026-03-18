@@ -1,5 +1,5 @@
 -- ============================================================
--- EcoStove Migration 003: Add connectivity to subjects
+-- Biomass Stove Migration 003: Add connectivity to subjects
 -- Run in Supabase SQL Editor
 -- Date: 2026-02-27
 -- ============================================================

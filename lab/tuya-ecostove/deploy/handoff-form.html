@@ -518,33 +518,12 @@
       </table>
     </div>
 
-    <div class="warning-box">
-      <strong>ขั้นตอนการตั้งค่า:</strong>
-      <ol style="margin: 4px 0 0 18px; font-size: 0.85rem;">
-        <li>ผู้พัฒนาจะสร้างบัญชี Super Admin ตามข้อมูลด้านล่าง</li>
-        <li>ตั้งค่าสิทธิ์และรหัสเข้าถึงระบบ</li>
-        <li>ทดสอบว่าเข้าสู่ระบบได้ถูกต้อง</li>
-      </ol>
-    </div>
-
-    <!-- Super Admin -->
-    <div style="margin-bottom: 20px; padding: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;">
-      <div style="font-size: 0.95rem; font-weight: 600; color: #92400e; margin-bottom: 4px;">Super Admin ของโครงการ</div>
-      <p style="font-size: 0.82rem; color: #78716c; margin-bottom: 12px;">ผู้ที่จะมีสิทธิ์สูงสุดในการจัดการระบบ (ควรมี 1 คน)</p>
-
-      <div class="field-label">ชื่อ</div>
-      <input type="text" class="text-input" id="super_admin_name" placeholder="ชื่อที่จะแสดงในระบบ">
-
-      <div class="field-label" style="margin-top: 10px;">อีเมล (ใช้สำหรับเข้าสู่ระบบ)</div>
-      <input type="email" class="text-input" id="super_admin_email" placeholder="อีเมลสำหรับ login เข้า Dashboard">
-
-      <div class="field-label" style="margin-top: 10px;">PIN ส่วนตัว (ตัวเลข 4-6 หลัก)</div>
-      <p style="font-size: 0.78rem; color: #a0aec0; margin-bottom: 4px;">ใช้คู่กับอีเมลเพื่อเข้าสู่ระบบ — เปลี่ยนเองได้ภายหลังในหน้า Dashboard</p>
-      <input type="text" class="text-input" id="super_admin_pin" placeholder="เช่น 1234 หรือ 123456" maxlength="6" inputmode="numeric" style="max-width: 200px;">
+    <div class="why-box" style="background: #fffbeb; border-color: #fde68a; color: #92400e;">
+      <strong>วิธีเริ่มใช้งาน:</strong> สมัครเองได้ที่หน้า Dashboard ด้วย Invite Code ด้านล่าง — ผู้พัฒนาจะเลื่อนขั้นเป็น Super Admin ให้ภายหลัง
     </div>
 
     <!-- Invite Code -->
-    <div style="margin-bottom: 20px; padding-top: 16px; border-top: 1px solid #edf2f7;">
+    <div style="margin-bottom: 20px;">
       <div class="field-label" style="font-size: 0.95rem; font-weight: 600;">รหัสเข้าร่วม (Invite Code)</div>
       <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;">
         ใช้สำหรับให้คนอื่นลงทะเบียนเป็น Admin ด้วยตนเอง — แจกรหัสนี้ให้คนที่ต้องการเข้าถึง Dashboard
@@ -576,15 +555,6 @@
       </div>
     </div>
 
-    <!-- Additional Admins -->
-    <div style="padding-top: 16px; border-top: 1px solid #edf2f7;">
-      <div class="field-label" style="font-size: 0.95rem; font-weight: 600;">แอดมินเพิ่มเติม (ถ้ามี)</div>
-      <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;">
-        ถ้าต้องการเพิ่มแอดมินอื่นตั้งแต่เริ่มต้น กรอกไว้ได้เลย
-        <br>หรือจะให้แต่ละคนลงทะเบียนเองทีหลังด้วย Invite Code ก็ได้
-      </p>
-      <textarea class="text-input" id="additional_admins" placeholder="ชื่อ + อีเมล (บรรทัดละ 1 คน)&#10;เช่น&#10;สมชาย — somchai@gmail.com&#10;นิดดา — nidtha@gmail.com"></textarea>
-    </div>
   </div>
 
   <!-- 5. Sensor Naming -->
@@ -779,22 +749,14 @@ function generateSummary() {
     lines.push('3. รหัสผ่านโครงการ: (ยังไม่ได้เลือก)');
   }
 
-  // 4. Admin
-  const superName = document.getElementById('super_admin_name').value;
-  const superEmail = document.getElementById('super_admin_email').value;
-  const superPin = document.getElementById('super_admin_pin').value;
+  // 4. Invite Code
   const inviteChoice = getRadioValue('invite_choice');
-  lines.push('4. ระบบแอดมิน:');
-  lines.push('   Super Admin: ' + (superName || '(ไม่ได้กรอก)') + ' — ' + (superEmail || '(ไม่ได้กรอก)'));
-  lines.push('   PIN: ' + (superPin || '(ไม่ได้กรอก)'));
   if (inviteChoice === 'keep') {
-    lines.push('   Invite Code: ใช้ ecostove2026');
+    lines.push('4. Invite Code: ใช้ ecostove2026');
   } else if (inviteChoice === 'change') {
-    lines.push('   Invite Code: ' + (document.getElementById('invite_value').value || '(ไม่ได้กรอก)'));
-  }
-  const additionalAdmins = document.getElementById('additional_admins').value.trim();
-  if (additionalAdmins) {
-    lines.push('   แอดมินเพิ่มเติม: ' + additionalAdmins.replace(/\n/g, ', '));
+    lines.push('4. Invite Code: ' + (document.getElementById('invite_value').value || '(ไม่ได้กรอก)'));
+  } else {
+    lines.push('4. Invite Code: (ยังไม่ได้เลือก)');
   }
 
   // 5. Sensor

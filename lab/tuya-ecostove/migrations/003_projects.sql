@@ -1,5 +1,5 @@
 -- ============================================================
--- EcoStove Migration 003: Multi-Project Support
+-- Biomass Stove Migration 003: Multi-Project Support
 -- Run in Supabase SQL Editor
 -- Date: 2026-03-06
 -- ============================================================

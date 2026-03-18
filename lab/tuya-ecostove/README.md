@@ -1,6 +1,6 @@
-# EcoStove - Tuya Air Quality Integration
+# Biomass Stove - Tuya Air Quality Integration
 
-ดึงข้อมูลจากเครื่อง ZN-MT29 มาใส่เว็บ EcoStove
+ดึงข้อมูลจากเครื่อง ZN-MT29 มาใส่เว็บ Biomass Stove
 
 ## วิธีใช้
 
@@ -36,4 +36,4 @@ python fetch_air_quality.py
 
 1. ✅ ดึงข้อมูลจาก Tuya ได้
 2. ⏳ ส่งข้อมูลเข้า Supabase
-3. ⏳ เว็บ EcoStove แสดงผลอัตโนมัติ
+3. ⏳ เว็บ Biomass Stove แสดงผลอัตโนมัติ

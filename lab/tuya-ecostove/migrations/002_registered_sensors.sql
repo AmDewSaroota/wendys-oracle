@@ -1,5 +1,5 @@
 -- ============================================================
--- EcoStove Migration 002: Registered Sensors
+-- Biomass Stove Migration 002: Registered Sensors
 -- Run in Supabase SQL Editor
 -- Date: 2026-02-27
 -- ============================================================

@@ -1,5 +1,5 @@
 /**
- * EcoStove Sensor Monitor v2 — Session-Based Collection
+ * Biomass Stove Sensor Monitor v2 — Session-Based Collection
  *
  * Features:
  * - Per-device session state machine (idle → baseline → collecting → cooldown)
@@ -826,7 +826,7 @@ const HTML_PAGE = `<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EcoStove Sensor Monitor v2</title>
+  <title>Biomass Stove Sensor Monitor v2</title>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -916,7 +916,7 @@ const HTML_PAGE = `<!DOCTYPE html>
 <body>
   <div class="container">
     <header>
-      <h1>EcoStove Sensor Monitor v2</h1>
+      <h1>Biomass Stove Sensor Monitor v2</h1>
       <p>Session-based collection — baseline + collection + cooldown</p>
     </header>
 
@@ -1079,7 +1079,7 @@ const HTML_PAGE = `<!DOCTYPE html>
 // ===== Start Server =====
 server.listen(PORT, async () => {
   console.log('=========================================');
-  console.log('  EcoStove Sensor Monitor v2');
+  console.log('  Biomass Stove Sensor Monitor v2');
   console.log(`  http://localhost:${PORT}`);
   console.log(`  Devices: ${DEVICES.map(d => d.name).join(', ')}`);
   console.log(`  Session: ${SC.baselineMinutes || 10}m baseline + ${SC.collectionMinutes || 120}m collection`);

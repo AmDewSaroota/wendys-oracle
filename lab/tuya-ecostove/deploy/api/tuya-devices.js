@@ -1,5 +1,5 @@
 /**
- * EcoStove API — List Tuya Cloud Devices
+ * Biomass Stove API — List Tuya Cloud Devices
  * Admin-only endpoint: discovers all sensors from Tuya Cloud account
  *
  * Auth: PIN via X-Admin-PIN header

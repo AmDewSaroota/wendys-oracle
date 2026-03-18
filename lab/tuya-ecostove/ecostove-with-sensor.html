@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoStove - โครงการนวัตกรรมเพื่ออากาศสะอาด</title>
+    <title>Biomass Stove - โครงการนวัตกรรมเพื่ออากาศสะอาด</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -295,7 +295,7 @@
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-lg">✨</div>
                         <div>
-                            <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">ระยะเวลา EcoStove</p>
+                            <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">ระยะเวลาเตาประหยัด</p>
                             <h3 id="stat-duration-eco" class="text-lg font-bold text-navy">-- วัน</h3>
                         </div>
                     </div>
@@ -363,25 +363,25 @@
                 <!-- Research Charts -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-red-300">
-                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่ม PM (เตาเดิม vs EcoStove)</h4>
+                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่ม PM (เตาเดิม vs เตาประหยัด)</h4>
                         <div class="h-[200px]"><canvas id="pmGroupChart"></canvas></div>
                     </div>
                     <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-300">
-                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่มก๊าซ (เตาเดิม vs EcoStove)</h4>
+                        <h4 class="font-bold text-sm mb-4 text-navy">กลุ่มก๊าซ (เตาเดิม vs เตาประหยัด)</h4>
                         <div class="h-[200px]"><canvas id="gasGroupChart"></canvas></div>
                     </div>
                 </div>
 
                 <!-- Reduction Summary Table -->
                 <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-400">
-                    <h4 class="font-bold text-sm mb-4 text-navy">📊 สรุป % การลดมลพิษ (EcoStove vs เตาเดิม)</h4>
+                    <h4 class="font-bold text-sm mb-4 text-navy">📊 สรุป % การลดมลพิษ (เตาประหยัด vs เตาเดิม)</h4>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead class="bg-slate-50">
                                 <tr>
                                     <th class="p-3 text-left font-bold text-navy">พารามิเตอร์</th>
                                     <th class="p-3 text-center font-bold text-navy">เตาเดิม (เฉลี่ย)</th>
-                                    <th class="p-3 text-center font-bold text-navy">EcoStove (เฉลี่ย)</th>
+                                    <th class="p-3 text-center font-bold text-navy">เตาประหยัด (เฉลี่ย)</th>
                                     <th class="p-3 text-center font-bold text-navy">% ลดลง</th>
                                 </tr>
                             </thead>

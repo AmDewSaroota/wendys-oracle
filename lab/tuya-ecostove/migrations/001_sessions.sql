@@ -1,5 +1,5 @@
 -- ============================================================
--- EcoStove Migration 001: Session Management Tables
+-- Biomass Stove Migration 001: Session Management Tables
 -- Run in Supabase SQL Editor
 -- Date: 2026-02-26
 -- ============================================================
