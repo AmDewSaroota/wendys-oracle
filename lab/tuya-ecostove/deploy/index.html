@@ -3691,7 +3691,7 @@
                 }
 
                 const [devRes, volRes, subRes, projRes, spRes] = await Promise.all([
-                    supabaseClient.from('devices').select('*, subjects(*)').order('updated_at', { ascending: false }),
+                    supabaseClient.from('devices').select('*, subjects(*)').order('name', { ascending: true }),
                     supabaseClient.from('volunteers').select('*').order('updated_at', { ascending: false }),
                     supabaseClient.from('subjects').select('*, volunteers(*)').order('updated_at', { ascending: false }),
                     supabaseClient.from('projects').select('*').eq('status', 'active'),
