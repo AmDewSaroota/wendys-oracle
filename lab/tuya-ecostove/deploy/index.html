@@ -222,10 +222,12 @@
                         <span id="hero-readings">📊 -- readings</span>
                         <span id="hero-updated">🕐 --</span>
                     </div>
+                    <p id="hero-date-range" class="text-center text-emerald-200/60 text-[10px] mt-2"></p>
                 </div>
             </div>
 
             <!-- 2. Big Number Cards -->
+            <p id="basic-range-label" class="text-[11px] text-slate-400 mb-1"></p>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
                     <div class="ghost-icon">🌫️</div>
@@ -1075,6 +1077,7 @@
             // Before/After
             'hero.project.label': { th: 'โครงการ', en: 'Project' },
             'hero.project.name': { th: 'นวัตกรรมเพื่ออากาศสะอาด', en: 'Clean Air Innovation' },
+            'basic.range': { th: '📊 ค่าเฉลี่ยจากข้อมูล {0} — {1} ({2} วัน)', en: '📊 Average from {0} — {1} ({2} days)' },
             'compare.title': { th: 'เปรียบเทียบ: เตาดั้งเดิม vs เตาชีวมวล', en: 'Comparison: Traditional vs Biomass' },
             'compare.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
             'compare.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
@@ -2769,7 +2772,27 @@
         }
 
         // ==================== BASIC VIEW ====================
+        function getDataDateRange(data) {
+            if (!data || !data.length) return null;
+            const dates = data.map(d => d.recorded_at).filter(Boolean).sort();
+            if (!dates.length) return null;
+            const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
+            const opts = { day: 'numeric', month: 'short', year: 'numeric' };
+            const from = new Date(dates[0]).toLocaleDateString(locale, opts);
+            const to = new Date(dates[dates.length - 1]).toLocaleDateString(locale, opts);
+            const days = Math.ceil((new Date(dates[dates.length - 1]) - new Date(dates[0])) / 86400000);
+            return { from, to, days };
+        }
         function updateBasicView() {
+            // Show data date range on basic view
+            const range = getDataDateRange(allDataWithPending);
+            const rangeEl = document.getElementById('basic-range-label');
+            const heroRangeEl = document.getElementById('hero-date-range');
+            if (range) {
+                const label = t('basic.range', range.from, range.to, range.days);
+                if (rangeEl) rangeEl.textContent = label;
+                if (heroRangeEl) heroRangeEl.textContent = label;
+            }
             updateHeroAqi();
             updateBigNumbers();
             updateBeforeAfter();
