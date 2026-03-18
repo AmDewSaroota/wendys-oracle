@@ -759,9 +759,14 @@
                         <h3 class="text-2xl font-bold text-navy">รออนุมัติข้อมูล</h3>
                         <p class="text-slate-500 text-sm" id="approval-summary-text">กำลังโหลด...</p>
                     </div>
-                    <button onclick="batchApproveAll()" id="btn-approve-all" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition-all hidden">
-                        ✓ อนุมัติทั้งหมด
-                    </button>
+                    <div class="flex gap-3">
+                        <button onclick="batchRejectAll()" id="btn-reject-all" class="bg-red-100 text-red-600 px-6 py-3 rounded-2xl font-bold shadow-sm hover:bg-red-200 transition-all hidden">
+                            ✕ ไม่อนุมัติทั้งหมด
+                        </button>
+                        <button onclick="batchApproveAll()" id="btn-approve-all" class="bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-emerald-700 transition-all hidden">
+                            ✓ อนุมัติทั้งหมด
+                        </button>
+                    </div>
                 </div>
                 <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
@@ -3499,6 +3504,7 @@
                 const container = document.getElementById('pending-sessions-list');
                 const summaryEl = document.getElementById('approval-summary-text');
                 const btnAll = document.getElementById('btn-approve-all');
+                const btnRejectAll = document.getElementById('btn-reject-all');
 
                 const totalPending = (data || []).length;
                 const hasAny = sessions.length > 0 || manualData.length > 0;
@@ -3530,12 +3536,14 @@
                     container.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400 text-lg">' + t('approval.no.data') + '</div>';
                     summaryEl.textContent = 'ไม่มีข้อมูลรออนุมัติ';
                     btnAll.classList.add('hidden');
+                    if (btnRejectAll) btnRejectAll.classList.add('hidden');
                 } else {
                     const parts = [];
                     if (sensorData.length > 0) parts.push(`${sensorData.length} รายการเซนเซอร์ (${sessions.length} เซสชัน)`);
                     if (manualData.length > 0) parts.push(`${manualData.length} รายการบันทึกด้วยมือ (${manualSessions.length} เซสชัน)`);
                     summaryEl.textContent = parts.join(' + ');
                     btnAll.classList.remove('hidden');
+                    if (btnRejectAll) btnRejectAll.classList.remove('hidden');
 
                     // SVG sparkline for TVOC readings
                     function tvocSparkline(values, times) {
@@ -3823,6 +3831,28 @@
             } catch (e) {
                 showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
             } finally { hideLoading(); }
+        }
+
+        async function batchRejectAll() {
+            const { data: pendingLogs } = await supabaseClient
+                .from('pollution_logs')
+                .select('id')
+                .eq('status', 'pending');
+            if (!pendingLogs || pendingLogs.length === 0) {
+                showToast('ไม่มีข้อมูลรออนุมัติ'); return;
+            }
+            showConfirm('ไม่อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ?\n\nข้อมูลจะถูกทำเครื่องหมาย "ไม่อนุมัติ" และจะไม่แสดงในกราฟ', async () => {
+                showLoading('กำลังดำเนินการ...');
+                try {
+                    const ids = pendingLogs.map(d => d.id);
+                    await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).in('id', ids);
+                    logActivity('ไม่อนุมัติทั้งหมด', pendingLogs.length + ' รายการ');
+                    await Promise.all([loadAdminData(), loadData()]);
+                    showToast('ไม่อนุมัติทั้งหมด ' + pendingLogs.length + ' รายการ');
+                } catch (e) {
+                    showToast('เกิดข้อผิดพลาด: ' + e.message, 'error');
+                } finally { hideLoading(); }
+            });
         }
 
         function renderDevicesList() {
