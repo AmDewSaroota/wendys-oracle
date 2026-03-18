@@ -580,20 +580,20 @@
 
     <div class="sticker-preview">
       <div class="sticker">
-        <div class="sticker-code">ES-01</div>
+        <div class="sticker-code">BS-01</div>
         <div class="sticker-sub">BiomassStove</div>
       </div>
       <div class="sticker">
-        <div class="sticker-code">ES-02</div>
+        <div class="sticker-code">BS-02</div>
         <div class="sticker-sub">BiomassStove</div>
       </div>
       <div class="sticker">
-        <div class="sticker-code">ES-03</div>
+        <div class="sticker-code">BS-03</div>
         <div class="sticker-sub">BiomassStove</div>
       </div>
       <div class="sticker" style="opacity: 0.5;">
         <div class="sticker-code">...</div>
-        <div class="sticker-sub">ถึง ES-10</div>
+        <div class="sticker-sub">ถึง BS-10</div>
       </div>
     </div>
 
@@ -601,8 +601,8 @@
       <label class="option-label">
         <input type="radio" name="sensor_choice" value="es" onchange="toggleField('sensor-custom', false)">
         <div class="option-content">
-          <div class="option-title">ใช้ ES-01 ถึง ES-10</div>
-          <div class="option-desc">ES = Eco Sensor (สั้น จำง่าย)</div>
+          <div class="option-title">ใช้ BS-01 ถึง BS-10</div>
+          <div class="option-desc">BS = BiomassStove (สั้น จำง่าย)</div>
         </div>
       </label>
 
@@ -773,7 +773,7 @@ function generateSummary() {
   // 5. Sensor
   const sensorChoice = getRadioValue('sensor_choice');
   if (sensorChoice === 'es') {
-    lines.push('5. ชื่อเซนเซอร์: ES-01 ถึง ES-10');
+    lines.push('5. ชื่อเซนเซอร์: BS-01 ถึง BS-10');
   } else if (sensorChoice === 'number_only') {
     lines.push('5. ชื่อเซนเซอร์: 01 ถึง 10 (ตัวเลขอย่างเดียว)');
   } else if (sensorChoice === 'custom') {
