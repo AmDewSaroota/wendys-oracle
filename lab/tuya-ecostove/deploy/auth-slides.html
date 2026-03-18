@@ -514,41 +514,46 @@
     <table>
       <thead>
         <tr>
-          <th style="width: 160px;">สิทธิ์</th>
-          <th>Super Admin</th>
-          <th>Admin</th>
+          <th>สิทธิ์</th>
+          <th style="width: 100px; text-align: center;">Super Admin</th>
+          <th style="width: 100px; text-align: center;">Admin</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td style="font-weight: 500;">ดูข้อมูล / กราฟ</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
         </tr>
         <tr>
           <td style="font-weight: 500;">จัดการเซนเซอร์</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
         </tr>
         <tr>
           <td style="font-weight: 500;">Export ข้อมูล</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
         </tr>
         <tr>
           <td style="font-weight: 500;">ลบข้อมูล</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
-          <td style="color: var(--red);">ไม่ได้</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--red); text-align: center;">✗</td>
         </tr>
         <tr>
-          <td style="font-weight: 500;">เลื่อนขั้น / ลดขั้น<br>แอดมินคนอื่น</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
-          <td style="color: var(--red);">ไม่ได้</td>
+          <td style="font-weight: 500;">เลื่อนขั้น / ลดขั้น / ลบ แอดมินคนอื่น</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--red); text-align: center;">✗</td>
         </tr>
         <tr>
-          <td style="font-weight: 500;">รีเซ็ต PIN / ลบ<br>แอดมินคนอื่น</td>
-          <td style="color: var(--green); font-weight: 600;">ได้</td>
-          <td style="color: var(--red);">ไม่ได้</td>
+          <td style="font-weight: 500;">รีเซ็ต PIN แอดมินคนอื่น</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--red); text-align: center;">✗</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 500;">เปลี่ยน Invite Code</td>
+          <td style="color: var(--green); font-weight: 600; text-align: center;">✓</td>
+          <td style="color: var(--red); text-align: center;">✗</td>
         </tr>
       </tbody>
     </table>
@@ -949,6 +954,11 @@
         </tr>
         <tr>
           <td style="font-weight: 500;">จัดการแอดมินคนอื่น</td>
+          <td>ต้อง login เป็น Super Admin</td>
+          <td>Super Admin เท่านั้น</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 500;">เปลี่ยน Invite Code</td>
           <td>ต้อง login เป็น Super Admin</td>
           <td>Super Admin เท่านั้น</td>
         </tr>
