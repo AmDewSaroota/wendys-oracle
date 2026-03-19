@@ -502,7 +502,7 @@
     BiomassStove — นวัตกรรมเพื่ออากาศสะอาด<br>
     มีนาคม 2569
   </div>
-  <div class="slide-number">1 / 11</div>
+  <div class="slide-number">1 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 2: ภาพรวมระบบ Auth ==================== -->
@@ -563,7 +563,7 @@
     Super Admin จัดการตัวเองไม่ได้ (ป้องกันการลดขั้น/ลบตัวเองโดยไม่ตั้งใจ) — ต้องให้ Super Admin คนอื่นจัดการ
   </div>
 
-  <div class="slide-number">2 / 11</div>
+  <div class="slide-number">2 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 3: รหัส 3 ประเภท ==================== -->
@@ -604,7 +604,7 @@
     </div>
   </div>
 
-  <div class="slide-number">3 / 11</div>
+  <div class="slide-number">3 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 4: Flow — Register ==================== -->
@@ -657,7 +657,7 @@
     </div>
   </div>
 
-  <div class="slide-number">4 / 11</div>
+  <div class="slide-number">4 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 5: Flow — Login ==================== -->
@@ -709,7 +709,7 @@
     </div>
   </div>
 
-  <div class="slide-number">5 / 11</div>
+  <div class="slide-number">5 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 6: Flow — Forgot PIN ==================== -->
@@ -768,7 +768,7 @@
     </div>
   </div>
 
-  <div class="slide-number">6 / 11</div>
+  <div class="slide-number">6 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 7: Recovery Code Management ==================== -->
@@ -818,7 +818,7 @@
     </div>
   </div>
 
-  <div class="slide-number">7 / 11</div>
+  <div class="slide-number">7 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 8: Super Admin Management ==================== -->
@@ -909,7 +909,7 @@
     </div>
   </div>
 
-  <div class="slide-number">8 / 11</div>
+  <div class="slide-number">8 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 9: Summary Table ==================== -->
@@ -971,7 +971,7 @@
     ส่งสรุปวันละ 2 รอบ (เที่ยง + 2 ทุ่ม) · แผนฟรี 200 ข้อความ/เดือน · <strong>รับแจ้งเตือนได้สูงสุด 3 คน</strong>
   </div>
 
-  <div class="slide-number">9 / 11</div>
+  <div class="slide-number">9 / 13</div>
 </div>
 
 <!-- ==================== SLIDE 10: Questions ==================== -->
@@ -1007,6 +1007,10 @@
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
         <strong>ชื่อเซนเซอร์</strong> — BS-01 ถึง BS-10 หรือต้องการรูปแบบอื่น?
         <span class="q-sub" style="color: rgba(255,255,255,0.6);">แสดงบนสติกเกอร์แปะเซนเซอร์ และในระบบ Dashboard</span>
+        <div style="margin-top: 12px; text-align: center;">
+          <img src="sticker-mockup.png" alt="ตัวอย่างสติกเกอร์ BS-001" style="max-width: 220px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2);">
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 6px;">ตัวอย่างสติกเกอร์ติดเซนเซอร์</div>
+        </div>
       </li>
       <li style="color: #fff; border-bottom-color: rgba(255,255,255,0.1);">
         <strong>โดเมน (ที่อยู่เว็บไซต์)</strong> — ใช้ .vercel.app (ฟรี) หรือ .org (~350-500 บาท/ปี)?
@@ -1022,10 +1026,103 @@
     <div style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">กรอกข้อมูลในฟอร์ม แล้วกดสร้างสรุปเพื่อส่งให้ผู้พัฒนา</div>
   </div>
 
-  <div class="slide-number">10 / 11</div>
+  <div class="slide-number">10 / 13</div>
 </div>
 
-<!-- ==================== SLIDE 11: Next Steps ==================== -->
+<!-- ==================== SLIDE 11: Updates — Rename + Admin ==================== -->
+<div class="slide bg-white">
+  <span class="tag">อัปเดทระบบ</span>
+  <h2>สิ่งที่อัปเดท (18 มี.ค.)</h2>
+
+  <div class="card-grid cols-2">
+    <div class="card">
+      <h3>เปลี่ยนชื่อ EcoStove → BiomassStove</h3>
+      <ul>
+        <li>รหัสเซนเซอร์เปลี่ยนจาก ES → <strong>BS</strong> (BS-01 ถึง BS-10)</li>
+        <li>เปลี่ยนทั้ง Dashboard, สไลด์, แบบฟอร์มส่งมอบ</li>
+        <li>URL: <code style="font-size:0.8rem; background:var(--green-50); padding:2px 6px; border-radius:4px;">biomassstove.vercel.app</code></li>
+      </ul>
+    </div>
+
+    <div class="card orange">
+      <h3>เปลี่ยน Invite Code + ปุ่มไม่อนุมัติทั้งหมด</h3>
+      <ul>
+        <li>Super Admin <strong>เปลี่ยน Invite Code</strong> ได้จาก Dashboard โดยตรง</li>
+        <li>ปุ่ม "ไม่อนุมัติทั้งหมด" → ปฏิเสธ session ที่รอตรวจทีเดียว</li>
+        <li>มีหน้าต่างยืนยันก่อนดำเนินการ</li>
+        <li>บันทึกประวัติกิจกรรมอัตโนมัติ</li>
+      </ul>
+    </div>
+
+    <div class="card blue">
+      <h3>ช่วงเก็บข้อมูลแต่ละบ้าน</h3>
+      <ul>
+        <li>กำหนดได้ว่าบ้านไหนเก็บช่วงไหน (เตาดั้งเดิม / เตาชีวมวล)</li>
+        <li>ตั้งค่าทีละบ้าน หรือ <strong>ตั้งค่าหลายบ้านพร้อมกัน</strong> (Batch)</li>
+        <li>ระบบดึงประเภทเตาจากช่วงเวลาโดยอัตโนมัติ</li>
+      </ul>
+    </div>
+
+    <div class="card purple">
+      <h3>ประวัติกิจกรรม (Activity Log)</h3>
+      <ul>
+        <li>ค้นหาได้ตามวันที่ + คำค้น</li>
+        <li>บันทึกทุกการกระทำ — อนุมัติ, ปฏิเสธ, แก้ไข, ลบ</li>
+        <li>ทุก Admin เห็นประวัติร่วมกัน</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-number">11 / 13</div>
+</div>
+
+<!-- ==================== SLIDE 12: Updates — Session + Devices ==================== -->
+<div class="slide bg-light">
+  <span class="tag">อัปเดทระบบ</span>
+  <h2>Session ทนทานขึ้น + จัดการอุปกรณ์</h2>
+
+  <div class="card-grid cols-2">
+    <div class="card" style="grid-column: span 2;">
+      <h3>Session ทนทานขึ้น — ไม่เสียโควต้าเมื่อ WiFi หลุด</h3>
+      <div style="display:flex; gap:20px; align-items:stretch; margin-top:8px;">
+        <div style="flex:1; background:#fef2f2; border-radius:12px; padding:16px;">
+          <div style="font-weight:600; color:var(--red); margin-bottom:6px;">เดิม</div>
+          <p style="font-size:0.85rem; color:var(--gray-700); line-height:1.6;">Sensor หลุด > 30 นาที → <strong style="color:var(--red);">ปิด session ทิ้ง</strong> → เข้า cooldown 5 ชม. → เสียโควต้า 1 ใน 2</p>
+        </div>
+        <div style="flex:1; background:var(--green-50); border-radius:12px; padding:16px;">
+          <div style="font-weight:600; color:var(--green-dark); margin-bottom:6px;">ใหม่</div>
+          <p style="font-size:0.85rem; color:var(--gray-700); line-height:1.6;">Session เปิด <strong style="color:var(--green-dark);">ครบ 130 นาทีเสมอ</strong> → sensor หลุดแล้วกลับมาก็เก็บต่อได้ใน session เดิม</p>
+        </div>
+      </div>
+      <div style="margin-top:12px; background:var(--gray-50); border-radius:10px; padding:12px 16px; font-size:0.85rem; color:var(--gray-500);">
+        อาสาแค่เปิดเซนเซอร์ + hotspot → รอ 130 นาที → ปิด — ไม่ต้องกังวลเรื่อง WiFi หลุด
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>จัดการอุปกรณ์</h3>
+      <ul>
+        <li><strong>เพิ่ม</strong>อุปกรณ์ใหม่เข้าระบบได้</li>
+        <li><strong>ลบ</strong>อุปกรณ์ที่ไม่ใช้แล้วได้</li>
+        <li>ฟิลเตอร์: ทั้งหมด / ออนไลน์ / ออฟไลน์ / ยังไม่จับคู่</li>
+        <li>เรียงตามชื่อเซนเซอร์</li>
+      </ul>
+    </div>
+
+    <div class="card yellow">
+      <h3>แปลภาษา (i18n)</h3>
+      <ul>
+        <li>Dashboard รองรับ <strong>ไทย + อังกฤษ</strong> ครบทุกหน้า</li>
+        <li>สลับภาษาได้จากปุ่มบน Dashboard</li>
+        <li>รองรับการเพิ่มภาษาอื่นในอนาคต</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slide-number">12 / 13</div>
+</div>
+
+<!-- ==================== SLIDE 13: Next Steps ==================== -->
 <div class="slide bg-gradient">
   <span class="tag">ขั้นตอนถัดไป</span>
   <h2>Next Steps</h2>
@@ -1059,7 +1156,7 @@
     </div>
   </div>
 
-  <div class="slide-number">11 / 11</div>
+  <div class="slide-number">13 / 13</div>
 </div>
 
 </div><!-- /deck -->

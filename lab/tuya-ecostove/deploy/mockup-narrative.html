@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoStove Dashboard — Mockup: Full Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { font-family: 'Chakra Petch', sans-serif; }
+        .info-btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid currentColor; color: inherit; font-size: 10px; font-weight: 600; font-style: italic; line-height: 1; vertical-align: middle; opacity: 0.35; transition: opacity 0.15s; margin-left: 2px; }
+        .info-btn:hover { opacity: 0.7; }
+        .info-popup { position: fixed; z-index: 9999; max-width: 320px; background: white; border-radius: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.18); padding: 16px 20px; font-size: 13px; line-height: 1.6; color: #334155; border: 1px solid #e2e8f0; animation: popIn 0.15s ease-out; }
+        .info-popup h5 { font-weight: 700; font-size: 13px; margin-bottom: 6px; color: #1e293b; }
+        .info-popup .close-pop { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #94a3b8; font-size: 16px; }
+        .info-popup .close-pop:hover { color: #475569; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .info-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9998; }
+        .card-styled { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .nav-active { color: white; font-weight: 700; border-bottom: 3px solid #fbbf24; padding-bottom: 4px; }
+        .methodology-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; }
+        .collapsible-body { display: none; }
+        .collapsible-body.open { display: block; }
+        #map, #map-deep { height: 350px; border-radius: 1.5rem; }
+        .scenario-bar { position: sticky; top: 80px; z-index: 40; background: #fef3c7; border-bottom: 2px solid #f59e0b; padding: 8px 16px; display: none; }
+        .scenario-bar.active { display: flex; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-slate-50 to-slate-100 text-gray-800 min-h-screen">
+
+    <!-- NAV BAR -->
+    <nav class="sticky top-0 z-50 shadow-md" style="background-color: #064e3b;">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-inner text-2xl">🌿</div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-white leading-tight">Biomass Stove: <span class="text-[#c9a96e]">Alternative Energy</span></span>
+                    <span class="text-[13px] text-[#c9a96e]/80 font-medium -mt-0.5 tracking-wide">พลังงานทางเลือกเพื่อยกระดับคุณภาพชีวิต</span>
+                </div>
+            </div>
+            <div class="hidden md:flex space-x-10">
+                <button onclick="showTab('basic')" id="nav-basic" class="nav-active py-2">ข้อมูลเบื้องต้น</button>
+                <button onclick="showTab('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2">ข้อมูลเชิงลึก</button>
+                <span class="text-emerald-200/70 font-medium py-2">📱 อาสาสมัคร</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SCENARIO SWITCHER -->
+    <div class="bg-purple-100 border-b-2 border-purple-300 px-6 py-2 flex items-center justify-center gap-3 flex-wrap text-sm">
+        <span class="font-bold text-purple-700">Mockup สถานการณ์:</span>
+        <button onclick="setScenario('normal')" id="sc-normal" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-600 text-white">ปกติ (ลดได้)</button>
+        <button onclick="setScenario('no-eco')" id="sc-no-eco" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-200 text-purple-700">ยังไม่มีเตาใหม่</button>
+        <button onclick="setScenario('eco-fail')" id="sc-eco-fail" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-200 text-purple-700">เตาใหม่ไม่ลดมลพิษ</button>
+    </div>
+
+    <!-- SCENARIO ALERT BARS -->
+    <div id="scenario-bar-no-eco" class="scenario-bar items-center justify-center gap-2 text-sm text-amber-800">
+        ⏳ <b>สถานการณ์:</b> ยังอยู่ในระยะเก็บข้อมูลเตาดั้งเดิม — ยังไม่มีข้อมูลเตาชีวมวลเพื่อเปรียบเทียบ
+    </div>
+    <div id="scenario-bar-eco-fail" class="scenario-bar items-center justify-center gap-2 text-sm text-red-800" style="background:#fee2e2; border-color:#ef4444;">
+        ⚠️ <b>สถานการณ์:</b> เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย
+    </div>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-10">
+
+    <!-- ============================================================ -->
+    <!-- BASIC VIEW -->
+    <!-- ============================================================ -->
+    <section id="view-basic" class="space-y-8">
+
+        <!-- HERO: Normal -->
+        <div id="hero-normal" class="rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-gradient-to-br from-emerald-700 via-teal-600 to-emerald-800">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="relative z-10 p-6 md:p-8">
+                <div class="text-center">
+                    <p class="text-emerald-200 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                    <div class="mt-4 mb-2">
+                        <span class="text-6xl md:text-7xl font-bold text-white" id="hero-pct">62</span>
+                        <span class="text-4xl font-bold text-emerald-200">%</span>
+                    </div>
+                    <p class="text-emerald-100 text-lg font-medium" id="hero-label">อากาศสะอาดขึ้นขณะหุงต้ม</p>
+                    <p class="text-emerald-200/70 text-sm mt-1">เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง</p>
+                    <div class="max-w-md mx-auto mt-6 text-left">
+                        <div class="mb-3">
+                            <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span>🪵 เตาดั้งเดิม</span><span class="font-bold" id="hero-old-val">85.7 µg/m³</span></div>
+                            <div class="flex h-6 rounded-full overflow-hidden" id="hero-old-bar">
+                                <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Baseline</div>
+                                <div class="bg-orange-400/80 flex items-center justify-center text-[9px] text-white font-bold" style="width:85%">มลพิษจากเตา</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span>✨ เตาชีวมวล</span><span class="font-bold" id="hero-eco-val">32.4 µg/m³</span></div>
+                            <div class="flex h-6 rounded-full overflow-hidden" id="hero-eco-bar">
+                                <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Baseline</div>
+                                <div class="bg-emerald-400 flex items-center justify-center text-[9px] text-white font-bold" style="width:30%">มลพิษจากเตา</div>
+                                <div class="bg-white/10 flex items-center justify-center text-[9px] text-emerald-300/50" style="width:55%">↓ ลดได้</div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ')">i</span> วิธีวัด · ข้อมูล 60 วัน · 10 ครัวเรือน</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HERO: No eco -->
+        <div id="hero-no-eco" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-slate-600 via-slate-500 to-slate-700">
+            <div class="relative z-10 p-6 md:p-8 text-center">
+                <p class="text-slate-300 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                <div class="text-4xl mt-4 mb-2">📊</div>
+                <p class="text-2xl font-bold text-white">กำลังเก็บข้อมูลเตาดั้งเดิม</p>
+                <p class="text-slate-300 text-sm mt-2">สร้างฐานข้อมูลอ้างอิง (Baseline) เพื่อเปรียบเทียบกับเตาชีวมวลในระยะถัดไป</p>
+                <div class="max-w-sm mx-auto mt-6">
+                    <div class="flex justify-between text-xs text-slate-300 mb-1"><span>ระยะที่ 1: เตาดั้งเดิม</span><span>เดือนที่ 2 / 3</span></div>
+                    <div class="w-full bg-slate-800 rounded-full h-3"><div class="h-3 rounded-full bg-orange-400" style="width:67%"></div></div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-1"><span>18 ม.ค. 2569</span><span>→ 18 เม.ย. 2569</span></div>
+                </div>
+                <div class="max-w-xs mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-4">
+                    <p class="text-xs font-bold text-orange-200">🪵 เตาดั้งเดิม — ค่าเฉลี่ย Baseline</p>
+                    <p class="text-3xl font-bold text-white mt-2">85.7 <span class="text-lg text-slate-300">µg/m³</span></p>
+                    <p class="text-[10px] text-slate-300 mt-1">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Baseline)</p>
+                </div>
+                <div class="flex justify-center gap-6 mt-4 text-slate-300 text-xs"><span>📡 5 ครัวเรือน</span><span>📊 2,450 readings</span></div>
+            </div>
+        </div>
+
+        <!-- HERO: Eco fail -->
+        <div id="hero-eco-fail" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-amber-700 via-orange-600 to-red-700">
+            <div class="relative z-10 p-6 md:p-8 text-center">
+                <p class="text-amber-200 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                <div class="mt-4 mb-2"><span class="text-5xl md:text-6xl font-bold text-white">↑ 8</span><span class="text-3xl font-bold text-amber-200">%</span></div>
+                <p class="text-amber-100 text-lg font-medium">มลพิษเพิ่มขึ้นขณะหุงต้ม</p>
+                <p class="text-amber-200/70 text-sm mt-1">เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย</p>
+                <div class="max-w-md mx-auto mt-4 bg-white/15 backdrop-blur rounded-xl p-3">
+                    <p class="text-amber-100 text-[11px] text-left">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
+                </div>
+                <div class="flex justify-center gap-6 mt-4 text-amber-100 text-xs"><span>📡 10 ครัวเรือน</span><span>📊 4,800 readings</span></div>
+            </div>
+        </div>
+
+        <!-- ======== BASIC CONTENT: NORMAL ======== -->
+        <div id="basic-content-normal" class="space-y-8">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <p class="text-[11px] text-slate-400">📊 ข้อมูล 18 ม.ค. — 18 มี.ค. 2569 (60 วัน)</p>
+                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Baseline</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
+                        <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')">i</span></p>
+                        <div class="text-3xl font-bold text-emerald-600">↓ 62%</div>
+                        <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-emerald-600">32.4</b> · เตาเก่า <span class="text-gray-400">85.7</span> µg/m³</p>
+                        <div class="mt-2"><span class="text-[9px] px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 font-medium">WHO IT-2</span></div>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
+                        <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,'CO2 คืออะไร?','คาร์บอนไดออกไซด์ — ก๊าซที่เกิดจากการเผาไหม้สมบูรณ์ ใช้เป็นตัวชี้วัดปริมาณการเผาไหม้โดยรวม\n\nอากาศปกติ: ~400 ppm\nขณะหุงต้ม: 800–3,000 ppm\n\nยิ่ง CO2 สูง = เผาไหม้มาก')">i</span></p>
+                        <div class="text-3xl font-bold text-emerald-600">↓ 48%</div>
+                        <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-emerald-600">520</b> · เตาเก่า <span class="text-gray-400">1,002</span> ppm</p>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
+                        <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ (Carbon Monoxide) — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nอันตราย: สูดดมมากทำให้เวียนศีรษะ หมดสติ ถึงเสียชีวิต\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')">i</span></p>
+                        <div class="text-3xl font-bold text-emerald-600">↓ 61%</div>
+                        <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-emerald-600">9.8</b> · เตาเก่า <span class="text-gray-400">25.3</span> ppm</p>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')">i</span></p>
+                        <div class="flex justify-center gap-4 mt-2">
+                            <div><span class="text-3xl font-bold text-gray-800">34.2</span><span class="text-gray-400">°C</span></div>
+                            <span class="text-gray-300 text-xl">/</span>
+                            <div><span class="text-3xl font-bold text-gray-800">67</span><span class="text-gray-400">%</span></div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="basicPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="basicCo2Chart"></canvas></div></div>
+            </div>
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
+                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">ขณะหุงต้ม · หลังหัก Baseline</span></div>
+                <div class="overflow-x-auto"><table class="w-full text-[12px]">
+                    <thead><tr class="text-[10px] text-gray-400 border-b"><th class="text-left py-2">ครัวเรือน</th><th class="text-center py-2">เตา</th><th class="text-right py-2">PM2.5</th><th class="text-right py-2">CO2</th><th class="text-right py-2">เวลา</th></tr></thead>
+                    <tbody>
+                        <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 01</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">28.3</td><td class="text-right">480</td><td class="text-right text-gray-400">14:32</td></tr>
+                        <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 02</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">35.1</td><td class="text-right">552</td><td class="text-right text-gray-400">14:28</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 06</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">82.4</td><td class="text-right text-gray-500">980</td><td class="text-right text-gray-400">14:30</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 07</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">91.2</td><td class="text-right text-gray-500">1,043</td><td class="text-right text-gray-400">14:25</td></tr>
+                    </tbody>
+                </table></div>
+            </div>
+        </div>
+
+        <!-- ======== BASIC CONTENT: NO-ECO ======== -->
+        <div id="basic-content-no-eco" class="hidden space-y-8">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <p class="text-[11px] text-slate-400">📊 ข้อมูล 18 ม.ค. — 17 ก.พ. 2569 (30 วัน)</p>
+                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Baseline · เตาดั้งเดิมเท่านั้น</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-orange-400 text-center">
+                        <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider mb-1">PM 2.5</p>
+                        <div class="text-3xl font-bold text-gray-700">85.7</div>
+                        <p class="text-[11px] text-gray-500 mt-1">µg/m³ · เตาดั้งเดิม</p>
+                        <div class="mt-2"><span class="text-[9px] px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">เกิน WHO IT-2</span></div>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-orange-400 text-center">
+                        <p class="text-[11px] font-bold text-orange-500 uppercase tracking-wider mb-1">CO2</p>
+                        <div class="text-3xl font-bold text-gray-700">1,002</div>
+                        <p class="text-[11px] text-gray-500 mt-1">ppm · เตาดั้งเดิม</p>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
+                        <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO</p>
+                        <div class="text-3xl font-bold text-gray-700">25.3</div>
+                        <p class="text-[11px] text-gray-500 mt-1">ppm · เตาดั้งเดิม</p>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')">i</span></p>
+                        <div class="flex justify-center gap-4 mt-2">
+                            <div><span class="text-3xl font-bold text-gray-800">34.2</span><span class="text-gray-400">°C</span></div>
+                            <span class="text-gray-300 text-xl">/</span>
+                            <div><span class="text-3xl font-bold text-gray-800">67</span><span class="text-gray-400">%</span></div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 — เตาดั้งเดิม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="noEcoBPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 — เตาดั้งเดิม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="noEcoBCo2"></canvas></div></div>
+            </div>
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
+                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">เตาดั้งเดิมเท่านั้น</span></div>
+                <div class="overflow-x-auto"><table class="w-full text-[12px]">
+                    <thead><tr class="text-[10px] text-gray-400 border-b"><th class="text-left py-2">ครัวเรือน</th><th class="text-center py-2">เตา</th><th class="text-right py-2">PM2.5</th><th class="text-right py-2">CO2</th><th class="text-right py-2">เวลา</th></tr></thead>
+                    <tbody>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 01</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">88.1</td><td class="text-right text-gray-500">1,012</td><td class="text-right text-gray-400">14:32</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 02</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">79.3</td><td class="text-right text-gray-500">965</td><td class="text-right text-gray-400">14:28</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 03</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">92.4</td><td class="text-right text-gray-500">1,055</td><td class="text-right text-gray-400">14:30</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 04</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">83.0</td><td class="text-right text-gray-500">988</td><td class="text-right text-gray-400">14:25</td></tr>
+                    </tbody>
+                </table></div>
+            </div>
+        </div>
+
+        <!-- ======== BASIC CONTENT: ECO-FAIL ======== -->
+        <div id="basic-content-eco-fail" class="hidden space-y-8">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <p class="text-[11px] text-slate-400">📊 ข้อมูล 18 ม.ค. — 18 มี.ค. 2569 (60 วัน)</p>
+                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Baseline</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
+                        <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5</p>
+                        <div class="text-3xl font-bold text-red-600">↑ 8%</div>
+                        <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-red-600">92.6</b> · เตาเก่า <span class="text-gray-400">85.7</span> µg/m³</p>
+                        <div class="mt-2"><span class="text-[9px] px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">⚠️ เพิ่มขึ้น</span></div>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
+                        <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">CO2</p>
+                        <div class="text-3xl font-bold text-red-600">↑ 5%</div>
+                        <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-red-600">1,052</b> · เตาเก่า <span class="text-gray-400">1,002</span> ppm</p>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
+                        <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">CO</p>
+                        <div class="text-3xl font-bold text-red-600">↑ 6%</div>
+                        <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-red-600">26.8</b> · เตาเก่า <span class="text-gray-400">25.3</span> ppm</p>
+                    </div>
+                    <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')">i</span></p>
+                        <div class="flex justify-center gap-4 mt-2">
+                            <div><span class="text-3xl font-bold text-gray-800">34.2</span><span class="text-gray-400">°C</span></div>
+                            <span class="text-gray-300 text-xl">/</span>
+                            <div><span class="text-3xl font-bold text-gray-800">67</span><span class="text-gray-400">%</span></div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="failBPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="failBCo2"></canvas></div></div>
+            </div>
+            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
+                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">ขณะหุงต้ม · หลังหัก Baseline</span></div>
+                <div class="overflow-x-auto"><table class="w-full text-[12px]">
+                    <thead><tr class="text-[10px] text-gray-400 border-b"><th class="text-left py-2">ครัวเรือน</th><th class="text-center py-2">เตา</th><th class="text-right py-2">PM2.5</th><th class="text-right py-2">CO2</th><th class="text-right py-2">เวลา</th></tr></thead>
+                    <tbody>
+                        <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 01</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">95.2</td><td class="text-right text-red-600">1,068</td><td class="text-right text-gray-400">14:32</td></tr>
+                        <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 02</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">89.8</td><td class="text-right text-red-600">1,040</td><td class="text-right text-gray-400">14:28</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 06</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">82.4</td><td class="text-right text-gray-500">980</td><td class="text-right text-gray-400">14:30</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 07</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">91.2</td><td class="text-right text-gray-500">1,043</td><td class="text-right text-gray-400">14:25</td></tr>
+                    </tbody>
+                </table></div>
+            </div>
+        </div>
+
+        <!-- TODAY'S COLLECTION (shared) -->
+        <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-400">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="text-3xl">⏳</div>
+                    <div><h4 class="font-bold text-lg text-navy">เก็บข้อมูลวันนี้</h4><p class="text-slate-400 text-xs">วันนี้เก็บได้ 3 / 10 ครัวเรือน</p></div>
+                </div>
+                <span class="font-bold text-2xl text-navy">30%</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-2.5"><div class="h-2.5 rounded-full bg-amber-500" style="width:30%"></div></div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-4 text-[11px]">
+                <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 01</span><br>✅ 24 readings</div>
+                <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 02</span><br>✅ 22 readings</div>
+                <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 06</span><br>✅ 18 readings</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 03</span><br>⏳ รอข้อมูล</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 04</span><br>⏳ รอข้อมูล</div>
+            </div>
+        </div>
+
+        <!-- MAP + ACTIVITY (shared) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 card-styled p-2 rounded-[2.5rem]">
+                <div class="flex gap-4 text-[12px] text-slate-500 px-3 py-1.5"><span>📍 10 จุดวัด</span><span>🟢 3 ออนไลน์</span><span>⚪ 7 ออฟไลน์</span></div>
+                <div id="map"></div>
+            </div>
+            <div class="space-y-6">
+                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-600">
+                    <h4 class="font-bold text-sm mb-4 text-navy">กิจกรรมล่าสุด</h4>
+                    <div class="space-y-3 text-[12px]">
+                        <div class="flex gap-3 items-start"><span class="text-emerald-500">●</span><div><b>บ้าน 01</b> วัดค่าใหม่ PM2.5: <span class="text-emerald-600 font-bold">28.3</span> µg/m³<br><span class="text-gray-400">2 นาทีที่แล้ว</span></div></div>
+                        <div class="flex gap-3 items-start"><span class="text-emerald-500">●</span><div><b>บ้าน 02</b> วัดค่าใหม่ PM2.5: <span class="text-emerald-600 font-bold">35.1</span> µg/m³<br><span class="text-gray-400">6 นาทีที่แล้ว</span></div></div>
+                        <div class="flex gap-3 items-start"><span class="text-orange-400">●</span><div><b>บ้าน 06</b> วัดค่าใหม่ PM2.5: <span class="text-red-500 font-bold">82.4</span> µg/m³<br><span class="text-gray-400">4 นาทีที่แล้ว</span></div></div>
+                        <div class="flex gap-3 items-start"><span class="text-gray-300">●</span><div><b>บ้าน 03</b> ออฟไลน์<br><span class="text-gray-400">3 ชั่วโมงที่แล้ว</span></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- DEEP INSIGHTS -->
+    <!-- ============================================================ -->
+    <section id="view-deep" class="hidden space-y-8">
+
+        <!-- Filters -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+                <h1 class="text-3xl font-bold text-[#0f172a]">ข้อมูลเชิงลึก</h1>
+                <p class="text-slate-400 text-sm">4,800 รายการ · 10 ครัวเรือน</p>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex gap-1">
+                    <button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">7 วัน</button>
+                    <button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">30 วัน</button>
+                    <button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500 text-white border border-emerald-500">60 วัน</button>
+                    <button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">ทั้งหมด</button>
+                </div>
+                <div class="flex items-center gap-1.5 text-sm text-gray-500">
+                    <span class="text-[10px]">📅</span>
+                    <input type="date" value="2026-01-18" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
+                    <span class="text-gray-300">—</span>
+                    <input type="date" value="2026-03-18" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== DEEP CONTENT: NORMAL ======== -->
+        <div id="deep-content-normal" class="space-y-8">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Baseline-subtracted · ค่าสุทธิ (Net) หลังหักค่าเฉลี่ย 10 นาทีแรกของแต่ละ session</span>
+            </div>
+            <!-- STAT CARDS Row 1: Pollutants -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5</p>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1">↓ 62.2%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-emerald-600">32.4</b> ± 12.1</div><div>เตาดั้งเดิม: <b class="text-gray-500">85.7</b> ± 28.3</div><div class="text-gray-400">µg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
+                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-wider">PM 10</p>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1">↓ 55.8%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-emerald-600">48.2</b> ± 15.4</div><div>เตาดั้งเดิม: <b class="text-gray-500">109.1</b> ± 34.7</div><div class="text-gray-400">µg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1">↓ 48.1%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-emerald-600">520</b> ± 88</div><div>เตาดั้งเดิม: <b class="text-gray-500">1,002</b> ± 245</div><div class="text-gray-400">ppm · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-500">
+                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO</p>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1">↓ 61.3%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-emerald-600">9.8</b> ± 3.5</div><div>เตาดั้งเดิม: <b class="text-gray-500">25.3</b> ± 8.2</div><div class="text-gray-400">ppm · n=142/89</div></div>
+                </div>
+            </div>
+            <!-- STAT CARDS Row 2: Index + Environmental -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
+                    <p class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1">↓ 58.3%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-emerald-600">42</b></div><div>เตาดั้งเดิม: <b class="text-gray-500">101</b></div><div class="text-gray-400">n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-gray-400">
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
+                    <div class="text-2xl font-bold text-gray-800 mt-1">0.06 <span class="text-sm text-gray-400">mg/m³</span></div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b>0.03</b></div><div>เตาดั้งเดิม: <b>0.09</b></div><div class="text-gray-400">mg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                    <p class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
+                    <div class="text-2xl font-bold text-emerald-600 mt-1">↓ 69.7%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-emerald-600">0.537</b></div><div>เตาดั้งเดิม: <b class="text-gray-500">1.769</b></div><div class="text-gray-400">mg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
+                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <div class="flex gap-2 mt-1"><span class="text-xl font-bold text-gray-800">32.0°C</span><span class="text-gray-300">/</span><span class="text-xl font-bold text-gray-800">59.8%</span></div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>ชีวมวล: 31.2°C / 61.2%</div><div>ดั้งเดิม: 32.8°C / 58.4%</div></div>
+                </div>
+            </div>
+            <!-- STACKED BAR -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</h4>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าAmbient Baseline ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">85.7 (gross) → <span class="text-gray-900">73.4</span> (net)</span></div>
+                        <div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">
+                            <div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:14%">12.3<br>ambient</div>
+                            <div class="bg-orange-400 flex items-center justify-center text-white" style="width:86%">73.4 µg/m³ — Stove Emission</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">✨ เตาชีวมวล</span><span class="font-bold text-gray-700">32.4 (gross) → <span class="text-emerald-600">18.3</span> (net)</span></div>
+                        <div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">
+                            <div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:16%">14.1<br>ambient</div>
+                            <div class="bg-emerald-500 flex items-center justify-center text-white" style="width:21%">18.3</div>
+                            <div class="bg-emerald-100 flex items-center justify-center text-emerald-500 border border-dashed border-emerald-300" style="width:63%">↓ ลดได้ 55.1 µg/m³ (75.1%)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)</span>
+                </div>
+            </div>
+            <!-- DAILY AVG CHARTS — 6 charts grouped by type -->
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepPm10Chart"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepCoChart"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepHchoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepTvocChart"></canvas></div></div>
+            </div>
+            <!-- COMPARISON TABLE -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')">i</span></h4>
+                <div class="overflow-x-auto"><table class="w-full text-[11px]">
+                    <thead>
+                        <tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50" colspan="2">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 bg-emerald-50" colspan="2">ค่าสุทธิ (Net)</th><th class="text-center py-2 bg-green-50">ลดลง</th></tr>
+                        <tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1">🪵 เก่า</th><th class="text-center py-1">✨ ใหม่</th><th class="text-center py-1 bg-blue-50">🪵 เก่า</th><th class="text-center py-1 bg-blue-50">✨ ใหม่</th><th class="text-center py-1 bg-emerald-50">🪵 เก่า</th><th class="text-center py-1 bg-emerald-50">✨ ใหม่</th><th class="text-center py-1 bg-green-50">Net %</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="py-2 font-medium text-red-600">PM2.5 (µg/m³)</td><td class="text-center">85.7 ± 28.3</td><td class="text-center">32.4 ± 12.1</td><td class="text-center bg-blue-50/50">12.3 ± 4.1</td><td class="text-center bg-blue-50/50">14.1 ± 3.9</td><td class="text-center bg-emerald-50/50">73.4</td><td class="text-center bg-emerald-50/50 font-bold text-emerald-600">18.3</td><td class="text-center bg-green-50/50 font-bold text-emerald-600">↓ 75.1%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-orange-600">PM10 (µg/m³)</td><td class="text-center">109.1 ± 34.7</td><td class="text-center">48.2 ± 15.4</td><td class="text-center bg-blue-50/50">15.8 ± 5.2</td><td class="text-center bg-blue-50/50">17.2 ± 4.8</td><td class="text-center bg-emerald-50/50">93.3</td><td class="text-center bg-emerald-50/50 font-bold text-emerald-600">31.0</td><td class="text-center bg-green-50/50 font-bold text-emerald-600">↓ 66.8%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-emerald-600">CO2 (ppm)</td><td class="text-center">1,002 ± 245</td><td class="text-center">520 ± 88</td><td class="text-center bg-blue-50/50">410 ± 35</td><td class="text-center bg-blue-50/50">418 ± 32</td><td class="text-center bg-emerald-50/50">592</td><td class="text-center bg-emerald-50/50 font-bold text-emerald-600">102</td><td class="text-center bg-green-50/50 font-bold text-emerald-600">↓ 82.8%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-amber-600">CO (ppm)</td><td class="text-center">25.3 ± 8.2</td><td class="text-center">9.8 ± 3.5</td><td class="text-center bg-blue-50/50">3.2 ± 1.1</td><td class="text-center bg-blue-50/50">3.5 ± 1.0</td><td class="text-center bg-emerald-50/50">22.1</td><td class="text-center bg-emerald-50/50 font-bold text-emerald-600">6.3</td><td class="text-center bg-green-50/50 font-bold text-emerald-600">↓ 71.5%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-purple-600">TVOC (mg/m³)</td><td class="text-center">0.891 ± 0.21</td><td class="text-center">0.342 ± 0.08</td><td class="text-center bg-blue-50/50">0.120 ± 0.03</td><td class="text-center bg-blue-50/50">0.135 ± 0.03</td><td class="text-center bg-emerald-50/50">0.771</td><td class="text-center bg-emerald-50/50 font-bold text-emerald-600">0.207</td><td class="text-center bg-green-50/50 font-bold text-emerald-600">↓ 73.2%</td></tr>
+                    </tbody>
+                </table><p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient baseline (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p></div>
+            </div>
+        </div><!-- /deep-content-normal -->
+
+        <!-- ======== DEEP CONTENT: NO-ECO ======== -->
+        <div id="deep-content-no-eco" class="hidden space-y-8">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">⏳ กำลังเก็บข้อมูลเตาดั้งเดิม — ยังไม่มีข้อมูลเตาชีวมวลเพื่อเปรียบเทียบ</span>
+            </div>
+            <!-- STAT CARDS Row 1 — old stove only -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5</p>
+                    <div class="text-2xl font-bold text-gray-700 mt-1">85.7</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาดั้งเดิม: <b>85.7</b> ± 28.3</div><div class="text-gray-400">µg/m³ · n=89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
+                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-wider">PM 10</p>
+                    <div class="text-2xl font-bold text-gray-700 mt-1">109.1</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาดั้งเดิม: <b>109.1</b> ± 34.7</div><div class="text-gray-400">µg/m³ · n=89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                    <div class="text-2xl font-bold text-gray-700 mt-1">1,002</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาดั้งเดิม: <b>1,002</b> ± 245</div><div class="text-gray-400">ppm · n=89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-500">
+                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO</p>
+                    <div class="text-2xl font-bold text-gray-700 mt-1">25.3</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาดั้งเดิม: <b>25.3</b> ± 8.2</div><div class="text-gray-400">ppm · n=89</div></div>
+                </div>
+            </div>
+            <!-- STAT CARDS Row 2 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
+                    <p class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                    <div class="text-2xl font-bold text-gray-700 mt-1">101</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาดั้งเดิม: <b>101</b></div><div class="text-gray-400">n=89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-gray-400">
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
+                    <div class="text-2xl font-bold text-gray-800 mt-1">0.09 <span class="text-sm text-gray-400">mg/m³</span></div>
+                    <div class="text-[10px] text-gray-500 mt-1"><div>เตาดั้งเดิม: <b>0.09</b></div><div class="text-gray-400">mg/m³ · n=89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                    <p class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
+                    <div class="text-2xl font-bold text-gray-700 mt-1">1.769</div>
+                    <div class="text-[10px] text-gray-500 mt-1"><div>เตาดั้งเดิม: <b>1.769</b></div><div class="text-gray-400">mg/m³ · n=89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
+                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <div class="flex gap-2 mt-1"><span class="text-xl font-bold text-gray-800">32.8°C</span><span class="text-gray-300">/</span><span class="text-xl font-bold text-gray-800">58.4%</span></div>
+                    <div class="text-[10px] text-gray-500 mt-1"><div>เตาดั้งเดิม · n=89</div></div>
+                </div>
+            </div>
+            <!-- STACKED BAR — old only -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</h4>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าAmbient Baseline ออกจากมลพิษที่เกิดจากเตา</p>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">85.7 (gross) → <span class="text-gray-900">73.4</span> (net)</span></div>
+                        <div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">
+                            <div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:14%">12.3<br>ambient</div>
+                            <div class="bg-orange-400 flex items-center justify-center text-white" style="width:86%">73.4 µg/m³ — Stove Emission</div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 rounded-lg p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-300">
+                        ⏳ ยังไม่มีข้อมูลเตาชีวมวล — จะแสดงเมื่อเริ่มระยะที่ 2
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
+                </div>
+            </div>
+            <!-- CHARTS — old stove only, 6 charts grouped -->
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDPm10"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDCo2"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDCo"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDHcho"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDTvoc"></canvas></div></div>
+            </div>
+            <!-- COMPARISON TABLE — old only -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางสรุป — เตาดั้งเดิม (Baseline)</h4>
+                <div class="overflow-x-auto"><table class="w-full text-[11px]">
+                    <thead>
+                        <tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50">Ambient</th><th class="text-center py-2 bg-orange-50">ค่าสุทธิ (Net)</th></tr>
+                        <tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1 bg-slate-50">🪵 เก่า</th><th class="text-center py-1 bg-blue-50">10 นาทีแรก</th><th class="text-center py-1 bg-orange-50">🪵 เก่า</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="py-2 font-medium text-red-600">PM2.5 (µg/m³)</td><td class="text-center">85.7 ± 28.3</td><td class="text-center bg-blue-50/50">12.3 ± 4.1</td><td class="text-center bg-orange-50/50 font-bold">73.4</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-orange-600">PM10 (µg/m³)</td><td class="text-center">109.1 ± 34.7</td><td class="text-center bg-blue-50/50">15.8 ± 5.2</td><td class="text-center bg-orange-50/50 font-bold">93.3</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-emerald-600">CO2 (ppm)</td><td class="text-center">1,002 ± 245</td><td class="text-center bg-blue-50/50">410 ± 35</td><td class="text-center bg-orange-50/50 font-bold">592</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-amber-600">CO (ppm)</td><td class="text-center">25.3 ± 8.2</td><td class="text-center bg-blue-50/50">3.2 ± 1.1</td><td class="text-center bg-orange-50/50 font-bold">22.1</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-purple-600">TVOC (mg/m³)</td><td class="text-center">0.891 ± 0.21</td><td class="text-center bg-blue-50/50">0.120 ± 0.03</td><td class="text-center bg-orange-50/50 font-bold">0.771</td></tr>
+                    </tbody>
+                </table><p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient baseline</p></div>
+            </div>
+        </div><!-- /deep-content-no-eco -->
+
+        <!-- ======== DEEP CONTENT: ECO-FAIL ======== -->
+        <div id="deep-content-eco-fail" class="hidden space-y-8">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">⚠️ เตาชีวมวลยังไม่ลดมลพิษได้ตามเป้าหมาย — ค่าที่แสดงเป็นค่าสุทธิ (Net)</span>
+            </div>
+            <!-- STAT CARDS Row 1 — increase -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5</p>
+                    <div class="text-2xl font-bold text-red-600 mt-1">↑ 8.0%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-red-600">92.6</b> ± 30.5</div><div>เตาดั้งเดิม: <b class="text-gray-500">85.7</b> ± 28.3</div><div class="text-gray-400">µg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 10</p>
+                    <div class="text-2xl font-bold text-red-600 mt-1">↑ 6.2%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-red-600">115.9</b> ± 37.1</div><div>เตาดั้งเดิม: <b class="text-gray-500">109.1</b> ± 34.7</div><div class="text-gray-400">µg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">CO2</p>
+                    <div class="text-2xl font-bold text-red-600 mt-1">↑ 5.0%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-red-600">1,052</b> ± 260</div><div>เตาดั้งเดิม: <b class="text-gray-500">1,002</b> ± 245</div><div class="text-gray-400">ppm · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">CO</p>
+                    <div class="text-2xl font-bold text-red-600 mt-1">↑ 6.0%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-red-600">26.8</b> ± 8.8</div><div>เตาดั้งเดิม: <b class="text-gray-500">25.3</b> ± 8.2</div><div class="text-gray-400">ppm · n=142/89</div></div>
+                </div>
+            </div>
+            <!-- STAT CARDS Row 2 -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">AQI</p>
+                    <div class="text-2xl font-bold text-red-600 mt-1">↑ 7.9%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-red-600">109</b></div><div>เตาดั้งเดิม: <b class="text-gray-500">101</b></div><div class="text-gray-400">n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-gray-400">
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
+                    <div class="text-2xl font-bold text-gray-800 mt-1">0.1 <span class="text-sm text-gray-400">mg/m³</span></div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b>0.10</b></div><div>เตาดั้งเดิม: <b>0.09</b></div><div class="text-gray-400">mg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                    <p class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
+                    <div class="text-2xl font-bold text-red-600 mt-1">↑ 3.2%</div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>เตาชีวมวล: <b class="text-red-600">1.826</b></div><div>เตาดั้งเดิม: <b class="text-gray-500">1.769</b></div><div class="text-gray-400">mg/m³ · n=142/89</div></div>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
+                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <div class="flex gap-2 mt-1"><span class="text-xl font-bold text-gray-800">32.0°C</span><span class="text-gray-300">/</span><span class="text-xl font-bold text-gray-800">59.8%</span></div>
+                    <div class="text-[10px] text-gray-500 mt-1 space-y-0.5"><div>ชีวมวล: 31.2°C / 61.2%</div><div>ดั้งเดิม: 32.8°C / 58.4%</div></div>
+                </div>
+            </div>
+            <!-- STACKED BAR — eco bigger -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</h4>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าAmbient Baseline ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">85.7 (gross) → <span class="text-gray-900">73.4</span> (net)</span></div>
+                        <div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">
+                            <div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:13%">12.3<br>ambient</div>
+                            <div class="bg-orange-400 flex items-center justify-center text-white" style="width:77%">73.4 µg/m³ — Stove Emission</div>
+                            <div style="width:10%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">✨ เตาชีวมวล</span><span class="font-bold text-red-600">92.6 (gross) → <span class="text-red-700">78.8</span> (net) ⚠️</span></div>
+                        <div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">
+                            <div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:15%">13.8<br>ambient</div>
+                            <div class="bg-red-400 flex items-center justify-center text-white" style="width:85%">78.8 µg/m³ — Stove Emission ↑</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-red-400 align-middle mr-1"></span>Stove emission (เตาชีวมวล) ⚠️</span>
+                </div>
+            </div>
+            <!-- CHARTS — both lines, eco higher, 6 charts grouped -->
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDPm10"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDCo2"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDCo"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDHcho"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDTvoc"></canvas></div></div>
+            </div>
+            <!-- COMPARISON TABLE — negative reduction -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')">i</span></h4>
+                <div class="overflow-x-auto"><table class="w-full text-[11px]">
+                    <thead>
+                        <tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50" colspan="2">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 bg-red-50" colspan="2">ค่าสุทธิ (Net)</th><th class="text-center py-2 bg-red-50">เปลี่ยนแปลง</th></tr>
+                        <tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1">🪵 เก่า</th><th class="text-center py-1">✨ ใหม่</th><th class="text-center py-1 bg-blue-50">🪵 เก่า</th><th class="text-center py-1 bg-blue-50">✨ ใหม่</th><th class="text-center py-1 bg-red-50">🪵 เก่า</th><th class="text-center py-1 bg-red-50">✨ ใหม่</th><th class="text-center py-1 bg-red-50">Net %</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="py-2 font-medium text-red-600">PM2.5 (µg/m³)</td><td class="text-center">85.7 ± 28.3</td><td class="text-center">92.6 ± 30.5</td><td class="text-center bg-blue-50/50">12.3 ± 4.1</td><td class="text-center bg-blue-50/50">13.8 ± 4.3</td><td class="text-center bg-red-50/50">73.4</td><td class="text-center bg-red-50/50 font-bold text-red-600">78.8</td><td class="text-center bg-red-50/50 font-bold text-red-600">↑ 7.4%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-orange-600">PM10 (µg/m³)</td><td class="text-center">109.1 ± 34.7</td><td class="text-center">115.9 ± 37.1</td><td class="text-center bg-blue-50/50">15.8 ± 5.2</td><td class="text-center bg-blue-50/50">17.0 ± 4.9</td><td class="text-center bg-red-50/50">93.3</td><td class="text-center bg-red-50/50 font-bold text-red-600">98.9</td><td class="text-center bg-red-50/50 font-bold text-red-600">↑ 6.0%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-emerald-600">CO2 (ppm)</td><td class="text-center">1,002 ± 245</td><td class="text-center">1,052 ± 260</td><td class="text-center bg-blue-50/50">410 ± 35</td><td class="text-center bg-blue-50/50">415 ± 33</td><td class="text-center bg-red-50/50">592</td><td class="text-center bg-red-50/50 font-bold text-red-600">637</td><td class="text-center bg-red-50/50 font-bold text-red-600">↑ 7.6%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-amber-600">CO (ppm)</td><td class="text-center">25.3 ± 8.2</td><td class="text-center">26.8 ± 8.8</td><td class="text-center bg-blue-50/50">3.2 ± 1.1</td><td class="text-center bg-blue-50/50">3.4 ± 1.0</td><td class="text-center bg-red-50/50">22.1</td><td class="text-center bg-red-50/50 font-bold text-red-600">23.4</td><td class="text-center bg-red-50/50 font-bold text-red-600">↑ 5.9%</td></tr>
+                        <tr class="border-b"><td class="py-2 font-medium text-purple-600">TVOC (mg/m³)</td><td class="text-center">0.891 ± 0.21</td><td class="text-center">0.946 ± 0.22</td><td class="text-center bg-blue-50/50">0.120 ± 0.03</td><td class="text-center bg-blue-50/50">0.130 ± 0.03</td><td class="text-center bg-red-50/50">0.771</td><td class="text-center bg-red-50/50 font-bold text-red-600">0.816</td><td class="text-center bg-red-50/50 font-bold text-red-600">↑ 5.8%</td></tr>
+                    </tbody>
+                </table><p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient baseline (คำนวณแยกตามชนิดเตา) · ⚠️ ค่าเตาชีวมวลสูงกว่าเตาดั้งเดิม</p></div>
+            </div>
+        </div><!-- /deep-content-eco-fail -->
+
+        <!-- SESSION TIMELINE (shared) -->
+        <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-blue-300 p-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                <div>
+                    <h4 class="font-bold text-lg text-[#0f172a]">Session Timeline</h4>
+                    <p class="text-slate-400 text-sm">120 sessions · 10 ครัวเรือน</p>
+                </div>
+                <select class="px-4 py-2 rounded-xl border text-sm bg-white"><option selected>ทุกเครื่อง</option><option>ES-01</option><option>ES-02</option><option>ES-03</option></select>
+            </div>
+            <div class="overflow-x-auto"><table class="w-full text-left text-[12px] min-w-[700px]">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">เริ่ม</th>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">อุปกรณ์</th>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">สถานะ</th>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">ระยะเวลา</th>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">รายการ</th>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">PM2.5 เฉลี่ย</th>
+                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">CO2 เฉลี่ย</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <tr><td class="p-2.5">19 มี.ค. 06:12</td><td class="font-medium">ES-01 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 5 นาที</td><td class="text-center">24</td><td class="text-center font-bold text-emerald-600">28.3</td><td class="text-center">480</td></tr>
+                    <tr><td class="p-2.5">19 มี.ค. 06:08</td><td class="font-medium">ES-02 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 10 นาที</td><td class="text-center">26</td><td class="text-center font-bold text-emerald-600">35.1</td><td class="text-center">552</td></tr>
+                    <tr><td class="p-2.5">19 มี.ค. 06:15</td><td class="font-medium text-gray-500">ES-06 🪵</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">1 ชม. 55 นาที</td><td class="text-center">22</td><td class="text-center text-gray-600">82.4</td><td class="text-center text-gray-600">980</td></tr>
+                    <tr><td class="p-2.5">18 มี.ค. 17:02</td><td class="font-medium">ES-01 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 8 นาที</td><td class="text-center">25</td><td class="text-center font-bold text-emerald-600">31.7</td><td class="text-center">495</td></tr>
+                    <tr><td class="p-2.5">18 มี.ค. 17:10</td><td class="font-medium text-gray-500">ES-07 🪵</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">ไม่สมบูรณ์</span></td><td class="text-center">45 นาที</td><td class="text-center">8</td><td class="text-center text-gray-600">91.2</td><td class="text-center text-gray-600">1,043</td></tr>
+                    <tr><td class="p-2.5">18 มี.ค. 06:20</td><td class="font-medium">ES-03 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 2 นาที</td><td class="text-center">24</td><td class="text-center font-bold text-emerald-600">38.9</td><td class="text-center">510</td></tr>
+                </tbody>
+            </table></div>
+        </div>
+
+        <!-- DAILY SUMMARY (shared) -->
+        <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-4">
+            <h4 class="font-bold text-lg text-[#0f172a] mb-3">สรุปรายวัน</h4>
+            <div class="mb-3 text-[11px] text-slate-400 flex flex-wrap gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold">✅ ครบ 2/2</span>
+                <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold">⚠️ ได้ 1/2</span>
+                <span class="px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-bold">❌ ไม่มีข้อมูล</span>
+            </div>
+            <div class="overflow-x-auto"><table class="w-full text-left text-[12px] min-w-[600px]">
+                <thead class="bg-slate-50 border-b">
+                    <tr>
+                        <th class="p-2 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">วันที่</th>
+                        <th class="p-2 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">อุปกรณ์</th>
+                        <th class="p-2 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">เซสชัน</th>
+                        <th class="p-2 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">รายการ</th>
+                        <th class="p-2 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">PM2.5</th>
+                        <th class="p-2 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y">
+                    <tr><td class="p-2">19 มี.ค. 2569</td><td class="font-medium">ES-01 ✨</td><td class="text-center">2/2</td><td class="text-center">49</td><td class="text-center font-bold text-emerald-600">28.3</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 text-[10px] font-bold">✅ ครบ</span></td></tr>
+                    <tr><td class="p-2">19 มี.ค. 2569</td><td class="font-medium">ES-02 ✨</td><td class="text-center">2/2</td><td class="text-center">52</td><td class="text-center font-bold text-emerald-600">35.1</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 text-[10px] font-bold">✅ ครบ</span></td></tr>
+                    <tr><td class="p-2">19 มี.ค. 2569</td><td class="font-medium text-gray-500">ES-06 🪵</td><td class="text-center">2/2</td><td class="text-center">44</td><td class="text-center text-gray-600">82.4</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 text-[10px] font-bold">✅ ครบ</span></td></tr>
+                    <tr><td class="p-2">19 มี.ค. 2569</td><td class="font-medium text-gray-500">ES-07 🪵</td><td class="text-center">1/2</td><td class="text-center">8</td><td class="text-center text-gray-600">91.2</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 text-[10px] font-bold">⚠️ 1/2</span></td></tr>
+                    <tr><td class="p-2">19 มี.ค. 2569</td><td class="font-medium text-gray-500">ES-08 🪵</td><td class="text-center">0/2</td><td class="text-center">0</td><td class="text-center text-gray-400">—</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-red-100 text-red-500 text-[10px] font-bold">❌ ไม่มี</span></td></tr>
+                    <tr><td class="p-2">18 มี.ค. 2569</td><td class="font-medium">ES-01 ✨</td><td class="text-center">2/2</td><td class="text-center">50</td><td class="text-center font-bold text-emerald-600">31.7</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 text-[10px] font-bold">✅ ครบ</span></td></tr>
+                    <tr><td class="p-2">18 มี.ค. 2569</td><td class="font-medium">ES-03 ✨</td><td class="text-center">2/2</td><td class="text-center">48</td><td class="text-center font-bold text-emerald-600">38.9</td><td class="text-center"><span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 text-[10px] font-bold">✅ ครบ</span></td></tr>
+                </tbody>
+            </table></div>
+        </div>
+
+        <!-- MAP DEEP (shared) -->
+        <div class="card-styled p-2 rounded-[2.5rem]">
+            <div class="flex gap-4 text-[12px] text-slate-500 px-3 py-1.5"><span>📍 10 จุดวัด</span><span>🟢 3 ออนไลน์</span><span>⚪ 7 ออฟไลน์</span></div>
+            <div id="map-deep"></div>
+        </div>
+
+        <!-- METHODOLOGY (shared) -->
+        <div class="methodology-panel p-5">
+            <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('meth-body').classList.toggle('open'); document.getElementById('meth-arrow').style.transform = document.getElementById('meth-body').classList.contains('open') ? 'rotate(180deg)' : '';">
+                <h4 class="font-bold text-sm text-gray-700">📋 วิธีวิเคราะห์ข้อมูล (Methodology)</h4>
+                <span id="meth-arrow" class="text-gray-400 transition-transform">▼</span>
+            </div>
+            <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
+                <div><p class="font-bold text-gray-700 mb-1">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li>เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)</li><li>ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li>10 ครัวเรือน (5 เตาดั้งเดิม + 5 เตาชีวมวล) · 3 เดือน/กลุ่ม</li></ul></div>
+                <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าพื้นฐาน (Baseline Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ambient baseline</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − ambient baseline ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง baseline ไม่นำมาวิเคราะห์</li></ul></div>
+                <div><p class="font-bold text-gray-700 mb-1">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li>เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li>Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li></ul></div>
+            </div>
+        </div>
+
+    </section>
+
+    </main>
+
+    <script>
+        // ============================================================
+        // TAB / NAV switching
+        // ============================================================
+        function showTab(tab) {
+            document.getElementById('view-basic').classList.toggle('hidden', tab !== 'basic');
+            document.getElementById('view-deep').classList.toggle('hidden', tab !== 'deep');
+            document.getElementById('nav-basic').className = tab === 'basic' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
+            document.getElementById('nav-deep').className = tab === 'deep' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
+            // Init deep map on first visit (Leaflet needs visible container)
+            if (tab === 'deep' && !mapDeepInited) {
+                mapDeepInited = true;
+                setTimeout(() => initMap('map-deep'), 150);
+            }
+            setTimeout(() => initChartsForScenario(currentScenario), 100);
+        }
+
+        // ============================================================
+        // SCENARIO switching
+        // ============================================================
+        let currentScenario = 'normal';
+
+        function setScenario(sc) {
+            currentScenario = sc;
+            // Button styles
+            ['normal', 'no-eco', 'eco-fail'].forEach(s => {
+                const btn = document.getElementById('sc-' + s);
+                if (btn) btn.className = s === sc
+                    ? 'px-3 py-1 rounded-full text-xs font-bold bg-purple-600 text-white'
+                    : 'px-3 py-1 rounded-full text-xs font-bold bg-purple-200 text-purple-700';
+            });
+            // Hero
+            document.getElementById('hero-normal').classList.toggle('hidden', sc !== 'normal');
+            document.getElementById('hero-no-eco').classList.toggle('hidden', sc !== 'no-eco');
+            document.getElementById('hero-eco-fail').classList.toggle('hidden', sc !== 'eco-fail');
+            // Alert bars
+            document.getElementById('scenario-bar-no-eco').classList.toggle('active', sc === 'no-eco');
+            document.getElementById('scenario-bar-eco-fail').classList.toggle('active', sc === 'eco-fail');
+            // Basic content
+            document.getElementById('basic-content-normal').classList.toggle('hidden', sc !== 'normal');
+            document.getElementById('basic-content-no-eco').classList.toggle('hidden', sc !== 'no-eco');
+            document.getElementById('basic-content-eco-fail').classList.toggle('hidden', sc !== 'eco-fail');
+            // Deep content
+            document.getElementById('deep-content-normal').classList.toggle('hidden', sc !== 'normal');
+            document.getElementById('deep-content-no-eco').classList.toggle('hidden', sc !== 'no-eco');
+            document.getElementById('deep-content-eco-fail').classList.toggle('hidden', sc !== 'eco-fail');
+            // Init charts for newly shown scenario
+            setTimeout(() => initChartsForScenario(sc), 100);
+        }
+
+        // ============================================================
+        // MAP (shared data + init for both basic & deep maps)
+        // ============================================================
+        const MOCK_HOUSES = [
+            { name: 'บ้าน 01 ✨', lat: 18.795, lng: 98.975, online: true },
+            { name: 'บ้าน 02 ✨', lat: 18.792, lng: 98.982, online: true },
+            { name: 'บ้าน 03 ✨', lat: 18.788, lng: 98.978, online: false },
+            { name: 'บ้าน 04 ✨', lat: 18.798, lng: 98.970, online: false },
+            { name: 'บ้าน 05 ✨', lat: 18.785, lng: 98.985, online: false },
+            { name: 'บ้าน 06 🪵', lat: 18.790, lng: 98.990, online: true },
+            { name: 'บ้าน 07 🪵', lat: 18.793, lng: 98.965, online: false },
+            { name: 'บ้าน 08 🪵', lat: 18.800, lng: 98.980, online: false },
+            { name: 'บ้าน 09 🪵', lat: 18.782, lng: 98.972, online: false },
+            { name: 'บ้าน 10 🪵', lat: 18.796, lng: 98.988, online: false },
+        ];
+        function initMap(elementId) {
+            const m = L.map(elementId).setView([18.79, 98.98], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM', maxZoom: 18 }).addTo(m);
+            MOCK_HOUSES.forEach(h => {
+                const color = h.online ? '#10b981' : '#9ca3af';
+                const icon = L.divIcon({ html: '<div style="width:14px;height:14px;border-radius:50%;background:' + color + ';border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>', className: '', iconSize: [14, 14] });
+                L.marker([h.lat, h.lng], { icon }).addTo(m).bindPopup('<b>' + h.name + '</b><br>' + (h.online ? '🟢 ออนไลน์' : '⚪ ออฟไลน์'));
+            });
+            return m;
+        }
+        let mapDeepInited = false;
+        window.addEventListener('load', () => { initMap('map'); });
+
+        // ============================================================
+        // REALISTIC MOCK DATA
+        // ============================================================
+        const NUM_H = 10, DAYS = 60, MID = 30;
+        const MULTS = [1.0, 0.85, 1.15, 0.90, 1.10, 0.95, 1.05, 0.80, 1.20, 0.92];
+        function _r(a, b) { return a + Math.random() * (b - a); }
+        function _curve(n, base, pkMin, pkMax, mult) {
+            const v = [], pc = Math.floor(n * 0.4), pw = n * 0.25, pk = _r(pkMin, pkMax) * mult;
+            for (let i = 0; i < n; i++) {
+                const d = Math.abs(i - pc), it = Math.exp(-(d * d) / (2 * pw * pw));
+                const val = base + (pk - base) * it;
+                v.push(Math.max(0, +(val + val * _r(-0.15, 0.15)).toFixed(2)));
+            }
+            return v;
+        }
+        const TH_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+        function _days(n, s) { const d = [], dt = new Date(s); for (let i = 0; i < n; i++) { d.push(dt.getDate() + ' ' + TH_MONTHS[dt.getMonth()]); dt.setDate(dt.getDate() + 1); } return d; }
+        const days60 = _days(DAYS, '2026-01-18');
+
+        // Daily aggregates
+        const D = {
+            oldPm: { avg: [], min: [], max: [] }, ecoPm: { avg: [], min: [], max: [] },
+            oldPm10: { avg: [], min: [], max: [] }, ecoPm10: { avg: [], min: [], max: [] },
+            oldCo2: { avg: [], min: [], max: [] }, ecoCo2: { avg: [], min: [], max: [] },
+            oldCo: { avg: [], min: [], max: [] }, ecoCo: { avg: [], min: [], max: [] },
+            oldHcho: { avg: [], min: [], max: [] }, ecoHcho: { avg: [], min: [], max: [] },
+            oldTvoc: { avg: [], min: [], max: [] }, ecoTvoc: { avg: [], min: [], max: [] }
+        };
+        let totOldPm = 0, cOld = 0, totEcoPm = 0, cEco = 0, totOldCo2 = 0, totEcoCo2 = 0;
+        const allOldGrossPm = [], allEcoGrossPm = [], allAmbPmOld = [], allAmbPmEco = [];
+        const allOldGrossCo2 = [], allEcoGrossCo2 = [];
+
+        for (let day = 0; day < DAYS; day++) {
+            const isOld = day < MID, dPm = [], dPm10 = [], dCo2 = [], dCo = [], dHcho = [], dTvoc = [];
+            for (let h = 0; h < NUM_H; h++) {
+                for (let s = 0; s < 2; s++) {
+                    const bP = isOld ? _r(30, 50) : _r(20, 40);
+                    const bC = isOld ? _r(400, 600) : _r(400, 500);
+                    const bCO = isOld ? _r(2, 5) : _r(1, 3);
+                    const bH = isOld ? _r(0.02, 0.04) : _r(0.01, 0.03);
+                    const bT = isOld ? _r(0.05, 0.1) : _r(0.03, 0.06);
+                    const pm = _curve(24, bP, isOld ? 200 : 50, isOld ? 500 : 150, MULTS[h]);
+                    const pm10 = pm.map(v => +(v * _r(1.2, 1.4)).toFixed(2));
+                    const co2 = _curve(24, bC, isOld ? 1500 : 800, isOld ? 3000 : 1500, MULTS[h]);
+                    const coV = _curve(24, bCO, isOld ? 30 : 8, isOld ? 80 : 25, MULTS[h]);
+                    const hcho = _curve(24, bH, isOld ? 0.15 : 0.04, isOld ? 0.5 : 0.12, MULTS[h]);
+                    const tvoc = _curve(24, bT, isOld ? 0.5 : 0.12, isOld ? 2.0 : 0.5, MULTS[h]);
+                    const aP = (bP + _r(-5, 5) + bP + _r(-5, 5)) / 2;
+                    const aC = (bC + _r(-30, 30) + bC + _r(-30, 30)) / 2;
+                    const aCO = (bCO + _r(-1, 1) + bCO + _r(-1, 1)) / 2;
+                    const aH = Math.max(0.005, (bH + _r(-0.01, 0.01) + bH + _r(-0.01, 0.01)) / 2);
+                    const aT = Math.max(0.01, (bT + _r(-0.02, 0.02) + bT + _r(-0.02, 0.02)) / 2);
+                    const aPm10 = aP * _r(1.2, 1.4);
+                    const nPm = pm.map(v => Math.max(0, v - aP));
+                    const nPm10 = pm10.map(v => Math.max(0, v - aPm10));
+                    const nCo2 = co2.map(v => Math.max(0, v - aC));
+                    const nCo = coV.map(v => Math.max(0, v - aCO));
+                    const nH = hcho.map(v => Math.max(0, v - aH));
+                    const nT = tvoc.map(v => Math.max(0, v - aT));
+                    const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
+                    dPm.push(avg(nPm)); dPm10.push(avg(nPm10)); dCo2.push(avg(nCo2));
+                    dCo.push(avg(nCo)); dHcho.push(avg(nH)); dTvoc.push(avg(nT));
+                    const grossPm = avg(pm), grossCo2 = avg(co2);
+                    if (isOld) { totOldPm += avg(nPm); totOldCo2 += avg(nCo2); cOld++; allOldGrossPm.push(grossPm); allOldGrossCo2.push(grossCo2); allAmbPmOld.push(aP); }
+                    else { totEcoPm += avg(nPm); totEcoCo2 += avg(nCo2); cEco++; allEcoGrossPm.push(grossPm); allEcoGrossCo2.push(grossCo2); allAmbPmEco.push(aP); }
+                }
+            }
+            const _avg = a => a.reduce((x, y) => x + y, 0) / a.length;
+            const pushDay = (obj, arr) => { obj.avg.push(_avg(arr)); obj.min.push(Math.min(...arr)); obj.max.push(Math.max(...arr)); };
+            const pushNull = (obj) => { obj.avg.push(null); obj.min.push(null); obj.max.push(null); };
+            if (isOld) {
+                pushDay(D.oldPm, dPm); pushDay(D.oldPm10, dPm10); pushDay(D.oldCo2, dCo2);
+                pushDay(D.oldCo, dCo); pushDay(D.oldHcho, dHcho); pushDay(D.oldTvoc, dTvoc);
+                pushNull(D.ecoPm); pushNull(D.ecoPm10); pushNull(D.ecoCo2);
+                pushNull(D.ecoCo); pushNull(D.ecoHcho); pushNull(D.ecoTvoc);
+            } else {
+                pushDay(D.ecoPm, dPm); pushDay(D.ecoPm10, dPm10); pushDay(D.ecoCo2, dCo2);
+                pushDay(D.ecoCo, dCo); pushDay(D.ecoHcho, dHcho); pushDay(D.ecoTvoc, dTvoc);
+                pushNull(D.oldPm); pushNull(D.oldPm10); pushNull(D.oldCo2);
+                pushNull(D.oldCo); pushNull(D.oldHcho); pushNull(D.oldTvoc);
+            }
+        }
+
+        // Overall stats
+        const avgOldPm = totOldPm / cOld, avgEcoPm = totEcoPm / cEco;
+        const avgOldCo2 = totOldCo2 / cOld, avgEcoCo2 = totEcoCo2 / cEco;
+        const redPm = ((avgOldPm - avgEcoPm) / avgOldPm * 100);
+        const redCo2 = ((avgOldCo2 - avgEcoCo2) / avgOldCo2 * 100);
+        const avgAmbPmOld = allAmbPmOld.reduce((a, b) => a + b, 0) / allAmbPmOld.length;
+        const avgAmbPmEco = allAmbPmEco.reduce((a, b) => a + b, 0) / allAmbPmEco.length;
+        const avgOldGross = allOldGrossPm.reduce((a, b) => a + b, 0) / allOldGrossPm.length;
+        const avgEcoGross = allEcoGrossPm.reduce((a, b) => a + b, 0) / allEcoGrossPm.length;
+
+        // Chart options (reusable)
+        const co = {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { font: { family: 'Chakra Petch', size: 11 }, usePointStyle: true, pointStyle: 'circle' } } },
+            scales: { x: { ticks: { font: { size: 9 }, maxTicksLimit: 8, maxRotation: 0 }, title: { display: true, text: 'พ.ศ. 2569', font: { size: 9 }, color: '#94a3b8' } }, y: { ticks: { font: { size: 10 } }, beginAtZero: true } }
+        };
+
+        // ============================================================
+        // NORMAL: BASIC CHARTS
+        // ============================================================
+        function initBasicCharts() {
+            [['basicPm25Chart', D.oldPm.avg, D.ecoPm.avg, 'µg/m³ (net)'],
+             ['basicCo2Chart', D.oldCo2.avg, D.ecoCo2.avg, 'ppm (net)']].forEach(([id, old, eco, unit]) => {
+                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+                    { label: '🪵 เตาดั้งเดิม', data: old, borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: true, tension: 0.3, spanGaps: false },
+                    { label: '✨ เตาชีวมวล', data: eco, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.12)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3, spanGaps: false }
+                ] }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
+            });
+        }
+
+        // ============================================================
+        // NORMAL: DEEP CHARTS (with min-max band)
+        // ============================================================
+        function initDeepCharts() {
+            [['deepPm25Chart', D.oldPm, D.ecoPm, 'µg/m³ (net)'],
+             ['deepPm10Chart', D.oldPm10, D.ecoPm10, 'µg/m³ (net)'],
+             ['deepCo2Chart', D.oldCo2, D.ecoCo2, 'ppm (net)'],
+             ['deepCoChart', D.oldCo, D.ecoCo, 'ppm (net)'],
+             ['deepHchoChart', D.oldHcho, D.ecoHcho, 'mg/m³ (net)'],
+             ['deepTvocChart', D.oldTvoc, D.ecoTvoc, 'mg/m³ (net)']].forEach(([id, old, eco, unit]) => {
+                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+                    { label: 'เตาดั้งเดิม (range)', data: old.max, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '+1', pointRadius: 0, spanGaps: false },
+                    { label: 'เตาดั้งเดิม (mean)', data: old.avg, borderColor: '#9ca3af', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: false, tension: 0.3, spanGaps: false },
+                    { label: 'เตาดั้งเดิม (min)', data: old.min, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '-1', pointRadius: 0, spanGaps: false },
+                    { label: 'เตาชีวมวล (range)', data: eco.max, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.12)', fill: '+1', pointRadius: 0, spanGaps: false },
+                    { label: 'เตาชีวมวล (mean)', data: eco.avg, borderColor: '#10b981', borderWidth: 3, pointRadius: 0, fill: false, tension: 0.3, spanGaps: false },
+                    { label: 'เตาชีวมวล (min)', data: eco.min, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.12)', fill: '-1', pointRadius: 0, spanGaps: false },
+                ] }, options: { ...co, plugins: { ...co.plugins, legend: { labels: { ...co.plugins.legend.labels, filter: item => item.text.includes('mean') } } }, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
+            });
+        }
+
+        // ============================================================
+        // NO-ECO: BASIC CHARTS (old stove only, first 30 days)
+        // ============================================================
+        function initNoEcoBasicCharts() {
+            const labels30 = days60.slice(0, 30);
+            const oldPm30 = D.oldPm.avg.slice(0, 30);
+            const oldCo230 = D.oldCo2.avg.slice(0, 30);
+            [['noEcoBPm25', oldPm30, 'µg/m³ (net)'],
+             ['noEcoBCo2', oldCo230, 'ppm (net)']].forEach(([id, data, unit]) => {
+                new Chart(document.getElementById(id), { type: 'line', data: { labels: labels30, datasets: [
+                    { label: '🪵 เตาดั้งเดิม', data: data, borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.12)', borderWidth: 2, borderDash: [5, 3], pointRadius: 0, fill: true, tension: 0.3 }
+                ] }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
+            });
+        }
+
+        // ============================================================
+        // NO-ECO: DEEP CHARTS (old stove only with band, first 30 days)
+        // ============================================================
+        function initNoEcoDeepCharts() {
+            const labels30 = days60.slice(0, 30);
+            [['noEcoDPm25', D.oldPm, 'µg/m³ (net)'],
+             ['noEcoDPm10', D.oldPm10, 'µg/m³ (net)'],
+             ['noEcoDCo2', D.oldCo2, 'ppm (net)'],
+             ['noEcoDCo', D.oldCo, 'ppm (net)'],
+             ['noEcoDHcho', D.oldHcho, 'mg/m³ (net)'],
+             ['noEcoDTvoc', D.oldTvoc, 'mg/m³ (net)']].forEach(([id, old, unit]) => {
+                const max30 = old.max.slice(0, 30);
+                const avg30 = old.avg.slice(0, 30);
+                const min30 = old.min.slice(0, 30);
+                new Chart(document.getElementById(id), { type: 'line', data: { labels: labels30, datasets: [
+                    { label: 'เตาดั้งเดิม (range)', data: max30, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '+1', pointRadius: 0 },
+                    { label: 'เตาดั้งเดิม (mean)', data: avg30, borderColor: '#9ca3af', borderWidth: 2, borderDash: [5, 3], pointRadius: 0, fill: false, tension: 0.3 },
+                    { label: 'เตาดั้งเดิม (min)', data: min30, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '-1', pointRadius: 0 },
+                ] }, options: { ...co, plugins: { ...co.plugins, legend: { labels: { ...co.plugins.legend.labels, filter: item => item.text.includes('mean') } } }, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
+            });
+        }
+
+        // ============================================================
+        // ECO-FAIL: BASIC CHARTS (both lines, eco higher)
+        // ============================================================
+        function initFailBasicCharts() {
+            // Eco fail: eco values in second half should be higher than old stove
+            const ecoFailPm = days60.map((_, i) => {
+                if (i < 30) return null; // no eco in first 30 days
+                // Use old stove average * 1.08 as the eco-fail value for second half
+                const baseVal = D.oldPm.avg.slice(0, 30).reduce((a, b) => a + b, 0) / 30;
+                return +(baseVal * (1.08 + _r(-0.05, 0.05))).toFixed(2);
+            });
+            const ecoFailCo2 = days60.map((_, i) => {
+                if (i < 30) return null;
+                const baseVal = D.oldCo2.avg.slice(0, 30).reduce((a, b) => a + b, 0) / 30;
+                return +(baseVal * (1.05 + _r(-0.03, 0.03))).toFixed(2);
+            });
+
+            [['failBPm25', D.oldPm.avg, ecoFailPm, 'µg/m³ (net)'],
+             ['failBCo2', D.oldCo2.avg, ecoFailCo2, 'ppm (net)']].forEach(([id, old, eco, unit]) => {
+                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+                    { label: '🪵 เตาดั้งเดิม', data: old, borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: true, tension: 0.3, spanGaps: false },
+                    { label: '✨ เตาชีวมวล ⚠️', data: eco, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.10)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3, spanGaps: false }
+                ] }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
+            });
+        }
+
+        // ============================================================
+        // ECO-FAIL: DEEP CHARTS (both lines with band, eco higher)
+        // ============================================================
+        function initFailDeepCharts() {
+            // Compute base averages from old stove first 30 days for each pollutant
+            const base = (arr) => arr.slice(0, 30).reduce((a, b) => a + b, 0) / 30;
+            const basePm = base(D.oldPm.avg), basePm10 = base(D.oldPm10.avg);
+            const baseCo2 = base(D.oldCo2.avg), baseCO = base(D.oldCo.avg);
+            const baseHcho = base(D.oldHcho.avg), baseTvoc = base(D.oldTvoc.avg);
+
+            // Generate eco-fail data: eco values slightly HIGHER than old (fail scenario)
+            const failGen = (baseVal, mult, jitter) => ({
+                avg: days60.map((_, i) => i < 30 ? null : +(baseVal * (mult + _r(-jitter, jitter))).toFixed(4)),
+                max: days60.map((_, i) => i < 30 ? null : +(baseVal * (mult + _r(jitter, jitter * 3))).toFixed(4)),
+                min: days60.map((_, i) => i < 30 ? null : +(baseVal * (mult + _r(-jitter * 3, -jitter))).toFixed(4))
+            });
+            const fPm = failGen(basePm, 1.08, 0.05), fPm10 = failGen(basePm10, 1.08, 0.05);
+            const fCo2 = failGen(baseCo2, 1.05, 0.03), fCO = failGen(baseCO, 1.10, 0.05);
+            const fHcho = failGen(baseHcho, 1.12, 0.06), fTvoc = failGen(baseTvoc, 1.10, 0.05);
+
+            [['failDPm25', D.oldPm, fPm, 'µg/m³ (net)'],
+             ['failDPm10', D.oldPm10, fPm10, 'µg/m³ (net)'],
+             ['failDCo2', D.oldCo2, fCo2, 'ppm (net)'],
+             ['failDCo', D.oldCo, fCO, 'ppm (net)'],
+             ['failDHcho', D.oldHcho, fHcho, 'mg/m³ (net)'],
+             ['failDTvoc', D.oldTvoc, fTvoc, 'mg/m³ (net)']].forEach(([id, old, eco, unit]) => {
+                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+                    { label: 'เตาดั้งเดิม (range)', data: old.max, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '+1', pointRadius: 0, spanGaps: false },
+                    { label: 'เตาดั้งเดิม (mean)', data: old.avg, borderColor: '#9ca3af', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: false, tension: 0.3, spanGaps: false },
+                    { label: 'เตาดั้งเดิม (min)', data: old.min, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '-1', pointRadius: 0, spanGaps: false },
+                    { label: 'เตาชีวมวล ⚠️ (range)', data: eco.max, borderColor: 'transparent', backgroundColor: 'rgba(239,68,68,0.10)', fill: '+1', pointRadius: 0, spanGaps: false },
+                    { label: 'เตาชีวมวล ⚠️ (mean)', data: eco.avg, borderColor: '#ef4444', borderWidth: 3, pointRadius: 0, fill: false, tension: 0.3, spanGaps: false },
+                    { label: 'เตาชีวมวล ⚠️ (min)', data: eco.min, borderColor: 'transparent', backgroundColor: 'rgba(239,68,68,0.10)', fill: '-1', pointRadius: 0, spanGaps: false },
+                ] }, options: { ...co, plugins: { ...co.plugins, legend: { labels: { ...co.plugins.legend.labels, filter: item => item.text.includes('mean') } } }, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
+            });
+        }
+
+        // ============================================================
+        // POPULATE UI with computed values (hero normal only)
+        // ============================================================
+        function populateUI() {
+            const el = id => document.getElementById(id);
+            el('hero-pct').textContent = Math.round(redPm);
+            el('hero-old-val').textContent = avgOldGross.toFixed(1) + ' µg/m³';
+            el('hero-eco-val').textContent = avgEcoGross.toFixed(1) + ' µg/m³';
+            const ambPct = Math.round(avgAmbPmOld / avgOldGross * 100);
+            el('hero-old-bar').innerHTML = '<div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:' + ambPct + '%">Baseline</div><div class="bg-orange-400/80 flex items-center justify-center text-[9px] text-white font-bold" style="width:' + (100 - ambPct) + '%">มลพิษจากเตา</div>';
+            const ecoAmbPct = Math.round(avgAmbPmEco / avgOldGross * 100);
+            const ecoStovePct = Math.round(avgEcoPm / avgOldGross * 100);
+            const savedPct = 100 - ecoAmbPct - ecoStovePct;
+            el('hero-eco-bar').innerHTML = '<div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:' + ecoAmbPct + '%">Baseline</div><div class="bg-emerald-400 flex items-center justify-center text-[9px] text-white font-bold" style="width:' + ecoStovePct + '%">มลพิษจากเตา</div><div class="bg-white/10 flex items-center justify-center text-[9px] text-emerald-300/50" style="width:' + savedPct + '%">↓ ลดได้</div>';
+        }
+
+        // ============================================================
+        // CHART INIT TRACKER
+        // ============================================================
+        const inited = {};
+
+        function initChartsForScenario(sc) {
+            const basicVisible = !document.getElementById('view-basic').classList.contains('hidden');
+            const deepVisible = !document.getElementById('view-deep').classList.contains('hidden');
+
+            if (sc === 'normal') {
+                if (basicVisible && !inited['basic-normal']) { inited['basic-normal'] = true; initBasicCharts(); }
+                if (deepVisible && !inited['deep-normal']) { inited['deep-normal'] = true; initDeepCharts(); }
+            } else if (sc === 'no-eco') {
+                if (basicVisible && !inited['basic-no-eco']) { inited['basic-no-eco'] = true; initNoEcoBasicCharts(); }
+                if (deepVisible && !inited['deep-no-eco']) { inited['deep-no-eco'] = true; initNoEcoDeepCharts(); }
+            } else if (sc === 'eco-fail') {
+                if (basicVisible && !inited['basic-eco-fail']) { inited['basic-eco-fail'] = true; initFailBasicCharts(); }
+                if (deepVisible && !inited['deep-eco-fail']) { inited['deep-eco-fail'] = true; initFailDeepCharts(); }
+            }
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        // ============================================================
+        // INFO POPUP
+        // ============================================================
+        function showInfo(el, title, body) {
+            // Close any existing popup
+            closeInfo();
+            // Create overlay
+            const ov = document.createElement('div');
+            ov.className = 'info-overlay';
+            ov.onclick = closeInfo;
+            document.body.appendChild(ov);
+            // Create popup
+            const pop = document.createElement('div');
+            pop.className = 'info-popup';
+            pop.innerHTML = '<span class="close-pop" onclick="closeInfo()">✕</span><h5>' + title + '</h5><div style="white-space:pre-line">' + body + '</div>';
+            document.body.appendChild(pop);
+            // Position near the button
+            const rect = el.getBoundingClientRect();
+            let top = rect.bottom + 8;
+            let left = Math.min(rect.left, window.innerWidth - 340);
+            if (left < 10) left = 10;
+            if (top + 200 > window.innerHeight) top = rect.top - 200;
+            pop.style.top = top + 'px';
+            pop.style.left = left + 'px';
+            pop.id = 'active-info-popup';
+            ov.id = 'active-info-overlay';
+        }
+        function closeInfo() {
+            const p = document.getElementById('active-info-popup');
+            const o = document.getElementById('active-info-overlay');
+            if (p) p.remove();
+            if (o) o.remove();
+        }
+
+        window.addEventListener('load', () => { populateUI(); initChartsForScenario('normal'); });
+    </script>
+</body>
+</html>

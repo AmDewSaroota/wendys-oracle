@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Data Generator — EcoStove</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Prompt', sans-serif; }
+        .log-entry { animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-emerald-700 to-teal-600 text-white py-6 px-6 shadow-xl">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold">Mock Data Generator</h1>
+            <p class="text-emerald-100 text-sm mt-1">สร้างข้อมูลจำลองสมจริงสำหรับ EcoStove Dashboard</p>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-6 space-y-6">
+
+        <!-- Config Panel -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-lg font-bold text-slate-800 mb-4">ตั้งค่า</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-slate-600">วันเริ่ม</label>
+                    <input type="date" id="startDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-600">วันสิ้นสุด</label>
+                    <input type="date" id="endDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-600">% Session ไม่สมบูรณ์</label>
+                    <input type="number" id="incompletePercent" value="10" min="0" max="50" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-600">% TVOC Manual</label>
+                    <input type="number" id="tvocPercent" value="40" min="0" max="100" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div id="previewPanel" class="bg-white rounded-2xl shadow-lg p-6 hidden">
+            <h2 class="text-lg font-bold text-slate-800 mb-4">Preview</h2>
+            <div id="previewContent" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+            <div id="previewSample" class="mt-4 text-sm text-slate-500"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap gap-3">
+            <button onclick="generatePreview()" class="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition shadow-lg">
+                Preview
+            </button>
+            <button onclick="insertMockData()" id="btnInsert" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition shadow-lg disabled:opacity-50" disabled>
+                Generate & Insert
+            </button>
+            <button onclick="clearMockData()" class="px-6 py-3 bg-red-500 text-white rounded-xl font-bold text-sm hover:bg-red-600 transition shadow-lg">
+                ลบ Mock Data
+            </button>
+            <button onclick="clearOldTestData()" class="px-6 py-3 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-lg">
+                ลบข้อมูลทดสอบเก่า
+            </button>
+        </div>
+
+        <!-- Progress -->
+        <div id="progressPanel" class="bg-white rounded-2xl shadow-lg p-6 hidden">
+            <div class="flex items-center justify-between mb-2">
+                <span id="progressLabel" class="text-sm font-bold text-slate-700">กำลังเตรียม...</span>
+                <span id="progressPercent" class="text-sm font-bold text-emerald-600">0%</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-3">
+                <div id="progressBar" class="bg-emerald-500 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Log Panel -->
+        <div id="logPanel" class="bg-slate-900 rounded-2xl shadow-lg p-4 hidden max-h-80 overflow-y-auto">
+            <div id="logContent" class="space-y-1 font-mono text-xs"></div>
+        </div>
+
+    </div>
+
+<script>
+// ==================== Supabase ====================
+const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ==================== Config ====================
+const NUM_HOUSES = 10;
+const BATCH_SIZE = 500;
+const BATCH_DELAY = 200;
+
+// ==================== Defaults ====================
+window.addEventListener('DOMContentLoaded', () => {
+    const today = new Date();
+    const end = new Date(today); end.setDate(end.getDate() - 1);
+    const start = new Date(today); start.setDate(start.getDate() - 30);
+    document.getElementById('startDate').value = fmt(start);
+    document.getElementById('endDate').value = fmt(end);
+});
+
+function fmt(d) { return d.toISOString().split('T')[0]; }
+function rand(min, max) { return Math.random() * (max - min) + min; }
+function randInt(min, max) { return Math.floor(rand(min, max + 1)); }
+function pad(n) { return String(n).padStart(2, '0'); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ==================== AQI Calculation (same as sync.js) ====================
+function calculateAqi(pm25) {
+    if (pm25 == null || isNaN(pm25) || pm25 < 0) return null;
+    const bp = [
+        { lo: 0, hi: 15, aqiLo: 0, aqiHi: 25 },
+        { lo: 15.1, hi: 25, aqiLo: 26, aqiHi: 50 },
+        { lo: 25.1, hi: 37.5, aqiLo: 51, aqiHi: 100 },
+        { lo: 37.6, hi: 75, aqiLo: 101, aqiHi: 200 },
+        { lo: 75.1, hi: 150, aqiLo: 201, aqiHi: 300 },
+    ];
+    for (const b of bp) {
+        if (pm25 >= b.lo && pm25 <= b.hi)
+            return Math.round((b.aqiHi - b.aqiLo) / (b.hi - b.lo) * (pm25 - b.lo) + b.aqiLo);
+    }
+    return pm25 > 150 ? 300 : null;
+}
+
+// ==================== House Profiles ====================
+const HOUSE_PROFILES = [
+    { name: 'บ้านสันปูเลย',    district: 'แม่ริม',  sub: 'สันโป่ง',  mult: 1.0,  lat: 18.865, lng: 98.925 },
+    { name: 'บ้านแม่แรม',      district: 'แม่ริม',  sub: 'แม่แรม',   mult: 0.85, lat: 18.880, lng: 98.910 },
+    { name: 'บ้านโป่งแยง',     district: 'แม่ริม',  sub: 'โป่งแยง',  mult: 1.15, lat: 18.850, lng: 98.895 },
+    { name: 'บ้านสะลวง',       district: 'แม่ริม',  sub: 'สะลวง',    mult: 0.90, lat: 18.900, lng: 98.930 },
+    { name: 'บ้านห้วยทราย',    district: 'แม่ริม',  sub: 'ห้วยทราย', mult: 1.10, lat: 18.870, lng: 98.880 },
+    { name: 'บ้านแม่สา',       district: 'แม่ริม',  sub: 'แม่สา',    mult: 0.95, lat: 18.890, lng: 98.950 },
+    { name: 'บ้านดอนแก้ว',     district: 'แม่ริม',  sub: 'ดอนแก้ว',  mult: 1.05, lat: 18.855, lng: 98.940 },
+    { name: 'บ้านริมใต้',       district: 'แม่ริม',  sub: 'ริมใต้',   mult: 0.80, lat: 18.840, lng: 98.920 },
+    { name: 'บ้านเหมืองแก้ว',   district: 'แม่ริม',  sub: 'เหมืองแก้ว', mult: 1.20, lat: 18.875, lng: 98.905 },
+    { name: 'บ้านสันคะยอม',    district: 'แม่ริม',  sub: 'สันคะยอม', mult: 0.92, lat: 18.895, lng: 98.915 },
+];
+
+// ==================== Cooking Curve Generator ====================
+function generateCurve(numReadings, baseVal, peakMin, peakMax, mult) {
+    const values = [];
+    const peakCenter = Math.floor(numReadings * 0.4);
+    const peakWidth = numReadings * 0.25;
+    const peakVal = rand(peakMin, peakMax) * mult;
+    for (let i = 0; i < numReadings; i++) {
+        const dist = Math.abs(i - peakCenter);
+        const intensity = Math.exp(-(dist * dist) / (2 * peakWidth * peakWidth));
+        const val = baseVal + (peakVal - baseVal) * intensity;
+        const noise = val * rand(-0.15, 0.15);
+        values.push(Math.max(0, +(val + noise).toFixed(2)));
+    }
+    return values;
+}
+
+// ==================== Generate All Data In Memory ====================
+let generatedData = null;
+
+function generateAllData() {
+    const startDate = new Date(document.getElementById('startDate').value + 'T00:00:00');
+    const endDate = new Date(document.getElementById('endDate').value + 'T00:00:00');
+    const incPct = parseInt(document.getElementById('incompletePercent').value) / 100;
+    const tvocPct = parseInt(document.getElementById('tvocPercent').value) / 100;
+
+    const totalDays = Math.round((endDate - startDate) / 86400000) + 1;
+    const midDay = Math.floor(totalDays / 2);
+
+    // Layer 1: Subjects
+    const subjects = HOUSE_PROFILES.map((h, i) => ({
+        full_name: `[MOCK] ${h.name}`,
+        gps_lat: h.lat + rand(-0.005, 0.005),
+        gps_long: h.lng + rand(-0.005, 0.005),
+        address: `บ้านเลขที่ ${10 + i} หมู่ ${i + 1}`,
+        province: 'เชียงใหม่',
+        district: h.district,
+        subdistrict: h.sub,
+        connectivity: 'hotspot',
+        status: 'active',
+        has_sensor: true,
+    }));
+
+    // Layer 2: Registered Sensors
+    const sensors = [];
+    for (let i = 1; i <= NUM_HOUSES; i++) {
+        sensors.push({
+            tuya_device_id: `MOCK-ES-${pad(i)}`,
+            name: `ES-${pad(i)}`,
+        });
+    }
+
+    // Prepare sessions, logs, summaries (need subject IDs later)
+    const sessionsTemplate = [];
+    const logsTemplate = [];
+    const summariesTemplate = [];
+
+    for (let hi = 0; hi < NUM_HOUSES; hi++) {
+        const tuyaId = `MOCK-ES-${pad(hi + 1)}`;
+        const profile = HOUSE_PROFILES[hi];
+
+        for (let day = 0; day < totalDays; day++) {
+            const date = new Date(startDate);
+            date.setDate(date.getDate() + day);
+            const dateStr = fmt(date);
+            const isOld = day < midDay;
+            const stoveType = isOld ? 'old' : 'eco';
+
+            let dayCompleted = 0, dayIncomplete = 0, dayCancelled = 0;
+            let dayReadings = 0;
+            const dayPm25s = [], dayCo2s = [], dayTemps = [], dayHums = [], dayPm10s = [];
+
+            // 2 sessions per day: morning (06:00 TH) and evening (17:00 TH)
+            const sessionStarts = [
+                new Date(date.getFullYear(), date.getMonth(), date.getDate(), 6, 0, 0),  // 06:00 local
+                new Date(date.getFullYear(), date.getMonth(), date.getDate(), 17, 0, 0), // 17:00 local
+            ];
+
+            for (let si = 0; si < 2; si++) {
+                const sessionStart = sessionStarts[si];
+                // Convert to UTC (Thai = UTC+7)
+                const startUTC = new Date(sessionStart.getTime() - 7 * 3600000);
+
+                const isIncomplete = Math.random() < incPct;
+                const totalReadings = isIncomplete ? randInt(5, 15) : 26;
+                const baselineReadings = Math.min(2, totalReadings);
+                const cookingReadings = totalReadings - baselineReadings;
+
+                const baselineEndUTC = new Date(startUTC.getTime() + 10 * 60000);
+                const collectionEndUTC = isIncomplete
+                    ? new Date(startUTC.getTime() + (10 + cookingReadings * 5) * 60000)
+                    : new Date(startUTC.getTime() + 130 * 60000);
+
+                // Generate baseline values
+                const blPm25 = isOld ? rand(30, 50) : rand(20, 40);
+                const blCo2 = isOld ? rand(400, 600) : rand(400, 500);
+                const blTemp = rand(27, 32);
+                const blHum = rand(55, 70);
+
+                // Generate cooking curves
+                const pm25Curve = cookingReadings > 0 ? generateCurve(cookingReadings,
+                    blPm25, isOld ? 200 : 50, isOld ? 500 : 150, profile.mult) : [];
+                const co2Curve = cookingReadings > 0 ? generateCurve(cookingReadings,
+                    blCo2, isOld ? 1500 : 800, isOld ? 3000 : 1500, profile.mult) : [];
+                const tempCurve = cookingReadings > 0 ? generateCurve(cookingReadings,
+                    blTemp, isOld ? 33 : 30, isOld ? 38 : 35, 1.0) : [];
+                const humCurve = cookingReadings > 0 ? generateCurve(cookingReadings,
+                    blHum, isOld ? 45 : 50, isOld ? 65 : 70, 1.0) : [];
+
+                // Collect all readings for session aggregation
+                const allPm25 = [], allCo2 = [], allTemp = [], allHum = [], allPm10 = [];
+                const readings = [];
+
+                // Baseline readings
+                for (let r = 0; r < baselineReadings; r++) {
+                    const recordedAt = new Date(startUTC.getTime() + r * 5 * 60000).toISOString();
+                    const pm25 = +(blPm25 + rand(-5, 5)).toFixed(2);
+                    const co2 = +(blCo2 + rand(-30, 30)).toFixed(0);
+                    const temp = +(blTemp + rand(-0.5, 0.5)).toFixed(1);
+                    const hum = +(blHum + rand(-2, 2)).toFixed(1);
+                    const pm10 = +(pm25 * rand(1.3, 1.8)).toFixed(2);
+                    const hcho = +(rand(0.01, 0.05)).toFixed(3);
+                    allPm25.push(pm25); allCo2.push(co2); allTemp.push(temp); allHum.push(hum); allPm10.push(pm10);
+                    readings.push({
+                        tuya_device_id: tuyaId, house_idx: hi,
+                        pm25_value: pm25, pm10_value: pm10, co2_value: +co2,
+                        co_value: +(rand(0.1, 2.0)).toFixed(2),
+                        temperature: +temp, humidity: +hum,
+                        hcho_value: +hcho, tvoc_value: null,
+                        aqi: calculateAqi(pm25),
+                        data_source: 'sensor', stove_type: stoveType,
+                        status: 'approved', recorded_at: recordedAt,
+                        _session_idx: null, // filled later
+                    });
+                }
+
+                // Cooking readings
+                for (let r = 0; r < cookingReadings; r++) {
+                    const recordedAt = new Date(startUTC.getTime() + (10 + r * 5) * 60000).toISOString();
+                    const pm25 = pm25Curve[r];
+                    const co2 = +co2Curve[r].toFixed(0);
+                    const temp = +tempCurve[r].toFixed(1);
+                    const hum = +humCurve[r].toFixed(1);
+                    const pm10 = +(pm25 * rand(1.2, 1.6)).toFixed(2);
+                    const hcho = +(rand(isOld ? 0.03 : 0.01, isOld ? 0.15 : 0.06)).toFixed(3);
+                    allPm25.push(pm25); allCo2.push(co2); allTemp.push(temp); allHum.push(hum); allPm10.push(pm10);
+                    readings.push({
+                        tuya_device_id: tuyaId, house_idx: hi,
+                        pm25_value: pm25, pm10_value: pm10, co2_value: +co2,
+                        co_value: +(rand(0.1, 3.0)).toFixed(2),
+                        temperature: +temp, humidity: +hum,
+                        hcho_value: +hcho, tvoc_value: null,
+                        aqi: calculateAqi(pm25),
+                        data_source: 'sensor', stove_type: stoveType,
+                        status: 'approved', recorded_at: recordedAt,
+                        _session_idx: null,
+                    });
+                }
+
+                // TVOC manual entries
+                if (Math.random() < tvocPct && cookingReadings > 4) {
+                    const numTvoc = randInt(2, 4);
+                    for (let t = 0; t < numTvoc; t++) {
+                        const tvocIdx = Math.floor(cookingReadings * (t + 1) / (numTvoc + 1));
+                        const recordedAt = new Date(startUTC.getTime() + (10 + tvocIdx * 5) * 60000).toISOString();
+                        readings.push({
+                            tuya_device_id: tuyaId, house_idx: hi,
+                            pm25_value: null, pm10_value: null, co2_value: null,
+                            co_value: null, temperature: null, humidity: null,
+                            hcho_value: null,
+                            tvoc_value: +(rand(isOld ? 0.5 : 0.1, isOld ? 3.0 : 1.0)).toFixed(3),
+                            aqi: null,
+                            data_source: 'manual', stove_type: stoveType,
+                            status: 'approved', recorded_at: recordedAt,
+                            _session_idx: null,
+                        });
+                    }
+                }
+
+                // Session aggregate
+                const avgPm25 = allPm25.length ? +(allPm25.reduce((a, b) => a + b, 0) / allPm25.length).toFixed(2) : null;
+                const avgCo2 = allCo2.length ? +(allCo2.reduce((a, b) => a + b, 0) / allCo2.length).toFixed(0) : null;
+                const avgTemp = allTemp.length ? +(allTemp.reduce((a, b) => a + b, 0) / allTemp.length).toFixed(1) : null;
+                const avgHum = allHum.length ? +(allHum.reduce((a, b) => a + b, 0) / allHum.length).toFixed(1) : null;
+                const avgPm10 = allPm10.length ? +(allPm10.reduce((a, b) => a + b, 0) / allPm10.length).toFixed(2) : null;
+                const maxPm25 = allPm25.length ? +Math.max(...allPm25).toFixed(2) : null;
+                const minPm25 = allPm25.length ? +Math.min(...allPm25).toFixed(2) : null;
+
+                // Baseline avg (first 2 readings)
+                const blAvgPm25 = baselineReadings > 0 ? +(allPm25.slice(0, baselineReadings).reduce((a, b) => a + b, 0) / baselineReadings).toFixed(2) : null;
+                const blAvgCo2 = baselineReadings > 0 ? +(allCo2.slice(0, baselineReadings).reduce((a, b) => a + b, 0) / baselineReadings).toFixed(0) : null;
+                const blAvgTemp = baselineReadings > 0 ? +(allTemp.slice(0, baselineReadings).reduce((a, b) => a + b, 0) / baselineReadings).toFixed(1) : null;
+                const blAvgHum = baselineReadings > 0 ? +(allHum.slice(0, baselineReadings).reduce((a, b) => a + b, 0) / baselineReadings).toFixed(1) : null;
+
+                const sessionIdx = sessionsTemplate.length;
+                readings.forEach(r => r._session_idx = sessionIdx);
+                logsTemplate.push(...readings);
+
+                sessionsTemplate.push({
+                    device_id: tuyaId,
+                    house_idx: hi,
+                    session_number: si + 1,
+                    started_at: startUTC.toISOString(),
+                    baseline_ended_at: baselineEndUTC.toISOString(),
+                    collection_ended_at: collectionEndUTC.toISOString(),
+                    ended_at: collectionEndUTC.toISOString(),
+                    session_status: isIncomplete ? 'incomplete' : 'complete',
+                    baseline_transition: Math.random() < 0.7 ? 'auto' : 'manual',
+                    readings_count: totalReadings,
+                    baseline_avg_pm25: blAvgPm25 != null ? +blAvgPm25 : null,
+                    baseline_avg_co2: blAvgCo2 != null ? +blAvgCo2 : null,
+                    baseline_avg_temperature: blAvgTemp != null ? +blAvgTemp : null,
+                    baseline_avg_humidity: blAvgHum != null ? +blAvgHum : null,
+                    baseline_readings_count: baselineReadings,
+                    avg_pm25: avgPm25, avg_pm10: avgPm10, avg_co2: avgCo2 != null ? +avgCo2 : null,
+                    avg_temperature: avgTemp != null ? +avgTemp : null,
+                    avg_humidity: avgHum != null ? +avgHum : null,
+                    max_pm25: maxPm25, min_pm25: minPm25,
+                    stove_type: stoveType,
+                    notes: null,
+                });
+
+                // Track daily stats
+                if (!isIncomplete) { dayCompleted++; } else { dayIncomplete++; }
+                dayReadings += totalReadings;
+                dayPm25s.push(...allPm25); dayCo2s.push(...allCo2);
+                dayTemps.push(...allTemp); dayHums.push(...allHum); dayPm10s.push(...allPm10);
+            }
+
+            // Daily summary
+            const dAvgPm25 = dayPm25s.length ? +(dayPm25s.reduce((a, b) => a + b, 0) / dayPm25s.length).toFixed(2) : null;
+            const dMaxPm25 = dayPm25s.length ? +Math.max(...dayPm25s).toFixed(2) : null;
+            const dMinPm25 = dayPm25s.length ? +Math.min(...dayPm25s).toFixed(2) : null;
+            const dAvgPm10 = dayPm10s.length ? +(dayPm10s.reduce((a, b) => a + b, 0) / dayPm10s.length).toFixed(2) : null;
+            const dAvgCo2 = dayCo2s.length ? +(dayCo2s.reduce((a, b) => a + b, 0) / dayCo2s.length).toFixed(0) : null;
+            const dAvgTemp = dayTemps.length ? +(dayTemps.reduce((a, b) => a + b, 0) / dayTemps.length).toFixed(1) : null;
+            const dAvgHum = dayHums.length ? +(dayHums.reduce((a, b) => a + b, 0) / dayHums.length).toFixed(1) : null;
+
+            summariesTemplate.push({
+                summary_date: dateStr,
+                device_id: tuyaId,
+                house_idx: hi,
+                sessions_completed: dayCompleted,
+                sessions_incomplete: dayIncomplete,
+                sessions_cancelled: dayCancelled,
+                total_readings: dayReadings,
+                avg_pm25: dAvgPm25, max_pm25: dMaxPm25, min_pm25: dMinPm25,
+                avg_pm10: dAvgPm10, avg_co2: dAvgCo2 != null ? +dAvgCo2 : null,
+                avg_temperature: dAvgTemp != null ? +dAvgTemp : null,
+                avg_humidity: dAvgHum != null ? +dAvgHum : null,
+                compliance_status: dayCompleted >= 2 ? 'complete' : dayCompleted >= 1 ? 'partial' : 'missed',
+                stove_type: day < midDay ? 'old' : 'eco',
+            });
+        }
+    }
+
+    generatedData = { subjects, sensors, sessionsTemplate, logsTemplate, summariesTemplate };
+    return generatedData;
+}
+
+// ==================== Preview ====================
+function generatePreview() {
+    const data = generateAllData();
+    const panel = document.getElementById('previewPanel');
+    const content = document.getElementById('previewContent');
+    const sample = document.getElementById('previewSample');
+    panel.classList.remove('hidden');
+
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const totalDays = Math.round((new Date(endDate) - new Date(startDate)) / 86400000) + 1;
+    const midDay = Math.floor(totalDays / 2);
+
+    content.innerHTML = [
+        card('🏠', 'บ้าน', data.subjects.length),
+        card('📡', 'เซนเซอร์', data.sensors.length),
+        card('🔄', 'Sessions', data.sessionsTemplate.length),
+        card('📊', 'Readings', data.logsTemplate.length.toLocaleString()),
+        card('📋', 'สรุปรายวัน', data.summariesTemplate.length),
+        card('🔴', 'เตาเก่า', midDay + ' วัน'),
+        card('🟢', 'เตาใหม่', (totalDays - midDay) + ' วัน'),
+        card('📅', 'ช่วงเวลา', startDate + ' → ' + endDate),
+    ].join('');
+
+    // Sample cooking curve
+    const sampleSession = data.logsTemplate.filter(l => l._session_idx === 0 && l.data_source === 'sensor');
+    const pm25s = sampleSession.map(l => l.pm25_value).filter(v => v != null);
+    const sparkline = pm25s.map(v => {
+        const h = Math.min(30, Math.max(2, v / 15));
+        return `<div style="width:4px;height:${h}px;background:#f97316;border-radius:2px" title="PM2.5: ${v.toFixed(1)}"></div>`;
+    }).join('');
+    sample.innerHTML = `
+        <p class="font-medium text-slate-700 mb-2">ตัวอย่าง Cooking Curve (Session แรก, PM2.5)</p>
+        <div class="flex items-end gap-0.5 h-10">${sparkline}</div>
+        <p class="text-xs text-slate-400 mt-1">baseline → ramp up → peak → cool down</p>
+    `;
+
+    document.getElementById('btnInsert').disabled = false;
+}
+
+function card(icon, label, value) {
+    return `<div class="bg-slate-50 rounded-xl p-3 text-center">
+        <div class="text-xl">${icon}</div>
+        <div class="text-xs text-slate-400 mt-1">${label}</div>
+        <div class="font-bold text-slate-800">${value}</div>
+    </div>`;
+}
+
+// ==================== Logging ====================
+function log(msg, type = 'info') {
+    const panel = document.getElementById('logPanel');
+    const content = document.getElementById('logContent');
+    panel.classList.remove('hidden');
+    const colors = { info: 'text-slate-300', success: 'text-emerald-400', error: 'text-red-400', warn: 'text-amber-400' };
+    const time = new Date().toLocaleTimeString('th-TH');
+    content.innerHTML += `<div class="log-entry ${colors[type]}">[${time}] ${msg}</div>`;
+    panel.scrollTop = panel.scrollHeight;
+}
+
+function setProgress(label, pct) {
+    document.getElementById('progressPanel').classList.remove('hidden');
+    document.getElementById('progressLabel').textContent = label;
+    document.getElementById('progressPercent').textContent = Math.round(pct) + '%';
+    document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// ==================== Insert ====================
+async function insertMockData() {
+    if (!generatedData) { alert('กรุณากด Preview ก่อน'); return; }
+    if (!confirm(`จะ insert ข้อมูล mock:\n• ${generatedData.subjects.length} บ้าน\n• ${generatedData.sessionsTemplate.length} sessions\n• ${generatedData.logsTemplate.length.toLocaleString()} readings\n\nดำเนินการ?`)) return;
+
+    const btn = document.getElementById('btnInsert');
+    btn.disabled = true;
+    btn.textContent = 'กำลังทำงาน...';
+
+    try {
+        // Check existing mock data
+        const { data: existing } = await sb.from('subjects').select('id').like('full_name', '[MOCK]%').limit(1);
+        if (existing && existing.length > 0) {
+            if (!confirm('พบ Mock Data เก่าอยู่แล้ว ต้องการลบของเก่าก่อนมั้ย?\n\nกด OK = ลบแล้ว insert ใหม่\nกด Cancel = insert ทับ (อาจซ้ำ)')) {
+                // Continue without clearing
+            } else {
+                await doClearMockData();
+            }
+        }
+
+        // Step 1: Insert subjects
+        setProgress('กำลัง insert บ้าน...', 5);
+        log('Inserting ' + generatedData.subjects.length + ' subjects...');
+        const { data: subData, error: subErr } = await sb.from('subjects').insert(generatedData.subjects).select('id');
+        if (subErr) throw new Error('subjects: ' + subErr.message);
+        const subjectIds = subData.map(s => s.id);
+        log('subjects inserted: ' + subjectIds.length + ' rows', 'success');
+
+        // Step 2: Insert registered_sensors
+        setProgress('กำลัง insert เซนเซอร์...', 15);
+        log('Inserting ' + generatedData.sensors.length + ' registered_sensors...');
+        const { error: rsErr } = await sb.from('registered_sensors').insert(generatedData.sensors);
+        if (rsErr) throw new Error('registered_sensors: ' + rsErr.message);
+        log('registered_sensors inserted', 'success');
+
+        // Step 3: Insert devices
+        setProgress('กำลัง insert devices...', 20);
+        const deviceRows = generatedData.sensors.map((s, i) => ({
+            tuya_device_id: s.tuya_device_id,
+            subject_id: subjectIds[i],
+            name: s.name,
+            is_active: true,
+        }));
+        log('Inserting ' + deviceRows.length + ' devices...');
+        const { error: devErr } = await sb.from('devices').insert(deviceRows);
+        if (devErr) throw new Error('devices: ' + devErr.message);
+        log('devices inserted', 'success');
+
+        // Step 4: Insert collection_periods
+        setProgress('กำลัง insert collection periods...', 25);
+        const startDate = new Date(document.getElementById('startDate').value + 'T00:00:00');
+        const endDate = new Date(document.getElementById('endDate').value + 'T00:00:00');
+        const totalDays = Math.round((endDate - startDate) / 86400000) + 1;
+        const midDay = Math.floor(totalDays / 2);
+        const midDate = new Date(startDate); midDate.setDate(midDate.getDate() + midDay);
+
+        const periods = [];
+        for (let i = 0; i < NUM_HOUSES; i++) {
+            const oldEnd = new Date(midDate); oldEnd.setDate(oldEnd.getDate() - 1);
+            periods.push({
+                subject_id: subjectIds[i],
+                stove_type: 'old',
+                starts_at: fmt(startDate),
+                ends_at: fmt(oldEnd),
+                notes: '[MOCK] ช่วงเตาเก่า',
+                created_by: 'mock-generator',
+            });
+            periods.push({
+                subject_id: subjectIds[i],
+                stove_type: 'eco',
+                starts_at: fmt(midDate),
+                ends_at: fmt(endDate),
+                notes: '[MOCK] ช่วงเตาชีวมวล',
+                created_by: 'mock-generator',
+            });
+        }
+        log('Inserting ' + periods.length + ' collection_periods...');
+        const { error: cpErr } = await sb.from('collection_periods').insert(periods);
+        if (cpErr) throw new Error('collection_periods: ' + cpErr.message);
+        log('collection_periods inserted', 'success');
+
+        // Step 5: Insert sessions (batch)
+        setProgress('กำลัง insert sessions...', 35);
+        const sessionRows = generatedData.sessionsTemplate.map(s => {
+            const row = { ...s, house_id: subjectIds[s.house_idx] };
+            delete row.house_idx;
+            return row;
+        });
+        log('Inserting ' + sessionRows.length + ' sessions...');
+        const sessionIds = [];
+        for (let b = 0; b < sessionRows.length; b += BATCH_SIZE) {
+            const batch = sessionRows.slice(b, b + BATCH_SIZE);
+            const { data: sData, error: sErr } = await sb.from('sessions').insert(batch).select('id');
+            if (sErr) throw new Error('sessions batch ' + b + ': ' + sErr.message);
+            sessionIds.push(...sData.map(s => s.id));
+            const pct = 35 + (b / sessionRows.length) * 15;
+            setProgress('กำลัง insert sessions... ' + Math.min(b + BATCH_SIZE, sessionRows.length) + '/' + sessionRows.length, pct);
+            await sleep(BATCH_DELAY);
+        }
+        log('sessions inserted: ' + sessionIds.length + ' rows', 'success');
+
+        // Step 6: Insert pollution_logs (batch)
+        setProgress('กำลัง insert pollution_logs...', 50);
+        const logRows = generatedData.logsTemplate.map(l => {
+            const row = {
+                session_id: sessionIds[l._session_idx],
+                tuya_device_id: l.tuya_device_id,
+                house_id: subjectIds[l.house_idx],
+                pm25_value: l.pm25_value, pm10_value: l.pm10_value,
+                co2_value: l.co2_value, co_value: l.co_value,
+                temperature: l.temperature, humidity: l.humidity,
+                hcho_value: l.hcho_value, tvoc_value: l.tvoc_value,
+                aqi: l.aqi,
+                data_source: l.data_source, stove_type: l.stove_type,
+                status: l.status, recorded_at: l.recorded_at,
+            };
+            return row;
+        });
+        log('Inserting ' + logRows.length + ' pollution_logs in batches of ' + BATCH_SIZE + '...');
+        let insertedLogs = 0;
+        for (let b = 0; b < logRows.length; b += BATCH_SIZE) {
+            const batch = logRows.slice(b, b + BATCH_SIZE);
+            const { error: lErr } = await sb.from('pollution_logs').insert(batch);
+            if (lErr) {
+                log('pollution_logs batch ' + b + ' error: ' + lErr.message, 'error');
+                continue;
+            }
+            insertedLogs += batch.length;
+            const pct = 50 + (b / logRows.length) * 35;
+            setProgress('กำลัง insert pollution_logs... ' + insertedLogs.toLocaleString() + '/' + logRows.length.toLocaleString(), pct);
+            if (b % 2000 === 0) log('  ... ' + insertedLogs.toLocaleString() + ' / ' + logRows.length.toLocaleString());
+            await sleep(BATCH_DELAY);
+        }
+        log('pollution_logs inserted: ' + insertedLogs.toLocaleString() + ' rows', 'success');
+
+        // Step 7: Insert daily_summaries
+        setProgress('กำลัง insert daily_summaries...', 90);
+        const sumRows = generatedData.summariesTemplate.map(s => {
+            const row = { ...s, house_id: subjectIds[s.house_idx] };
+            delete row.house_idx;
+            return row;
+        });
+        log('Inserting ' + sumRows.length + ' daily_summaries...');
+        for (let b = 0; b < sumRows.length; b += BATCH_SIZE) {
+            const batch = sumRows.slice(b, b + BATCH_SIZE);
+            const { error: dsErr } = await sb.from('daily_summaries').insert(batch);
+            if (dsErr) {
+                log('daily_summaries batch ' + b + ' error: ' + dsErr.message, 'error');
+                continue;
+            }
+            await sleep(BATCH_DELAY);
+        }
+        log('daily_summaries inserted: ' + sumRows.length + ' rows', 'success');
+
+        setProgress('เสร็จสิ้น!', 100);
+        log('=== Mock data generation complete! ===', 'success');
+        log('เปิด dashboard เพื่อดูข้อมูล: biomassstove.vercel.app', 'success');
+
+    } catch (e) {
+        log('ERROR: ' + e.message, 'error');
+        setProgress('เกิดข้อผิดพลาด', 0);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generate & Insert';
+    }
+}
+
+// ==================== Clear Mock Data ====================
+async function clearMockData() {
+    if (!confirm('จะลบข้อมูล Mock ทั้งหมด (prefix MOCK- และ [MOCK])\n\nข้อมูลจริงไม่กระทบ\n\nดำเนินการ?')) return;
+    await doClearMockData();
+}
+
+async function doClearMockData() {
+    log('=== Clearing mock data ===', 'warn');
+    setProgress('กำลังลบ Mock Data...', 10);
+
+    try {
+        // 1. pollution_logs
+        log('Deleting pollution_logs (MOCK-)...');
+        const { error: e1 } = await sb.from('pollution_logs').delete().like('tuya_device_id', 'MOCK-%');
+        if (e1) log('pollution_logs: ' + e1.message, 'error');
+        else log('pollution_logs deleted', 'success');
+        setProgress('กำลังลบ...', 20);
+
+        // 2. daily_summaries
+        log('Deleting daily_summaries (MOCK-)...');
+        const { error: e2 } = await sb.from('daily_summaries').delete().like('device_id', 'MOCK-%');
+        if (e2) log('daily_summaries: ' + e2.message, 'error');
+        else log('daily_summaries deleted', 'success');
+        setProgress('กำลังลบ...', 35);
+
+        // 3. sessions
+        log('Deleting sessions (MOCK-)...');
+        const { error: e3 } = await sb.from('sessions').delete().like('device_id', 'MOCK-%');
+        if (e3) log('sessions: ' + e3.message, 'error');
+        else log('sessions deleted', 'success');
+        setProgress('กำลังลบ...', 50);
+
+        // 4. collection_periods
+        log('Deleting collection_periods (mock-generator)...');
+        const { error: e4 } = await sb.from('collection_periods').delete().eq('created_by', 'mock-generator');
+        if (e4) log('collection_periods: ' + e4.message, 'error');
+        else log('collection_periods deleted', 'success');
+        setProgress('กำลังลบ...', 65);
+
+        // 5. devices
+        log('Deleting devices (MOCK-)...');
+        const { error: e5 } = await sb.from('devices').delete().like('tuya_device_id', 'MOCK-%');
+        if (e5) log('devices: ' + e5.message, 'error');
+        else log('devices deleted', 'success');
+        setProgress('กำลังลบ...', 80);
+
+        // 6. registered_sensors
+        log('Deleting registered_sensors (MOCK-)...');
+        const { error: e6 } = await sb.from('registered_sensors').delete().like('tuya_device_id', 'MOCK-%');
+        if (e6) log('registered_sensors: ' + e6.message, 'error');
+        else log('registered_sensors deleted', 'success');
+        setProgress('กำลังลบ...', 90);
+
+        // 7. subjects
+        log('Deleting subjects ([MOCK])...');
+        const { error: e7 } = await sb.from('subjects').delete().like('full_name', '[MOCK]%');
+        if (e7) log('subjects: ' + e7.message, 'error');
+        else log('subjects deleted', 'success');
+
+        setProgress('ลบ Mock Data เสร็จสิ้น!', 100);
+        log('=== Mock data cleared ===', 'success');
+    } catch (e) {
+        log('Clear error: ' + e.message, 'error');
+    }
+}
+
+// ==================== Clear Old Test Data (non-MOCK) ====================
+async function clearOldTestData() {
+    if (!confirm('จะลบข้อมูลทดสอบเก่า (ข้อมูลจริงจากเซนเซอร์ที่ไม่ใช่ MOCK)\n\n• pollution_logs ที่ไม่ใช่ MOCK-\n• sessions ที่ไม่ใช่ MOCK-\n• daily_summaries ที่ไม่ใช่ MOCK-\n\n(ไม่ลบ devices, subjects, sensors ที่ตั้งไว้)\n\nดำเนินการ?')) return;
+
+    log('=== Clearing old test data ===', 'warn');
+    setProgress('กำลังลบข้อมูลทดสอบเก่า...', 10);
+
+    try {
+        // 1. Count old data first (include NULL device IDs)
+        const { count: logCount } = await sb.from('pollution_logs').select('*', { count: 'exact', head: true }).or('tuya_device_id.not.like.MOCK-%,tuya_device_id.is.null');
+        log('พบ pollution_logs เก่า: ' + (logCount || 0) + ' records');
+
+        // 2. Delete pollution_logs (non-MOCK + NULL device IDs)
+        log('Deleting old pollution_logs...');
+        const { error: e1 } = await sb.from('pollution_logs').delete().or('tuya_device_id.not.like.MOCK-%,tuya_device_id.is.null');
+        if (e1) log('pollution_logs: ' + e1.message, 'error');
+        else log('pollution_logs deleted', 'success');
+        setProgress('กำลังลบ...', 40);
+
+        // 3. Delete daily_summaries (non-MOCK + NULL device IDs)
+        log('Deleting old daily_summaries...');
+        const { error: e2 } = await sb.from('daily_summaries').delete().or('device_id.not.like.MOCK-%,device_id.is.null');
+        if (e2) log('daily_summaries: ' + e2.message, 'error');
+        else log('daily_summaries deleted', 'success');
+        setProgress('กำลังลบ...', 60);
+
+        // 4. Delete sessions (non-MOCK + NULL device IDs)
+        log('Deleting old sessions...');
+        const { error: e3 } = await sb.from('sessions').delete().or('device_id.not.like.MOCK-%,device_id.is.null');
+        if (e3) log('sessions: ' + e3.message, 'error');
+        else log('sessions deleted', 'success');
+        setProgress('กำลังลบ...', 90);
+
+        setProgress('ลบข้อมูลทดสอบเก่าเสร็จ!', 100);
+        log('=== Old test data cleared (devices/subjects/sensors คงอยู่) ===', 'success');
+    } catch (e) {
+        log('Clear error: ' + e.message, 'error');
+    }
+}
+</script>
+</body>
+</html>
