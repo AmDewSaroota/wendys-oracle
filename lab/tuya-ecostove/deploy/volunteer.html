@@ -17,8 +17,8 @@
   .fade-in { animation: fade-in 0.3s ease; }
   @keyframes tvoc-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(147,51,234,0.3); } 50% { box-shadow: 0 0 0 12px rgba(147,51,234,0); } }
   .tvoc-glow { animation: tvoc-glow 1.5s ease-in-out 3; }
-  .tvoc-countdown { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7c3aed; }
-  .tvoc-countdown .dot { width: 6px; height: 6px; border-radius: 50%; background: #7c3aed; animation: pulse-ring 2s infinite; }
+  .manual-countdown { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #7c3aed; }
+  .manual-countdown .dot { width: 6px; height: 6px; border-radius: 50%; background: #7c3aed; animation: pulse-ring 2s infinite; }
   @keyframes breathe { 0%,100% { opacity:0.4; transform:scale(0.95); } 50% { opacity:1; transform:scale(1.05); } }
   .breathe { animation: breathe 2s ease-in-out infinite; }
   .poll-ring { width:40px; height:40px; border-radius:50%; border:3px solid #e5e7eb; border-top-color:#10b981; animation: spin 1.5s linear infinite; }
@@ -165,17 +165,17 @@
     </div>
 
     <!-- ======================== -->
-    <!-- TVOC Question (after cooking start) -->
+    <!-- Manual Recording Question (after cooking start) -->
     <!-- ======================== -->
     <div id="tvoc-question" class="hidden bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 fade-in">
       <div class="text-center mb-4">
         <div class="text-4xl">📝</div>
-        <p class="font-bold text-lg text-purple-800 mt-2">วันนี้ต้องเก็บ TVOC มั้ย?</p>
-        <p class="text-sm text-purple-500 mt-1">เก็บเฉพาะวันที่กำหนดเท่านั้น</p>
+        <p class="font-bold text-lg text-purple-800 mt-2">วันนี้ต้องกรอกค่าด้วยมือมั้ย?</p>
+        <p class="text-sm text-purple-500 mt-1">TVOC และ/หรือ CO — เก็บเฉพาะวันที่กำหนด</p>
       </div>
       <div class="flex gap-3">
         <button onclick="answerTvoc(true)" class="flex-1 bg-purple-600 text-white py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform">
-          ✅ เก็บ TVOC
+          ✅ เก็บ
         </button>
         <button onclick="answerTvoc(false)" class="flex-1 bg-gray-200 text-gray-600 py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform">
           ❌ ไม่เก็บ
@@ -184,27 +184,41 @@
     </div>
 
     <!-- ======================= -->
-    <!-- TVOC Recording Section -->
+    <!-- Manual Recording Section (TVOC + CO) -->
     <!-- ======================= -->
     <div id="tvoc-section" class="hidden bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 fade-in">
       <div class="flex items-center justify-between mb-3">
-        <p class="font-bold text-purple-800">📝 บันทึก TVOC (mg/m³)</p>
-        <div id="tvoc-countdown-wrap" class="tvoc-countdown hidden">
+        <p class="font-bold text-purple-800">📝 บันทึกค่าด้วยมือ</p>
+        <div id="tvoc-countdown-wrap" class="manual-countdown hidden">
           <span class="dot"></span>
           <span id="tvoc-countdown-text">ถัดไปใน 5:00</span>
         </div>
       </div>
-      <div class="flex gap-2 w-full min-w-0">
-        <input type="number" id="tvoc-input" inputmode="decimal" step="0.001"
-          class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
-          placeholder="0.000">
-        <button onclick="submitTvoc()"
-          class="shrink-0 px-4 bg-purple-600 text-white rounded-xl font-bold active:scale-95 transition-transform">
-          บันทึก
-        </button>
+      <!-- TVOC input -->
+      <div class="mb-2">
+        <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
+        <div class="flex gap-2 w-full min-w-0">
+          <input type="number" id="tvoc-input" inputmode="decimal" step="0.001" min="0" max="100"
+            class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
+            placeholder="0.000">
+        </div>
       </div>
-      <div id="tvoc-reminder-banner" class="hidden mt-3 bg-purple-200 rounded-xl p-3 text-center cursor-pointer active:scale-95 transition-transform" onclick="focusTvocInput()">
-        <p class="text-purple-800 font-bold text-lg">⏰ ได้เวลากรอก TVOC แล้ว!</p>
+      <!-- CO input -->
+      <div class="mb-2">
+        <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
+        <div class="flex gap-2 w-full min-w-0">
+          <input type="number" id="co-input" inputmode="decimal" step="0.1" min="0" max="1000"
+            class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 outline-none bg-white"
+            placeholder="0.0">
+        </div>
+      </div>
+      <!-- Submit button -->
+      <button onclick="submitManualReadings()"
+        class="w-full mt-1 py-3 bg-purple-600 text-white rounded-xl font-bold text-lg active:scale-95 transition-transform">
+        บันทึก
+      </button>
+      <div id="tvoc-reminder-banner" class="hidden mt-3 bg-purple-200 rounded-xl p-3 text-center cursor-pointer active:scale-95 transition-transform" onclick="focusManualInput()">
+        <p class="text-purple-800 font-bold text-lg">⏰ ได้เวลากรอกค่าแล้ว!</p>
         <p class="text-purple-600 text-xs">กดที่นี่เพื่อกรอกค่า</p>
       </div>
       <div id="tvoc-list" class="mt-3 space-y-1"></div>
@@ -213,7 +227,7 @@
     <!-- Session time remaining info -->
     <div id="session-remaining-wrap" class="hidden bg-blue-50 rounded-2xl p-4 text-center fade-in">
       <p class="text-blue-700 font-bold text-sm">⏱ เซนเซอร์ยังเก็บข้อมูลอยู่</p>
-      <p class="text-blue-500 text-xs mt-1" id="session-remaining-text">เหลืออีก ~2 ชม. — กรุณาอยู่กรอก TVOC ต่อ</p>
+      <p class="text-blue-500 text-xs mt-1" id="session-remaining-text">เหลืออีก ~2 ชม. — กรุณาอยู่กรอกค่าต่อ</p>
     </div>
 
     <!-- End session (hidden until near completion) -->
@@ -243,15 +257,15 @@
 <!-- Toast -->
 <div id="toast" class="fixed top-20 left-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-xl text-center text-sm font-bold z-50 hidden transition-all max-w-md mx-auto"></div>
 
-<!-- TVOC Reminder Modal -->
+<!-- Manual Reading Reminder Modal -->
 <div id="tvoc-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4" onclick="closeTvocModal()">
   <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl" onclick="event.stopPropagation()">
     <div class="text-6xl mb-4">📝</div>
-    <h2 class="text-2xl font-bold text-purple-800 mb-2">ได้เวลากรอก TVOC แล้ว!</h2>
-    <p class="text-gray-500 mb-6">ครบ 5 นาทีแล้ว กรุณาอ่านค่า TVOC<br>จากหน้าจอเซนเซอร์</p>
-    <button onclick="closeTvocModal(); focusTvocInput();"
+    <h2 class="text-2xl font-bold text-purple-800 mb-2">ได้เวลากรอกค่าแล้ว!</h2>
+    <p class="text-gray-500 mb-6">ครบ 5 นาทีแล้ว กรุณาอ่านค่า TVOC / CO<br>จากเครื่องวัด</p>
+    <button onclick="closeTvocModal(); focusManualInput();"
       class="w-full py-4 bg-purple-600 text-white text-lg font-bold rounded-2xl active:scale-95 transition-transform">
-      กรอกค่า TVOC
+      กรอกค่า
     </button>
   </div>
 </div>
@@ -276,7 +290,9 @@ let activeSession = null;
 let cookingStartedAt = null;
 let cookingSubmitting = false;
 let tvocReadings = [];
-let tvocEnabled = false; // true only when volunteer chooses to record TVOC
+let coReadings = [];
+let manualReadings = []; // combined list [{tvoc, co, time}]
+let tvocEnabled = false; // true only when volunteer chooses to record TVOC/CO
 let pollTimer = null;
 let timeTimer = null;
 let userGPS = null; // { lat, lng }
@@ -558,22 +574,30 @@ async function loadPreviousTvoc() {
     .limit(1);
   if (!sessions || !sessions.length) return;
 
-  // Load TVOC records for this session
+  // Load manual records (TVOC/CO) for this session
   const { data: records } = await sb.from('pollution_logs')
-    .select('tvoc_value, recorded_at')
+    .select('tvoc_value, co_value, recorded_at')
     .eq('session_id', sessions[0].id)
     .eq('data_source', 'manual')
-    .not('tvoc_value', 'is', null)
     .order('recorded_at', { ascending: true });
 
   if (records && records.length > 0) {
-    tvocReadings = records.map(r => ({
-      value: r.tvoc_value,
-      time: new Date(r.recorded_at),
-    }));
-    tvocEnabled = true;
-    updateTvocList();
-    showToast('🔄 ต่อจากอุปกรณ์เดิม — มี TVOC ' + records.length + ' ค่าที่บันทึกไว้แล้ว');
+    // Filter to only records that have at least one manual value
+    const manualRecords = records.filter(r => r.tvoc_value != null || r.co_value != null);
+    if (manualRecords.length > 0) {
+      manualRecords.forEach(r => {
+        const time = new Date(r.recorded_at);
+        if (r.tvoc_value != null) tvocReadings.push({ value: r.tvoc_value, time });
+        if (r.co_value != null) coReadings.push({ value: r.co_value, time });
+        manualReadings.push({ tvoc: r.tvoc_value, co: r.co_value, time });
+      });
+      tvocEnabled = true;
+      updateManualList();
+      const parts = [];
+      if (tvocReadings.length > 0) parts.push('TVOC ' + tvocReadings.length);
+      if (coReadings.length > 0) parts.push('CO ' + coReadings.length);
+      showToast('🔄 ต่อจากอุปกรณ์เดิม — มี ' + parts.join(' + ') + ' ค่าที่บันทึกไว้แล้ว');
+    }
   }
 }
 
@@ -882,9 +906,9 @@ function answerTvoc(yes) {
   tvocEnabled = yes;
   if (yes) {
     showTvocSection();
-    showToast('📝 เปิดบันทึก TVOC — จะเตือนทุก 5 นาที');
+    showToast('📝 เปิดบันทึก TVOC/CO — จะเตือนทุก 5 นาที');
   } else {
-    showToast('👍 ไม่เก็บ TVOC — แค่รอเซนเซอร์เก็บข้อมูลอัตโนมัติ');
+    showToast('👍 ไม่เก็บค่าด้วยมือ — แค่รอเซนเซอร์เก็บข้อมูลอัตโนมัติ');
   }
 }
 
@@ -950,16 +974,30 @@ function resetCookingBtn(btn) {
 }
 
 // ================================================
-// TVOC Recording
+// Manual Recording (TVOC + CO)
 // ================================================
-async function submitTvoc() {
-  if (DEMO_MODE) { await demoSubmitTvoc(); return; }
-  const input = document.getElementById('tvoc-input');
-  const val = parseFloat(input.value);
-  if (isNaN(val) || val < 0) { showToast('กรุณาใส่ค่า TVOC'); return; }
+// Keep old name for backward compat (called from HTML onclick)
+async function submitTvoc() { return submitManualReadings(); }
+
+async function submitManualReadings() {
+  if (DEMO_MODE) { await demoSubmitManual(); return; }
+  const tvocInput = document.getElementById('tvoc-input');
+  const coInput = document.getElementById('co-input');
+  const tvocVal = tvocInput.value.trim() !== '' ? parseFloat(tvocInput.value) : null;
+  const coVal = coInput.value.trim() !== '' ? parseFloat(coInput.value) : null;
+
+  // Must fill at least one
+  if (tvocVal === null && coVal === null) { showToast('กรุณาใส่ค่า TVOC หรือ CO อย่างน้อย 1 ช่อง'); return; }
+  // Validate TVOC
+  if (tvocVal !== null && (isNaN(tvocVal) || tvocVal < 0 || tvocVal > 100)) {
+    showToast('❌ TVOC ต้องอยู่ระหว่าง 0 - 100 mg/m³'); return;
+  }
+  // Validate CO
+  if (coVal !== null && (isNaN(coVal) || coVal < 0 || coVal > 1000)) {
+    showToast('❌ CO ต้องอยู่ระหว่าง 0 - 1,000 ppm'); return;
+  }
 
   const record = {
-    tvoc_value: val,
     house_id: selectedHouse.id,
     volunteer_id: selectedHouse.volunteer_id || null,
     data_source: 'manual',
@@ -968,32 +1006,49 @@ async function submitTvoc() {
     recorded_at: new Date().toISOString(),
     session_id: activeSession?.id || null,
   };
+  if (tvocVal !== null) record.tvoc_value = tvocVal;
+  if (coVal !== null) record.co_value = coVal;
 
   const { error } = await sb.from('pollution_logs').insert([record]);
   if (error) {
-    showToast('❌ บันทึก TVOC ไม่สำเร็จ — ลองอีกครั้ง');
+    showToast('❌ บันทึกไม่สำเร็จ — ลองอีกครั้ง');
     return;
   }
 
-  tvocReadings.push({ value: val, time: new Date() });
-  input.value = '';
-  input.focus();
-  showToast('✅ บันทึก TVOC ' + val.toFixed(3) + ' mg/m³');
-  updateTvocList();
+  const now = new Date();
+  if (tvocVal !== null) tvocReadings.push({ value: tvocVal, time: now });
+  if (coVal !== null) coReadings.push({ value: coVal, time: now });
+  manualReadings.push({ tvoc: tvocVal, co: coVal, time: now });
+  tvocInput.value = '';
+  coInput.value = '';
+  tvocInput.focus();
+
+  // Toast message
+  const parts = [];
+  if (tvocVal !== null) parts.push('TVOC ' + tvocVal.toFixed(3));
+  if (coVal !== null) parts.push('CO ' + coVal.toFixed(1));
+  showToast('✅ บันทึก ' + parts.join(' + '));
+  updateManualList();
   resetTvocCountdown();
 }
 
-function updateTvocList() {
+function updateTvocList() { updateManualList(); }
+
+function updateManualList() {
   const list = document.getElementById('tvoc-list');
-  if (!tvocReadings.length) { list.innerHTML = ''; return; }
+  if (!manualReadings.length) { list.innerHTML = ''; return; }
   list.innerHTML =
-    '<div class="text-xs text-purple-700 font-bold mb-1">📝 ' + tvocReadings.length + ' ค่าที่บันทึก</div>' +
-    tvocReadings.slice().reverse().map(r =>
-      '<div class="flex justify-between text-xs text-gray-500 py-1 border-b border-purple-100">' +
-        '<span>' + r.time.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</span>' +
-        '<span class="font-bold text-purple-700">' + r.value.toFixed(3) + ' mg/m³</span>' +
-      '</div>'
-    ).join('');
+    '<div class="text-xs text-purple-700 font-bold mb-1">📝 ' + manualReadings.length + ' ค่าที่บันทึก</div>' +
+    manualReadings.slice().reverse().map(r => {
+      const time = r.time.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const vals = [];
+      if (r.tvoc !== null && r.tvoc !== undefined) vals.push('<span class="text-purple-700">TVOC ' + r.tvoc.toFixed(3) + '</span>');
+      if (r.co !== null && r.co !== undefined) vals.push('<span class="text-amber-600">CO ' + r.co.toFixed(1) + '</span>');
+      return '<div class="flex justify-between text-xs text-gray-500 py-1 border-b border-purple-100">' +
+        '<span>' + time + '</span>' +
+        '<span class="font-bold">' + vals.join(' · ') + '</span>' +
+      '</div>';
+    }).join('');
 }
 
 // ================================================
@@ -1008,7 +1063,9 @@ function endVolunteerSession() {
     msg += '\n⏱ เวลา: ' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที';
     msg += '\n📊 เซนเซอร์: ' + (activeSession.readings_count || 0) + ' ค่า';
   }
-  msg += '\n📝 TVOC: ' + tvocReadings.length + ' ค่า';
+  msg += '\n📝 กรอกมือ: ' + manualReadings.length + ' ค่า';
+  if (tvocReadings.length > 0) msg += ' (TVOC ' + tvocReadings.length + ')';
+  if (coReadings.length > 0) msg += ' (CO ' + coReadings.length + ')';
   if (!confirm(msg)) return;
 
   clearInterval(pollTimer);
@@ -1040,9 +1097,12 @@ function endVolunteerSession() {
   }
 
   if (tvocReadings.length > 0) {
-    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 TVOC</span><span class="font-bold">' + tvocReadings.length + ' ค่า</span></div>');
     const avg = tvocReadings.reduce((s, r) => s + r.value, 0) / tvocReadings.length;
-    items.push('<div class="flex justify-between py-2"><span class="text-gray-500">📝 TVOC เฉลี่ย</span><span class="font-bold text-purple-700">' + avg.toFixed(3) + ' mg/m³</span></div>');
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 TVOC</span><span class="font-bold text-purple-700">' + tvocReadings.length + ' ค่า (เฉลี่ย ' + avg.toFixed(3) + ' mg/m³)</span></div>');
+  }
+  if (coReadings.length > 0) {
+    const avg = coReadings.reduce((s, r) => s + r.value, 0) / coReadings.length;
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 CO</span><span class="font-bold text-amber-600">' + coReadings.length + ' ค่า (เฉลี่ย ' + avg.toFixed(1) + ' ppm)</span></div>');
   }
 
   det.innerHTML = items.join('');
@@ -1134,7 +1194,9 @@ function sendTvocNotification() {
   if (banner) banner.classList.remove('hidden');
 }
 
-function focusTvocInput() {
+function focusTvocInput() { focusManualInput(); }
+
+function focusManualInput() {
   const input = document.getElementById('tvoc-input');
   if (input) input.focus();
   const banner = document.getElementById('tvoc-reminder-banner');
@@ -1149,7 +1211,7 @@ function updateTvocCountdown() {
   const remaining = Math.max(0, Math.round((tvocNextReminder - Date.now()) / 1000));
   const m = Math.floor(remaining / 60);
   const s = remaining % 60;
-  text.textContent = 'ถัดไปใน ' + m + ':' + String(s).padStart(2, '0');
+  text.textContent = 'กรอกค่าถัดไปใน ' + m + ':' + String(s).padStart(2, '0');
 }
 
 function startTvocReminder() {
@@ -1274,17 +1336,31 @@ async function demoMarkCookingStart() {
   document.getElementById('tvoc-question').classList.remove('hidden');
 }
 
-async function demoSubmitTvoc() {
-  const input = document.getElementById('tvoc-input');
-  const val = parseFloat(input.value);
-  if (isNaN(val) || val < 0) { showToast('กรุณาใส่ค่า TVOC'); return; }
+async function demoSubmitTvoc() { return demoSubmitManual(); }
 
-  // Don't write to Supabase in demo — just local
-  tvocReadings.push({ value: val, time: new Date() });
-  input.value = '';
-  input.focus();
-  showToast('✅ [DEMO] บันทึก TVOC ' + val.toFixed(3) + ' mg/m³ (ไม่บันทึกจริง)');
-  updateTvocList();
+async function demoSubmitManual() {
+  const tvocInput = document.getElementById('tvoc-input');
+  const coInput = document.getElementById('co-input');
+  const tvocVal = tvocInput.value.trim() !== '' ? parseFloat(tvocInput.value) : null;
+  const coVal = coInput.value.trim() !== '' ? parseFloat(coInput.value) : null;
+
+  if (tvocVal === null && coVal === null) { showToast('กรุณาใส่ค่า TVOC หรือ CO อย่างน้อย 1 ช่อง'); return; }
+  if (tvocVal !== null && (isNaN(tvocVal) || tvocVal < 0 || tvocVal > 100)) { showToast('❌ TVOC ต้องอยู่ระหว่าง 0 - 100'); return; }
+  if (coVal !== null && (isNaN(coVal) || coVal < 0 || coVal > 1000)) { showToast('❌ CO ต้องอยู่ระหว่าง 0 - 1,000'); return; }
+
+  const now = new Date();
+  if (tvocVal !== null) tvocReadings.push({ value: tvocVal, time: now });
+  if (coVal !== null) coReadings.push({ value: coVal, time: now });
+  manualReadings.push({ tvoc: tvocVal, co: coVal, time: now });
+  tvocInput.value = '';
+  coInput.value = '';
+  tvocInput.focus();
+
+  const parts = [];
+  if (tvocVal !== null) parts.push('TVOC ' + tvocVal.toFixed(3));
+  if (coVal !== null) parts.push('CO ' + coVal.toFixed(1));
+  showToast('✅ [DEMO] บันทึก ' + parts.join(' + ') + ' (ไม่บันทึกจริง)');
+  updateManualList();
   resetTvocCountdown();
 }
 
