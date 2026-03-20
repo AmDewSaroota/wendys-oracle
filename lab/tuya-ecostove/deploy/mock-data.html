@@ -42,7 +42,7 @@
                     <input type="number" id="incompletePercent" value="10" min="0" max="50" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
                 </div>
                 <div>
-                    <label class="text-sm font-medium text-slate-600">% TVOC Manual</label>
+                    <label class="text-sm font-medium text-slate-600">% กรอกมือ (TVOC + CO)</label>
                     <input type="number" id="tvocPercent" value="40" min="0" max="100" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
                 </div>
             </div>
@@ -68,6 +68,9 @@
             </button>
             <button onclick="clearOldTestData()" class="px-6 py-3 bg-orange-500 text-white rounded-xl font-bold text-sm hover:bg-orange-600 transition shadow-lg">
                 ลบข้อมูลทดสอบเก่า
+            </button>
+            <button onclick="clearEverything()" class="px-6 py-3 bg-rose-700 text-white rounded-xl font-bold text-sm hover:bg-rose-800 transition shadow-lg ring-2 ring-rose-300">
+                ล้างทั้งหมด (Reset)
             </button>
         </div>
 
@@ -197,6 +200,23 @@ function generateAllData() {
         });
     }
 
+    // Layer 3: Project
+    const project = {
+        name: '[MOCK] โครงการเตาชีวมวลเพื่ออากาศสะอาด',
+        description: 'โครงการวิจัยเปรียบเทียบมลพิษระหว่างเตาดั้งเดิมกับเตาชีวมวล อ.แม่ริม จ.เชียงใหม่',
+        status: 'active',
+    };
+
+    // Layer 4: Volunteers (1 per house)
+    const VOLUNTEER_NAMES = [
+        'สมศรี ใจดี', 'นงลักษณ์ แก้วมณี', 'ประภาส คำแก้ว', 'สุดา ปัญญาดี', 'อำพร ลุงดี',
+        'จันทร์ สว่างวงศ์', 'แก้ว ศรีวิชัย', 'บุญมี ใจเย็น', 'พรรณ แก้วตา', 'สมบูรณ์ ชัยยะ',
+    ];
+    const volunteers = VOLUNTEER_NAMES.map((name, i) => ({
+        full_name: `[MOCK] ${name}`,
+        phone_contact: `08${randInt(10, 99)}${randInt(100, 999)}${randInt(10, 99)}`,
+    }));
+
     // Prepare sessions, logs, summaries (need subject IDs later)
     const sessionsTemplate = [];
     const logsTemplate = [];
@@ -304,7 +324,7 @@ function generateAllData() {
                     });
                 }
 
-                // TVOC manual entries
+                // TVOC + CO manual entries (volunteer enters both together)
                 if (Math.random() < tvocPct && cookingReadings > 4) {
                     const numTvoc = randInt(2, 4);
                     for (let t = 0; t < numTvoc; t++) {
@@ -313,7 +333,8 @@ function generateAllData() {
                         readings.push({
                             tuya_device_id: tuyaId, house_idx: hi,
                             pm25_value: null, pm10_value: null, co2_value: null,
-                            co_value: null, temperature: null, humidity: null,
+                            co_value: randInt(isOld ? 5 : 1, isOld ? 80 : 20),
+                            temperature: null, humidity: null,
                             hcho_value: null,
                             tvoc_value: +(rand(isOld ? 0.5 : 0.1, isOld ? 3.0 : 1.0)).toFixed(3),
                             aqi: null,
@@ -401,7 +422,7 @@ function generateAllData() {
         }
     }
 
-    generatedData = { subjects, sensors, sessionsTemplate, logsTemplate, summariesTemplate };
+    generatedData = { subjects, sensors, project, volunteers, sessionsTemplate, logsTemplate, summariesTemplate };
     return generatedData;
 }
 
@@ -420,13 +441,13 @@ function generatePreview() {
 
     content.innerHTML = [
         card('🏠', 'บ้าน', data.subjects.length),
+        card('👤', 'อาสา', data.volunteers.length),
         card('📡', 'เซนเซอร์', data.sensors.length),
         card('🔄', 'Sessions', data.sessionsTemplate.length),
         card('📊', 'Readings', data.logsTemplate.length.toLocaleString()),
         card('📋', 'สรุปรายวัน', data.summariesTemplate.length),
         card('🔴', 'เตาเก่า', midDay + ' วัน'),
         card('🟢', 'เตาใหม่', (totalDays - midDay) + ' วัน'),
-        card('📅', 'ช่วงเวลา', startDate + ' → ' + endDate),
     ].join('');
 
     // Sample cooking curve
@@ -498,6 +519,35 @@ async function insertMockData() {
         if (subErr) throw new Error('subjects: ' + subErr.message);
         const subjectIds = subData.map(s => s.id);
         log('subjects inserted: ' + subjectIds.length + ' rows', 'success');
+
+        // Step 1b: Insert project
+        setProgress('กำลัง insert โครงการ...', 8);
+        log('Inserting project...');
+        const { data: projData, error: projErr } = await sb.from('projects').insert(generatedData.project).select('id');
+        if (projErr) throw new Error('projects: ' + projErr.message);
+        const projectId = projData[0].id;
+        log('project inserted: ' + projectId, 'success');
+
+        // Step 1c: Insert volunteers + link to subjects
+        setProgress('กำลัง insert อาสา...', 10);
+        log('Inserting ' + generatedData.volunteers.length + ' volunteers...');
+        const { data: volData, error: volErr } = await sb.from('volunteers').insert(generatedData.volunteers).select('id');
+        if (volErr) throw new Error('volunteers: ' + volErr.message);
+        const volunteerIds = volData.map(v => v.id);
+        log('volunteers inserted: ' + volunteerIds.length + ' rows', 'success');
+
+        // Link subjects → volunteers (subjects.volunteer_id)
+        for (let i = 0; i < subjectIds.length && i < volunteerIds.length; i++) {
+            await sb.from('subjects').update({ volunteer_id: volunteerIds[i] }).eq('id', subjectIds[i]);
+        }
+        log('subjects linked to volunteers', 'success');
+
+        // Step 1d: Link subjects to project
+        setProgress('กำลัง insert subject_projects...', 12);
+        const spRows = subjectIds.map(sid => ({ subject_id: sid, project_id: projectId }));
+        const { error: spErr } = await sb.from('subject_projects').insert(spRows);
+        if (spErr) log('subject_projects: ' + spErr.message, 'warn');
+        else log('subject_projects linked', 'success');
 
         // Step 2: Insert registered_sensors
         setProgress('กำลัง insert เซนเซอร์...', 15);
@@ -741,6 +791,56 @@ async function clearOldTestData() {
         log('=== Old test data cleared (devices/subjects/sensors คงอยู่) ===', 'success');
     } catch (e) {
         log('Clear error: ' + e.message, 'error');
+    }
+}
+
+// ==================== Clear EVERYTHING (Full Reset) ====================
+async function clearEverything() {
+    if (!confirm('⚠️ ล้างข้อมูลทั้งหมด!\n\nจะลบ:\n• pollution_logs\n• daily_summaries\n• sessions\n• collection_periods\n• projects + subject_projects\n• devices\n• registered_sensors\n• volunteers\n• subjects\n• api_quota\n\nไม่ลบ: admin_users, admin_activity_logs\n\nยืนยัน?')) return;
+    if (!confirm('ยืนยันอีกครั้ง — ข้อมูลทั้งหมดจะหายไป ไม่สามารถกู้คืนได้')) return;
+
+    log('=== FULL RESET — ล้างทั้งหมด ===', 'warn');
+    setProgress('กำลังล้างทั้งหมด...', 0);
+
+    const steps = [
+        { table: 'pollution_logs', label: 'pollution_logs' },
+        { table: 'daily_summaries', label: 'daily_summaries' },
+        { table: 'sessions', label: 'sessions' },
+        { table: 'collection_periods', label: 'collection_periods' },
+        { table: 'subject_projects', label: 'subject_projects' },
+        { table: 'projects', label: 'projects' },
+        { table: 'devices', label: 'devices' },
+        { table: 'registered_sensors', label: 'registered_sensors' },
+        { table: 'volunteers', label: 'volunteers' },
+        { table: 'subjects', label: 'subjects' },
+        { table: 'api_quota', label: 'api_quota' },
+    ];
+
+    try {
+        for (let i = 0; i < steps.length; i++) {
+            const s = steps[i];
+            const pct = ((i + 1) / steps.length) * 100;
+            setProgress('กำลังลบ ' + s.label + '...', pct - 5);
+            log('Deleting all from ' + s.table + '...');
+
+            // Use gte id 0 to match all rows (Supabase requires a filter for delete)
+            const { error } = await sb.from(s.table).delete().gte('id', 0);
+            if (error) {
+                // Some tables use uuid, try neq filter
+                const { error: e2 } = await sb.from(s.table).delete().neq('id', '00000000-0000-0000-0000-000000000000');
+                if (e2) log(s.table + ': ' + e2.message, 'error');
+                else log(s.table + ' deleted', 'success');
+            } else {
+                log(s.table + ' deleted', 'success');
+            }
+            await sleep(300);
+        }
+
+        setProgress('ล้างทั้งหมดเสร็จสิ้น!', 100);
+        log('=== FULL RESET COMPLETE ===', 'success');
+        log('พร้อมสร้าง Mock Data ใหม่ — กด Preview → Generate & Insert', 'success');
+    } catch (e) {
+        log('Reset error: ' + e.message, 'error');
     }
 }
 </script>

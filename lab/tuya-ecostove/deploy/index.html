@@ -40,6 +40,25 @@
             box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
         }
 
+        /* Info popup system */
+        .info-btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: inherit; vertical-align: middle; opacity: 0.35; transition: opacity 0.15s; margin-left: 2px; }
+        .info-btn:hover { opacity: 0.7; }
+        .info-popup { position: fixed; z-index: 9999; max-width: 320px; background: white; border-radius: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.18); padding: 16px 20px; font-size: 13px; line-height: 1.6; color: #334155; border: 1px solid #e2e8f0; animation: popIn 0.15s ease-out; }
+        .info-popup h5 { font-weight: 700; font-size: 13px; margin-bottom: 6px; color: #1e293b; }
+        .info-popup .close-pop { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #94a3b8; font-size: 16px; }
+        .info-popup .close-pop:hover { color: #475569; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .info-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9998; }
+
+        /* Scenario alert bars */
+        .scenario-bar { position: sticky; top: 80px; z-index: 40; padding: 8px 16px; display: none; }
+        .scenario-bar.active { display: flex; }
+
+        /* Methodology panel */
+        .methodology-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; }
+        .collapsible-body { display: none; }
+        .collapsible-body.open { display: block; }
+
         .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.1); border-radius: 10px; }
@@ -172,6 +191,14 @@
         </div>
     </nav>
 
+    <!-- SCENARIO ALERT BARS -->
+    <div id="scenario-bar-no-eco" class="scenario-bar items-center justify-center gap-2 text-sm text-amber-800" style="background:#fef3c7; border-bottom:2px solid #f59e0b;">
+        ⏳ <b>สถานการณ์:</b> ยังอยู่ในระยะเก็บข้อมูลเตาดั้งเดิม — ยังไม่มีข้อมูลเตาชีวมวลเพื่อเปรียบเทียบ
+    </div>
+    <div id="scenario-bar-eco-fail" class="scenario-bar items-center justify-center gap-2 text-sm text-red-800" style="background:#fee2e2; border-bottom:2px solid #ef4444;">
+        ⚠️ <b>สถานการณ์:</b> เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย
+    </div>
+
     <main class="max-w-7xl mx-auto p-6 md:p-10">
 
         <!-- ============================================================ -->
@@ -186,47 +213,67 @@
                 </select>
             </div>
 
-            <!-- 1. Hero: Project Banner + Impact -->
-            <div class="rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-gradient-to-br from-emerald-700 via-teal-600 to-emerald-800">
+            <!-- HERO: Normal (eco reduces pollution) -->
+            <div id="hero-normal" class="rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-gradient-to-br from-emerald-700 via-teal-600 to-emerald-800">
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2"></div>
                 <div class="relative z-10 p-6 md:p-8">
-                    <!-- Project title -->
-                    <div class="text-center mb-4">
-                        <p class="text-emerald-200 text-sm font-medium tracking-wider" data-i18n="hero.project.label">โครงการ</p>
-                        <h2 class="text-xl md:text-2xl font-bold text-white mt-1" data-i18n="hero.project.name">นวัตกรรมเพื่ออากาศสะอาด</h2>
-                    </div>
-                    <!-- Hero number: Reduction % -->
-                    <div class="text-center mb-4">
-                        <div class="text-5xl md:text-6xl font-bold text-white leading-none" id="basic-reduction">--%</div>
-                        <p class="text-emerald-200 text-sm mt-1" data-i18n="compare.reduction.pm25">ลดมลพิษ PM2.5</p>
-                    </div>
-                    <!-- Eco (hero) vs Old (reference) -->
-                    <div class="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                        <div class="text-center bg-white/20 backdrop-blur rounded-2xl p-4 border border-white/20">
-                            <div class="text-2xl mb-1">✨</div>
-                            <p class="text-xs font-bold text-emerald-100" data-i18n="compare.eco">เตาชีวมวล</p>
-                            <p class="text-3xl md:text-4xl font-bold text-white mt-1" id="basic-eco-pm25">--</p>
-                            <p class="text-[10px] text-emerald-200">µg/m³</p>
+                    <div class="text-center">
+                        <p class="text-emerald-200 text-sm tracking-wider" data-i18n="hero.project.label">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                        <div class="mt-4 mb-2">
+                            <span class="text-6xl md:text-7xl font-bold text-white" id="hero-pct">--</span>
+                            <span class="text-4xl font-bold text-emerald-200">%</span>
                         </div>
-                        <div class="text-center bg-white/10 backdrop-blur rounded-2xl p-4 opacity-70">
-                            <div class="text-2xl mb-1">🪵</div>
-                            <p class="text-xs font-bold text-orange-200/80" data-i18n="compare.old">เตาดั้งเดิม</p>
-                            <p class="text-3xl md:text-4xl font-bold text-white/70 mt-1" id="basic-old-pm25">--</p>
-                            <p class="text-[10px] text-emerald-200/60">µg/m³ (baseline)</p>
+                        <p class="text-emerald-100 text-lg font-medium" id="hero-label">อากาศสะอาดขึ้นขณะหุงต้ม</p>
+                        <p class="text-emerald-200/70 text-sm mt-1">เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง</p>
+                        <div class="max-w-md mx-auto mt-6 text-left">
+                            <div class="mb-3">
+                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span>🪵 เตาดั้งเดิม</span><span class="font-bold" id="hero-old-val">-- µg/m³</span></div>
+                                <div class="flex h-6 rounded-full overflow-hidden" id="hero-old-bar">
+                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Baseline</div>
+                                    <div class="bg-orange-400/80 flex items-center justify-center text-[9px] text-white font-bold" style="width:85%">มลพิษจากเตา</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span>✨ เตาชีวมวล</span><span class="font-bold" id="hero-eco-val">-- µg/m³</span></div>
+                                <div class="flex h-6 rounded-full overflow-hidden" id="hero-eco-bar">
+                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Baseline</div>
+                                    <div class="bg-emerald-400 flex items-center justify-center text-[9px] text-white font-bold" id="hero-eco-emission" style="width:30%">มลพิษจากเตา</div>
+                                    <div class="bg-white/10 flex items-center justify-center text-[9px] text-emerald-300/50" id="hero-eco-saved" style="width:55%">↓ ลดได้</div>
+                                </div>
+                            </div>
                         </div>
+                        <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · <span id="hero-meta-normal"></span></p>
                     </div>
-                    <!-- Clean badge + stats -->
-                    <div class="text-center mt-4">
-                        <span class="inline-flex items-center gap-1 text-[10px] font-medium px-3 py-1 rounded-full bg-white/15 text-emerald-100 border border-white/20">🧹 หักค่าพื้นฐาน (10 นาทีแรก) แล้ว — ค่าที่แสดงคือมลพิษจากเตาล้วนๆ</span>
+                </div>
+            </div>
+
+            <!-- HERO: No eco (baseline collection only) -->
+            <div id="hero-no-eco" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-slate-600 via-slate-500 to-slate-700">
+                <div class="relative z-10 p-6 md:p-8 text-center">
+                    <p class="text-slate-300 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                    <div class="text-4xl mt-4 mb-2">📊</div>
+                    <p class="text-2xl font-bold text-white">กำลังเก็บข้อมูลเตาดั้งเดิม</p>
+                    <p class="text-slate-300 text-sm mt-2">สร้างฐานข้อมูลอ้างอิง (Baseline) เพื่อเปรียบเทียบกับเตาชีวมวลในระยะถัดไป</p>
+                    <div class="max-w-xs mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-4">
+                        <p class="text-xs font-bold text-orange-200">🪵 เตาดั้งเดิม — ค่าเฉลี่ย Baseline</p>
+                        <p class="text-3xl font-bold text-white mt-2" id="hero-noeco-pm25">-- <span class="text-lg text-slate-300">µg/m³</span></p>
+                        <p class="text-[10px] text-slate-300 mt-1">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Baseline)</p>
                     </div>
-                    <div class="flex justify-center gap-6 mt-3 text-emerald-100 text-xs">
-                        <span id="hero-houses">📡 -- บ้าน</span>
-                        <span id="hero-readings">📊 -- readings</span>
-                        <span id="hero-updated">🕐 --</span>
+                    <p class="text-slate-300/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,'วิธีวัด','เก็บค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออก เพื่อสร้างฐานข้อมูลอ้างอิงสำหรับเปรียบเทียบกับเตาชีวมวลในระยะถัดไป')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · <span id="hero-meta-noeco"></span></p>
+                </div>
+            </div>
+
+            <!-- HERO: Eco fail (eco doesn't reduce pollution) -->
+            <div id="hero-eco-fail" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-amber-700 via-orange-600 to-red-700">
+                <div class="relative z-10 p-6 md:p-8 text-center">
+                    <p class="text-amber-200 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                    <div class="mt-4 mb-2"><span class="text-5xl md:text-6xl font-bold text-white">↑ <span id="hero-fail-pct">--</span></span><span class="text-3xl font-bold text-amber-200">%</span></div>
+                    <p class="text-amber-100 text-lg font-medium">มลพิษเพิ่มขึ้นขณะหุงต้ม</p>
+                    <p class="text-amber-200/70 text-sm mt-1">เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย</p>
+                    <div class="max-w-md mx-auto mt-4 bg-white/15 backdrop-blur rounded-xl p-3">
+                        <p class="text-amber-100 text-[11px] text-left">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
                     </div>
-                    <p id="hero-date-range" class="text-center text-emerald-200/60 text-[10px] mt-1"></p>
-                    <p class="text-emerald-100 text-[11px] text-center mt-1" id="hero-status">--</p>
+                    <p class="text-amber-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(253,230,138,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ — ผลเบื้องต้นพบว่าเตาชีวมวลยังไม่ลดมลพิษตามเป้า')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · <span id="hero-meta-fail"></span></p>
                 </div>
             </div>
 
@@ -235,26 +282,45 @@
                 <p id="basic-range-label" class="text-[11px] text-slate-400"></p>
                 <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🧹 หักค่าพื้นฐานแล้ว</span>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
-                    <div class="ghost-icon">🌫️</div>
-                    <p class="text-sm font-bold text-red-600 uppercase tracking-wider mb-2"><span data-i18n="card.pm25">PM 2.5</span> <button onclick="showAqiReference()" class="text-slate-400 hover:text-blue-500 text-[11px] align-middle">ℹ️</button></p>
-                    <h3 id="basic-pm25" class="text-4xl md:text-5xl font-bold text-navy relative z-10">--</h3>
-                    <p class="text-sm text-slate-400 mt-1">µg/m³</p>
+                    <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <div id="basic-pm25" class="text-3xl font-bold text-navy">--</div>
+                    <p id="basic-pm25-detail" class="text-[11px] text-gray-500 mt-1"></p>
                     <div id="basic-pm25-badge" class="mt-1"></div>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
-                    <div class="ghost-icon">💨</div>
-                    <p class="text-sm font-bold text-emerald-600 uppercase tracking-wider mb-2" data-i18n="card.co2">CO2</p>
-                    <h3 id="basic-co2" class="text-4xl md:text-5xl font-bold text-navy relative z-10">--</h3>
-                    <p class="text-sm text-slate-400 mt-1">ppm</p>
+                    <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,'CO2 คืออะไร?','คาร์บอนไดออกไซด์ — ก๊าซที่เกิดจากการเผาไหม้สมบูรณ์ ใช้เป็นตัวชี้วัดปริมาณการเผาไหม้โดยรวม\n\nอากาศปกติ: ~400 ppm\nขณะหุงต้ม: 800–3,000 ppm\n\nยิ่ง CO2 สูง = เผาไหม้มาก')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <div id="basic-co2" class="text-3xl font-bold text-navy">--</div>
+                    <p id="basic-co2-detail" class="text-[11px] text-gray-500 mt-1"></p>
+                </div>
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
+                    <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ (Carbon Monoxide) — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nอันตราย: สูดดมมากทำให้เวียนศีรษะ หมดสติ ถึงเสียชีวิต\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <div id="basic-co" class="text-3xl font-bold text-navy">--</div>
+                    <p id="basic-co-detail" class="text-[11px] text-gray-500 mt-1"></p>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
-                    <div class="ghost-icon">🌡️</div>
-                    <p class="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2" data-i18n="card.temp.humidity">อุณหภูมิ / ความชื้น</p>
-                    <h3 class="relative z-10"><span id="basic-temp" class="text-4xl md:text-5xl font-bold text-navy">--</span><span class="text-2xl text-slate-400">°C</span>
-                    <span class="text-2xl text-slate-300 mx-2">/</span>
-                    <span id="basic-humidity" class="text-4xl md:text-5xl font-bold text-navy">--</span><span class="text-2xl text-slate-400">%</span></h3>
+                    <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <div class="flex justify-center gap-4 mt-2">
+                        <div><span id="basic-temp" class="text-3xl font-bold text-gray-800">--</span><span class="text-gray-400">°C</span></div>
+                        <span class="text-gray-300 text-xl">/</span>
+                        <div><span id="basic-humidity" class="text-3xl font-bold text-gray-800">--</span><span class="text-gray-400">%</span></div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-1">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
+                </div>
+            </div>
+
+            <!-- 2b. Daily Charts (PM2.5 + CO2) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card-styled p-6 rounded-[2.5rem]">
+                    <h4 class="font-bold text-sm text-navy mb-0.5" data-i18n="chart.basic.pm25">ฝุ่น PM2.5 ขณะหุงต้ม</h4>
+                    <p class="text-[10px] text-slate-400 mb-3">ค่าเฉลี่ยรายวัน (หลังหัก Baseline)</p>
+                    <div class="h-[200px]"><canvas id="basicPm25Chart"></canvas></div>
+                </div>
+                <div class="card-styled p-6 rounded-[2.5rem]">
+                    <h4 class="font-bold text-sm text-navy mb-0.5" data-i18n="chart.basic.co2">CO2 ขณะหุงต้ม</h4>
+                    <p class="text-[10px] text-slate-400 mb-3">ค่าเฉลี่ยรายวัน (หลังหัก Baseline)</p>
+                    <div class="h-[200px]"><canvas id="basicCo2Chart"></canvas></div>
                 </div>
             </div>
 
@@ -339,24 +405,20 @@
                     <p class="text-slate-400 text-sm" id="deep-data-count" data-i18n="deep.loading">กำลังโหลดข้อมูล...</p>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap">
-                    <label class="flex items-center gap-2 text-sm bg-white/70 px-3 py-2 rounded-xl border cursor-pointer">
-                        <input type="checkbox" id="baseline-toggle" onchange="updateDeepView()" class="w-4 h-4 rounded accent-blue-600" checked>
-                        <span data-i18n="baseline.toggle" class="font-medium text-[13px]">หักค่า Baseline</span>
-                    </label>
                     <select id="project-filter" onchange="updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
                         <option value="all" data-i18n="project.all">ทุกโครงการ</option>
                     </select>
-                    <select id="deep-range-filter" onchange="clearDrilldown(); updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
-                        <option value="0" selected data-i18n="filter.all">ทั้งหมด</option>
-                        <option value="24" data-i18n="filter.24h">24 ชม.</option>
-                        <option value="72" data-i18n="filter.3d">3 วัน</option>
-                        <option value="168" data-i18n="filter.7d">7 วัน</option>
-                        <option value="720" data-i18n="filter.30d">30 วัน</option>
-                    </select>
-                    <div class="flex items-center gap-1">
-                        <span class="text-sm">📅</span>
-                        <input type="date" id="deep-date-picker" onchange="if(this.value) setDrilldownDate(this.value); else clearDrilldown();" class="px-3 py-2 rounded-xl border text-sm bg-white" style="max-width: 160px;">
-                        <button onclick="clearDrilldown()" class="px-2 py-2 text-xs text-slate-400 hover:text-slate-600" title="ล้างวันที่">✕</button>
+                    <div id="deep-range-buttons" class="flex gap-1">
+                        <button onclick="setQuickRange(7)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">7 วัน</button>
+                        <button onclick="setQuickRange(30)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">30 วัน</button>
+                        <button onclick="setQuickRange(60)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">60 วัน</button>
+                        <button onclick="setQuickRange(0)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600">ทั้งหมด</button>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-sm text-gray-500">
+                        <span class="text-[10px]">📅</span>
+                        <input type="date" id="deep-date-start" onchange="onDateRangeChange()" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
+                        <span class="text-gray-300">—</span>
+                        <input type="date" id="deep-date-end" onchange="onDateRangeChange()" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
                     </div>
                 </div>
             </div>
@@ -364,121 +426,117 @@
             <!-- Research Stat Cards — Row 1 -->
             <div class="flex items-center gap-3 mb-1">
                 <p id="deep-range-label" class="text-[11px] text-slate-400"></p>
-                <span id="baseline-status-badge" class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">🧹 หักค่าพื้นฐาน (10 นาทีแรก) แล้ว — ค่าที่แสดงคือมลพิษจากเตาล้วนๆ</span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Baseline-subtracted · ค่าสุทธิ (Net) หลังหักค่าเฉลี่ย 10 นาทีแรกของแต่ละ session</span>
             </div>
+            <!-- Research Stat Cards — Row 1: Pollutants -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
-                    <p class="text-[12px] font-bold text-red-600 uppercase tracking-wider"><span data-i18n="card.pm25">PM 2.5</span> <button onclick="showAqiReference()" class="text-slate-400 hover:text-blue-500 text-[10px]">ℹ️</button></p>
-                    <h3 id="r-stat-pm25" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm25-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <h3 id="r-stat-pm25" class="text-2xl font-bold text-navy mt-1">--</h3>
+                    <div id="r-stat-pm25-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                     <div id="r-stat-pm25-badge" class="mt-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
-                    <p class="text-[12px] font-bold text-orange-600 uppercase tracking-wider">PM 10</p>
-                    <h3 id="r-stat-pm10" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">µg/m³</span></h3>
-                    <p id="r-stat-pm10-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
+                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-wider">PM 10</p>
+                    <h3 id="r-stat-pm10" class="text-2xl font-bold text-navy mt-1">--</h3>
+                    <div id="r-stat-pm10-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
-                    <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider" data-i18n="card.co2">CO2</p>
-                    <h3 id="r-stat-co2" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">ppm</span></h3>
-                    <p id="r-stat-co2-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                    <h3 id="r-stat-co2" class="text-2xl font-bold text-navy mt-1">--</h3>
+                    <div id="r-stat-co2-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
-                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
-                    <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
-                    <h3 id="r-stat-aqi" class="text-xl font-bold text-navy">--</h3>
-                    <p id="r-stat-aqi-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-500">
+                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <h3 id="r-stat-co" class="text-2xl font-bold text-navy mt-1">--</h3>
+                    <div id="r-stat-co-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
             </div>
-            <!-- Research Stat Cards — Row 2 -->
+            <!-- Research Stat Cards — Row 2: Index + Environmental -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div class="card-styled p-4 rounded-2xl border-b-4 border-rose-300">
-                    <p class="text-[12px] font-bold text-rose-500 uppercase tracking-wider" data-i18n="stat.temp">🌡️ อุณหภูมิ</p>
-                    <h3 id="r-stat-temp" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">°C</span></h3>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
+                    <p class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                    <h3 id="r-stat-aqi" class="text-2xl font-bold text-navy mt-1">--</h3>
+                    <div id="r-stat-aqi-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
-                <div class="card-styled p-4 rounded-2xl border-b-4 border-cyan-400">
-                    <p class="text-[12px] font-bold text-cyan-600 uppercase tracking-wider" data-i18n="stat.humidity">💧 ความชื้น</p>
-                    <h3 id="r-stat-humidity" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">%</span></h3>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-gray-400">
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
+                    <h3 id="r-stat-hcho" class="text-2xl font-bold text-gray-800 mt-1">-- <span class="text-sm text-gray-400">mg/m³</span></h3>
+                    <div id="r-stat-hcho-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
-                <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-400">
-                    <p class="text-[12px] font-bold text-amber-600 uppercase tracking-wider">HCHO</p>
-                    <h3 id="r-stat-hcho" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                    <p class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
+                    <h3 id="r-stat-tvoc" class="text-2xl font-bold text-navy mt-1">--</h3>
+                    <div id="r-stat-tvoc-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
-                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-500">
-                    <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">TVOC</p>
-                    <h3 id="r-stat-tvoc" class="text-xl font-bold text-navy">-- <span class="text-[13px] font-normal">mg/m³</span></h3>
-                    <p id="r-stat-tvoc-change" class="text-[12px] text-slate-400" data-i18n="stat.vs.old.default">เทียบเตาเก่า: รอข้อมูล</p>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
+                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <div class="flex gap-2 mt-1"><span id="r-stat-temp" class="text-xl font-bold text-gray-800">--°C</span><span class="text-gray-300">/</span><span id="r-stat-humidity" class="text-xl font-bold text-gray-800">--%</span></div>
+                    <div id="r-stat-env-detail" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
             </div>
 
-            <!-- PM Group + Gas Group Charts -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-red-300">
-                    <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.pm">ค่า PM (เตาดั้งเดิม vs เตาชีวมวล)</h4>
-                    <div class="h-[220px]"><canvas id="pmGroupChart"></canvas></div>
+            <!-- STACKED BAR: PM2.5 Baseline Decomposition -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม <span class="info-btn" onclick="showInfo(this,'อ่านกราฟนี้อย่างไร?','แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient baseline = ค่าฝุ่นพื้นฐานก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเตาชีวมวลควรมี emission ต่ำกว่าเตาดั้งเดิม')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่า Ambient Baseline ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <div id="stacked-bar-container" class="space-y-4"></div>
+                <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
+                    <span id="stacked-legend-eco"><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)</span>
                 </div>
-                <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-300">
-                    <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="chart.gas">ค่าก๊าซ (เตาดั้งเดิม vs เตาชีวมวล)</h4>
-                    <div class="h-[220px]"><canvas id="gasGroupChart"></canvas></div>
-                </div>
-            </div>
-            <!-- TVOC Comparison Chart -->
-            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-purple-300">
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="font-bold text-sm text-navy" data-i18n="chart.tvoc">ค่า TVOC (เตาดั้งเดิม vs เตาชีวมวล)</h4>
-                    <button onclick="showTvocReference()" class="text-xs text-purple-500 hover:text-purple-700 font-bold" data-i18n="chart.tvoc.ref">ℹ️ มาตรฐาน</button>
-                </div>
-                <div class="h-[220px]"><canvas id="tvocGroupChart"></canvas></div>
-                <p class="text-[10px] text-slate-400 mt-2" data-i18n="chart.tvoc.note">มาตรฐาน: WHO Indoor Air Quality Guidelines</p>
             </div>
 
-            <!-- Reduction Summary Table -->
-            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-emerald-400">
-                <h4 class="font-bold text-sm mb-4 text-navy" data-i18n="reduction.title">📊 สรุป % การลดมลพิษ (เตาชีวมวล vs เตาดั้งเดิม)</h4>
+            <!-- DAILY AVG CHARTS — 6 charts grouped by type -->
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
+            </div>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
+            </div>
+
+            <!-- Drill-down panel (hidden by default) -->
+            <div id="drilldown-panel" class="hidden space-y-4">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-lg text-navy" id="drilldown-title">📅 รายละเอียดวันที่ --</h4>
+                    <button onclick="clearDrilldown()" class="text-sm text-slate-400 hover:text-slate-600 font-bold">✕ ปิด</button>
+                </div>
+                <div id="drilldown-legend" class="flex flex-wrap gap-2 mb-4"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="drilldown-charts-container"></div>
+            </div>
+
+            <!-- Comparison Table: Gross / Ambient / Net -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50">
-                            <tr>
-                                <th class="p-3 text-left font-bold text-navy" data-i18n="reduction.param">พารามิเตอร์</th>
-                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.old.avg">เตาดั้งเดิม (เฉลี่ย)</th>
-                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.eco.avg">เตาชีวมวล (เฉลี่ย)</th>
-                                <th class="p-3 text-center font-bold text-navy" data-i18n="reduction.pct">% ลดลง</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reduction-table-body" class="divide-y">
-                            <tr><td colspan="4" class="p-4 text-center text-slate-400" data-i18n="reduction.loading">กำลังโหลดข้อมูล...</td></tr>
-                        </tbody>
+                    <table class="w-full text-[11px]" id="comparison-table">
+                        <thead id="comparison-table-head"></thead>
+                        <tbody id="comparison-table-body"></tbody>
                     </table>
+                    <p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient baseline (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
                 </div>
             </div>
 
-            <!-- Sensor Time-Series Charts -->
-            <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-blue-400">
-                <div class="mb-6">
-                    <h4 class="font-bold text-lg text-navy flex items-center gap-2" data-i18n="sensor.compare">📈 เปรียบเทียบ Sensor ตามเวลา</h4>
-                    <p class="text-slate-400 text-sm" id="sensor-chart-count" data-i18n="sensor.loading">กำลังโหลด...</p>
+            <!-- Methodology Panel -->
+            <div class="methodology-panel p-5">
+                <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('meth-body').classList.toggle('open'); document.getElementById('meth-arrow').style.transform = document.getElementById('meth-body').classList.contains('open') ? 'rotate(180deg)' : '';">
+                    <h4 class="font-bold text-sm text-gray-700">📋 วิธีวิเคราะห์ข้อมูล (Methodology)</h4>
+                    <span id="meth-arrow" class="text-gray-400 transition-transform">▼</span>
                 </div>
-                <div id="sensor-color-legend" class="flex flex-wrap gap-2 mb-4"></div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-orange-600 mb-2" data-i18n="chart.sensor.pm25">PM2.5 (µg/m³)</h5>
-                        <div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-emerald-600 mb-2" data-i18n="chart.sensor.co2">CO2 (ppm)</h5>
-                        <div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-red-500 mb-2" data-i18n="chart.sensor.temp">อุณหภูมิ (°C)</h5>
-                        <div class="h-[220px]"><canvas id="sensorTempChart"></canvas></div>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-blue-500 mb-2" data-i18n="chart.sensor.aqi">AQI</h5>
-                        <div class="h-[220px]"><canvas id="sensorAqiChart"></canvas></div>
-                    </div>
-                    <div class="bg-white/60 rounded-2xl p-4">
-                        <h5 class="font-bold text-sm text-purple-600 mb-2" data-i18n="chart.sensor.tvoc">TVOC (mg/m³) — บันทึกด้วยมือ</h5>
-                        <div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div>
-                    </div>
+                <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
+                    <div><p class="font-bold text-gray-700 mb-1">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li>เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)</li><li>ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li>10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าพื้นฐาน (Baseline Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ambient baseline</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − ambient baseline ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง baseline ไม่นำมาวิเคราะห์</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li>เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li>Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li>CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ</li></ul></div>
                 </div>
             </div>
 
@@ -813,14 +871,14 @@
             <div id="admin-data" class="admin-tab-content hidden space-y-4">
                 <!-- Sub-tab toggle -->
                 <div class="flex gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-200 shadow-inner w-fit">
-                    <button onclick="switchDataSubTab('sensor')" id="data-sub-sensor" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active" data-i18n="data.sub.sensor">อัตโนมัติ</button>
-                    <button onclick="switchDataSubTab('tvoc')" id="data-sub-tvoc" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500">TVOC</button>
+                    <button onclick="switchDataSubTab('sensor')" id="data-sub-sensor" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active" data-i18n="data.sub.sensor">ข้อมูลเซนเซอร์</button>
+                    <button onclick="switchDataSubTab('tvoc')" id="data-sub-tvoc" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="data.sub.manual">กรอกด้วยมือ</button>
                 </div>
 
                 <!-- Sub: อัตโนมัติ (sensor data) -->
                 <div id="data-sub-sensor-content" class="bg-white/60 rounded-[2.5rem] overflow-x-auto shadow-sm border-b-4 border-slate-200">
                     <div class="p-5 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                        <span class="font-bold text-navy" data-i18n="data.sensor.title">📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)</span>
+                        <span class="font-bold text-navy" data-i18n="data.sensor.title">📡 ข้อมูลเซนเซอร์</span>
                         <div class="flex items-center gap-3">
                             <select id="sensor-house-filter" onchange="updateAllDataTable()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                                 <option value="all" data-i18n="data.filter.all.houses">ทุกบ้าน</option>
@@ -836,6 +894,7 @@
                                     <th class="p-3 text-center text-orange-500">PM2.5</th>
                                     <th class="p-3 text-center text-orange-400">PM10</th>
                                     <th class="p-3 text-center text-slate-500">CO2</th>
+                                    <th class="p-3 text-center text-rose-500">CO</th>
                                     <th class="p-3 text-center text-blue-500">AQI</th>
                                     <th class="p-3 text-center text-red-400">°C</th>
                                     <th class="p-3 text-center text-cyan-500">%RH</th>
@@ -852,14 +911,13 @@
                 <div id="data-sub-tvoc-content" class="hidden space-y-4">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div>
-                            <h3 class="text-2xl font-bold text-navy" data-i18n="tvoc.tab.title">TVOC — บันทึกด้วยมือ</h3>
+                            <h3 class="text-2xl font-bold text-navy" data-i18n="tvoc.tab.title">✍️ กรอกด้วยมือ (TVOC / CO)</h3>
                             <p class="text-slate-400 text-sm" id="tvoc-tab-summary">กำลังโหลด...</p>
                         </div>
                         <div class="flex items-center gap-3">
                             <select id="tvoc-house-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                                 <option value="all" data-i18n="data.filter.all.houses">ทุกบ้าน</option>
                             </select>
-                            <!-- stove filter removed: stove_type comes from collection_period, not sensor -->
                             <select id="tvoc-range-filter" onchange="updateTvocTab()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white">
                                 <option value="0" data-i18n="tvoc.filter.all">ทั้งหมด</option>
                                 <option value="24" data-i18n="filter.24h">24 ชม.</option>
@@ -867,6 +925,7 @@
                                 <option value="168" selected data-i18n="filter.7d">7 วัน</option>
                                 <option value="720" data-i18n="filter.30d">30 วัน</option>
                             </select>
+                            <button onclick="exportManualData()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="tvoc-stats-row">
@@ -900,6 +959,7 @@
                                         <th class="p-3 text-purple-800" data-i18n="tvoc.table.house">บ้าน</th>
                                         <!-- stove column removed -->
                                         <th class="p-3 text-center text-purple-800 font-bold">TVOC (mg/m³)</th>
+                                        <th class="p-3 text-center text-rose-600 font-bold">CO (ppm)</th>
                                         <th class="p-3 text-purple-800" data-i18n="tvoc.table.recorder">ผู้บันทึก</th>
                                     </tr>
                                 </thead>
@@ -1168,6 +1228,8 @@
             'stat.temp': { th: '🌡️ อุณหภูมิ', en: '🌡️ Temperature' },
             'stat.humidity': { th: '💧 ความชื้น', en: '💧 Humidity' },
             // Chart headers
+            'chart.basic.pm25': { th: 'ฝุ่น PM2.5 ขณะหุงต้ม', en: 'PM2.5 During Cooking' },
+            'chart.basic.co2': { th: 'CO2 ขณะหุงต้ม', en: 'CO2 During Cooking' },
             'chart.pm': { th: 'ค่า PM (เตาดั้งเดิม vs เตาชีวมวล)', en: 'PM Values (Traditional vs Biomass)' },
             'chart.gas': { th: 'ค่าก๊าซ (เตาดั้งเดิม vs เตาชีวมวล)', en: 'Gas Values (Traditional vs Biomass)' },
             'chart.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
@@ -1574,8 +1636,9 @@
             'health.waiting': { th: 'รอข้อมูล', en: 'Waiting' },
             'health.offline': { th: 'ออฟไลน์', en: 'Offline' },
             // Data sub-tabs & headers
-            'data.sub.sensor': { th: 'อัตโนมัติ', en: 'Auto' },
-            'data.sensor.title': { th: '📡 ข้อมูลเซนเซอร์ (อัตโนมัติ)', en: '📡 Sensor Data (Auto)' },
+            'data.sub.sensor': { th: 'ข้อมูลเซนเซอร์', en: 'Sensor Data' },
+            'data.sub.manual': { th: 'กรอกด้วยมือ', en: 'Manual Entry' },
+            'data.sensor.title': { th: '📡 ข้อมูลเซนเซอร์', en: '📡 Sensor Data' },
             'data.filter.all.devices': { th: 'ทุกเครื่อง', en: 'All Devices' },
             'data.filter.all.houses': { th: 'ทุกบ้าน', en: 'All Houses' },
             'data.export.daily': { th: '📋 สรุปรายวัน', en: '📋 Daily Summary' },
@@ -1583,7 +1646,7 @@
             'data.header.house': { th: 'บ้าน', en: 'House' },
             // data.stove.old removed
             // TVOC tab
-            'tvoc.tab.title': { th: 'TVOC — บันทึกด้วยมือ', en: 'TVOC — Manual Entry' },
+            'tvoc.tab.title': { th: '✍️ กรอกด้วยมือ (TVOC / CO)', en: '✍️ Manual Entry (TVOC / CO)' },
             'tvoc.filter.all': { th: 'ทั้งหมด', en: 'All' },
             'tvoc.stat.count': { th: 'จำนวนรายการ', en: 'Records' },
             'tvoc.stat.avg': { th: 'ค่าเฉลี่ย', en: 'Average' },
@@ -1737,22 +1800,23 @@
         }
 
         // Known sensors — loaded from Supabase registered_sensors, with hardcoded fallback
-        let KNOWN_SENSORS = [
+        const DEFAULT_SENSORS = [
             { tuyaId: 'a3d01864e463e3ede0hf0e', name: 'MT13W-01' },
             { tuyaId: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29-01' },
         ];
+        let KNOWN_SENSORS = [];
 
         async function loadRegisteredSensors() {
             try {
                 const { data, error } = await supabaseClient.from('registered_sensors').select('*').order('created_at');
-                if (!error && data && data.length) {
+                if (!error && data) {
                     KNOWN_SENSORS = data.map(s => ({
                         tuyaId: s.tuya_device_id,
                         name: s.name,
                     }));
                     data.forEach(s => { DEVICE_NAMES[s.tuya_device_id] = s.name; });
                 }
-            } catch (e) { console.log('loadRegisteredSensors fallback to hardcoded'); }
+            } catch (e) { console.log('loadRegisteredSensors error', e); }
             populateSensorDropdowns();
         }
 
@@ -1957,7 +2021,7 @@
 
         // ==================== Daily Aggregation ====================
         let dailyAgg = {}; // { 'YYYY-MM-DD': { eco: {pm25:{sum,count,min,max},...}, old: {...} } }
-        const AGG_FIELDS = ['pm25_value', 'pm10_value', 'co2_value', 'temperature', 'humidity', 'hcho_value', 'aqi'];
+        const AGG_FIELDS = ['pm25_value', 'pm10_value', 'co2_value', 'co_value', 'tvoc_value', 'temperature', 'humidity', 'hcho_value', 'aqi'];
 
         function computeDailyAggregates() {
             dailyAgg = {};
@@ -2032,6 +2096,109 @@
 
         function toggleMobileMenu() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        // ==================== Info Popup System ====================
+        function showInfo(btn, title, content) {
+            // Remove any existing popup
+            document.querySelectorAll('.info-popup, .info-overlay').forEach(e => e.remove());
+            const overlay = document.createElement('div');
+            overlay.className = 'info-overlay';
+            overlay.onclick = () => { overlay.remove(); popup.remove(); };
+            const popup = document.createElement('div');
+            popup.className = 'info-popup';
+            popup.innerHTML = '<span class="close-pop" onclick="this.parentElement.previousElementSibling.remove(); this.parentElement.remove();">×</span><h5>' + title + '</h5>' + content.split('\n').map(l => '<div>' + l + '</div>').join('');
+            // Position near the button
+            const rect = btn.getBoundingClientRect();
+            document.body.appendChild(overlay);
+            document.body.appendChild(popup);
+            const pw = popup.offsetWidth, ph = popup.offsetHeight;
+            let left = rect.left + rect.width / 2 - pw / 2;
+            let top = rect.bottom + 8;
+            if (left < 8) left = 8;
+            if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+            if (top + ph > window.innerHeight - 8) top = rect.top - ph - 8;
+            popup.style.left = left + 'px';
+            popup.style.top = top + 'px';
+        }
+
+        // ==================== Scenario Detection ====================
+        let currentScenario = 'normal'; // 'normal' | 'no-eco' | 'eco-fail'
+
+        function detectScenario() {
+            const data = applyBaselineSubtraction(getFilteredData(allDataWithPending));
+            const ecoData = data.filter(d => d.stove_type === 'eco');
+            const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+            if (ecoData.length === 0) return 'no-eco';
+
+            const ecoAvgPm = avg(ecoData, 'pm25_value');
+            const oldAvgPm = avg(oldData, 'pm25_value');
+
+            if (ecoAvgPm == null || oldAvgPm == null || oldAvgPm === 0) return 'no-eco';
+            if (ecoAvgPm >= oldAvgPm) return 'eco-fail';
+            return 'normal';
+        }
+
+        function updateScenario() {
+            currentScenario = detectScenario();
+            // Alert bars
+            const noEcoBar = document.getElementById('scenario-bar-no-eco');
+            const failBar = document.getElementById('scenario-bar-eco-fail');
+            if (noEcoBar) noEcoBar.classList.toggle('active', currentScenario === 'no-eco');
+            if (failBar) failBar.classList.toggle('active', currentScenario === 'eco-fail');
+
+            // Hero variants
+            const heroNormal = document.getElementById('hero-normal');
+            const heroNoEco = document.getElementById('hero-no-eco');
+            const heroFail = document.getElementById('hero-eco-fail');
+            if (heroNormal) heroNormal.classList.toggle('hidden', currentScenario !== 'normal');
+            if (heroNoEco) heroNoEco.classList.toggle('hidden', currentScenario !== 'no-eco');
+            if (heroFail) heroFail.classList.toggle('hidden', currentScenario !== 'eco-fail');
+
+            // Update hero content with live data
+            updateHeroContent();
+        }
+
+        function updateHeroContent() {
+            const data = applyBaselineSubtraction(getFilteredData(allDataWithPending));
+            const ecoData = data.filter(d => d.stove_type === 'eco');
+            const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const ecoAvgPm = avg(ecoData, 'pm25_value');
+            const oldAvgPm = avg(oldData, 'pm25_value');
+            const range = getDataDateRange(allDataWithPending);
+            const sensorIds = new Set(data.map(d => d.tuya_device_id).filter(Boolean));
+            const metaText = (range ? 'ข้อมูล ' + range.days + ' วัน' : '') + ' · ' + sensorIds.size + ' ครัวเรือน';
+
+            if (currentScenario === 'normal' && oldAvgPm && ecoAvgPm != null) {
+                const pct = Math.round((oldAvgPm - ecoAvgPm) / oldAvgPm * 100);
+                const el = id => document.getElementById(id);
+                if (el('hero-pct')) el('hero-pct').textContent = pct;
+                if (el('hero-old-val')) el('hero-old-val').textContent = oldAvgPm.toFixed(1) + ' µg/m³';
+                if (el('hero-eco-val')) el('hero-eco-val').textContent = ecoAvgPm.toFixed(1) + ' µg/m³';
+                // Update bar widths
+                const ecoRatio = ecoAvgPm / oldAvgPm;
+                const savedPct = Math.round((1 - ecoRatio) * 85);
+                const emPct = Math.round(ecoRatio * 85);
+                if (el('hero-eco-emission')) el('hero-eco-emission').style.width = emPct + '%';
+                if (el('hero-eco-saved')) { el('hero-eco-saved').style.width = savedPct + '%'; el('hero-eco-saved').textContent = '↓ ลดได้'; }
+                if (el('hero-meta-normal')) el('hero-meta-normal').textContent = metaText;
+            }
+
+            if (currentScenario === 'no-eco' && oldAvgPm != null) {
+                const el = document.getElementById('hero-noeco-pm25');
+                if (el) el.innerHTML = oldAvgPm.toFixed(1) + ' <span class="text-lg text-slate-300">µg/m³</span>';
+                const metaEl = document.getElementById('hero-meta-noeco');
+                if (metaEl) metaEl.textContent = metaText;
+            }
+
+            if (currentScenario === 'eco-fail' && oldAvgPm && ecoAvgPm != null) {
+                const pct = Math.round((ecoAvgPm - oldAvgPm) / oldAvgPm * 100);
+                const el = document.getElementById('hero-fail-pct');
+                if (el) el.textContent = pct;
+                const metaEl = document.getElementById('hero-meta-fail');
+                if (metaEl) metaEl.textContent = metaText;
+            }
         }
 
         let currentAdmin = '';
@@ -2858,18 +3025,18 @@
             return { from, to, days };
         }
         function updateBasicView() {
+            // Detect and apply scenario
+            updateScenario();
             // Show data date range on basic view
             const range = getDataDateRange(allDataWithPending);
             const rangeEl = document.getElementById('basic-range-label');
-            const heroRangeEl = document.getElementById('hero-date-range');
             if (range) {
                 const label = t('basic.range', range.from, range.to, range.days);
                 if (rangeEl) rangeEl.textContent = label;
-                if (heroRangeEl) heroRangeEl.textContent = label;
             }
-            updateHeroAqi();
             updateBigNumbers();
             updateBeforeAfter();
+            updateBasicCharts();
             updateLatestReadings();
             loadTodaySummary();
             updateActivityFeed();
@@ -2896,27 +3063,129 @@
 
         function updateBigNumbers() {
             const filteredPending = applyBaselineSubtraction(getFilteredData(allDataWithPending));
-            const avgPm25 = avg(filteredPending, 'pm25_value');
-            const avgCo2 = avg(filteredPending, 'co2_value');
+            const ecoData = filteredPending.filter(d => d.stove_type === 'eco');
+            const oldData = filteredPending.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+
+            const ecoAvgPm = avg(ecoData, 'pm25_value');
+            const oldAvgPm = avg(oldData, 'pm25_value');
+            const ecoAvgCo2 = avg(ecoData, 'co2_value');
+            const oldAvgCo2 = avg(oldData, 'co2_value');
+            const ecoAvgCo = avg(ecoData.filter(d => d.co_value != null), 'co_value');
+            const oldAvgCo = avg(oldData.filter(d => d.co_value != null), 'co_value');
             const avgTemp = avg(filteredPending, 'temperature');
             const avgHum = avg(filteredPending, 'humidity');
-            document.getElementById('basic-pm25').textContent = avgPm25 != null ? avgPm25.toFixed(1) : '--';
-            document.getElementById('basic-co2').textContent = avgCo2 != null ? Math.round(avgCo2) : '--';
-            document.getElementById('basic-temp').textContent = avgTemp != null ? avgTemp.toFixed(1) : '--';
-            document.getElementById('basic-humidity').textContent = avgHum != null ? avgHum.toFixed(1) : '--';
 
-            // Color PM2.5 based on threshold
-            const pm25El = document.getElementById('basic-pm25');
-            const pm = avgPm25;
-            if (pm != null) {
-                pm25El.className = pm25El.className.replace(/text-(navy|red|orange|emerald)-\d+/g, '');
-                if (pm <= 25) pm25El.classList.add('text-emerald-600');
-                else if (pm <= 50) pm25El.classList.add('text-orange-500');
-                else pm25El.classList.add('text-red-600');
+            // Helper to render scenario-aware card content
+            function renderCard(elId, detailId, ecoVal, oldVal, unit, fmt) {
+                const el = document.getElementById(elId);
+                const detailEl = document.getElementById(detailId);
+                if (!el) return;
+                const f = fmt || (v => v != null ? v.toFixed(1) : '--');
+
+                if (currentScenario === 'normal' && oldVal && ecoVal != null) {
+                    const pct = Math.round((oldVal - ecoVal) / oldVal * 100);
+                    el.innerHTML = '<span class="text-emerald-600">↓ ' + pct + '%</span>';
+                    if (detailEl) detailEl.innerHTML = 'เตาใหม่ <b class="text-emerald-600">' + f(ecoVal) + '</b> · เตาเก่า <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
+                } else if (currentScenario === 'eco-fail' && oldVal && ecoVal != null) {
+                    const pct = Math.round((ecoVal - oldVal) / oldVal * 100);
+                    el.innerHTML = '<span class="text-red-600">↑ ' + pct + '%</span>';
+                    if (detailEl) detailEl.innerHTML = 'เตาใหม่ <b class="text-red-600">' + f(ecoVal) + '</b> · เตาเก่า <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
+                } else if (currentScenario === 'no-eco' && oldVal != null) {
+                    el.innerHTML = '<span class="text-gray-700">' + f(oldVal) + '</span>';
+                    if (detailEl) detailEl.innerHTML = unit + ' · เตาดั้งเดิม';
+                } else {
+                    el.textContent = f(ecoVal != null ? ecoVal : oldVal) || '--';
+                    if (detailEl) detailEl.innerHTML = unit;
+                }
             }
+
+            renderCard('basic-pm25', 'basic-pm25-detail', ecoAvgPm, oldAvgPm, 'µg/m³', v => v != null ? v.toFixed(1) : '--');
+            renderCard('basic-co2', 'basic-co2-detail', ecoAvgCo2, oldAvgCo2, 'ppm', v => v != null ? Math.round(v).toString() : '--');
+            renderCard('basic-co', 'basic-co-detail', ecoAvgCo, oldAvgCo, 'ppm', v => v != null ? v.toFixed(1) : '--');
+
+            // Temp/Humidity — same for all scenarios
+            const tempEl = document.getElementById('basic-temp');
+            const humEl = document.getElementById('basic-humidity');
+            if (tempEl) tempEl.textContent = avgTemp != null ? avgTemp.toFixed(1) : '--';
+            if (humEl) humEl.textContent = avgHum != null ? avgHum.toFixed(1) : '--';
+
             // AQI badge under PM2.5
+            const pm = ecoAvgPm != null ? ecoAvgPm : oldAvgPm;
             const badgeEl = document.getElementById('basic-pm25-badge');
             if (badgeEl) badgeEl.innerHTML = pm != null ? pm25AqiBadge(Math.round(pm)) : '';
+        }
+
+        // ==================== Basic Daily Charts (PM2.5 + CO2) ====================
+        let basicCharts = {};
+        function updateBasicCharts() {
+            const days = Object.keys(dailyAgg).sort();
+            if (!days.length) return;
+
+            const chartConfigs = [
+                { id: 'basicPm25Chart', field: 'pm25_value', label: 'PM2.5', unit: 'µg/m³' },
+                { id: 'basicCo2Chart', field: 'co2_value', label: 'CO2', unit: 'ppm' },
+            ];
+
+            chartConfigs.forEach(cfg => {
+                if (basicCharts[cfg.id]) basicCharts[cfg.id].destroy();
+                const canvas = document.getElementById(cfg.id);
+                if (!canvas) return;
+
+                const oldPoints = [], ecoPoints = [];
+                days.forEach(day => {
+                    const dateMs = new Date(day + 'T12:00:00').getTime();
+                    const ob = dailyAgg[day]?.old?.[cfg.field];
+                    const eb = dailyAgg[day]?.eco?.[cfg.field];
+                    if (ob && ob.count) oldPoints.push({ x: dateMs, y: +(ob.sum / ob.count).toFixed(1) });
+                    if (eb && eb.count) ecoPoints.push({ x: dateMs, y: +(eb.sum / eb.count).toFixed(1) });
+                });
+
+                basicCharts[cfg.id] = new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: t('chart.old'),
+                                data: oldPoints,
+                                borderColor: '#9ca3af',
+                                borderWidth: 1.5,
+                                borderDash: [6, 3],
+                                pointRadius: 0,
+                                tension: 0.3,
+                                fill: false,
+                            },
+                            {
+                                label: t('compare.eco'),
+                                data: ecoPoints,
+                                borderColor: '#10b981',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                tension: 0.3,
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                            tooltip: {
+                                callbacks: {
+                                    title: (items) => {
+                                        if (!items.length) return '';
+                                        return new Date(items[0].parsed.x).toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short' });
+                                    },
+                                },
+                            },
+                        },
+                        scales: {
+                            x: { type: 'time', time: { unit: 'day', tooltipFormat: 'dd MMM' }, ticks: { font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
+                            y: { beginAtZero: true, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        },
+                    },
+                });
+            });
         }
 
         function updateBeforeAfter() {
@@ -3116,43 +3385,78 @@
         }
 
         // ==================== DEEP VIEW ====================
-        function getDeepRangeHours() {
-            const el = document.getElementById('deep-range-filter');
-            return el ? parseInt(el.value) : 0;
+        let deepDateStart = null;
+        let deepDateEnd = null;
+        let activeQuickRange = 0; // 0 = all
+
+        function setQuickRange(days) {
+            activeQuickRange = days;
+            if (days > 0) {
+                const end = new Date();
+                const start = new Date(Date.now() - days * 86400000);
+                deepDateStart = start.toISOString().slice(0, 10);
+                deepDateEnd = end.toISOString().slice(0, 10);
+            } else {
+                deepDateStart = null;
+                deepDateEnd = null;
+            }
+            // Update date inputs
+            const startEl = document.getElementById('deep-date-start');
+            const endEl = document.getElementById('deep-date-end');
+            if (startEl) startEl.value = deepDateStart || '';
+            if (endEl) endEl.value = deepDateEnd || '';
+            // Update button styles
+            document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
+                const btnDays = parseInt(btn.getAttribute('onclick').match(/\d+/)?.[0] || '0');
+                if (btnDays === days) {
+                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600';
+                } else {
+                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
+                }
+            });
+            clearDrilldown();
+            updateDeepView();
         }
+
+        function onDateRangeChange() {
+            const startEl = document.getElementById('deep-date-start');
+            const endEl = document.getElementById('deep-date-end');
+            deepDateStart = startEl?.value || null;
+            deepDateEnd = endEl?.value || null;
+            // Clear active quick button
+            activeQuickRange = -1;
+            document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
+                btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
+            });
+            clearDrilldown();
+            updateDeepView();
+        }
+
         function applyDeepRangeFilter(data) {
-            const hours = getDeepRangeHours();
-            if (hours <= 0) return data;
-            const cutoff = new Date(Date.now() - hours * 3600000).toISOString();
-            return data.filter(d => d.recorded_at >= cutoff);
+            if (!deepDateStart && !deepDateEnd) return data;
+            return data.filter(d => {
+                const dt = d.recorded_at?.slice(0, 10);
+                if (!dt) return false;
+                if (deepDateStart && dt < deepDateStart) return false;
+                if (deepDateEnd && dt > deepDateEnd) return false;
+                return true;
+            });
         }
         function updateDeepView() {
             // Update range label on stat cards
-            const hours = getDeepRangeHours();
             const rangeLabelEl = document.getElementById('deep-range-label');
             if (rangeLabelEl) {
-                const rangeMap = { 0: t('stat.range.all'), 24: t('stat.range.24h'), 72: t('stat.range.3d'), 168: t('stat.range.7d'), 720: t('stat.range.30d') };
-                rangeLabelEl.textContent = rangeMap[hours] || '';
-            }
-
-            // Update baseline status badge
-            const bToggle = document.getElementById('baseline-toggle');
-            const bBadge = document.getElementById('baseline-status-badge');
-            if (bBadge && bToggle) {
-                if (bToggle.checked) {
-                    bBadge.className = 'inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    bBadge.textContent = '🧹 หักค่าพื้นฐาน (10 นาทีแรก) แล้ว — ค่าที่แสดงคือมลพิษจากเตาล้วนๆ';
+                if (deepDateStart && deepDateEnd) {
+                    rangeLabelEl.textContent = '📊 ' + deepDateStart + ' — ' + deepDateEnd;
                 } else {
-                    bBadge.className = 'inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200';
-                    bBadge.textContent = '⚠️ แสดงค่าดิบ — ยังไม่หักค่าพื้นฐาน';
+                    rangeLabelEl.textContent = t('stat.range.all');
                 }
             }
 
             updateResearchStats();
-            renderGroupCharts();
-            updateReductionTable();
+            updateStackedBar();
+            updateComparisonTable();
             updateSensorCharts();
-            updateTvocChart();
             loadSessionsTab();
             loadDailySummaries();
 
@@ -3162,8 +3466,7 @@
         }
 
         function applyBaselineSubtraction(data) {
-            const toggle = document.getElementById('baseline-toggle');
-            if (!toggle || !toggle.checked) return data;
+            // Always apply baseline subtraction (checkbox removed — always on)
             // Filter out baseline-phase readings, then subtract baseline averages from cooking-phase readings
             return data.filter(d => {
                 if (!d.session_id) return true;
@@ -3189,291 +3492,236 @@
             const ecoData = baseData.filter(d => d.stove_type === 'eco');
             const oldData = baseData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
-            const fields = [
-                { id: 'pm25', field: 'pm25_value' },
-                { id: 'pm10', field: 'pm10_value' },
-                { id: 'co2', field: 'co2_value' },
-                { id: 'aqi', field: 'aqi' },
-            ];
-
-            const UNITS = { pm25: 'µg/m³', pm10: 'µg/m³', co2: 'ppm', aqi: '' };
-            fields.forEach(f => {
-                const ecoAvg = avg(ecoData, f.field);
-                const oldAvg = avg(oldData, f.field);
-                const valEl = document.getElementById(`r-stat-${f.id}`);
-                const changeEl = document.getElementById(`r-stat-${f.id}-change`);
+            // Unified helper for all pollutant stat cards
+            function renderStat(id, ecoAvg, oldAvg, unit, dec) {
+                const valEl = document.getElementById('r-stat-' + id);
+                const changeEl = document.getElementById('r-stat-' + id + '-change');
                 if (!valEl) return;
-
-                const unit = UNITS[f.id] || '';
-                const unitSpan = unit ? ' <span class="text-[13px] font-normal">' + unit + '</span>' : '';
+                const fmt = (v) => v != null ? v.toFixed(dec) : '--';
+                const unitHtml = unit ? ' <span class="text-[13px] font-normal">' + unit + '</span>' : '';
 
                 if (oldAvg && ecoAvg != null) {
-                    const rawChange = ((oldAvg - ecoAvg) / oldAvg * 100);
-                    if (Math.abs(rawChange) > 999) {
-                        valEl.innerHTML = (ecoAvg.toFixed(1)) + unitSpan;
-                        valEl.className = 'text-xl font-bold text-navy';
-                        if (changeEl) { changeEl.textContent = t('stat.vs.old.nodata'); changeEl.className = 'text-[12px] text-slate-400'; }
-                    } else if (rawChange > 0) {
-                        valEl.innerHTML = '↓ ' + rawChange.toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
-                        valEl.className = 'text-2xl font-bold text-emerald-600';
-                        if (changeEl) {
-                            changeEl.innerHTML = 'เตาใหม่ <b class="text-emerald-600">' + ecoAvg.toFixed(1) + '</b> / เตาเก่า <span class="text-slate-400">' + oldAvg.toFixed(1) + '</span>' + (unit ? ' ' + unit : '');
-                            changeEl.className = 'text-[11px] text-slate-500';
-                        }
+                    const pct = ((oldAvg - ecoAvg) / oldAvg * 100);
+                    if (Math.abs(pct) > 999) {
+                        valEl.innerHTML = fmt(ecoAvg) + unitHtml;
+                        valEl.className = 'text-2xl font-bold text-navy mt-1';
+                        if (changeEl) changeEl.innerHTML = '<div>ข้อมูลยังไม่เพียงพอ</div>';
+                    } else if (pct > 0) {
+                        valEl.innerHTML = '↓ ' + pct.toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
+                        valEl.className = 'text-2xl font-bold text-emerald-600 mt-1';
+                        if (changeEl) changeEl.innerHTML = '<div>เตาใหม่ <b class="text-emerald-600">' + fmt(ecoAvg) + '</b> / เตาเก่า <span class="text-slate-400">' + fmt(oldAvg) + '</span>' + (unit ? ' ' + unit : '') + '</div>';
                     } else {
-                        valEl.innerHTML = '↑ ' + Math.abs(rawChange).toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
-                        valEl.className = 'text-2xl font-bold text-red-500';
-                        if (changeEl) {
-                            changeEl.innerHTML = 'เตาใหม่ <b class="text-red-500">' + ecoAvg.toFixed(1) + '</b> / เตาเก่า <span class="text-slate-400">' + oldAvg.toFixed(1) + '</span>' + (unit ? ' ' + unit : '');
-                            changeEl.className = 'text-[11px] text-slate-500';
-                        }
+                        valEl.innerHTML = '↑ ' + Math.abs(pct).toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
+                        valEl.className = 'text-2xl font-bold text-red-500 mt-1';
+                        if (changeEl) changeEl.innerHTML = '<div>เตาใหม่ <b class="text-red-500">' + fmt(ecoAvg) + '</b> / เตาเก่า <span class="text-slate-400">' + fmt(oldAvg) + '</span>' + (unit ? ' ' + unit : '') + '</div>';
                     }
                 } else {
-                    valEl.innerHTML = (ecoAvg != null ? ecoAvg.toFixed(1) : '--') + unitSpan;
-                    valEl.className = 'text-xl font-bold text-navy';
-                    if (changeEl) { changeEl.textContent = t('stat.vs.old.default'); changeEl.className = 'text-[12px] text-slate-400'; }
+                    const anyVal = ecoAvg ?? oldAvg;
+                    valEl.innerHTML = fmt(anyVal) + unitHtml;
+                    valEl.className = 'text-2xl font-bold text-navy mt-1';
+                    if (changeEl) changeEl.innerHTML = '<div>' + (anyVal != null ? (ecoAvg != null ? 'เตาชีวมวล' : 'เตาดั้งเดิม') : 'ยังไม่มีข้อมูล') + '</div>';
                 }
-                // AQI badge for PM2.5
-                const badgeEl = document.getElementById(`r-stat-${f.id}-badge`);
-                if (badgeEl && f.id === 'pm25') badgeEl.innerHTML = ecoAvg != null ? pm25AqiBadge(ecoAvg) : '';
-            });
+            }
 
-            // Secondary
-            const secFields = [
-                { id: 'temp', field: 'temperature' },
-                { id: 'humidity', field: 'humidity' },
-                { id: 'hcho', field: 'hcho_value' },
-            ];
-            secFields.forEach(f => {
-                const el = document.getElementById(`r-stat-${f.id}`);
-                if (!el) return;
-                const v = avg(allData, f.field);
-                const unitSpan = el.querySelector('span');
-                const unitText = unitSpan ? unitSpan.outerHTML : '';
-                el.innerHTML = (v != null ? v.toFixed(1) : '--') + ' ' + unitText;
-            });
+            // Sensor pollutants
+            renderStat('pm25', avg(ecoData, 'pm25_value'), avg(oldData, 'pm25_value'), 'µg/m³', 1);
+            renderStat('pm10', avg(ecoData, 'pm10_value'), avg(oldData, 'pm10_value'), 'µg/m³', 1);
+            renderStat('co2', avg(ecoData, 'co2_value'), avg(oldData, 'co2_value'), 'ppm', 0);
+            renderStat('aqi', avg(ecoData, 'aqi'), avg(oldData, 'aqi'), '', 0);
+            renderStat('hcho', avg(ecoData, 'hcho_value'), avg(oldData, 'hcho_value'), 'mg/m³', 3);
 
-            // TVOC — eco vs old comparison (manual data)
-            const tvocEcoAvg = avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value');
-            const tvocOldAvg = avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value');
-            const tvocEl = document.getElementById('r-stat-tvoc');
-            const tvocChangeEl = document.getElementById('r-stat-tvoc-change');
-            if (tvocEl) {
-                const tvocUnit = 'mg/m³';
-                if (tvocOldAvg && tvocEcoAvg != null) {
-                    const rawChange = ((tvocOldAvg - tvocEcoAvg) / tvocOldAvg * 100);
-                    if (Math.abs(rawChange) > 999) {
-                        tvocEl.innerHTML = (tvocEcoAvg.toFixed(3)) + ' <span class="text-[13px] font-normal">' + tvocUnit + '</span>';
-                        tvocEl.className = 'text-xl font-bold text-navy';
-                        if (tvocChangeEl) { tvocChangeEl.textContent = t('stat.vs.old.nodata'); tvocChangeEl.className = 'text-[12px] text-slate-400'; }
-                    } else if (rawChange > 0) {
-                        tvocEl.innerHTML = '↓ ' + rawChange.toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
-                        tvocEl.className = 'text-2xl font-bold text-emerald-600';
-                        if (tvocChangeEl) {
-                            tvocChangeEl.innerHTML = 'เตาใหม่ <b class="text-emerald-600">' + tvocEcoAvg.toFixed(3) + '</b> / เตาเก่า <span class="text-slate-400">' + tvocOldAvg.toFixed(3) + '</span> ' + tvocUnit;
-                            tvocChangeEl.className = 'text-[11px] text-slate-500';
-                        }
-                    } else {
-                        tvocEl.innerHTML = '↑ ' + Math.abs(rawChange).toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
-                        tvocEl.className = 'text-2xl font-bold text-red-500';
-                        if (tvocChangeEl) {
-                            tvocChangeEl.innerHTML = 'เตาใหม่ <b class="text-red-500">' + tvocEcoAvg.toFixed(3) + '</b> / เตาเก่า <span class="text-slate-400">' + tvocOldAvg.toFixed(3) + '</span> ' + tvocUnit;
-                            tvocChangeEl.className = 'text-[11px] text-slate-500';
-                        }
-                    }
+            // Manual data pollutants (filter nulls)
+            renderStat('co', avg(ecoData.filter(d => d.co_value != null), 'co_value'), avg(oldData.filter(d => d.co_value != null), 'co_value'), 'ppm', 1);
+            renderStat('tvoc', avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value'), avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value'), 'mg/m³', 3);
+
+            // AQI badge for PM2.5
+            const badgeEl = document.getElementById('r-stat-pm25-badge');
+            if (badgeEl) {
+                const ecoAvgPm = avg(ecoData, 'pm25_value');
+                badgeEl.innerHTML = ecoAvgPm != null ? pm25AqiBadge(ecoAvgPm) : '';
+            }
+
+            // Temp / Humidity (combined card, display only)
+            const tempEl = document.getElementById('r-stat-temp');
+            const humEl = document.getElementById('r-stat-humidity');
+            const envDetailEl = document.getElementById('r-stat-env-detail');
+            const ecoTemp = avg(ecoData, 'temperature');
+            const oldTemp = avg(oldData, 'temperature');
+            const ecoHum = avg(ecoData, 'humidity');
+            const oldHum = avg(oldData, 'humidity');
+            if (tempEl) tempEl.textContent = ((ecoTemp ?? oldTemp) != null ? (ecoTemp ?? oldTemp).toFixed(1) : '--') + '°C';
+            if (humEl) humEl.textContent = ((ecoHum ?? oldHum) != null ? (ecoHum ?? oldHum).toFixed(1) : '--') + '%';
+            if (envDetailEl) {
+                let html = '';
+                if (ecoTemp != null && oldTemp != null) html += '<div>🌡 ใหม่ ' + ecoTemp.toFixed(1) + '°C / เก่า ' + oldTemp.toFixed(1) + '°C</div>';
+                if (ecoHum != null && oldHum != null) html += '<div>💧 ใหม่ ' + ecoHum.toFixed(1) + '% / เก่า ' + oldHum.toFixed(1) + '%</div>';
+                envDetailEl.innerHTML = html || '<div>สภาพแวดล้อมขณะเก็บข้อมูล</div>';
+            }
+        }
+
+        // ==================== Stacked Bar: PM2.5 Decomposition ====================
+        function updateStackedBar() {
+            const container = document.getElementById('stacked-bar-container');
+            const ecoLegend = document.getElementById('stacked-legend-eco');
+            if (!container) return;
+
+            const rawData = applyDeepRangeFilter(getFilteredData());
+            const netData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
+
+            const oldRaw = rawData.filter(d => (d.stove_type === 'old' || d.stove_type === 'traditional') && d.pm25_value != null);
+            const ecoRaw = rawData.filter(d => d.stove_type === 'eco' && d.pm25_value != null);
+            const oldNet = netData.filter(d => (d.stove_type === 'old' || d.stove_type === 'traditional') && d.pm25_value != null);
+            const ecoNet = netData.filter(d => d.stove_type === 'eco' && d.pm25_value != null);
+
+            const oldGross = avg(oldRaw, 'pm25_value');
+            const ecoGross = avg(ecoRaw, 'pm25_value');
+            const oldNetAvg = avg(oldNet, 'pm25_value');
+            const ecoNetAvg = avg(ecoNet, 'pm25_value');
+
+            // Ambient ≈ Gross − Net
+            const oldAmbient = (oldGross != null && oldNetAvg != null) ? Math.max(0, oldGross - oldNetAvg) : 0;
+            const ecoAmbient = (ecoGross != null && ecoNetAvg != null) ? Math.max(0, ecoGross - ecoNetAvg) : 0;
+            const maxVal = Math.max(oldGross || 0, ecoGross || 0, 1);
+
+            let html = '';
+
+            // Old stove bar
+            if (oldGross != null) {
+                const ambPct = Math.max((oldAmbient / maxVal * 100), 5);
+                const netPct = Math.max(((oldNetAvg || 0) / maxVal * 100), 10);
+                html += '<div>';
+                html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">' + oldGross.toFixed(1) + ' (gross) → <span class="text-gray-900">' + (oldNetAvg || 0).toFixed(1) + '</span> (net)</span></div>';
+                html += '<div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">';
+                html += '<div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:' + ambPct.toFixed(0) + '%">' + oldAmbient.toFixed(1) + '<br>ambient</div>';
+                html += '<div class="bg-orange-400 flex items-center justify-center text-white" style="width:' + netPct.toFixed(0) + '%">' + (oldNetAvg || 0).toFixed(1) + ' µg/m³ — Stove Emission</div>';
+                html += '</div></div>';
+            }
+
+            // Eco stove bar (scenario-dependent)
+            if (ecoGross != null && currentScenario !== 'no-eco') {
+                const ambPct = Math.max((ecoAmbient / maxVal * 100), 5);
+                const netPct = Math.max(((ecoNetAvg || 0) / maxVal * 100), 10);
+                const isGood = currentScenario === 'normal';
+                const barColor = isGood ? 'bg-emerald-500' : 'bg-red-400';
+                const textColor = isGood ? 'text-emerald-600' : 'text-red-600';
+
+                html += '<div>';
+                html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">✨ เตาชีวมวล</span><span class="font-bold ' + (isGood ? 'text-gray-700' : 'text-red-600') + '">' + ecoGross.toFixed(1) + ' (gross) → <span class="' + textColor + '">' + (ecoNetAvg || 0).toFixed(1) + '</span> (net)' + (isGood ? '' : ' ⚠️') + '</span></div>';
+                html += '<div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">';
+                html += '<div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:' + ambPct.toFixed(0) + '%">' + ecoAmbient.toFixed(1) + '<br>ambient</div>';
+                html += '<div class="' + barColor + ' flex items-center justify-center text-white" style="width:' + netPct.toFixed(0) + '%">' + (ecoNetAvg || 0).toFixed(1) + (isGood ? '' : ' — Stove Emission ↑') + '</div>';
+
+                if (isGood && oldNetAvg && ecoNetAvg != null && oldNetAvg > ecoNetAvg) {
+                    const savedAmt = oldNetAvg - ecoNetAvg;
+                    const savedPct = (savedAmt / oldNetAvg * 100);
+                    const savedWidth = Math.max((savedAmt / maxVal * 100), 15);
+                    html += '<div class="bg-emerald-100 flex items-center justify-center text-emerald-500 border border-dashed border-emerald-300" style="width:' + savedWidth.toFixed(0) + '%">↓ ลดได้ ' + savedAmt.toFixed(1) + ' µg/m³ (' + savedPct.toFixed(1) + '%)</div>';
+                }
+
+                html += '</div></div>';
+            } else if (currentScenario === 'no-eco') {
+                html += '<div class="bg-slate-50 rounded-lg p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-300">⏳ ยังไม่มีข้อมูลเตาชีวมวล — จะแสดงเมื่อเริ่มระยะที่ 2</div>';
+            }
+
+            container.innerHTML = html;
+
+            // Update eco legend
+            if (ecoLegend) {
+                ecoLegend.style.display = currentScenario === 'no-eco' ? 'none' : '';
+                if (currentScenario === 'eco-fail') {
+                    ecoLegend.innerHTML = '<span class="inline-block w-3 h-3 rounded bg-red-400 align-middle mr-1"></span>Stove emission (เตาชีวมวล) ⚠️';
                 } else {
-                    const tvocAvg = tvocEcoAvg ?? tvocOldAvg;
-                    tvocEl.innerHTML = (tvocAvg != null ? tvocAvg.toFixed(3) : '--') + ' <span class="text-[13px] font-normal">mg/m³</span>';
-                    tvocEl.className = 'text-xl font-bold text-navy';
-                    if (tvocChangeEl) { tvocChangeEl.textContent = t('stat.vs.old.default'); tvocChangeEl.className = 'text-[12px] text-slate-400'; }
+                    ecoLegend.innerHTML = '<span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)';
                 }
             }
         }
 
-        let groupCharts = {};
-        function renderGroupCharts() {
-            const filtered = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
-            const ecoData = filtered.filter(d => d.stove_type === 'eco');
-            const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+        // ==================== Comparison Table: Gross / Ambient / Net ====================
+        function updateComparisonTable() {
+            const headEl = document.getElementById('comparison-table-head');
+            const bodyEl = document.getElementById('comparison-table-body');
+            if (!headEl || !bodyEl) return;
 
-            // PM Group
-            if (groupCharts.pm) groupCharts.pm.destroy();
-            const pmCanvas = document.getElementById('pmGroupChart');
-            if (pmCanvas) {
-                groupCharts.pm = new Chart(pmCanvas, {
-                    type: 'bar',
-                    data: {
-                        labels: ['PM 2.5', 'PM 10'],
-                        datasets: [
-                            {
-                                label: t('chart.old'),
-                                data: [avg(oldData, 'pm25_value'), avg(oldData, 'pm10_value')],
-                                backgroundColor: 'rgba(156,163,175,0.35)',
-                                borderRadius: 6, borderWidth: 1, borderColor: 'rgba(156,163,175,0.5)', borderDash: [4, 2],
-                            },
-                            {
-                                label: t('compare.eco'),
-                                data: [avg(ecoData, 'pm25_value'), avg(ecoData, 'pm10_value')],
-                                backgroundColor: 'rgba(16,185,129,0.85)',
-                                borderRadius: 6, borderWidth: 2, borderColor: '#10b981',
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
-                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } },
-                    },
-                });
+            const rawData = applyDeepRangeFilter(getFilteredData());
+            const netData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
+            const hasEco = netData.some(d => d.stove_type === 'eco');
+            const isNormal = currentScenario === 'normal';
+
+            function calcStats(arr, field) {
+                const vals = arr.filter(d => d[field] != null).map(d => d[field]);
+                if (!vals.length) return null;
+                const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+                const variance = vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length;
+                return { mean, sd: Math.sqrt(variance), n: vals.length };
+            }
+            function fmtStat(s, dec) {
+                if (!s) return '--';
+                return s.mean.toFixed(dec) + ' ± ' + s.sd.toFixed(dec);
             }
 
-            // Gas Group
-            if (groupCharts.gas) groupCharts.gas.destroy();
-            const gasCanvas = document.getElementById('gasGroupChart');
-            if (gasCanvas) {
-                groupCharts.gas = new Chart(gasCanvas, {
-                    type: 'bar',
-                    data: {
-                        labels: ['CO2', 'HCHO'],
-                        datasets: [
-                            {
-                                label: t('chart.old'),
-                                data: [avg(oldData, 'co2_value'), avg(oldData, 'hcho_value')],
-                                backgroundColor: 'rgba(156,163,175,0.35)',
-                                borderRadius: 6, borderWidth: 1, borderColor: 'rgba(156,163,175,0.5)', borderDash: [4, 2],
-                            },
-                            {
-                                label: t('compare.eco'),
-                                data: [avg(ecoData, 'co2_value'), avg(ecoData, 'hcho_value')],
-                                backgroundColor: 'rgba(16,185,129,0.85)',
-                                borderRadius: 6, borderWidth: 2, borderColor: '#10b981',
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
-                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } },
-                    },
-                });
-            }
-
-            // TVOC Group
-            if (groupCharts.tvoc) groupCharts.tvoc.destroy();
-            const tvocCanvas = document.getElementById('tvocGroupChart');
-            if (tvocCanvas) {
-                const tvocOld = avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value');
-                const tvocEco = avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value');
-                groupCharts.tvoc = new Chart(tvocCanvas, {
-                    type: 'bar',
-                    data: {
-                        labels: ['TVOC (mg/m³)'],
-                        datasets: [
-                            { label: t('chart.old'), data: [tvocOld], backgroundColor: 'rgba(156,163,175,0.35)', borderRadius: 6, borderWidth: 1, borderColor: 'rgba(156,163,175,0.5)' },
-                            { label: t('compare.eco'), data: [tvocEco], backgroundColor: 'rgba(16,185,129,0.85)', borderRadius: 6, borderWidth: 2, borderColor: '#10b981' },
-                        ],
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
-                        scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } },
-                    },
-                    plugins: [thresholdLinesPlugin(THRESHOLDS.tvoc)],
-                });
-            }
-        }
-
-        function updateReductionTable() {
-            const filtered = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
-            const ecoData = filtered.filter(d => d.stove_type === 'eco');
-            const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
-            const tbody = document.getElementById('reduction-table-body');
-            if (!tbody) return;
-
-            const params = [
-                { label: 'PM 2.5 (µg/m³)', field: 'pm25_value', dec: 2 },
-                { label: 'PM 10 (µg/m³)', field: 'pm10_value', dec: 2 },
-                { label: 'CO2 (ppm)', field: 'co2_value', dec: 0 },
-                { label: 'AQI', field: 'aqi', dec: 0 },
-                { label: 'HCHO (mg/m³)', field: 'hcho_value', dec: 3 },
-                { label: 'TVOC (mg/m³)', field: 'tvoc_value', dec: 3 },
-            ];
-
-            tbody.innerHTML = params.map(p => {
-                const oldAvg = avg(oldData, p.field);
-                const ecoAvg = avg(ecoData, p.field);
-                const rawPct = oldAvg && ecoAvg != null ? ((oldAvg - ecoAvg) / oldAvg * 100) : null;
-                let pctText, pctClass;
-                if (rawPct == null) {
-                    pctText = '--'; pctClass = 'text-slate-400';
-                } else if (Math.abs(rawPct) > 999) {
-                    pctText = t('stat.insufficient'); pctClass = 'text-slate-400 text-[11px]';
-                } else if (rawPct > 0) {
-                    pctText = 'ลดลง ' + rawPct.toFixed(1) + '%';
-                    pctClass = 'text-emerald-600 font-bold';
-                } else {
-                    pctText = 'สูงกว่า ' + Math.abs(rawPct).toFixed(1) + '%';
-                    pctClass = 'text-red-500 font-bold';
-                }
-                return `<tr class="hover:bg-slate-50">
-                    <td class="p-3 font-medium">${p.label}</td>
-                    <td class="p-3 text-center text-orange-500">${oldAvg != null ? oldAvg.toFixed(p.dec) : '--'}</td>
-                    <td class="p-3 text-center text-emerald-600">${ecoAvg != null ? ecoAvg.toFixed(p.dec) : '--'}</td>
-                    <td class="p-3 text-center ${pctClass}">${pctText}</td>
-                </tr>`;
-            }).join('');
-        }
-
-        // ==================== TVOC Time Chart ====================
-        let tvocTimeChartInstance = null;
-        function updateTvocChart() {
-            if (tvocTimeChartInstance) tvocTimeChartInstance.destroy();
-            const canvas = document.getElementById('tvocTimeChart');
-            if (!canvas) return;
-
-            let tvocData;
-            if (drilldownDate) {
-                // Drill-down: show only this day's TVOC
-                const dayStart = drilldownDate + 'T00:00:00';
-                const dayEnd = drilldownDate + 'T23:59:59';
-                tvocData = applyBaselineSubtraction(getFilteredData())
-                    .filter(d => d.tvoc_value != null && d.recorded_at >= dayStart && d.recorded_at <= dayEnd);
+            // Headers
+            if (hasEco) {
+                const netBg = isNormal ? 'bg-emerald-50' : 'bg-red-50';
+                const changeBg = isNormal ? 'bg-green-50' : 'bg-red-50';
+                const changeLabel = isNormal ? 'ลดลง' : 'เปลี่ยนแปลง';
+                headEl.innerHTML =
+                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50" colspan="2">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 ' + netBg + '" colspan="2">ค่าสุทธิ (Net)</th><th class="text-center py-2 ' + changeBg + '">' + changeLabel + '</th></tr>' +
+                    '<tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1">🪵 เก่า</th><th class="text-center py-1">✨ ใหม่</th><th class="text-center py-1 bg-blue-50">🪵 เก่า</th><th class="text-center py-1 bg-blue-50">✨ ใหม่</th><th class="text-center py-1 ' + netBg + '">🪵 เก่า</th><th class="text-center py-1 ' + netBg + '">✨ ใหม่</th><th class="text-center py-1 ' + changeBg + '">Net %</th></tr>';
             } else {
-                tvocData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData())).filter(d => d.tvoc_value != null);
+                headEl.innerHTML =
+                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50">Ambient</th><th class="text-center py-2 bg-orange-50">ค่าสุทธิ (Net)</th></tr>';
             }
 
-            if (!tvocData.length) {
-                tvocTimeChartInstance = null;
-                return;
-            }
-            const ecoData = tvocData.filter(d => d.stove_type === 'eco').sort((a, b) => a.recorded_at.localeCompare(b.recorded_at));
-            const oldData = tvocData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional').sort((a, b) => a.recorded_at.localeCompare(b.recorded_at));
-            const timeUnit = drilldownDate ? 'hour' : 'day';
-            tvocTimeChartInstance = new Chart(canvas, {
-                type: 'line',
-                data: {
-                    datasets: [
-                        {
-                            label: t('compare.eco'), data: ecoData.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
-                            borderColor: '#10b981', backgroundColor: '#10b98120', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: false,
-                        },
-                        {
-                            label: t('chart.old'), data: oldData.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
-                            borderColor: '#f97316', backgroundColor: '#f9731620', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: false,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
-                    scales: {
-                        x: { type: 'time', time: { unit: timeUnit, tooltipFormat: drilldownDate ? 'HH:mm' : 'dd MMM yyyy' }, ticks: { font: { size: 10 }, maxTicksLimit: 8 }, grid: { display: false } },
-                        y: { beginAtZero: true, suggestedMax: 3, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                    },
-                },
-                plugins: [thresholdLinesPlugin(THRESHOLDS.tvoc)],
-            });
+            // Pollutant rows
+            const pollutants = [
+                { label: 'PM2.5 (µg/m³)', field: 'pm25_value', dec: 1, color: 'text-red-600' },
+                { label: 'PM10 (µg/m³)', field: 'pm10_value', dec: 1, color: 'text-orange-600' },
+                { label: 'CO2 (ppm)', field: 'co2_value', dec: 0, color: 'text-emerald-600' },
+                { label: 'CO (ppm)', field: 'co_value', dec: 1, color: 'text-amber-600' },
+                { label: 'TVOC (mg/m³)', field: 'tvoc_value', dec: 3, color: 'text-purple-600' },
+            ];
+
+            const oldRaw = rawData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const ecoRaw = rawData.filter(d => d.stove_type === 'eco');
+            const oldNet = netData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            const ecoNet = netData.filter(d => d.stove_type === 'eco');
+
+            bodyEl.innerHTML = pollutants.map(p => {
+                const oGross = calcStats(oldRaw, p.field);
+                const eGross = calcStats(ecoRaw, p.field);
+                const oNet = calcStats(oldNet, p.field);
+                const eNet = calcStats(ecoNet, p.field);
+                const oAmb = oGross && oNet ? { mean: Math.max(0, oGross.mean - oNet.mean) } : null;
+                const eAmb = eGross && eNet ? { mean: Math.max(0, eGross.mean - eNet.mean) } : null;
+
+                if (hasEco) {
+                    const netBg = isNormal ? 'bg-emerald-50/50' : 'bg-red-50/50';
+                    const changeBg = isNormal ? 'bg-green-50/50' : 'bg-red-50/50';
+                    const ecoColor = isNormal ? 'text-emerald-600' : 'text-red-600';
+                    let changeTd;
+                    if (oNet && eNet && oNet.mean > 0) {
+                        const pct = ((oNet.mean - eNet.mean) / oNet.mean * 100);
+                        changeTd = pct > 0
+                            ? '<td class="text-center ' + changeBg + ' font-bold text-emerald-600">↓ ' + pct.toFixed(1) + '%</td>'
+                            : '<td class="text-center ' + changeBg + ' font-bold text-red-600">↑ ' + Math.abs(pct).toFixed(1) + '%</td>';
+                    } else {
+                        changeTd = '<td class="text-center ' + changeBg + ' text-slate-400">--</td>';
+                    }
+                    return '<tr class="border-b"><td class="py-2 font-medium ' + p.color + '">' + p.label + '</td>' +
+                        '<td class="text-center">' + fmtStat(oGross, p.dec) + '</td>' +
+                        '<td class="text-center">' + fmtStat(eGross, p.dec) + '</td>' +
+                        '<td class="text-center bg-blue-50/50">' + (oAmb ? oAmb.mean.toFixed(p.dec) : '--') + '</td>' +
+                        '<td class="text-center bg-blue-50/50">' + (eAmb ? eAmb.mean.toFixed(p.dec) : '--') + '</td>' +
+                        '<td class="text-center ' + netBg + '">' + fmtStat(oNet, p.dec) + '</td>' +
+                        '<td class="text-center ' + netBg + ' font-bold ' + ecoColor + '">' + fmtStat(eNet, p.dec) + '</td>' +
+                        changeTd + '</tr>';
+                } else {
+                    return '<tr class="border-b"><td class="py-2 font-medium ' + p.color + '">' + p.label + '</td>' +
+                        '<td class="text-center">' + fmtStat(oGross, p.dec) + '</td>' +
+                        '<td class="text-center bg-blue-50/50">' + (oAmb ? oAmb.mean.toFixed(p.dec) : '--') + '</td>' +
+                        '<td class="text-center bg-orange-50/50">' + fmtStat(oNet, p.dec) + '</td></tr>';
+                }
+            }).join('');
         }
 
         function showTvocReference() {
@@ -3493,47 +3741,30 @@
             );
         }
 
-        // ==================== Sensor Charts (Daily Avg) ====================
+        // ==================== Sensor Charts (6 Daily Avg) ====================
         let sensorCharts = {};
         let drilldownDate = null;
         let hiddenHouses = new Set();
+        let drilldownCharts = {};
 
         function updateSensorCharts() {
-            const hours = getDeepRangeHours();
-            const countEl = document.getElementById('sensor-chart-count');
-            const legendEl = document.getElementById('sensor-color-legend');
-
-            if (drilldownDate) {
-                // ── Drill-down: show raw data for selected day ──
-                renderDrilldownCharts();
-                return;
-            }
-
-            // ── Default: Daily Average view ──
-            // Filter dailyAgg by range
+            // Filter dailyAgg by date range
             let days = Object.keys(dailyAgg).sort();
-            if (hours > 0) {
-                const cutoff = new Date(Date.now() - hours * 3600000).toISOString().slice(0, 10);
-                days = days.filter(d => d >= cutoff);
-            }
-
-            if (countEl) countEl.textContent = t('sensor.count.info', days.length, days.length + ' ' + (currentLang === 'th' ? 'วัน' : 'days'));
-
-            // Legend: stove type (not per-house)
-            if (legendEl) {
-                legendEl.innerHTML =
-                    '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-50 border border-slate-200 text-slate-400">' +
-                    '<span class="w-2.5 h-2.5 rounded-full bg-slate-400" style="border:1px dashed #9ca3af"></span>' + t('chart.old') + ' <span class="text-[10px]">(baseline)</span></span>' +
-                    '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 border-2 border-emerald-300 text-emerald-700">' +
-                    '<span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>' + t('compare.eco') + '</span>' +
-                    '<span class="text-[11px] text-slate-400 ml-2">' + (currentLang === 'th' ? '(คลิกจุดบนกราฟเพื่อดูรายละเอียดวัน)' : '(Click a point to drill down)') + '</span>';
+            if (deepDateStart || deepDateEnd) {
+                days = days.filter(d => {
+                    if (deepDateStart && d < deepDateStart) return false;
+                    if (deepDateEnd && d > deepDateEnd) return false;
+                    return true;
+                });
             }
 
             const chartConfigs = [
-                { id: 'sensorPm25Chart', field: 'pm25_value' },
-                { id: 'sensorCo2Chart', field: 'co2_value' },
-                { id: 'sensorTempChart', field: 'temperature' },
-                { id: 'sensorAqiChart', field: 'aqi' },
+                { id: 'sensorPm25Chart', field: 'pm25_value', thresholds: THRESHOLDS.pm25, sugMax: 40 },
+                { id: 'sensorPm10Chart', field: 'pm10_value' },
+                { id: 'sensorCo2Chart', field: 'co2_value', thresholds: THRESHOLDS.co2, sugMax: 1100 },
+                { id: 'sensorCoChart', field: 'co_value' },
+                { id: 'sensorHchoChart', field: 'hcho_value', thresholds: THRESHOLDS.hcho },
+                { id: 'tvocTimeChart', field: 'tvoc_value', thresholds: THRESHOLDS.tvoc, sugMax: 3 },
             ];
 
             chartConfigs.forEach(cfg => {
@@ -3541,15 +3772,10 @@
                 const canvas = document.getElementById(cfg.id);
                 if (!canvas) return;
 
-                const chartPlugins = [];
-                let ySuggestedMax = undefined;
-                if (cfg.id === 'sensorPm25Chart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.pm25)); ySuggestedMax = 40; }
-                if (cfg.id === 'sensorAqiChart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.aqi)); ySuggestedMax = 110; }
-                if (cfg.id === 'sensorCo2Chart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.co2)); ySuggestedMax = 1100; }
+                const chartPlugins = cfg.thresholds ? [thresholdLinesPlugin(cfg.thresholds)] : [];
 
                 // Build daily datasets for old + eco (avg line + min-max band)
                 const datasets = [];
-                // Build old + eco daily points
                 const oldPoints = [], ecoPoints = [];
                 const oldBandUp = [], oldBandLo = [], ecoBandUp = [], ecoBandLo = [];
                 days.forEach(day => {
@@ -3557,22 +3783,22 @@
                     const ob = dailyAgg[day]?.old?.[cfg.field];
                     const eb = dailyAgg[day]?.eco?.[cfg.field];
                     if (ob && ob.count) {
-                        oldPoints.push({ x: dateMs, y: +(ob.sum / ob.count).toFixed(1) });
+                        oldPoints.push({ x: dateMs, y: +(ob.sum / ob.count).toFixed(2) });
                         oldBandUp.push({ x: dateMs, y: ob.max }); oldBandLo.push({ x: dateMs, y: ob.min });
                     }
                     if (eb && eb.count) {
-                        ecoPoints.push({ x: dateMs, y: +(eb.sum / eb.count).toFixed(1) });
+                        ecoPoints.push({ x: dateMs, y: +(eb.sum / eb.count).toFixed(2) });
                         ecoBandUp.push({ x: dateMs, y: eb.max }); ecoBandLo.push({ x: dateMs, y: eb.min });
                     }
                 });
                 // Old stove — gray dashed (baseline reference)
                 datasets.push({ label: t('chart.old') + ' (max)', data: oldBandUp, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: '+1' });
                 datasets.push({ label: t('chart.old') + ' (min)', data: oldBandLo, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: false });
-                datasets.push({ label: t('chart.old'), data: oldPoints, borderColor: '#9ca3af', backgroundColor: '#9ca3af20', borderWidth: 1.5, borderDash: [6, 3], pointRadius: 2, pointHoverRadius: 5, tension: 0.3, fill: false });
+                datasets.push({ label: t('chart.old'), data: oldPoints, borderColor: '#9ca3af', backgroundColor: '#9ca3af20', borderWidth: 1.5, borderDash: [6, 3], pointRadius: 0, pointHoverRadius: 5, tension: 0.3, fill: false });
                 // Eco stove — green bold hero
                 datasets.push({ label: t('compare.eco') + ' (max)', data: ecoBandUp, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: '+1' });
                 datasets.push({ label: t('compare.eco') + ' (min)', data: ecoBandLo, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: false });
-                datasets.push({ label: t('compare.eco'), data: ecoPoints, borderColor: '#10b981', backgroundColor: '#10b98130', borderWidth: 3, pointRadius: 4, pointHoverRadius: 7, tension: 0.3, fill: false });
+                datasets.push({ label: t('compare.eco'), data: ecoPoints, borderColor: '#10b981', backgroundColor: '#10b98130', borderWidth: 3, pointRadius: 0, pointHoverRadius: 7, tension: 0.3, fill: false });
 
                 sensorCharts[cfg.id] = new Chart(canvas, {
                     type: 'line',
@@ -3610,7 +3836,7 @@
                         },
                         scales: {
                             x: { type: 'time', time: { unit: 'day', tooltipFormat: 'dd MMM yyyy' }, ticks: { font: { size: 10 }, maxTicksLimit: 10 }, grid: { display: false } },
-                            y: { beginAtZero: true, suggestedMax: ySuggestedMax, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                            y: { beginAtZero: true, suggestedMax: cfg.sugMax, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         },
                     },
                     plugins: chartPlugins,
@@ -3622,23 +3848,24 @@
         function setDrilldownDate(dateStr) {
             drilldownDate = dateStr;
             hiddenHouses.clear();
-            const picker = document.getElementById('deep-date-picker');
-            if (picker) picker.value = dateStr;
             const panel = document.getElementById('drilldown-panel');
             if (panel) panel.classList.remove('hidden');
-            updateSensorCharts();
-            updateTvocChart();
+            const titleEl = document.getElementById('drilldown-title');
+            if (titleEl) {
+                const dateLabel = new Date(dateStr + 'T12:00:00').toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
+                titleEl.textContent = '📅 รายละเอียดวันที่ ' + dateLabel;
+            }
+            renderDrilldownCharts();
         }
 
         function clearDrilldown() {
             drilldownDate = null;
             hiddenHouses.clear();
-            const picker = document.getElementById('deep-date-picker');
-            if (picker) picker.value = '';
             const panel = document.getElementById('drilldown-panel');
             if (panel) panel.classList.add('hidden');
-            updateSensorCharts();
-            updateTvocChart();
+            // Destroy drilldown charts
+            Object.values(drilldownCharts).forEach(c => c.destroy());
+            drilldownCharts = {};
         }
 
         function toggleHouse(deviceId) {
@@ -3650,63 +3877,76 @@
         const drilldownColors = ['#f97316', '#3b82f6', '#10b981', '#8b5cf6', '#ef4444', '#06b6d4', '#f59e0b', '#ec4899', '#6366f1', '#14b8a6', '#dc2626', '#0d9488', '#7c3aed', '#ca8a04', '#be185d', '#4f46e5'];
 
         function renderDrilldownCharts() {
+            if (!drilldownDate) return;
             const dayStart = drilldownDate + 'T00:00:00';
             const dayEnd = drilldownDate + 'T23:59:59';
             let dayData = applyBaselineSubtraction(getFilteredData())
-                .filter(d => d.recorded_at >= dayStart && d.recorded_at <= dayEnd && d.data_source === 'sensor' && d.tuya_device_id);
+                .filter(d => d.recorded_at >= dayStart && d.recorded_at <= dayEnd);
 
-            // Group by device
-            const deviceIds = [...new Set(dayData.map(d => d.tuya_device_id))];
+            // Group by device (sensor data) + manual data
+            const sensorData = dayData.filter(d => d.data_source === 'sensor' && d.tuya_device_id);
+            const manualData = dayData.filter(d => d.data_source === 'manual');
+            const deviceIds = [...new Set(sensorData.map(d => d.tuya_device_id))];
             const groups = deviceIds.map((id, i) => ({
                 id,
                 name: HOUSE_NAMES[id] || DEVICE_NAMES[id] || (id || '').slice(-6),
                 color: drilldownColors[i % drilldownColors.length],
-                data: dayData.filter(d => d.tuya_device_id === id).sort((a, b) => a.recorded_at.localeCompare(b.recorded_at)),
+                data: sensorData.filter(d => d.tuya_device_id === id).sort((a, b) => a.recorded_at.localeCompare(b.recorded_at)),
                 hidden: hiddenHouses.has(id),
             }));
 
-            const countEl = document.getElementById('sensor-chart-count');
-            const dateLabel = new Date(drilldownDate + 'T12:00:00').toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
-            if (countEl) countEl.innerHTML = '📅 ' + dateLabel + ' <button onclick="clearDrilldown()" class="ml-2 px-2 py-0.5 text-xs bg-slate-200 hover:bg-slate-300 rounded-lg">✕ ' + (currentLang === 'th' ? 'กลับ' : 'Back') + '</button>';
-
             // Legend as toggle pills
-            const legendEl = document.getElementById('sensor-color-legend');
+            const legendEl = document.getElementById('drilldown-legend');
             if (legendEl) {
                 legendEl.innerHTML = groups.map(g => {
                     const active = !g.hidden;
-                    return `<button onclick="toggleHouse('${g.id}')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border shadow-sm cursor-pointer transition-all ${active ? 'bg-white/80 border-slate-200' : 'bg-slate-100 border-slate-200 opacity-40 line-through'}" title="${g.name} — ${g.id}"><span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background:${g.color}"></span><span class="truncate">${g.name}</span></button>`;
+                    return '<button onclick="toggleHouse(\'' + g.id + '\')" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border shadow-sm cursor-pointer transition-all ' + (active ? 'bg-white/80 border-slate-200' : 'bg-slate-100 border-slate-200 opacity-40 line-through') + '" title="' + g.name + '"><span class="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style="background:' + g.color + '"></span><span class="truncate">' + g.name + '</span></button>';
                 }).join('');
             }
 
+            // Create canvases in container
+            const container = document.getElementById('drilldown-charts-container');
+            if (!container) return;
+
             const chartConfigs = [
-                { id: 'sensorPm25Chart', field: 'pm25_value' },
-                { id: 'sensorCo2Chart', field: 'co2_value' },
-                { id: 'sensorTempChart', field: 'temperature' },
-                { id: 'sensorAqiChart', field: 'aqi' },
+                { id: 'drill-pm25', field: 'pm25_value', label: 'PM2.5', thresholds: THRESHOLDS.pm25, sugMax: 40 },
+                { id: 'drill-pm10', field: 'pm10_value', label: 'PM10' },
+                { id: 'drill-co2', field: 'co2_value', label: 'CO2', thresholds: THRESHOLDS.co2, sugMax: 1100 },
+                { id: 'drill-co', field: 'co_value', label: 'CO' },
+                { id: 'drill-hcho', field: 'hcho_value', label: 'HCHO', thresholds: THRESHOLDS.hcho },
+                { id: 'drill-tvoc', field: 'tvoc_value', label: 'TVOC', thresholds: THRESHOLDS.tvoc, sugMax: 3 },
             ];
 
+            // Destroy existing drilldown charts
+            Object.values(drilldownCharts).forEach(c => c.destroy());
+            drilldownCharts = {};
+
+            // Build container HTML with canvases
+            container.innerHTML = chartConfigs.map(cfg =>
+                '<div class="card-styled p-5 rounded-[2rem]"><h4 class="font-bold text-sm text-gray-800 mb-2">' + cfg.label + ' — Raw Readings</h4><div class="h-[200px]"><canvas id="' + cfg.id + '"></canvas></div></div>'
+            ).join('');
+
+            const visibleGroups = groups.filter(g => !g.hidden);
+
             chartConfigs.forEach(cfg => {
-                if (sensorCharts[cfg.id]) sensorCharts[cfg.id].destroy();
                 const canvas = document.getElementById(cfg.id);
                 if (!canvas) return;
 
-                const chartPlugins = [];
-                let ySuggestedMax = undefined;
-                if (cfg.id === 'sensorPm25Chart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.pm25)); ySuggestedMax = 40; }
-                if (cfg.id === 'sensorAqiChart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.aqi)); ySuggestedMax = 110; }
-                if (cfg.id === 'sensorCo2Chart') { chartPlugins.push(thresholdLinesPlugin(THRESHOLDS.co2)); ySuggestedMax = 1100; }
+                const chartPlugins = cfg.thresholds ? [thresholdLinesPlugin(cfg.thresholds)] : [];
 
-                const visibleGroups = groups.filter(g => !g.hidden);
-                sensorCharts[cfg.id] = new Chart(canvas, {
+                // For CO/TVOC (manual data), merge into groups by subject
+                const useManual = (cfg.field === 'co_value' || cfg.field === 'tvoc_value');
+
+                drilldownCharts[cfg.id] = new Chart(canvas, {
                     type: 'line',
                     data: {
                         datasets: visibleGroups.map(g => ({
                             label: g.name,
-                            data: g.data.map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
+                            data: g.data.filter(d => d[cfg.field] != null).map(d => ({ x: new Date(d.recorded_at), y: d[cfg.field] })),
                             borderColor: g.color,
                             backgroundColor: g.color + '1a',
                             borderWidth: 2, pointRadius: 3, tension: 0.3, fill: false,
-                        })),
+                        })).filter(ds => ds.data.length > 0),
                     },
                     options: {
                         responsive: true, maintainAspectRatio: false,
@@ -3719,7 +3959,7 @@
                         },
                         scales: {
                             x: { type: 'time', time: { unit: 'hour', tooltipFormat: 'HH:mm' }, ticks: { font: { size: 10 }, maxTicksLimit: 12 }, grid: { display: false } },
-                            y: { beginAtZero: true, suggestedMax: ySuggestedMax, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                            y: { beginAtZero: true, suggestedMax: cfg.sugMax, ticks: { font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } },
                         },
                     },
                     plugins: chartPlugins,
@@ -4056,7 +4296,7 @@
             });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
                 return;
             }
 
@@ -4068,6 +4308,7 @@
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
                     <td class="p-3 text-center text-orange-400">${d.pm10_value ?? '-'}</td>
                     <td class="p-3 text-center text-slate-600">${d.co2_value ?? '-'}</td>
+                    <td class="p-3 text-center text-rose-500">${d.co_value ?? '-'}</td>
                     <td class="p-3 text-center text-blue-500">${d.aqi ?? '-'}</td>
                     <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
                     <td class="p-3 text-center text-cyan-500">${d.humidity ?? '-'}</td>
@@ -4084,7 +4325,7 @@
             // stove filter removed
             const rangeHours = parseInt(document.getElementById('tvoc-range-filter')?.value || '168');
 
-            let tvocData = (allDataWithPending || []).filter(d => d.data_source === 'manual' && d.tvoc_value != null);
+            let tvocData = (allDataWithPending || []).filter(d => d.data_source === 'manual' && (d.tvoc_value != null || d.co_value != null));
             if (houseFilter !== 'all') tvocData = tvocData.filter(d => d.house_id == houseFilter);
             // stove filter logic removed
             if (rangeHours > 0) {
@@ -4114,15 +4355,18 @@
             // Table
             const tbody = document.getElementById('tvoc-table-body');
             if (count === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400">' + t('common.no.data') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">' + t('common.no.data') + '</td></tr>';
             } else {
                 tbody.innerHTML = tvocData.map(d => {
                     const houseName = houseNameMap[d.house_id] || '-';
                     const vol = (d.volunteer_id && volunteerNameMap[d.volunteer_id]) ? volunteerNameMap[d.volunteer_id] : '-';
+                    const tvocDisplay = d.tvoc_value != null ? Number(d.tvoc_value).toFixed(3) : '-';
+                    const coDisplay = d.co_value != null ? Number(d.co_value) : '-';
                     return '<tr class="hover:bg-purple-50/50"><td class="p-3 whitespace-nowrap text-[13px]">' +
                         new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td><td class="p-3 text-[13px]">' +
                         houseName + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
-                        Number(d.tvoc_value).toFixed(3) + '</td><td class="p-3 text-[13px] text-slate-500">' +
+                        tvocDisplay + '</td><td class="p-3 text-center text-rose-600 font-bold text-base">' +
+                        coDisplay + '</td><td class="p-3 text-[13px] text-slate-500">' +
                         vol + '</td></tr>';
                 }).join('');
             }
@@ -6323,9 +6567,10 @@
             return data.map(d => ({
                 [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name || HOUSE_NAMES[d.tuya_device_id] || '', [t('export.stove.type')]: d.stove_type,
                 'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
-                'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
+                'CO2': d.co2_value, 'CO': d.co_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
                 'HCHO': d.hcho_value, 'TVOC (mg/m³)': d.tvoc_value,
                 [t('export.source')]: d.data_source,
+                'Volunteer': d.volunteer_id ? (volunteerNameMap[d.volunteer_id] || d.volunteer_id) : '',
             }));
         }
 
@@ -6384,9 +6629,9 @@
             const today = new Date().toISOString().split('T')[0];
             const d7 = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
             const d30 = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
-            const isRaw = type === 'raw';
-            const icon = isRaw ? '📊' : '📋';
-            const title = isRaw ? 'Export ข้อมูลดิบ' : 'Export สรุปรายวัน';
+            const icon = type === 'raw' ? '📊' : type === 'manual' ? '✍️' : '📋';
+            const title = type === 'raw' ? 'Export ข้อมูลดิบ' : type === 'manual' ? 'Export กรอกด้วยมือ (TVOC/CO)' : 'Export สรุปรายวัน';
+            const isRaw = type === 'raw' || type === 'manual';
             const defaultStart = isRaw ? d30 : today;
 
             showModal(`
@@ -6425,6 +6670,7 @@
 
         function exportToExcel() { showExportModal('raw'); }
         function exportDailySummaries() { showExportModal('daily'); }
+        function exportManualData() { showExportModal('manual'); }
 
         async function doExportWithRange(type, format) {
             const startVal = document.getElementById('export-start').value;
@@ -6435,6 +6681,8 @@
             try {
                 if (type === 'raw') {
                     await doExportRawWithRange(startVal, endVal, format);
+                } else if (type === 'manual') {
+                    await doExportManualWithRange(startVal, endVal, format);
                 } else {
                     await doExportDailyWithRange(startVal, endVal, format);
                 }
@@ -6479,6 +6727,67 @@
                 XLSX.writeFile(wb, fileName + '.xlsx');
             }
             logActivity('Export ข้อมูลดิบ', allRows.length + ' records (' + rangeLabel + ')');
+            showToast('Export ' + allRows.length.toLocaleString() + ' รายการ');
+        }
+
+        async function doExportManualWithRange(startDate, endDate, format) {
+            let query = supabaseClient.from('pollution_logs').select('*')
+                .eq('data_source', 'manual')
+                .eq('status', 'approved')
+                .order('recorded_at', { ascending: false });
+
+            if (startDate) query = query.gte('recorded_at', startDate + 'T00:00:00');
+            if (endDate) query = query.lte('recorded_at', endDate + 'T23:59:59');
+
+            let allRows = [];
+            let from = 0;
+            const pageSize = 5000;
+            while (true) {
+                const { data, error } = await query.range(from, from + pageSize - 1);
+                if (error) throw error;
+                if (!data || data.length === 0) break;
+                allRows = allRows.concat(data);
+                if (data.length < pageSize) break;
+                from += pageSize;
+            }
+
+            if (!allRows.length) { showToast(t('export.no.data'), 'warning'); return; }
+
+            const houseNameMap = {};
+            (subjects || []).forEach(s => { houseNameMap[s.id] = s.full_name || s.id; });
+
+            const rows = allRows.map(d => ({
+                [t('export.date')]: d.recorded_at,
+                [t('export.house')]: houseNameMap[d.house_id] || d.house_name || '',
+                [t('export.stove.type')]: d.stove_type,
+                'TVOC (mg/m³)': d.tvoc_value,
+                'CO (ppm)': d.co_value,
+                'Volunteer': d.volunteer_id ? (volunteerNameMap[d.volunteer_id] || d.volunteer_id) : '',
+            }));
+
+            const rangeLabel = startDate && endDate ? startDate + '_' + endDate : 'all';
+            const fileName = 'biomass_stove_manual_' + rangeLabel;
+
+            if (format === 'csv') {
+                const headers = Object.keys(rows[0]);
+                const escapeCsv = (val) => {
+                    if (val == null) return '';
+                    const str = String(val);
+                    return str.includes(',') || str.includes('"') || str.includes('\n') ? '"' + str.replace(/"/g, '""') + '"' : str;
+                };
+                const csvLines = [headers.map(escapeCsv).join(',')];
+                for (const row of rows) { csvLines.push(headers.map(h => escapeCsv(row[h])).join(',')); }
+                const blob = new Blob(['\uFEFF' + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = fileName + '.csv';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            } else {
+                const ws = XLSX.utils.json_to_sheet(rows);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Manual Data');
+                XLSX.writeFile(wb, fileName + '.xlsx');
+            }
+            logActivity('Export กรอกมือ', allRows.length + ' records (' + rangeLabel + ')');
             showToast('Export ' + allRows.length.toLocaleString() + ' รายการ');
         }
 
