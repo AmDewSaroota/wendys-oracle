@@ -1,63 +1,31 @@
-# Focus
+# Focus: EcoStove Dashboard Polish
 
-## Current State
+**Date**: 2026-03-20
+**Status**: จดรายการแก้ไขเสร็จ รอ DewS สั่งทำ
 
-**Status**: EcoStove Daemon + SRT Slides Scripting
-**Date**: 2026-02-23
+## รายการแก้ไข index.html (7 ข้อ)
 
----
+### 1. ศัพท์ Baseline → Ambient / Benchmark
+- "หลังหัก Baseline" → "หลังหัก Ambient" (กราฟ PM2.5 + CO2 หน้า Basic)
+- "หักค่าพื้นฐานแล้ว" → "หักค่าแวดล้อม (Ambient) แล้ว" (ตารางเซนเซอร์ล่าสุด)
+- "ค่าเฉลี่ย Baseline" → "ค่าเฉลี่ยสุทธิ" (hero no-eco)
+- "ฐานข้อมูลอ้างอิง (Baseline)" → "ค่าเปรียบเทียบ (Benchmark)"
+- Info popup วิธีวัด: เปลี่ยนศัพท์ให้ตรง
 
-## EcoStove
+### 2. เพิ่ม Glossary ℹ️ popup (Deep Insights ข้าง badge ค่าสุทธิ)
+- Ambient = ค่าแวดล้อม 10 นาทีแรก
+- Benchmark = ค่าเปรียบเทียบจากเตาดั้งเดิม
 
-### สำเร็จแล้ว
-1. ✅ Daemon ดึงข้อมูล 2 sensors ทุก 5 นาที (`sync_to_supabase.js`)
-2. ✅ Web dashboard แก้ bug admin tabs ไม่โหลด (premature return)
-3. ✅ Filter dropdown แยก sensor ในตาราง
-4. ✅ CRUD toggle/delete สำหรับ devices, volunteers, subjects
-5. ✅ ลบแท็ปบันทึกข้อมูล (ไม่ใช้แล้ว)
+### 3. เอา "โครงการนวัตกรรมเพื่ออากาศสะอาด" ออกจาก hero (3 variants)
 
-### ยังค้าง
-- [ ] Dashboard data boxes เพี้ยน (ไม่ครบ)
-- [ ] PM2 auto-launch สำหรับ daemon
+### 4. แก้ hero meta → "ข้อมูล X วัน · Y ครัวเรือน" (JS element ID ไม่ตรง HTML)
 
-### วิธีรัน Daemon
-```bash
-cd lab/tuya-ecostove
-node sync_to_supabase.js          # loop ทุก 5 นาที
-node sync_to_supabase.js --once   # ครั้งเดียว
-```
+### 5. เก็บข้อมูลวันนี้ → grid cards 5 คอลัมน์แบบ mockup
 
----
+### 6. Map legend ปรับคำอธิบายให้ชัด
 
-## SRT Slides
+### 7. วันที่ทุกจุด → DD/MM/YYYY
 
-### บทพูด (draft)
-- System Architecture ✅ — ภาษาคน
-- Kiosk Pain Points + Solution ✅
-- Kiosk Admin Pain Points + Solution ✅
-- Mobile App ✅ — ยกระดับ D-ticket
-- Data Flow ✅ — ภาษาคน
-- Timeline ✅ — Gantt chart (`lab/swt-slides/timeline.html`)
-
-### ยังค้าง
-- [ ] แก้สไลด์จริงตามบทพูดใหม่
-- [ ] เช็ค timeline.html พอดีจอหรือยัง
-
----
-
-## Reminder (2026-02-20)
-
-**Supabase RLS Fix — EcoStove**
-
-รัน SQL นี้ใน [Supabase SQL Editor](https://supabase.com/dashboard/project/zijybzjstjlqvhmckgor/sql/new):
-
-```sql
-ALTER TABLE public.areas ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Public can read areas"
-  ON public.areas
-  FOR SELECT
-  USING (true);
-```
-
-*Added: 2026-02-19*
+## TODO ค้าง
+- Tuya Discovery → อัปเดต TUYA_APP_USER_UID บน Vercel
+- DewS ต้อง Generate mock data (mock-data.html แก้ schema เสร็จแล้ว)
