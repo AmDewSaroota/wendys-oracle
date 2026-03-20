@@ -192,10 +192,10 @@
     </nav>
 
     <!-- SCENARIO ALERT BARS -->
-    <div id="scenario-bar-no-eco" class="scenario-bar items-center justify-center gap-2 text-sm text-amber-800" style="background:#fef3c7; border-bottom:2px solid #f59e0b;">
+    <div id="scenario-bar-no-eco" class="scenario-bar items-center justify-center gap-2 text-sm text-amber-800" style="background:#fef3c7; border-bottom:2px solid #f59e0b;" data-i18n-html="bar.noeco">
         ⏳ <b>สถานการณ์:</b> ยังอยู่ในระยะเก็บข้อมูลเตาดั้งเดิม — ยังไม่มีข้อมูลเตาชีวมวลเพื่อเปรียบเทียบ
     </div>
-    <div id="scenario-bar-eco-fail" class="scenario-bar items-center justify-center gap-2 text-sm text-red-800" style="background:#fee2e2; border-bottom:2px solid #ef4444;">
+    <div id="scenario-bar-eco-fail" class="scenario-bar items-center justify-center gap-2 text-sm text-red-800" style="background:#fee2e2; border-bottom:2px solid #ef4444;" data-i18n-html="bar.ecofail">
         ⚠️ <b>สถานการณ์:</b> เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย
     </div>
 
@@ -218,31 +218,30 @@
                 <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                 <div class="relative z-10 p-6 md:p-8">
                     <div class="text-center">
-                        <p class="text-emerald-200 text-sm tracking-wider" data-i18n="hero.project.label">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
                         <div class="mt-4 mb-2">
                             <span class="text-6xl md:text-7xl font-bold text-white" id="hero-pct">--</span>
                             <span class="text-4xl font-bold text-emerald-200">%</span>
                         </div>
-                        <p class="text-emerald-100 text-lg font-medium" id="hero-label">อากาศสะอาดขึ้นขณะหุงต้ม</p>
-                        <p class="text-emerald-200/70 text-sm mt-1">เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง</p>
+                        <p class="text-emerald-100 text-lg font-medium" id="hero-label" data-i18n="hero.label">อากาศสะอาดขึ้นขณะหุงต้ม</p>
+                        <p class="text-emerald-200/70 text-sm mt-1" data-i18n="hero.sublabel">เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง</p>
                         <div class="max-w-md mx-auto mt-6 text-left">
                             <div class="mb-3">
-                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span>🪵 เตาดั้งเดิม</span><span class="font-bold" id="hero-old-val">-- µg/m³</span></div>
+                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span data-i18n="hero.old">🪵 เตาดั้งเดิม</span><span class="font-bold" id="hero-old-val">-- µg/m³</span></div>
                                 <div class="flex h-6 rounded-full overflow-hidden" id="hero-old-bar">
-                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Baseline</div>
-                                    <div class="bg-orange-400/80 flex items-center justify-center text-[9px] text-white font-bold" style="width:85%">มลพิษจากเตา</div>
+                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Ambient</div>
+                                    <div class="bg-orange-400/80 flex items-center justify-center text-[9px] text-white font-bold" style="width:85%" data-i18n="hero.pollution">มลพิษจากเตา</div>
                                 </div>
                             </div>
                             <div>
-                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span>✨ เตาชีวมวล</span><span class="font-bold" id="hero-eco-val">-- µg/m³</span></div>
+                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span data-i18n="hero.eco">✨ เตาชีวมวล</span><span class="font-bold" id="hero-eco-val">-- µg/m³</span></div>
                                 <div class="flex h-6 rounded-full overflow-hidden" id="hero-eco-bar">
-                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Baseline</div>
-                                    <div class="bg-emerald-400 flex items-center justify-center text-[9px] text-white font-bold" id="hero-eco-emission" style="width:30%">มลพิษจากเตา</div>
-                                    <div class="bg-white/10 flex items-center justify-center text-[9px] text-emerald-300/50" id="hero-eco-saved" style="width:55%">↓ ลดได้</div>
+                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Ambient</div>
+                                    <div class="bg-emerald-400 flex items-center justify-center text-[9px] text-white font-bold" id="hero-eco-emission" style="width:30%" data-i18n="hero.pollution">มลพิษจากเตา</div>
+                                    <div class="bg-white/10 flex items-center justify-center text-[9px] text-emerald-300/50" id="hero-eco-saved" style="width:55%" data-i18n="hero.saved">↓ ลดได้</div>
                                 </div>
                             </div>
                         </div>
-                        <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · <span id="hero-meta-normal"></span></p>
+                        <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.normal'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-normal"></span></p>
                     </div>
                 </div>
             </div>
@@ -250,63 +249,61 @@
             <!-- HERO: No eco (baseline collection only) -->
             <div id="hero-no-eco" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-slate-600 via-slate-500 to-slate-700">
                 <div class="relative z-10 p-6 md:p-8 text-center">
-                    <p class="text-slate-300 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
                     <div class="text-4xl mt-4 mb-2">📊</div>
-                    <p class="text-2xl font-bold text-white">กำลังเก็บข้อมูลเตาดั้งเดิม</p>
-                    <p class="text-slate-300 text-sm mt-2">สร้างฐานข้อมูลอ้างอิง (Baseline) เพื่อเปรียบเทียบกับเตาชีวมวลในระยะถัดไป</p>
+                    <p class="text-2xl font-bold text-white" data-i18n="hero.noeco.title">กำลังเก็บข้อมูลเตาดั้งเดิม</p>
+                    <p class="text-slate-300 text-sm mt-2" data-i18n="hero.noeco.sub">สร้างค่าเปรียบเทียบ (Benchmark) เพื่อเปรียบเทียบกับเตาชีวมวลในระยะถัดไป</p>
                     <div class="max-w-xs mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-4">
-                        <p class="text-xs font-bold text-orange-200">🪵 เตาดั้งเดิม — ค่าเฉลี่ย Baseline</p>
+                        <p class="text-xs font-bold text-orange-200" data-i18n="hero.noeco.card">🪵 เตาดั้งเดิม — ค่าเฉลี่ยสุทธิ</p>
                         <p class="text-3xl font-bold text-white mt-2" id="hero-noeco-pm25">-- <span class="text-lg text-slate-300">µg/m³</span></p>
-                        <p class="text-[10px] text-slate-300 mt-1">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Baseline)</p>
+                        <p class="text-[10px] text-slate-300 mt-1" data-i18n="hero.noeco.pmtext">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Ambient)</p>
                     </div>
-                    <p class="text-slate-300/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,'วิธีวัด','เก็บค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออก เพื่อสร้างฐานข้อมูลอ้างอิงสำหรับเปรียบเทียบกับเตาชีวมวลในระยะถัดไป')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · <span id="hero-meta-noeco"></span></p>
+                    <p class="text-slate-300/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.noeco'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-noeco"></span></p>
                 </div>
             </div>
 
             <!-- HERO: Eco fail (eco doesn't reduce pollution) -->
             <div id="hero-eco-fail" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-amber-700 via-orange-600 to-red-700">
                 <div class="relative z-10 p-6 md:p-8 text-center">
-                    <p class="text-amber-200 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
                     <div class="mt-4 mb-2"><span class="text-5xl md:text-6xl font-bold text-white">↑ <span id="hero-fail-pct">--</span></span><span class="text-3xl font-bold text-amber-200">%</span></div>
-                    <p class="text-amber-100 text-lg font-medium">มลพิษเพิ่มขึ้นขณะหุงต้ม</p>
-                    <p class="text-amber-200/70 text-sm mt-1">เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย</p>
+                    <p class="text-amber-100 text-lg font-medium" data-i18n="hero.fail.label">มลพิษเพิ่มขึ้นขณะหุงต้ม</p>
+                    <p class="text-amber-200/70 text-sm mt-1" data-i18n="hero.fail.sub">เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย</p>
                     <div class="max-w-md mx-auto mt-4 bg-white/15 backdrop-blur rounded-xl p-3">
-                        <p class="text-amber-100 text-[11px] text-left">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
+                        <p class="text-amber-100 text-[11px] text-left" data-i18n-html="hero.fail.note">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
                     </div>
-                    <p class="text-amber-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(253,230,138,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ — ผลเบื้องต้นพบว่าเตาชีวมวลยังไม่ลดมลพิษตามเป้า')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · <span id="hero-meta-fail"></span></p>
+                    <p class="text-amber-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(253,230,138,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.fail'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-fail"></span></p>
                 </div>
             </div>
 
             <!-- 2. Big Number Cards -->
             <div class="flex items-center gap-3 mb-1">
                 <p id="basic-range-label" class="text-[11px] text-slate-400"></p>
-                <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🧹 หักค่าพื้นฐานแล้ว</span>
+                <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="badge.ambient">🧹 หักค่าแวดล้อม (Ambient) แล้ว</span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
-                    <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,t('card.info.pm25'),t('card.info.pm25.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div id="basic-pm25" class="text-3xl font-bold text-navy">--</div>
                     <p id="basic-pm25-detail" class="text-[11px] text-gray-500 mt-1"></p>
                     <div id="basic-pm25-badge" class="mt-1"></div>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
-                    <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,'CO2 คืออะไร?','คาร์บอนไดออกไซด์ — ก๊าซที่เกิดจากการเผาไหม้สมบูรณ์ ใช้เป็นตัวชี้วัดปริมาณการเผาไหม้โดยรวม\n\nอากาศปกติ: ~400 ppm\nขณะหุงต้ม: 800–3,000 ppm\n\nยิ่ง CO2 สูง = เผาไหม้มาก')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,t('card.info.co2'),t('card.info.co2.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div id="basic-co2" class="text-3xl font-bold text-navy">--</div>
                     <p id="basic-co2-detail" class="text-[11px] text-gray-500 mt-1"></p>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
-                    <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ (Carbon Monoxide) — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nอันตราย: สูดดมมากทำให้เวียนศีรษะ หมดสติ ถึงเสียชีวิต\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,t('card.info.co'),t('card.info.co.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div id="basic-co" class="text-3xl font-bold text-navy">--</div>
                     <p id="basic-co-detail" class="text-[11px] text-gray-500 mt-1"></p>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
-                    <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1"><span data-i18n="card.temp.hum">อุณหภูมิ / ความชื้น</span> <span class="info-btn" onclick="showInfo(this,t('card.info.temp'),t('card.info.temp.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div class="flex justify-center gap-4 mt-2">
                         <div><span id="basic-temp" class="text-3xl font-bold text-gray-800">--</span><span class="text-gray-400">°C</span></div>
                         <span class="text-gray-300 text-xl">/</span>
                         <div><span id="basic-humidity" class="text-3xl font-bold text-gray-800">--</span><span class="text-gray-400">%</span></div>
                     </div>
-                    <p class="text-[10px] text-gray-400 mt-1">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
+                    <p class="text-[10px] text-gray-400 mt-1" data-i18n="card.temp.hum.desc">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
                 </div>
             </div>
 
@@ -314,12 +311,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="card-styled p-6 rounded-[2.5rem]">
                     <h4 class="font-bold text-sm text-navy mb-0.5" data-i18n="chart.basic.pm25">ฝุ่น PM2.5 ขณะหุงต้ม</h4>
-                    <p class="text-[10px] text-slate-400 mb-3">ค่าเฉลี่ยรายวัน (หลังหัก Baseline)</p>
+                    <p class="text-[10px] text-slate-400 mb-3" data-i18n="chart.daily.sub">ค่าเฉลี่ยรายวัน (หลังหัก Ambient)</p>
                     <div class="h-[200px]"><canvas id="basicPm25Chart"></canvas></div>
                 </div>
                 <div class="card-styled p-6 rounded-[2.5rem]">
                     <h4 class="font-bold text-sm text-navy mb-0.5" data-i18n="chart.basic.co2">CO2 ขณะหุงต้ม</h4>
-                    <p class="text-[10px] text-slate-400 mb-3">ค่าเฉลี่ยรายวัน (หลังหัก Baseline)</p>
+                    <p class="text-[10px] text-slate-400 mb-3" data-i18n="chart.daily.sub">ค่าเฉลี่ยรายวัน (หลังหัก Ambient)</p>
                     <div class="h-[200px]"><canvas id="basicCo2Chart"></canvas></div>
                 </div>
             </div>
@@ -327,24 +324,24 @@
             <!-- 3. Latest Sensor Readings per House -->
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
                 <div class="flex items-center justify-between mb-3">
-                    <h4 class="font-bold text-sm text-navy">📡 ค่าเซนเซอร์ล่าสุดแต่ละบ้าน</h4>
-                    <span class="text-[10px] text-slate-400 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">🧹 หักค่าพื้นฐานแล้ว</span>
+                    <h4 class="font-bold text-sm text-navy" data-i18n="sensor.title">📡 ค่าเซนเซอร์ล่าสุดแต่ละบ้าน</h4>
+                    <span class="text-[10px] text-slate-400 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="badge.ambient">🧹 หักค่าแวดล้อม (Ambient) แล้ว</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
                             <tr class="text-[11px] text-slate-400 border-b">
-                                <th class="text-left py-2 font-medium">บ้าน</th>
-                                <th class="text-left py-2 font-medium">เตา</th>
+                                <th class="text-left py-2 font-medium" data-i18n="sensor.th.house">บ้าน</th>
+                                <th class="text-left py-2 font-medium" data-i18n="sensor.th.stove">เตา</th>
                                 <th class="text-right py-2 font-medium">PM2.5</th>
                                 <th class="text-right py-2 font-medium">CO2</th>
-                                <th class="text-right py-2 font-medium">อุณหภูมิ</th>
-                                <th class="text-right py-2 font-medium">ความชื้น</th>
-                                <th class="text-right py-2 font-medium">เวลา</th>
+                                <th class="text-right py-2 font-medium" data-i18n="sensor.th.temp">อุณหภูมิ</th>
+                                <th class="text-right py-2 font-medium" data-i18n="sensor.th.hum">ความชื้น</th>
+                                <th class="text-right py-2 font-medium" data-i18n="sensor.th.time">เวลา</th>
                             </tr>
                         </thead>
                         <tbody id="latest-readings-body" class="text-[12px]">
-                            <tr><td colspan="7" class="text-center py-4 text-slate-400">กำลังโหลด...</td></tr>
+                            <tr><td colspan="7" class="text-center py-4 text-slate-400" data-i18n="common.loading.dots">กำลังโหลด...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -374,7 +371,7 @@
                     <span id="last-check-time" class="text-slate-400 text-[11px]"></span>
                 </div>
 
-                <div id="today-house-breakdown" class="space-y-2"></div>
+                <div id="today-house-breakdown" class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px]"></div>
             </div>
 
             <!-- 6. Map + Activity Feed -->
@@ -426,7 +423,8 @@
             <!-- Research Stat Cards — Row 1 -->
             <div class="flex items-center gap-3 mb-1">
                 <p id="deep-range-label" class="text-[11px] text-slate-400"></p>
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Baseline-subtracted · ค่าสุทธิ (Net) หลังหักค่าเฉลี่ย 10 นาทีแรกของแต่ละ session</span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
+                <span class="info-btn text-emerald-600" onclick="showInfo(this,'คำศัพท์ (Glossary)','<b>Ambient</b> = ค่าแวดล้อม — ค่าเฉลี่ย 10 นาทีแรกก่อนจุดเตา ใช้เป็นค่าพื้นหลังสำหรับหักออก\n\n<b>Benchmark</b> = ค่าเปรียบเทียบ — ค่าจากเตาดั้งเดิม ใช้เป็นฐานเปรียบเทียบว่าเตาชีวมวลลดมลพิษได้เท่าไหร่\n\n<b>Net (สุทธิ)</b> = ค่าที่วัดได้ − Ambient = มลพิษจากเตาจริงๆ')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
             </div>
             <!-- Research Stat Cards — Row 1: Pollutants -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -476,33 +474,33 @@
                 </div>
             </div>
 
-            <!-- STACKED BAR: PM2.5 Baseline Decomposition -->
+            <!-- STACKED BAR: PM2.5 Ambient Decomposition -->
             <div class="card-styled p-6 rounded-[2.5rem]">
-                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม <span class="info-btn" onclick="showInfo(this,'อ่านกราฟนี้อย่างไร?','แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient baseline = ค่าฝุ่นพื้นฐานก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเตาชีวมวลควรมี emission ต่ำกว่าเตาดั้งเดิม')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
-                <p class="text-[10px] text-gray-400 mb-4">แยกค่า Ambient Baseline ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม <span class="info-btn" onclick="showInfo(this,'อ่านกราฟนี้อย่างไร?','แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient = ค่าฝุ่นแวดล้อมก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเตาชีวมวลควรมี emission ต่ำกว่าเตาดั้งเดิม')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
                 <div id="stacked-bar-container" class="space-y-4"></div>
                 <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
-                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
-                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
-                    <span id="stacked-legend-eco"><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient (แวดล้อม)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (<span data-i18n="compare.old">เตาดั้งเดิม</span>)</span>
+                    <span id="stacked-legend-eco"><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (<span data-i18n="compare.eco">เตาชีวมวล</span>)</span>
                 </div>
             </div>
 
             <!-- DAILY AVG CHARTS — 6 charts grouped by type -->
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
             </div>
 
             <!-- Drill-down panel (hidden by default) -->
@@ -523,7 +521,7 @@
                         <thead id="comparison-table-head"></thead>
                         <tbody id="comparison-table-body"></tbody>
                     </table>
-                    <p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient baseline (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
+                    <p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
                 </div>
             </div>
 
@@ -535,7 +533,7 @@
                 </div>
                 <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
                     <div><p class="font-bold text-gray-700 mb-1">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li>เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)</li><li>ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li>10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
-                    <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าพื้นฐาน (Baseline Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ambient baseline</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − ambient baseline ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง baseline ไม่นำมาวิเคราะห์</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าแวดล้อม (Ambient Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ค่าแวดล้อม (Ambient)</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − Ambient ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง Ambient ไม่นำมาวิเคราะห์</li></ul></div>
                     <div><p class="font-bold text-gray-700 mb-1">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li>เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li>Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li>CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ</li></ul></div>
                 </div>
             </div>
@@ -1113,7 +1111,7 @@
             'page.brand.alt': { th: 'พลังงานทางเลือก', en: 'Alternative Energy' },
             // Nav
             'nav.basic': { th: 'ข้อมูลเบื้องต้น', en: 'Overview' },
-            'nav.deep': { th: 'ข้อมูลเชิงลึก', en: 'Data' },
+            'nav.deep': { th: 'ข้อมูลเชิงลึก', en: 'Deep Insights' },
             'nav.admin': { th: 'จัดการระบบ', en: 'Admin' },
             'nav.admin.mobile': { th: 'จัดการระบบ (Admin)', en: 'Admin Panel' },
             // AQI
@@ -1143,7 +1141,7 @@
             'aqi.ref.level': { th: 'ระดับ', en: 'Level' },
             'aqi.ref.source': { th: 'อ้างอิง: กรมควบคุมมลพิษ (PCD) — ค่า PM2.5 เฉลี่ย 24 ชั่วโมง', en: 'Source: Pollution Control Department (PCD) — 24hr PM2.5 average' },
             'threshold.source': { th: 'อ้างอิง: PCD 2566 (PM2.5/AQI), กรมอนามัย 2565 (CO2), WHO 2010 (HCHO)', en: 'Ref: PCD 2023 (PM2.5/AQI), DoH 2022 (CO2), WHO 2010 (HCHO)' },
-            'baseline.toggle': { th: 'หักค่า Baseline', en: 'Subtract Baseline' },
+            'baseline.toggle': { th: 'หักค่า Ambient', en: 'Subtract Ambient' },
             'tvoc.title': { th: 'บันทึก TVOC', en: 'Record TVOC' },
             'tvoc.subtitle': { th: 'อ่านค่าจากหน้าจอเซนเซอร์แล้วกรอกที่นี่', en: 'Read value from sensor display and enter here' },
             'tvoc.select.house': { th: '-- เลือกบ้าน --', en: '-- Select House --' },
@@ -1175,14 +1173,14 @@
             // Session progress
             'session.title': { th: 'เก็บข้อมูลวันนี้', en: "Today's Collection" },
             'session.checking': { th: 'กำลังตรวจสอบ...', en: 'Checking...' },
-            'session.success': { th: 'สำเร็จ {0} จาก {1} ครั้ง', en: '{0} of {1} sessions completed' },
+            'session.success': { th: 'วันนี้เก็บได้ {0} / {1} ครัวเรือน', en: 'Today: {0} / {1} households' },
             'sync.checking': { th: 'ตรวจสอบ...', en: 'Checking...' },
             'sync.next.in': { th: 'ตรวจอีกครั้งใน', en: 'Next check in' },
             'sync.refreshing': { th: 'กำลังโหลดข้อมูล...', en: 'Refreshing...' },
             'sync.last.check': { th: 'อัปเดตล่าสุด', en: 'Last updated' },
             'sync.waiting': { th: 'รอเซนเซอร์...', en: 'Waiting for sensor...' },
             'sync.collecting': { th: 'กำลังเก็บข้อมูล', en: 'Collecting data' },
-            'sync.baseline': { th: 'ช่วง Baseline', en: 'Baseline phase' },
+            'sync.baseline': { th: 'ช่วง Ambient', en: 'Ambient phase' },
             // Live card
             'live.title': { th: 'ค่าล่าสุดจาก Sensor', en: 'Latest Sensor Reading' },
             'live.waiting': { th: 'รอข้อมูล...', en: 'Waiting...' },
@@ -1273,15 +1271,73 @@
             'daily.incomplete': { th: 'ไม่ครบ', en: 'Incomplete' },
             'daily.no.sensor': { th: 'ไม่ได้เปิดเซนเซอร์', en: 'Sensor not active' },
             'map.no.gps': { th: 'ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา', en: 'No GPS data for houses yet' },
-            'map.sensor.house': { th: 'บ้านที่มี Sensor', en: 'Sensor House' },
-            'map.stove.house': { th: 'บ้านที่รับเตาชีวมวล', en: 'Biomass Stove House' },
-            'map.sensor.active': { th: 'ติดตั้ง Sensor แล้ว', en: 'Sensor Installed' },
+            'map.sensor.house': { th: 'ติดเซนเซอร์วัดค่า', en: 'Sensor Installed' },
+            'map.stove.house': { th: 'ได้รับเตาชีวมวล (ไม่มีเซนเซอร์)', en: 'Biomass Stove (No Sensor)' },
+            'map.sensor.active': { th: 'ติดตั้งเซนเซอร์แล้ว', en: 'Sensor Installed' },
             'map.stove.installed': { th: 'ติดตั้งเตาชีวมวลแล้ว', en: 'Biomass Stove Installed' },
-            'map.with.sensor': { th: 'มี Sensor', en: 'with Sensor' },
-            'map.stove.only': { th: 'รับเตาแล้ว', en: 'Stove Only' },
-            'map.total': { th: 'ทั้งหมด', en: 'Total' },
+            'map.with.sensor': { th: 'ติดเซนเซอร์', en: 'with Sensor' },
+            'map.stove.only': { th: 'ได้รับเตา (ไม่มีเซนเซอร์)', en: 'Stove Only (No Sensor)' },
+            'map.total': { th: 'จุดทั้งหมด', en: 'Total Points' },
             'map.connectivity': { th: 'เชื่อมต่อ', en: 'Connection' },
             'map.volunteer': { th: 'อาสา', en: 'Volunteer' },
+            // Scenario bars
+            'bar.noeco': { th: '⏳ <b>สถานการณ์:</b> ยังอยู่ในระยะเก็บข้อมูลเตาดั้งเดิม — ยังไม่มีข้อมูลเตาชีวมวลเพื่อเปรียบเทียบ', en: '⏳ <b>Status:</b> Still collecting traditional stove data — no biomass stove data for comparison yet' },
+            'bar.ecofail': { th: '⚠️ <b>สถานการณ์:</b> เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย', en: '⚠️ <b>Status:</b> Biomass stove has not yet reduced pollution as targeted' },
+            // Hero normal
+            'hero.label': { th: 'อากาศสะอาดขึ้นขณะหุงต้ม', en: 'Cleaner air while cooking' },
+            'hero.sublabel': { th: 'เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง', en: 'Compared to traditional stove during actual use' },
+            'hero.old': { th: '🪵 เตาดั้งเดิม', en: '🪵 Traditional' },
+            'hero.eco': { th: '✨ เตาชีวมวล', en: '✨ Biomass' },
+            'hero.pollution': { th: 'มลพิษจากเตา', en: 'Stove pollution' },
+            'hero.saved': { th: '↓ ลดได้', en: '↓ Reduced' },
+            'hero.method': { th: 'วิธีวัด', en: 'Methodology' },
+            'hero.info.normal': { th: 'เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่าแวดล้อม Ambient (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ', en: 'Comparing average PM2.5 while cooking, after subtracting Ambient baseline (first 10 min average before lighting the stove), leaving only actual stove pollution' },
+            // Hero no-eco
+            'hero.noeco.title': { th: 'กำลังเก็บข้อมูลเตาดั้งเดิม', en: 'Collecting traditional stove data' },
+            'hero.noeco.sub': { th: 'สร้างค่าเปรียบเทียบ (Benchmark) เพื่อเปรียบเทียบกับเตาชีวมวลในระยะถัดไป', en: 'Building Benchmark values for comparison with biomass stove in the next phase' },
+            'hero.noeco.card': { th: '🪵 เตาดั้งเดิม — ค่าเฉลี่ยสุทธิ', en: '🪵 Traditional — Net average' },
+            'hero.noeco.pmtext': { th: 'PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Ambient)', en: 'Avg PM2.5 while cooking (after Ambient subtraction)' },
+            'hero.info.noeco': { th: 'เก็บค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่าแวดล้อม Ambient ออก เพื่อสร้างค่าอ้างอิงสำหรับเปรียบเทียบกับเตาชีวมวลในระยะถัดไป', en: 'Collecting average PM2.5 while cooking, subtracting Ambient baseline, to build reference values for comparison with biomass stove in the next phase' },
+            // Hero eco-fail
+            'hero.fail.label': { th: 'มลพิษเพิ่มขึ้นขณะหุงต้ม', en: 'Pollution increased while cooking' },
+            'hero.fail.sub': { th: 'เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย', en: 'Biomass stove has not yet reduced pollution as targeted' },
+            'hero.fail.note': { th: '⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ', en: '⚠️ <b>Note:</b> May be caused by fuel type, usage method, or insufficient sample size' },
+            'hero.info.fail': { th: 'เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่าแวดล้อม Ambient ออกแล้ว — ผลเบื้องต้นพบว่าเตาชีวมวลยังไม่ลดมลพิษตามเป้า', en: 'Comparing average PM2.5 while cooking after Ambient subtraction — preliminary results show biomass stove has not reduced pollution as targeted' },
+            // Big number cards
+            'badge.ambient': { th: '🧹 หักค่าแวดล้อม (Ambient) แล้ว', en: '🧹 Ambient-subtracted' },
+            'card.temp.hum': { th: 'อุณหภูมิ / ความชื้น', en: 'Temp / Humidity' },
+            'card.temp.hum.desc': { th: 'ค่าเฉลี่ยสภาพแวดล้อมขณะวัด', en: 'Average conditions during measurement' },
+            'card.info.pm25': { th: 'PM2.5 คืออะไร?', en: 'What is PM2.5?' },
+            'card.info.pm25.body': { th: 'ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³', en: 'Fine particles smaller than 2.5 microns — can penetrate deep into lungs. Key indicator of biomass combustion pollution.\n\nWHO Standards:\n• IT-1: 35 µg/m³ (24-hr avg)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³' },
+            'card.info.co2': { th: 'CO2 คืออะไร?', en: 'What is CO2?' },
+            'card.info.co2.body': { th: 'คาร์บอนไดออกไซด์ — ก๊าซที่เกิดจากการเผาไหม้สมบูรณ์ ใช้เป็นตัวชี้วัดปริมาณการเผาไหม้โดยรวม\n\nอากาศปกติ: ~400 ppm\nขณะหุงต้ม: 800–3,000 ppm\n\nยิ่ง CO2 สูง = เผาไหม้มาก', en: 'Carbon dioxide — gas from complete combustion, indicates overall burning volume.\n\nNormal air: ~400 ppm\nWhile cooking: 800–3,000 ppm\n\nHigher CO2 = more combustion' },
+            'card.info.co': { th: 'CO คืออะไร?', en: 'What is CO?' },
+            'card.info.co.body': { th: 'คาร์บอนมอนอกไซด์ (Carbon Monoxide) — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nอันตราย: สูดดมมากทำให้เวียนศีรษะ หมดสติ ถึงเสียชีวิต\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)', en: 'Carbon monoxide — toxic, colorless, odorless gas from incomplete combustion.\n\nDanger: High exposure causes dizziness, unconsciousness, death.\n\nSafe level: ≤ 9 ppm (8-hr avg, WHO)' },
+            'card.info.temp': { th: 'ทำไมต้องวัด?', en: 'Why measure this?' },
+            'card.info.temp.body': { th: 'อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์', en: 'Temperature and humidity affect air pollution concentration. Used as control variables in analysis.' },
+            // Charts
+            'chart.daily.sub': { th: 'ค่าเฉลี่ยรายวัน (หลังหัก Ambient)', en: 'Daily average (after Ambient subtraction)' },
+            // Sensor table
+            'sensor.title': { th: '📡 ค่าเซนเซอร์ล่าสุดแต่ละบ้าน', en: '📡 Latest sensor readings per house' },
+            'sensor.th.house': { th: 'บ้าน', en: 'House' },
+            'sensor.th.stove': { th: 'เตา', en: 'Stove' },
+            'sensor.th.temp': { th: 'อุณหภูมิ', en: 'Temp' },
+            'sensor.th.hum': { th: 'ความชื้น', en: 'Humidity' },
+            'sensor.th.time': { th: 'เวลา', en: 'Time' },
+            'common.loading.dots': { th: 'กำลังโหลด...', en: 'Loading...' },
+            'loading.chart': { th: '⏳ กำลังโหลด...', en: '⏳ Loading...' },
+            'loading.data': { th: 'กำลังโหลดข้อมูล...', en: 'Loading data...' },
+            'loading.processing': { th: 'กำลังดำเนินการ...', en: 'Processing...' },
+            'loading.excel': { th: 'กำลังสร้างไฟล์ Excel...', en: 'Creating Excel file...' },
+            'loading.csv': { th: 'กำลังสร้างไฟล์ CSV...', en: 'Creating CSV file...' },
+            'loading.fetch': { th: 'กำลังดึงข้อมูล...', en: 'Fetching data...' },
+            'loading.compare': { th: 'กำลังสร้างรายงานเปรียบเทียบ...', en: 'Creating comparison report...' },
+            'card.eco': { th: 'เตาใหม่', en: 'Biomass' },
+            'card.old': { th: 'เตาเก่า', en: 'Traditional' },
+            'card.traditional': { th: 'เตาดั้งเดิม', en: 'Traditional' },
+            'stove.eco.short': { th: '✨ ใหม่', en: '✨ Eco' },
+            'stove.old.short': { th: '🪵 เก่า', en: '🪵 Old' },
+            'sensor.no.data': { th: 'ยังไม่มีข้อมูล', en: 'No data yet' },
             // Admin
             'admin.title': { th: 'Admin Control', en: 'Admin Control' },
             'admin.subtitle': { th: 'การตรวจสอบและติดตามกิจกรรมโครงการ', en: 'Project monitoring and activity tracking' },
@@ -1568,11 +1624,11 @@
             'approval.collected.of': { th: 'เก็บได้ {0}/24 รายการ — ', en: 'Collected {0}/24 — ' },
             'approval.data.latest': { th: 'ข้อมูลล่าสุด {0} น. ({1}ที่แล้ว)', en: 'Latest data {0} ({1} ago)' },
             'approval.still.collecting': { th: 'กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน', en: 'Still collecting — wait until done' },
-            // Baseline info
-            'baseline.auto': { th: 'Baseline: ระบบตัดให้อัตโนมัติ', en: 'Baseline: Auto-cut by system' },
+            // Ambient info
+            'baseline.auto': { th: 'Ambient: ระบบตัดให้อัตโนมัติ', en: 'Ambient: Auto-cut by system' },
             'baseline.auto.note': { th: '(อาสาไม่ได้กด)', en: '(Volunteer did not press)' },
-            'baseline.manual': { th: 'Baseline: อาสากดตัดเอง', en: 'Baseline: Volunteer pressed manually' },
-            'baseline.none': { th: 'ไม่มีข้อมูล Baseline', en: 'No Baseline data' },
+            'baseline.manual': { th: 'Ambient: อาสากดตัดเอง', en: 'Ambient: Volunteer pressed manually' },
+            'baseline.none': { th: 'ไม่มีข้อมูล Ambient', en: 'No Ambient data' },
             // Stat labels
             'stat.min': { th: 'ต่ำสุด', en: 'Min' },
             'stat.avg': { th: 'เฉลี่ย', en: 'Avg' },
@@ -1774,9 +1830,12 @@
             return note
                 .replace(/อาสากดเริ่มจุดเตา/g, 'Volunteer started stove')
                 .replace(/อาสากดจุดเตา/g, 'Volunteer started stove')
-                .replace(/อาสากด Baseline/g, 'Volunteer pressed Baseline')
-                .replace(/ระบบตัด Baseline อัตโนมัติ/g, 'System auto-cut Baseline')
-                .replace(/ระบบตัด Baseline/g, 'System cut Baseline')
+                .replace(/อาสากด Ambient/g, 'Volunteer pressed Ambient')
+                .replace(/อาสากด Baseline/g, 'Volunteer pressed Ambient')
+                .replace(/ระบบตัด Ambient อัตโนมัติ/g, 'System auto-cut Ambient')
+                .replace(/ระบบตัด Baseline อัตโนมัติ/g, 'System auto-cut Ambient')
+                .replace(/ระบบตัด Ambient/g, 'System cut Ambient')
+                .replace(/ระบบตัด Baseline/g, 'System cut Ambient')
                 .replace(/เซนเซอร์ออฟไลน์/g, 'Sensor offline')
                 .replace(/เซนเซอร์กลับมาออนไลน์/g, 'Sensor back online')
                 .replace(/กำลังเก็บข้อมูล/g, 'Collecting data')
@@ -1794,6 +1853,11 @@
                 const val = t(key);
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') el.placeholder = val;
                 else el.textContent = val;
+            });
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const key = el.dataset.i18nHtml;
+                const val = t(key);
+                if (val !== key) el.innerHTML = val;
             });
             document.documentElement.lang = currentLang === 'th' ? 'th' : 'en';
             document.title = t('page.title');
@@ -2019,6 +2083,19 @@
             return valid.reduce((s, d) => s + d[field], 0) / valid.length;
         }
 
+        // Format date as DD/MM/YYYY
+        function fmtDateDMY(dateStr) {
+            const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
+            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+        }
+        // Format date+time as DD/MM/YYYY HH:MM
+        function fmtDateTimeDMY(dateStr) {
+            const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
+            return fmtDateDMY(dateStr) + ' ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        }
+
         // ==================== Daily Aggregation ====================
         let dailyAgg = {}; // { 'YYYY-MM-DD': { eco: {pm25:{sum,count,min,max},...}, old: {...} } }
         const AGG_FIELDS = ['pm25_value', 'pm10_value', 'co2_value', 'co_value', 'tvoc_value', 'temperature', 'humidity', 'hcho_value', 'aqi'];
@@ -2130,12 +2207,13 @@
             const ecoData = data.filter(d => d.stove_type === 'eco');
             const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
-            if (ecoData.length === 0) return 'no-eco';
+            if (ecoData.length === 0) return 'no-eco'; // no eco data yet
 
             const ecoAvgPm = avg(ecoData, 'pm25_value');
             const oldAvgPm = avg(oldData, 'pm25_value');
 
-            if (ecoAvgPm == null || oldAvgPm == null || oldAvgPm === 0) return 'no-eco';
+            if (ecoAvgPm == null) return 'no-eco'; // eco data but no pm25
+            if (oldAvgPm == null || oldAvgPm === 0) return 'normal'; // eco exists, old missing → show eco
             if (ecoAvgPm >= oldAvgPm) return 'eco-fail';
             return 'normal';
         }
@@ -2170,6 +2248,11 @@
             const sensorIds = new Set(data.map(d => d.tuya_device_id).filter(Boolean));
             const metaText = (range ? 'ข้อมูล ' + range.days + ' วัน' : '') + ' · ' + sensorIds.size + ' ครัวเรือน';
 
+            // Always update meta text for all hero variants
+            ['hero-meta-normal', 'hero-meta-noeco', 'hero-meta-fail'].forEach(id => {
+                const m = document.getElementById(id); if (m) m.textContent = metaText;
+            });
+
             if (currentScenario === 'normal' && oldAvgPm && ecoAvgPm != null) {
                 const pct = Math.round((oldAvgPm - ecoAvgPm) / oldAvgPm * 100);
                 const el = id => document.getElementById(id);
@@ -2182,22 +2265,17 @@
                 const emPct = Math.round(ecoRatio * 85);
                 if (el('hero-eco-emission')) el('hero-eco-emission').style.width = emPct + '%';
                 if (el('hero-eco-saved')) { el('hero-eco-saved').style.width = savedPct + '%'; el('hero-eco-saved').textContent = '↓ ลดได้'; }
-                if (el('hero-meta-normal')) el('hero-meta-normal').textContent = metaText;
             }
 
             if (currentScenario === 'no-eco' && oldAvgPm != null) {
                 const el = document.getElementById('hero-noeco-pm25');
                 if (el) el.innerHTML = oldAvgPm.toFixed(1) + ' <span class="text-lg text-slate-300">µg/m³</span>';
-                const metaEl = document.getElementById('hero-meta-noeco');
-                if (metaEl) metaEl.textContent = metaText;
             }
 
             if (currentScenario === 'eco-fail' && oldAvgPm && ecoAvgPm != null) {
                 const pct = Math.round((ecoAvgPm - oldAvgPm) / oldAvgPm * 100);
                 const el = document.getElementById('hero-fail-pct');
                 if (el) el.textContent = pct;
-                const metaEl = document.getElementById('hero-meta-fail');
-                if (metaEl) metaEl.textContent = metaText;
             }
         }
 
@@ -2628,7 +2706,7 @@
                             </div>
                         ` : ''}
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-3">${t('admin.registered')} ${new Date(a.created_at).toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
+                    <p class="text-[11px] text-slate-400 mt-3">${t('admin.registered')} ${fmtDateDMY(a.created_at)}</p>
                 </div>`;
             }).join('');
         }
@@ -2826,7 +2904,8 @@
         }
 
         // Toast notification (replaces alert)
-        function showLoading(message = 'กำลังดำเนินการ...') {
+        function showLoading(message) {
+            if (!message) message = t('loading.processing');
             hideLoading(); // ลบอันเก่าก่อน ป้องกัน overlay ซ้อน
             const el = document.createElement('div');
             el.id = 'loading-overlay';
@@ -2892,17 +2971,18 @@
         // ==================== Data Loading ====================
         let dataLoaded = false;
         async function loadData(showSpinner, _retry) {
-            if (showSpinner) showLoading('กำลังโหลดข้อมูล...');
+            if (showSpinner) showLoading(t('loading.data'));
             try {
-                // Load last 60 days with pagination (Supabase max 1000 rows/query)
-                const cutoff = new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString();
+                // Load last 180 days with pagination (research project spans old → eco phases)
+                const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
+                const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
                 let allRecords = [];
                 let offset = 0;
                 const pageSize = 1000;
                 while (true) {
                     const { data: batch, error: bErr } = await supabaseClient
                         .from('pollution_logs')
-                        .select('*')
+                        .select(selectCols)
                         .gte('recorded_at', cutoff)
                         .order('recorded_at', { ascending: false })
                         .range(offset, offset + pageSize - 1);
@@ -3017,10 +3097,8 @@
             if (!data || !data.length) return null;
             const dates = data.map(d => d.recorded_at).filter(Boolean).sort();
             if (!dates.length) return null;
-            const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
-            const opts = { day: 'numeric', month: 'short', year: 'numeric' };
-            const from = new Date(dates[0]).toLocaleDateString(locale, opts);
-            const to = new Date(dates[dates.length - 1]).toLocaleDateString(locale, opts);
+            const from = fmtDateDMY(dates[0]);
+            const to = fmtDateDMY(dates[dates.length - 1]);
             const days = Math.ceil((new Date(dates[dates.length - 1]) - new Date(dates[0])) / 86400000);
             return { from, to, days };
         }
@@ -3085,14 +3163,14 @@
                 if (currentScenario === 'normal' && oldVal && ecoVal != null) {
                     const pct = Math.round((oldVal - ecoVal) / oldVal * 100);
                     el.innerHTML = '<span class="text-emerald-600">↓ ' + pct + '%</span>';
-                    if (detailEl) detailEl.innerHTML = 'เตาใหม่ <b class="text-emerald-600">' + f(ecoVal) + '</b> · เตาเก่า <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
+                    if (detailEl) detailEl.innerHTML = t('card.eco') + ' <b class="text-emerald-600">' + f(ecoVal) + '</b> · ' + t('card.old') + ' <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
                 } else if (currentScenario === 'eco-fail' && oldVal && ecoVal != null) {
                     const pct = Math.round((ecoVal - oldVal) / oldVal * 100);
                     el.innerHTML = '<span class="text-red-600">↑ ' + pct + '%</span>';
-                    if (detailEl) detailEl.innerHTML = 'เตาใหม่ <b class="text-red-600">' + f(ecoVal) + '</b> · เตาเก่า <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
+                    if (detailEl) detailEl.innerHTML = t('card.eco') + ' <b class="text-red-600">' + f(ecoVal) + '</b> · ' + t('card.old') + ' <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
                 } else if (currentScenario === 'no-eco' && oldVal != null) {
                     el.innerHTML = '<span class="text-gray-700">' + f(oldVal) + '</span>';
-                    if (detailEl) detailEl.innerHTML = unit + ' · เตาดั้งเดิม';
+                    if (detailEl) detailEl.innerHTML = unit + ' · ' + t('card.traditional');
                 } else {
                     el.textContent = f(ecoVal != null ? ecoVal : oldVal) || '--';
                     if (detailEl) detailEl.innerHTML = unit;
@@ -3113,6 +3191,46 @@
             const pm = ecoAvgPm != null ? ecoAvgPm : oldAvgPm;
             const badgeEl = document.getElementById('basic-pm25-badge');
             if (badgeEl) badgeEl.innerHTML = pm != null ? pm25AqiBadge(Math.round(pm)) : '';
+        }
+
+        // ==================== Threshold Lines Plugin (IAQ/PCD standards) ====================
+        const CHART_THRESHOLDS = {
+            pm25_value: [
+                { value: 25, label: 'PCD 25', color: '#f59e0b' },
+                { value: 37.5, label: 'PCD 37.5', color: '#ef4444' },
+            ],
+            co2_value: [
+                { value: 1000, label: 'IAQ 1,000', color: '#ef4444' },
+            ],
+        };
+        function thresholdLinesPlugin(thresholds) {
+            return {
+                id: 'thresholdLines',
+                afterDraw(chart) {
+                    const { ctx, chartArea, scales } = chart;
+                    if (!chartArea || !scales?.y) return;
+                    const { left, right, top, bottom } = chartArea;
+                    thresholds.forEach(t => {
+                        const yPos = scales.y.getPixelForValue(t.value);
+                        if (yPos < top || yPos > bottom) return;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.setLineDash([6, 4]);
+                        ctx.strokeStyle = t.color;
+                        ctx.lineWidth = 1.5;
+                        ctx.globalAlpha = 0.7;
+                        ctx.moveTo(left, yPos);
+                        ctx.lineTo(right, yPos);
+                        ctx.stroke();
+                        ctx.fillStyle = t.color;
+                        ctx.font = '10px Chakra Petch, sans-serif';
+                        ctx.textAlign = 'right';
+                        ctx.globalAlpha = 0.9;
+                        ctx.fillText(t.label, right - 4, yPos - 4);
+                        ctx.restore();
+                    });
+                }
+            };
         }
 
         // ==================== Basic Daily Charts (PM2.5 + CO2) ====================
@@ -3140,28 +3258,33 @@
                     if (eb && eb.count) ecoPoints.push({ x: dateMs, y: +(eb.sum / eb.count).toFixed(1) });
                 });
 
+                const thr = CHART_THRESHOLDS[cfg.field] || [];
+
                 basicCharts[cfg.id] = new Chart(canvas, {
                     type: 'line',
+                    plugins: thr.length ? [thresholdLinesPlugin(thr)] : [],
                     data: {
                         datasets: [
                             {
                                 label: t('chart.old'),
                                 data: oldPoints,
                                 borderColor: '#9ca3af',
+                                backgroundColor: 'rgba(156,163,175,0.08)',
                                 borderWidth: 1.5,
                                 borderDash: [6, 3],
                                 pointRadius: 0,
                                 tension: 0.3,
-                                fill: false,
+                                fill: true,
                             },
                             {
                                 label: t('compare.eco'),
                                 data: ecoPoints,
                                 borderColor: '#10b981',
+                                backgroundColor: 'rgba(16,185,129,0.12)',
                                 borderWidth: 3,
                                 pointRadius: 0,
                                 tension: 0.3,
-                                fill: false,
+                                fill: true,
                             },
                         ],
                     },
@@ -3169,12 +3292,12 @@
                         responsive: true, maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
                         plugins: {
-                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } },
+                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 }, usePointStyle: true, pointStyle: 'circle' } },
                             tooltip: {
                                 callbacks: {
                                     title: (items) => {
                                         if (!items.length) return '';
-                                        return new Date(items[0].parsed.x).toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short' });
+                                        return fmtDateDMY(new Date(items[0].parsed.x));
                                     },
                                 },
                             },
@@ -3189,7 +3312,12 @@
         }
 
         function updateBeforeAfter() {
-            // Use baseline-subtracted (clean) data
+            // Elements were removed from HTML — guard against null
+            const ecoEl = document.getElementById('basic-eco-pm25');
+            const oldEl = document.getElementById('basic-old-pm25');
+            const redEl = document.getElementById('basic-reduction');
+            if (!ecoEl && !oldEl) return;
+
             const filtered = applyBaselineSubtraction(getFilteredData());
             const ecoData = filtered.filter(d => d.stove_type === 'eco');
             const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
@@ -3197,19 +3325,21 @@
             const avgEco = avg(ecoData, 'pm25_value');
             const avgOld = avg(oldData, 'pm25_value');
 
-            document.getElementById('basic-eco-pm25').textContent = avgEco != null ? avgEco.toFixed(1) : '--';
-            document.getElementById('basic-old-pm25').textContent = avgOld != null ? avgOld.toFixed(1) : '--';
+            if (ecoEl) ecoEl.textContent = avgEco != null ? avgEco.toFixed(1) : '--';
+            if (oldEl) oldEl.textContent = avgOld != null ? avgOld.toFixed(1) : '--';
 
-            if (avgOld && avgEco && avgOld > 0) {
-                const rawReduction = ((avgOld - avgEco) / avgOld * 100);
-                if (Math.abs(rawReduction) > 999) {
-                    document.getElementById('basic-reduction').textContent = 'N/A';
+            if (redEl) {
+                if (avgOld && avgEco && avgOld > 0) {
+                    const rawReduction = ((avgOld - avgEco) / avgOld * 100);
+                    if (Math.abs(rawReduction) > 999) {
+                        redEl.textContent = 'N/A';
+                    } else {
+                        const reduction = rawReduction.toFixed(0);
+                        redEl.textContent = reduction > 0 ? `↓${reduction}%` : `↑${Math.abs(reduction)}%`;
+                    }
                 } else {
-                    const reduction = rawReduction.toFixed(0);
-                    document.getElementById('basic-reduction').textContent = reduction > 0 ? `↓${reduction}%` : `↑${Math.abs(reduction)}%`;
+                    redEl.textContent = '--%';
                 }
-            } else {
-                document.getElementById('basic-reduction').textContent = '--%';
             }
         }
 
@@ -3226,18 +3356,18 @@
             });
             const devices = Object.values(byDevice).sort((a, b) => (a.recorded_at > b.recorded_at ? -1 : 1));
             if (!devices.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-slate-400">ยังไม่มีข้อมูล</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-slate-400">' + t('sensor.no.data') + '</td></tr>';
                 return;
             }
             tbody.innerHTML = devices.map(d => {
                 const name = HOUSE_NAMES[d.tuya_device_id] || getDeviceName(d);
-                const stoveLabel = d.stove_type === 'eco' ? '<span class="text-emerald-600 font-bold">✨ ใหม่</span>' : '<span class="text-slate-400">🪵 เก่า</span>';
+                const stoveLabel = d.stove_type === 'eco' ? '<span class="text-emerald-600 font-bold">' + t('stove.eco.short') + '</span>' : '<span class="text-slate-400">' + t('stove.old.short') + '</span>';
                 const pm25 = d.pm25_value != null ? d.pm25_value.toFixed(1) : '--';
                 const pm25Color = d.pm25_value != null ? (d.pm25_value < 25 ? 'text-emerald-600' : d.pm25_value < 50 ? 'text-amber-500' : 'text-red-500') : '';
                 const co2 = d.co2_value != null ? Math.round(d.co2_value) : '--';
                 const temp = d.temperature != null ? d.temperature.toFixed(1) + '°C' : '--';
                 const hum = d.humidity != null ? d.humidity.toFixed(0) + '%' : '--';
-                const time = new Date(d.recorded_at).toLocaleString('th-TH', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+                const time = fmtDateTimeDMY(d.recorded_at);
                 const rowBg = d.stove_type === 'eco' ? 'bg-emerald-50/50' : '';
                 return `<tr class="${rowBg} border-b border-slate-100 hover:bg-slate-50">
                     <td class="py-2 font-medium">${name}</td>
@@ -3253,101 +3383,99 @@
 
         async function loadTodaySummary() {
             try {
-                const today = new Date().toISOString().slice(0, 10);
-                const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+                let targetDate = new Date().toISOString().slice(0, 10);
 
-                // Sensor sessions from daily_summaries
-                let todayQuery = supabaseClient.from('daily_summaries').select('sessions_completed, sessions_incomplete, device_id').eq('summary_date', today);
+                // Try today first, fallback to latest date with data
                 const projDevIds = getProjectDeviceIds(getActiveProjectFilter());
+                let todayQuery = supabaseClient.from('daily_summaries').select('sessions_completed, sessions_incomplete, device_id, summary_date').eq('summary_date', targetDate);
                 if (projDevIds) todayQuery = todayQuery.in('device_id', projDevIds);
-                const { data: summaries } = await todayQuery;
+                let { data: summaries } = await todayQuery;
 
-                // Today's sensor logs count per device
-                const todaySensor = (allDataWithPending || []).filter(d => d.data_source === 'sensor' && d.recorded_at >= today + 'T00:00:00Z' && d.recorded_at < tomorrow + 'T00:00:00Z');
+                // If today has no data, find the latest date that does
+                let isFallback = false;
+                if (!summaries || !summaries.length) {
+                    let fallbackQ = supabaseClient.from('daily_summaries').select('summary_date').order('summary_date', { ascending: false }).limit(1);
+                    if (projDevIds) fallbackQ = fallbackQ.in('device_id', projDevIds);
+                    const { data: latest } = await fallbackQ;
+                    if (latest && latest.length) {
+                        targetDate = latest[0].summary_date;
+                        isFallback = true;
+                        let fbQuery = supabaseClient.from('daily_summaries').select('sessions_completed, sessions_incomplete, device_id, summary_date').eq('summary_date', targetDate);
+                        if (projDevIds) fbQuery = fbQuery.in('device_id', projDevIds);
+                        const { data: fbData } = await fbQuery;
+                        summaries = fbData || [];
+                    }
+                }
+
+                const nextDate = new Date(new Date(targetDate + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+
+                // Sensor logs for target date
+                const dateSensor = (allDataWithPending || []).filter(d => d.data_source === 'sensor' && d.recorded_at >= targetDate + 'T00:00:00Z' && d.recorded_at < nextDate + 'T00:00:00Z');
                 const sensorByDevice = {};
-                todaySensor.forEach(d => {
+                dateSensor.forEach(d => {
                     if (!sensorByDevice[d.tuya_device_id]) sensorByDevice[d.tuya_device_id] = [];
                     sensorByDevice[d.tuya_device_id].push(d);
                 });
 
-                // Today's TVOC manual logs per house
-                const todayManual = (allDataWithPending || []).filter(d => d.data_source === 'manual' && d.tvoc_value != null && d.recorded_at >= today + 'T00:00:00Z' && d.recorded_at < tomorrow + 'T00:00:00Z');
-                const tvocByHouse = {};
-                todayManual.forEach(d => {
-                    const key = d.house_id || 'unknown';
-                    if (!tvocByHouse[key]) tvocByHouse[key] = [];
-                    tvocByHouse[key].push(d);
-                });
-
-                // Build per-house rows
+                // Build per-house cards
                 const breakdownEl = document.getElementById('today-house-breakdown');
                 const rows = [];
-
-                // Sensor devices
                 const activeDevices = (devices || []).filter(d => d.is_active);
-                for (const dev of activeDevices) {
-                    const devLogs = sensorByDevice[dev.tuya_device_id] || [];
-                    const summary = (summaries || []).find(s => s.device_id === dev.tuya_device_id);
+
+                // If no active devices registered, show cards from summaries
+                const devList = activeDevices.length > 0 ? activeDevices : (summaries || []).map(s => ({
+                    tuya_device_id: s.device_id,
+                    name: DEVICE_NAMES[s.device_id] || s.device_id,
+                    subjects: null,
+                    is_active: true,
+                }));
+
+                let housesWithData = 0;
+                for (const dev of devList) {
+                    const devId = dev.tuya_device_id;
+                    const devLogs = sensorByDevice[devId] || [];
+                    const summary = (summaries || []).find(s => s.device_id === devId);
                     const completed = summary?.sessions_completed || 0;
                     const incomplete = summary?.sessions_incomplete || 0;
-                    const houseName = dev.subjects?.full_name || DEVICE_NAMES[dev.tuya_device_id] || dev.name;
-                    const stoveBadge = '';
+                    const houseName = dev.subjects?.full_name || DEVICE_NAMES[devId] || HOUSE_NAMES[devId] || dev.name;
 
-                    let statusIcon, statusText, statusClass, pulseDot = '';
+                    let bg, nameClass, statusHtml;
                     if (completed >= 2) {
-                        statusIcon = '✅'; statusText = 'ครบ ' + completed + '/2'; statusClass = 'text-emerald-600';
+                        housesWithData++;
+                        bg = 'bg-emerald-50'; nameClass = 'text-emerald-600';
+                        statusHtml = '✅ ' + (devLogs.length || (completed * 26)) + ' readings';
                     } else if (completed > 0 || incomplete > 0) {
-                        statusIcon = '⚠️'; statusText = completed + '/2 สำเร็จ' + (incomplete > 0 ? ', ' + incomplete + ' ไม่ครบ' : ''); statusClass = 'text-amber-600';
+                        housesWithData++;
+                        bg = 'bg-amber-50'; nameClass = 'text-amber-600';
+                        statusHtml = '⚠️ ' + completed + '/2';
                     } else if (devLogs.length > 0) {
-                        statusIcon = '🔄'; statusText = t('sync.collecting') + ' (' + devLogs.length + ')'; statusClass = 'text-blue-600';
-                        pulseDot = '<span class="pulse-dot collecting"></span>';
+                        housesWithData++;
+                        bg = 'bg-blue-50'; nameClass = 'text-blue-600';
+                        statusHtml = '<span class="pulse-dot collecting"></span> ' + devLogs.length + ' readings';
                     } else {
-                        statusIcon = ''; statusText = t('sync.waiting'); statusClass = 'text-slate-400';
-                        pulseDot = '<span class="pulse-dot"></span>';
+                        bg = 'bg-slate-50'; nameClass = 'text-slate-400';
+                        statusHtml = '<span class="pulse-dot"></span> ' + t('sync.waiting');
                     }
 
-                    rows.push(`<div class="flex items-center justify-between py-1.5 px-3 rounded-xl ${completed >= 2 ? 'bg-emerald-50' : devLogs.length > 0 ? 'bg-blue-50' : 'bg-slate-50'}">
-                        <div class="flex items-center gap-2 min-w-0">
-                            ${pulseDot || '<span class="text-sm">' + statusIcon + '</span>'}
-                            <span class="text-sm font-medium text-navy truncate">📡 ${houseName}</span>
-                            ${stoveBadge}
-                        </div>
-                        <span class="text-xs font-bold ${statusClass} whitespace-nowrap">${statusIcon} ${statusText}</span>
-                    </div>`);
-                }
-
-                // TVOC manual per house
-                for (const [houseId, logs] of Object.entries(tvocByHouse)) {
-                    const houseName = HOUSE_NAMES[houseId] || (subjects || []).find(s => String(s.id) === String(houseId))?.full_name || 'บ้าน #' + houseId;
-                    const avgTvoc = (logs.reduce((s, d) => s + d.tvoc_value, 0) / logs.length).toFixed(3);
-                    rows.push(`<div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-purple-50">
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="text-sm">📝</span>
-                            <span class="text-sm font-medium text-navy truncate">${houseName}</span>
-                            <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-600">TVOC</span>
-                        </div>
-                        <span class="text-xs font-bold text-purple-600 whitespace-nowrap">${logs.length} readings · ${avgTvoc} mg/m³</span>
-                    </div>`);
+                    rows.push(`<div class="${bg} rounded-lg p-2 text-center"><span class="font-bold ${nameClass}">${houseName}</span><br>${statusHtml}</div>`);
                 }
 
                 breakdownEl.innerHTML = rows.length > 0 ? rows.join('') : '<p class="text-center text-slate-400 text-sm py-2">' + t('session.no.today') + '</p>';
 
-                // Overall progress
-                const totalCompleted = (summaries || []).reduce((s, d) => s + (d.sessions_completed || 0), 0);
-                const totalTarget = activeDevices.length > 0 ? activeDevices.length * 2 : 4;
-
+                // Overall progress — count households with data
+                const totalHouses = devList.length || 10;
                 const textEl = document.getElementById('session-progress-text');
                 const emojiEl = document.getElementById('session-progress-emoji');
                 const pctEl = document.getElementById('session-progress-pct');
                 const barEl = document.getElementById('session-progress-bar');
 
-                const pct = totalTarget > 0 ? Math.round(totalCompleted / totalTarget * 100) : 0;
-                const tvocCount = todayManual.length;
-                textEl.textContent = t('session.success', totalCompleted, totalTarget) + (tvocCount > 0 ? ' + TVOC ' + tvocCount + ' readings' : '');
-                emojiEl.textContent = pct >= 100 ? '✅' : '⏳';
+                const pct = totalHouses > 0 ? Math.round(housesWithData / totalHouses * 100) : 0;
+                const dateLabel = isFallback ? ' (' + fmtDateDMY(targetDate) + ')' : '';
+                textEl.textContent = t('session.success', housesWithData, totalHouses) + dateLabel;
+                emojiEl.textContent = pct >= 100 ? '✅' : pct > 0 ? '⏳' : '💤';
                 pctEl.textContent = pct + '%';
                 barEl.style.width = pct + '%';
-                barEl.className = 'h-2.5 rounded-full progress-fill ' + (pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-red-500');
+                barEl.className = 'h-2.5 rounded-full progress-fill ' + (pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : pct > 0 ? 'bg-blue-500' : 'bg-slate-300');
             } catch (e) {
                 console.error('loadTodaySummary:', e);
             }
@@ -3505,21 +3633,21 @@
                     if (Math.abs(pct) > 999) {
                         valEl.innerHTML = fmt(ecoAvg) + unitHtml;
                         valEl.className = 'text-2xl font-bold text-navy mt-1';
-                        if (changeEl) changeEl.innerHTML = '<div>ข้อมูลยังไม่เพียงพอ</div>';
+                        if (changeEl) changeEl.innerHTML = '<div>' + t('stat.insufficient') + '</div>';
                     } else if (pct > 0) {
                         valEl.innerHTML = '↓ ' + pct.toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
                         valEl.className = 'text-2xl font-bold text-emerald-600 mt-1';
-                        if (changeEl) changeEl.innerHTML = '<div>เตาใหม่ <b class="text-emerald-600">' + fmt(ecoAvg) + '</b> / เตาเก่า <span class="text-slate-400">' + fmt(oldAvg) + '</span>' + (unit ? ' ' + unit : '') + '</div>';
+                        if (changeEl) changeEl.innerHTML = '<div>' + t('card.eco') + ' <b class="text-emerald-600">' + fmt(ecoAvg) + '</b> / ' + t('card.old') + ' <span class="text-slate-400">' + fmt(oldAvg) + '</span>' + (unit ? ' ' + unit : '') + '</div>';
                     } else {
                         valEl.innerHTML = '↑ ' + Math.abs(pct).toFixed(1) + '<span class="text-[15px] font-semibold">%</span>';
                         valEl.className = 'text-2xl font-bold text-red-500 mt-1';
-                        if (changeEl) changeEl.innerHTML = '<div>เตาใหม่ <b class="text-red-500">' + fmt(ecoAvg) + '</b> / เตาเก่า <span class="text-slate-400">' + fmt(oldAvg) + '</span>' + (unit ? ' ' + unit : '') + '</div>';
+                        if (changeEl) changeEl.innerHTML = '<div>' + t('card.eco') + ' <b class="text-red-500">' + fmt(ecoAvg) + '</b> / ' + t('card.old') + ' <span class="text-slate-400">' + fmt(oldAvg) + '</span>' + (unit ? ' ' + unit : '') + '</div>';
                     }
                 } else {
                     const anyVal = ecoAvg ?? oldAvg;
                     valEl.innerHTML = fmt(anyVal) + unitHtml;
                     valEl.className = 'text-2xl font-bold text-navy mt-1';
-                    if (changeEl) changeEl.innerHTML = '<div>' + (anyVal != null ? (ecoAvg != null ? 'เตาชีวมวล' : 'เตาดั้งเดิม') : 'ยังไม่มีข้อมูล') + '</div>';
+                    if (changeEl) changeEl.innerHTML = '<div>' + (anyVal != null ? (ecoAvg != null ? t('compare.eco') : t('compare.old')) : t('sensor.no.data')) + '</div>';
                 }
             }
 
@@ -3590,7 +3718,7 @@
                 const ambPct = Math.max((oldAmbient / maxVal * 100), 5);
                 const netPct = Math.max(((oldNetAvg || 0) / maxVal * 100), 10);
                 html += '<div>';
-                html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">' + oldGross.toFixed(1) + ' (gross) → <span class="text-gray-900">' + (oldNetAvg || 0).toFixed(1) + '</span> (net)</span></div>';
+                html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">' + t('hero.old') + '</span><span class="font-bold text-gray-700">' + oldGross.toFixed(1) + ' (gross) → <span class="text-gray-900">' + (oldNetAvg || 0).toFixed(1) + '</span> (net)</span></div>';
                 html += '<div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">';
                 html += '<div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:' + ambPct.toFixed(0) + '%">' + oldAmbient.toFixed(1) + '<br>ambient</div>';
                 html += '<div class="bg-orange-400 flex items-center justify-center text-white" style="width:' + netPct.toFixed(0) + '%">' + (oldNetAvg || 0).toFixed(1) + ' µg/m³ — Stove Emission</div>';
@@ -3606,7 +3734,7 @@
                 const textColor = isGood ? 'text-emerald-600' : 'text-red-600';
 
                 html += '<div>';
-                html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">✨ เตาชีวมวล</span><span class="font-bold ' + (isGood ? 'text-gray-700' : 'text-red-600') + '">' + ecoGross.toFixed(1) + ' (gross) → <span class="' + textColor + '">' + (ecoNetAvg || 0).toFixed(1) + '</span> (net)' + (isGood ? '' : ' ⚠️') + '</span></div>';
+                html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">' + t('hero.eco') + '</span><span class="font-bold ' + (isGood ? 'text-gray-700' : 'text-red-600') + '">' + ecoGross.toFixed(1) + ' (gross) → <span class="' + textColor + '">' + (ecoNetAvg || 0).toFixed(1) + '</span> (net)' + (isGood ? '' : ' ⚠️') + '</span></div>';
                 html += '<div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">';
                 html += '<div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:' + ambPct.toFixed(0) + '%">' + ecoAmbient.toFixed(1) + '<br>ambient</div>';
                 html += '<div class="' + barColor + ' flex items-center justify-center text-white" style="width:' + netPct.toFixed(0) + '%">' + (ecoNetAvg || 0).toFixed(1) + (isGood ? '' : ' — Stove Emission ↑') + '</div>';
@@ -3629,9 +3757,9 @@
             if (ecoLegend) {
                 ecoLegend.style.display = currentScenario === 'no-eco' ? 'none' : '';
                 if (currentScenario === 'eco-fail') {
-                    ecoLegend.innerHTML = '<span class="inline-block w-3 h-3 rounded bg-red-400 align-middle mr-1"></span>Stove emission (เตาชีวมวล) ⚠️';
+                    ecoLegend.innerHTML = '<span class="inline-block w-3 h-3 rounded bg-red-400 align-middle mr-1"></span>Stove emission (' + t('compare.eco') + ') ⚠️';
                 } else {
-                    ecoLegend.innerHTML = '<span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)';
+                    ecoLegend.innerHTML = '<span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (' + t('compare.eco') + ')';
                 }
             }
         }
@@ -3828,8 +3956,7 @@
                                 callbacks: {
                                     title: (items) => {
                                         if (!items.length) return '';
-                                        const d = new Date(items[0].parsed.x);
-                                        return d.toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+                                        return fmtDateDMY(new Date(items[0].parsed.x));
                                     },
                                 },
                             },
@@ -3852,8 +3979,7 @@
             if (panel) panel.classList.remove('hidden');
             const titleEl = document.getElementById('drilldown-title');
             if (titleEl) {
-                const dateLabel = new Date(dateStr + 'T12:00:00').toLocaleDateString('th-TH', { day: 'numeric', month: 'long', year: 'numeric' });
-                titleEl.textContent = '📅 รายละเอียดวันที่ ' + dateLabel;
+                titleEl.textContent = '📅 รายละเอียดวันที่ ' + fmtDateDMY(dateStr + 'T12:00:00');
             }
             renderDrilldownCharts();
         }
@@ -4012,8 +4138,7 @@
             // Update info text
             if (infoEl && latestDate) {
                 const uniqueDevices = new Set(todaySessions.map(s => s.device_id));
-                const dateLabel = new Date(latestDate + 'T00:00:00').toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'short' });
-                infoEl.textContent = dateLabel + ' — ' + t('session.count.info', todaySessions.length, uniqueDevices.size);
+                infoEl.textContent = fmtDateDMY(latestDate + 'T00:00:00') + ' — ' + t('session.count.info', todaySessions.length, uniqueDevices.size);
             } else if (infoEl) {
                 infoEl.textContent = currentLang === 'th' ? 'ไม่มีข้อมูล' : 'No data';
             }
@@ -4032,8 +4157,7 @@
 
             // Date header
             if (latestDate) {
-                const dateLabel = new Date(latestDate + 'T00:00:00').toLocaleDateString(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                rows.push('<tr class="bg-slate-100"><td colspan="7" class="px-3 py-2 font-semibold text-slate-600 text-sm border-b-2 border-slate-300">' + dateLabel + '</td></tr>');
+                rows.push('<tr class="bg-slate-100"><td colspan="7" class="px-3 py-2 font-semibold text-slate-600 text-sm border-b-2 border-slate-300">' + fmtDateDMY(latestDate + 'T00:00:00') + '</td></tr>');
             }
 
             todaySessions.forEach(s => {
@@ -4047,12 +4171,12 @@
                 const sessNum = numMap[s.id] || '';
                 const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
 
-                // Baseline transition badge
+                // Ambient transition badge
                 let blBadge = '';
                 if (s.baseline_transition === 'auto') {
-                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Baseline อัตโนมัติ (อาสาไม่ได้กด)' : 'Auto baseline (volunteer did not press)') + '">AUTO</span>';
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ (อาสาไม่ได้กด)' : 'Auto ambient (volunteer did not press)') + '">AUTO</span>';
                 } else if (s.baseline_transition === 'manual') {
-                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Baseline เอง' : 'Volunteer pressed baseline') + '">MANUAL</span>';
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Ambient เอง' : 'Volunteer pressed ambient') + '">MANUAL</span>';
                 }
 
                 // Format notes: shorten, remove GPS, format timestamp
@@ -4271,7 +4395,7 @@
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0">${style.icon}</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-[13px] font-bold text-navy truncate">${esc(translateAction(entry.action))}</p>
-                        <p class="text-[11px] text-slate-400">${esc(entry.admin_name || '-')} · ${new Date(entry.created_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</p>
+                        <p class="text-[11px] text-slate-400">${esc(entry.admin_name || '-')} · ${fmtDateTimeDMY(entry.created_at)}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[13px] text-slate-500 truncate max-w-[180px]">${esc(entry.detail || '-')}</p>
@@ -4304,7 +4428,7 @@
                 const pm25Class = (d.pm25_value || 0) > 35 ? 'text-red-500 font-bold' : 'text-orange-500';
                 const houseName = HOUSE_NAMES[d.tuya_device_id] || d.house_name || t('house.unassigned');
                 return `<tr class="hover:bg-slate-50">
-                    <td class="p-3 text-[13px] whitespace-nowrap">${new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US')}</td>
+                    <td class="p-3 text-[13px] whitespace-nowrap">${fmtDateTimeDMY(d.recorded_at)}</td>
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
                     <td class="p-3 text-center text-orange-400">${d.pm10_value ?? '-'}</td>
                     <td class="p-3 text-center text-slate-600">${d.co2_value ?? '-'}</td>
@@ -4363,7 +4487,7 @@
                     const tvocDisplay = d.tvoc_value != null ? Number(d.tvoc_value).toFixed(3) : '-';
                     const coDisplay = d.co_value != null ? Number(d.co_value) : '-';
                     return '<tr class="hover:bg-purple-50/50"><td class="p-3 whitespace-nowrap text-[13px]">' +
-                        new Date(d.recorded_at).toLocaleString(currentLang === 'th' ? 'th-TH' : 'en-US') + '</td><td class="p-3 text-[13px]">' +
+                        fmtDateTimeDMY(d.recorded_at) + '</td><td class="p-3 text-[13px]">' +
                         houseName + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
                         tvocDisplay + '</td><td class="p-3 text-center text-rose-600 font-bold text-base">' +
                         coDisplay + '</td><td class="p-3 text-[13px] text-slate-500">' +
@@ -4580,7 +4704,7 @@
                         const minTvoc = tvocValues.length > 0 ? Math.min(...tvocValues).toFixed(3) : '--';
                         const firstDt = new Date(ms.logs[0].recorded_at);
                         const lastDt = new Date(ms.logs[ms.logs.length - 1].recorded_at);
-                        const dateStr = firstDt.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+                        const dateStr = fmtDateDMY(firstDt);
                         const startTime = firstDt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
                         const endTime = lastDt.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
                         const timeRange = ms.logs.length === 1 ? startTime : startTime + '-' + endTime;
@@ -4809,7 +4933,7 @@
                 const names = incompleteSessions.map(s => {
                     const name = HOUSE_NAMES[s.device_id] || DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
                     const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
-                    const date = s.started_at ? new Date(s.started_at).toLocaleDateString(locale, { day: 'numeric', month: 'short' }) : '?';
+                    const date = s.started_at ? fmtDateDMY(s.started_at) : '?';
                     return '  • ' + name + ' — ' + date + ' (' + (s.readings_count || 0) + ' readings)';
                 }).join('\n');
                 warnings.push(t('approval.incomplete.warn', incompleteSessions.length) + '\n' + names
@@ -5289,14 +5413,11 @@
 
         function formatThaiDate(dateStr) {
             if (!dateStr) return '-';
-            const d = new Date(dateStr + 'T00:00:00');
-            return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+            return fmtDateDMY(dateStr + 'T00:00:00');
         }
         function formatLocaleDate(dateStr) {
             if (!dateStr) return '-';
-            const d = new Date(dateStr + 'T00:00:00');
-            const loc = currentLang === 'th' ? 'th-TH' : 'en-US';
-            return d.toLocaleDateString(loc, { day: 'numeric', month: 'short', year: 'numeric' });
+            return fmtDateDMY(dateStr + 'T00:00:00');
         }
 
         function showAddPeriodModal(prefill) {
@@ -6575,7 +6696,7 @@
         }
 
         function doExport(data) {
-            showLoading('กำลังสร้างไฟล์ Excel...');
+            showLoading(t('loading.excel'));
             setTimeout(() => {
                 try {
                     logActivity('Export Excel', data.length + ' records');
@@ -6591,7 +6712,7 @@
         }
 
         function doExportCSV(data) {
-            showLoading('กำลังสร้างไฟล์ CSV...');
+            showLoading(t('loading.csv'));
             setTimeout(() => {
                 try {
                     logActivity('Export CSV', data.length + ' records');
@@ -6676,7 +6797,7 @@
             const startVal = document.getElementById('export-start').value;
             const endVal = document.getElementById('export-end').value;
             closeModal();
-            showLoading('กำลังดึงข้อมูล...');
+            showLoading(t('loading.fetch'));
 
             try {
                 if (type === 'raw') {
@@ -6842,7 +6963,7 @@
             const filtered = applyBaselineSubtraction(getFilteredData());
             if (!filtered.length) { showToast('ไม่มีข้อมูลสำหรับเปรียบเทียบ', 'warning'); return; }
 
-            showLoading('กำลังสร้างรายงานเปรียบเทียบ...');
+            showLoading(t('loading.compare'));
             setTimeout(() => {
                 try {
                     const ecoData = filtered.filter(d => d.stove_type === 'eco');
@@ -7017,7 +7138,7 @@
 
         // ==================== Init ====================
         document.addEventListener('DOMContentLoaded', async function() {
-            showLoading('กำลังโหลดข้อมูล...');
+            showLoading(t('loading.data'));
             try {
                 applyLang();
                 loadThaiAddressData(); // fire-and-forget, non-blocking
@@ -7067,7 +7188,7 @@
             <!-- Chart -->
             <div class="relative bg-slate-50 rounded-2xl p-4">
                 <canvas id="session-detail-chart" height="200"></canvas>
-                <div id="session-chart-loading" class="absolute inset-0 flex items-center justify-center text-slate-400 text-sm rounded-2xl bg-slate-50">⏳ กำลังโหลด...</div>
+                <div id="session-chart-loading" class="absolute inset-0 flex items-center justify-center text-slate-400 text-sm rounded-2xl bg-slate-50" data-i18n="loading.chart">⏳ กำลังโหลด...</div>
             </div>
         </div>
     </div>
@@ -7080,7 +7201,7 @@
             const modal = document.getElementById('session-chart-modal');
             modal.style.display = 'flex';
             document.getElementById('session-modal-title').textContent = '📊 ' + deviceName;
-            document.getElementById('session-modal-sub').textContent = new Date(startedAt).toLocaleString('th-TH');
+            document.getElementById('session-modal-sub').textContent = fmtDateTimeDMY(startedAt);
             document.getElementById('session-modal-stats').innerHTML = '';
             document.getElementById('session-chart-loading').style.display = 'flex';
 
