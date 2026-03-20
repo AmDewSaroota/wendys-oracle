@@ -207,9 +207,9 @@
       <div class="mb-2">
         <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
         <div class="flex gap-2 w-full min-w-0">
-          <input type="number" id="co-input" inputmode="decimal" step="0.1" min="0" max="1000"
+          <input type="number" id="co-input" inputmode="numeric" step="1" min="0" max="999"
             class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 outline-none bg-white"
-            placeholder="0.0">
+            placeholder="000">
         </div>
       </div>
       <!-- Submit button -->
@@ -993,8 +993,8 @@ async function submitManualReadings() {
     showToast('❌ TVOC ต้องอยู่ระหว่าง 0 - 100 mg/m³'); return;
   }
   // Validate CO
-  if (coVal !== null && (isNaN(coVal) || coVal < 0 || coVal > 1000)) {
-    showToast('❌ CO ต้องอยู่ระหว่าง 0 - 1,000 ppm'); return;
+  if (coVal !== null && (isNaN(coVal) || coVal < 0 || coVal > 999)) {
+    showToast('❌ CO ต้องอยู่ระหว่าง 0 - 999 ppm'); return;
   }
 
   const record = {
@@ -1026,7 +1026,7 @@ async function submitManualReadings() {
   // Toast message
   const parts = [];
   if (tvocVal !== null) parts.push('TVOC ' + tvocVal.toFixed(3));
-  if (coVal !== null) parts.push('CO ' + coVal.toFixed(1));
+  if (coVal !== null) parts.push('CO ' + Math.round(coVal));
   showToast('✅ บันทึก ' + parts.join(' + '));
   updateManualList();
   resetTvocCountdown();
@@ -1043,7 +1043,7 @@ function updateManualList() {
       const time = r.time.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       const vals = [];
       if (r.tvoc !== null && r.tvoc !== undefined) vals.push('<span class="text-purple-700">TVOC ' + r.tvoc.toFixed(3) + '</span>');
-      if (r.co !== null && r.co !== undefined) vals.push('<span class="text-amber-600">CO ' + r.co.toFixed(1) + '</span>');
+      if (r.co !== null && r.co !== undefined) vals.push('<span class="text-amber-600">CO ' + Math.round(r.co) + '</span>');
       return '<div class="flex justify-between text-xs text-gray-500 py-1 border-b border-purple-100">' +
         '<span>' + time + '</span>' +
         '<span class="font-bold">' + vals.join(' · ') + '</span>' +
@@ -1102,7 +1102,7 @@ function endVolunteerSession() {
   }
   if (coReadings.length > 0) {
     const avg = coReadings.reduce((s, r) => s + r.value, 0) / coReadings.length;
-    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 CO</span><span class="font-bold text-amber-600">' + coReadings.length + ' ค่า (เฉลี่ย ' + avg.toFixed(1) + ' ppm)</span></div>');
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 CO</span><span class="font-bold text-amber-600">' + coReadings.length + ' ค่า (เฉลี่ย ' + Math.round(avg) + ' ppm)</span></div>');
   }
 
   det.innerHTML = items.join('');
@@ -1346,7 +1346,7 @@ async function demoSubmitManual() {
 
   if (tvocVal === null && coVal === null) { showToast('กรุณาใส่ค่า TVOC หรือ CO อย่างน้อย 1 ช่อง'); return; }
   if (tvocVal !== null && (isNaN(tvocVal) || tvocVal < 0 || tvocVal > 100)) { showToast('❌ TVOC ต้องอยู่ระหว่าง 0 - 100'); return; }
-  if (coVal !== null && (isNaN(coVal) || coVal < 0 || coVal > 1000)) { showToast('❌ CO ต้องอยู่ระหว่าง 0 - 1,000'); return; }
+  if (coVal !== null && (isNaN(coVal) || coVal < 0 || coVal > 999)) { showToast('❌ CO ต้องอยู่ระหว่าง 0 - 999'); return; }
 
   const now = new Date();
   if (tvocVal !== null) tvocReadings.push({ value: tvocVal, time: now });
@@ -1358,7 +1358,7 @@ async function demoSubmitManual() {
 
   const parts = [];
   if (tvocVal !== null) parts.push('TVOC ' + tvocVal.toFixed(3));
-  if (coVal !== null) parts.push('CO ' + coVal.toFixed(1));
+  if (coVal !== null) parts.push('CO ' + Math.round(coVal));
   showToast('✅ [DEMO] บันทึก ' + parts.join(' + ') + ' (ไม่บันทึกจริง)');
   updateManualList();
   resetTvocCountdown();
