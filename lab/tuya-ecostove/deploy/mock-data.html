@@ -28,15 +28,60 @@
         <!-- Config Panel -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h2 class="text-lg font-bold text-slate-800 mb-4">ตั้งค่า</h2>
+            <!-- Old Stove Date Range -->
+            <div class="mb-3">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-red-400"></span>
+                    <span class="text-sm font-bold text-slate-700">เตาเก่า (old)</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-medium text-slate-500">วันเริ่ม</label>
+                        <input type="date" id="oldStartDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-slate-500">วันสิ้นสุด</label>
+                        <input type="date" id="oldEndDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                    </div>
+                </div>
+            </div>
+            <!-- Eco Stove Date Range -->
+            <div class="mb-3">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-emerald-400"></span>
+                    <span class="text-sm font-bold text-slate-700">เตาใหม่ (eco)</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-medium text-slate-500">วันเริ่ม</label>
+                        <input type="date" id="ecoStartDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-slate-500">วันสิ้นสุด</label>
+                        <input type="date" id="ecoEndDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                    </div>
+                </div>
+            </div>
+            <!-- Scenario Selector -->
+            <div class="mb-4">
+                <label class="text-sm font-bold text-slate-700 mb-2 block">Scenario (ฮีโร่จะแสดงตาม scenario นี้)</label>
+                <div class="grid grid-cols-3 gap-2" id="scenarioSelector">
+                    <button type="button" onclick="selectScenario('normal')" id="btn-scenario-normal"
+                        class="px-4 py-3 rounded-xl text-sm font-bold border-2 transition-all bg-emerald-50 border-emerald-500 text-emerald-700">
+                        ✅ Normal<br><span class="text-[10px] font-normal">eco ลดมลพิษได้</span>
+                    </button>
+                    <button type="button" onclick="selectScenario('eco-fail')" id="btn-scenario-eco-fail"
+                        class="px-4 py-3 rounded-xl text-sm font-bold border-2 transition-all bg-white border-slate-200 text-slate-500 hover:border-red-300">
+                        ⚠️ Eco-fail<br><span class="text-[10px] font-normal">eco มลพิษมากกว่า</span>
+                    </button>
+                    <button type="button" onclick="selectScenario('no-eco')" id="btn-scenario-no-eco"
+                        class="px-4 py-3 rounded-xl text-sm font-bold border-2 transition-all bg-white border-slate-200 text-slate-500 hover:border-amber-300">
+                        📊 No-eco<br><span class="text-[10px] font-normal">มีแค่เตาเก่า</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Other Settings -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="text-sm font-medium text-slate-600">วันเริ่ม</label>
-                    <input type="date" id="startDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
-                </div>
-                <div>
-                    <label class="text-sm font-medium text-slate-600">วันสิ้นสุด</label>
-                    <input type="date" id="endDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
-                </div>
                 <div>
                     <label class="text-sm font-medium text-slate-600">% Session ไม่สมบูรณ์</label>
                     <input type="number" id="incompletePercent" value="10" min="0" max="50" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
@@ -99,17 +144,43 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ==================== Config ====================
-const NUM_HOUSES = 10;
 const BATCH_SIZE = 500;
 const BATCH_DELAY = 200;
+let selectedScenario = 'normal';
+
+function selectScenario(scenario) {
+    selectedScenario = scenario;
+    // UI: highlight selected button
+    ['normal', 'eco-fail', 'no-eco'].forEach(s => {
+        const btn = document.getElementById('btn-scenario-' + s);
+        if (s === scenario) {
+            const colors = { 'normal': 'bg-emerald-50 border-emerald-500 text-emerald-700', 'eco-fail': 'bg-red-50 border-red-500 text-red-700', 'no-eco': 'bg-amber-50 border-amber-500 text-amber-700' };
+            btn.className = 'px-4 py-3 rounded-xl text-sm font-bold border-2 transition-all ' + colors[s];
+        } else {
+            btn.className = 'px-4 py-3 rounded-xl text-sm font-bold border-2 transition-all bg-white border-slate-200 text-slate-500 hover:border-slate-300';
+        }
+    });
+    // Toggle eco date inputs
+    const ecoInputs = document.querySelectorAll('#ecoStartDate, #ecoEndDate');
+    ecoInputs.forEach(el => {
+        el.disabled = scenario === 'no-eco';
+        el.style.opacity = scenario === 'no-eco' ? '0.3' : '1';
+    });
+}
 
 // ==================== Defaults ====================
 window.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
-    const end = new Date(today); end.setDate(end.getDate() - 1);
-    const start = new Date(today); start.setDate(start.getDate() - 30);
-    document.getElementById('startDate').value = fmt(start);
-    document.getElementById('endDate').value = fmt(end);
+    // Old stove: 30 days ago → 16 days ago (first half)
+    const oldStart = new Date(today); oldStart.setDate(oldStart.getDate() - 30);
+    const oldEnd = new Date(today); oldEnd.setDate(oldEnd.getDate() - 16);
+    // Eco stove: 15 days ago → yesterday (second half)
+    const ecoStart = new Date(today); ecoStart.setDate(ecoStart.getDate() - 15);
+    const ecoEnd = new Date(today); ecoEnd.setDate(ecoEnd.getDate() - 1);
+    document.getElementById('oldStartDate').value = fmt(oldStart);
+    document.getElementById('oldEndDate').value = fmt(oldEnd);
+    document.getElementById('ecoStartDate').value = fmt(ecoStart);
+    document.getElementById('ecoEndDate').value = fmt(ecoEnd);
 });
 
 function fmt(d) { return d.toISOString().split('T')[0]; }
@@ -136,18 +207,28 @@ function calculateAqi(pm25) {
 }
 
 // ==================== House Profiles ====================
+// First 10: have sensors (ES-01 to ES-10)
+// Last 5: no sensor — for map display testing
 const HOUSE_PROFILES = [
-    { name: 'บ้านสันปูเลย',    district: 'แม่ริม',  sub: 'สันโป่ง',  mult: 1.0,  lat: 18.865, lng: 98.925 },
-    { name: 'บ้านแม่แรม',      district: 'แม่ริม',  sub: 'แม่แรม',   mult: 0.85, lat: 18.880, lng: 98.910 },
-    { name: 'บ้านโป่งแยง',     district: 'แม่ริม',  sub: 'โป่งแยง',  mult: 1.15, lat: 18.850, lng: 98.895 },
-    { name: 'บ้านสะลวง',       district: 'แม่ริม',  sub: 'สะลวง',    mult: 0.90, lat: 18.900, lng: 98.930 },
-    { name: 'บ้านห้วยทราย',    district: 'แม่ริม',  sub: 'ห้วยทราย', mult: 1.10, lat: 18.870, lng: 98.880 },
-    { name: 'บ้านแม่สา',       district: 'แม่ริม',  sub: 'แม่สา',    mult: 0.95, lat: 18.890, lng: 98.950 },
-    { name: 'บ้านดอนแก้ว',     district: 'แม่ริม',  sub: 'ดอนแก้ว',  mult: 1.05, lat: 18.855, lng: 98.940 },
-    { name: 'บ้านริมใต้',       district: 'แม่ริม',  sub: 'ริมใต้',   mult: 0.80, lat: 18.840, lng: 98.920 },
-    { name: 'บ้านเหมืองแก้ว',   district: 'แม่ริม',  sub: 'เหมืองแก้ว', mult: 1.20, lat: 18.875, lng: 98.905 },
-    { name: 'บ้านสันคะยอม',    district: 'แม่ริม',  sub: 'สันคะยอม', mult: 0.92, lat: 18.895, lng: 98.915 },
+    { name: 'บ้านสันปูเลย',    district: 'แม่ริม',  sub: 'สันโป่ง',    mult: 1.0,  lat: 18.865, lng: 98.925, hasSensor: true },
+    { name: 'บ้านแม่แรม',      district: 'แม่ริม',  sub: 'แม่แรม',     mult: 0.85, lat: 18.880, lng: 98.910, hasSensor: true },
+    { name: 'บ้านโป่งแยง',     district: 'แม่ริม',  sub: 'โป่งแยง',    mult: 1.15, lat: 18.850, lng: 98.895, hasSensor: true },
+    { name: 'บ้านสะลวง',       district: 'แม่ริม',  sub: 'สะลวง',      mult: 0.90, lat: 18.900, lng: 98.930, hasSensor: true },
+    { name: 'บ้านห้วยทราย',    district: 'แม่ริม',  sub: 'ห้วยทราย',   mult: 1.10, lat: 18.870, lng: 98.880, hasSensor: true },
+    { name: 'บ้านแม่สา',       district: 'แม่ริม',  sub: 'แม่สา',      mult: 0.95, lat: 18.890, lng: 98.950, hasSensor: true },
+    { name: 'บ้านดอนแก้ว',     district: 'แม่ริม',  sub: 'ดอนแก้ว',    mult: 1.05, lat: 18.855, lng: 98.940, hasSensor: true },
+    { name: 'บ้านริมใต้',       district: 'แม่ริม',  sub: 'ริมใต้',     mult: 0.80, lat: 18.840, lng: 98.920, hasSensor: true },
+    { name: 'บ้านเหมืองแก้ว',   district: 'แม่ริม',  sub: 'เหมืองแก้ว', mult: 1.20, lat: 18.875, lng: 98.905, hasSensor: true },
+    { name: 'บ้านสันคะยอม',    district: 'แม่ริม',  sub: 'สันคะยอม',   mult: 0.92, lat: 18.895, lng: 98.915, hasSensor: true },
+    // No-sensor houses (map test only)
+    { name: 'บ้านแม่แตง',      district: 'แม่แตง',  sub: 'แม่แตง',     mult: 0, lat: 18.920, lng: 98.870, hasSensor: false },
+    { name: 'บ้านสันทราย',     district: 'สันทราย', sub: 'สันทราย',    mult: 0, lat: 18.835, lng: 98.960, hasSensor: false },
+    { name: 'บ้านหนองหาร',     district: 'สันทราย', sub: 'หนองหาร',    mult: 0, lat: 18.820, lng: 98.945, hasSensor: false },
+    { name: 'บ้านป่าแดด',      district: 'เมืองเชียงใหม่', sub: 'ป่าแดด', mult: 0, lat: 18.760, lng: 98.990, hasSensor: false },
+    { name: 'บ้านท่าศาลา',     district: 'เมืองเชียงใหม่', sub: 'ท่าศาลา', mult: 0, lat: 18.810, lng: 98.970, hasSensor: false },
 ];
+const SENSOR_HOUSES = HOUSE_PROFILES.filter(h => h.hasSensor);
+const NOSENSOR_HOUSES = HOUSE_PROFILES.filter(h => !h.hasSensor);
 
 // ==================== Cooking Curve Generator ====================
 function generateCurve(numReadings, baseVal, peakMin, peakMax, mult) {
@@ -169,15 +250,17 @@ function generateCurve(numReadings, baseVal, peakMin, peakMax, mult) {
 let generatedData = null;
 
 function generateAllData() {
-    const startDate = new Date(document.getElementById('startDate').value + 'T00:00:00');
-    const endDate = new Date(document.getElementById('endDate').value + 'T00:00:00');
+    const oldStart = new Date(document.getElementById('oldStartDate').value + 'T00:00:00');
+    const oldEnd = new Date(document.getElementById('oldEndDate').value + 'T00:00:00');
+    const ecoStart = new Date(document.getElementById('ecoStartDate').value + 'T00:00:00');
+    const ecoEnd = new Date(document.getElementById('ecoEndDate').value + 'T00:00:00');
     const incPct = parseInt(document.getElementById('incompletePercent').value) / 100;
     const tvocPct = parseInt(document.getElementById('tvocPercent').value) / 100;
 
-    const totalDays = Math.round((endDate - startDate) / 86400000) + 1;
-    const midDay = Math.floor(totalDays / 2);
+    const oldDays = Math.round((oldEnd - oldStart) / 86400000) + 1;
+    const ecoDays = Math.round((ecoEnd - ecoStart) / 86400000) + 1;
 
-    // Layer 1: Subjects
+    // Layer 1: Subjects (all houses — with + without sensor)
     const subjects = HOUSE_PROFILES.map((h, i) => ({
         full_name: `[MOCK] ${h.name}`,
         gps_lat: h.lat + rand(-0.005, 0.005),
@@ -186,17 +269,17 @@ function generateAllData() {
         province: 'เชียงใหม่',
         district: h.district,
         subdistrict: h.sub,
-        connectivity: 'hotspot',
+        connectivity: h.hasSensor ? 'hotspot' : null,
         status: 'active',
-        has_sensor: true,
+        has_sensor: h.hasSensor,
     }));
 
-    // Layer 2: Registered Sensors
+    // Layer 2: Registered Sensors (only for sensor houses)
     const sensors = [];
-    for (let i = 1; i <= NUM_HOUSES; i++) {
+    for (let i = 0; i < SENSOR_HOUSES.length; i++) {
         sensors.push({
-            tuya_device_id: `MOCK-ES-${pad(i)}`,
-            name: `ES-${pad(i)}`,
+            tuya_device_id: `MOCK-ES-${pad(i + 1)}`,
+            name: `ES-${pad(i + 1)}`,
         });
     }
 
@@ -207,10 +290,11 @@ function generateAllData() {
         status: 'active',
     };
 
-    // Layer 4: Volunteers (1 per house)
+    // Layer 4: Volunteers (1 per house — all houses)
     const VOLUNTEER_NAMES = [
         'สมศรี ใจดี', 'นงลักษณ์ แก้วมณี', 'ประภาส คำแก้ว', 'สุดา ปัญญาดี', 'อำพร ลุงดี',
         'จันทร์ สว่างวงศ์', 'แก้ว ศรีวิชัย', 'บุญมี ใจเย็น', 'พรรณ แก้วตา', 'สมบูรณ์ ชัยยะ',
+        'สมชาย ดอยสุเทพ', 'มาลี วงศ์ดี', 'ประเสริฐ ศรีทอง', 'นวล จันทร์แจ่ม', 'บุญส่ง คำมูล',
     ];
     const volunteers = VOLUNTEER_NAMES.map((name, i) => ({
         full_name: `[MOCK] ${name}`,
@@ -222,16 +306,28 @@ function generateAllData() {
     const logsTemplate = [];
     const summariesTemplate = [];
 
-    for (let hi = 0; hi < NUM_HOUSES; hi++) {
-        const tuyaId = `MOCK-ES-${pad(hi + 1)}`;
-        const profile = HOUSE_PROFILES[hi];
+    // Build day list: old days + eco days (separate ranges)
+    const dayEntries = [];
+    for (let d = 0; d < oldDays; d++) {
+        const date = new Date(oldStart); date.setDate(date.getDate() + d);
+        dayEntries.push({ date, stoveType: 'old', isOld: true });
+    }
+    if (selectedScenario !== 'no-eco') {
+        for (let d = 0; d < ecoDays; d++) {
+            const date = new Date(ecoStart); date.setDate(date.getDate() + d);
+            dayEntries.push({ date, stoveType: 'eco', isOld: false });
+        }
+    }
 
-        for (let day = 0; day < totalDays; day++) {
-            const date = new Date(startDate);
-            date.setDate(date.getDate() + day);
+    for (let hi = 0; hi < SENSOR_HOUSES.length; hi++) {
+        const tuyaId = `MOCK-ES-${pad(hi + 1)}`;
+        const profile = SENSOR_HOUSES[hi];
+
+        for (const dayEntry of dayEntries) {
+            const date = dayEntry.date;
             const dateStr = fmt(date);
-            const isOld = day < midDay;
-            const stoveType = isOld ? 'old' : 'eco';
+            const isOld = dayEntry.isOld;
+            const stoveType = dayEntry.stoveType;
 
             let dayCompleted = 0, dayIncomplete = 0, dayCancelled = 0;
             let dayReadings = 0;
@@ -258,17 +354,24 @@ function generateAllData() {
                     ? new Date(startUTC.getTime() + (10 + cookingReadings * 5) * 60000)
                     : new Date(startUTC.getTime() + 130 * 60000);
 
-                // Generate baseline values
-                const blPm25 = isOld ? rand(30, 50) : rand(20, 40);
-                const blCo2 = isOld ? rand(400, 600) : rand(400, 500);
+                // Generate baseline values — scenario-aware
+                // eco-fail: eco has HIGHER pollution than old
+                const isEcoFail = selectedScenario === 'eco-fail' && !isOld;
+                const blPm25 = isOld ? rand(30, 50) : (isEcoFail ? rand(35, 55) : rand(20, 40));
+                const blCo2 = isOld ? rand(400, 600) : (isEcoFail ? rand(450, 650) : rand(400, 500));
                 const blTemp = rand(27, 32);
                 const blHum = rand(55, 70);
 
-                // Generate cooking curves
+                // Generate cooking curves — eco-fail: eco peaks ABOVE old
+                const pm25PeakMin = isOld ? 200 : (isEcoFail ? 300 : 50);
+                const pm25PeakMax = isOld ? 500 : (isEcoFail ? 700 : 150);
+                const co2PeakMin = isOld ? 1500 : (isEcoFail ? 2000 : 800);
+                const co2PeakMax = isOld ? 3000 : (isEcoFail ? 4000 : 1500);
+
                 const pm25Curve = cookingReadings > 0 ? generateCurve(cookingReadings,
-                    blPm25, isOld ? 200 : 50, isOld ? 500 : 150, profile.mult) : [];
+                    blPm25, pm25PeakMin, pm25PeakMax, profile.mult) : [];
                 const co2Curve = cookingReadings > 0 ? generateCurve(cookingReadings,
-                    blCo2, isOld ? 1500 : 800, isOld ? 3000 : 1500, profile.mult) : [];
+                    blCo2, co2PeakMin, co2PeakMax, profile.mult) : [];
                 const tempCurve = cookingReadings > 0 ? generateCurve(cookingReadings,
                     blTemp, isOld ? 33 : 30, isOld ? 38 : 35, 1.0) : [];
                 const humCurve = cookingReadings > 0 ? generateCurve(cookingReadings,
@@ -417,7 +520,7 @@ function generateAllData() {
                 avg_temperature: dAvgTemp != null ? +dAvgTemp : null,
                 avg_humidity: dAvgHum != null ? +dAvgHum : null,
                 compliance_status: dayCompleted >= 2 ? 'complete' : dayCompleted >= 1 ? 'partial' : 'missed',
-                stove_type: day < midDay ? 'old' : 'eco',
+                stove_type: stoveType,
             });
         }
     }
@@ -434,20 +537,21 @@ function generatePreview() {
     const sample = document.getElementById('previewSample');
     panel.classList.remove('hidden');
 
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const totalDays = Math.round((new Date(endDate) - new Date(startDate)) / 86400000) + 1;
-    const midDay = Math.floor(totalDays / 2);
+    const oldDaysCount = Math.round((new Date(document.getElementById('oldEndDate').value) - new Date(document.getElementById('oldStartDate').value)) / 86400000) + 1;
+    const ecoDaysCount = Math.round((new Date(document.getElementById('ecoEndDate').value) - new Date(document.getElementById('ecoStartDate').value)) / 86400000) + 1;
+    const sensorCount = SENSOR_HOUSES.length;
+    const noSensorCount = NOSENSOR_HOUSES.length;
 
     content.innerHTML = [
-        card('🏠', 'บ้าน', data.subjects.length),
+        card('🏠', 'บ้าน (มีเซนเซอร์)', sensorCount),
+        card('🏘️', 'บ้าน (ไม่มี)', noSensorCount),
         card('👤', 'อาสา', data.volunteers.length),
         card('📡', 'เซนเซอร์', data.sensors.length),
         card('🔄', 'Sessions', data.sessionsTemplate.length),
         card('📊', 'Readings', data.logsTemplate.length.toLocaleString()),
-        card('📋', 'สรุปรายวัน', data.summariesTemplate.length),
-        card('🔴', 'เตาเก่า', midDay + ' วัน'),
-        card('🟢', 'เตาใหม่', (totalDays - midDay) + ' วัน'),
+        card('🔴', 'เตาเก่า', oldDaysCount + ' วัน'),
+        card('🟢', 'เตาใหม่', selectedScenario === 'no-eco' ? '— (ไม่มี)' : ecoDaysCount + ' วัน'),
+        card('🎯', 'Scenario', selectedScenario === 'normal' ? '✅ Normal' : selectedScenario === 'eco-fail' ? '⚠️ Eco-fail' : '📊 No-eco'),
     ].join('');
 
     // Sample cooking curve
@@ -556,7 +660,7 @@ async function insertMockData() {
         if (rsErr) throw new Error('registered_sensors: ' + rsErr.message);
         log('registered_sensors inserted', 'success');
 
-        // Step 3: Insert devices
+        // Step 3: Insert devices (only sensor houses — first N subjects)
         setProgress('กำลัง insert devices...', 20);
         const deviceRows = generatedData.sensors.map((s, i) => ({
             tuya_device_id: s.tuya_device_id,
@@ -569,33 +673,34 @@ async function insertMockData() {
         if (devErr) throw new Error('devices: ' + devErr.message);
         log('devices inserted', 'success');
 
-        // Step 4: Insert collection_periods
+        // Step 4: Insert collection_periods (separate old/eco ranges)
         setProgress('กำลัง insert collection periods...', 25);
-        const startDate = new Date(document.getElementById('startDate').value + 'T00:00:00');
-        const endDate = new Date(document.getElementById('endDate').value + 'T00:00:00');
-        const totalDays = Math.round((endDate - startDate) / 86400000) + 1;
-        const midDay = Math.floor(totalDays / 2);
-        const midDate = new Date(startDate); midDate.setDate(midDate.getDate() + midDay);
+        const cpOldStart = document.getElementById('oldStartDate').value;
+        const cpOldEnd = document.getElementById('oldEndDate').value;
+        const cpEcoStart = document.getElementById('ecoStartDate').value;
+        const cpEcoEnd = document.getElementById('ecoEndDate').value;
 
         const periods = [];
-        for (let i = 0; i < NUM_HOUSES; i++) {
-            const oldEnd = new Date(midDate); oldEnd.setDate(oldEnd.getDate() - 1);
+        // Only sensor houses get collection periods
+        for (let i = 0; i < SENSOR_HOUSES.length; i++) {
             periods.push({
                 subject_id: subjectIds[i],
                 stove_type: 'old',
-                starts_at: fmt(startDate),
-                ends_at: fmt(oldEnd),
+                starts_at: cpOldStart,
+                ends_at: cpOldEnd,
                 notes: '[MOCK] ช่วงเตาเก่า',
                 created_by: 'mock-generator',
             });
-            periods.push({
-                subject_id: subjectIds[i],
-                stove_type: 'eco',
-                starts_at: fmt(midDate),
-                ends_at: fmt(endDate),
-                notes: '[MOCK] ช่วงเตาชีวมวล',
-                created_by: 'mock-generator',
-            });
+            if (selectedScenario !== 'no-eco') {
+                periods.push({
+                    subject_id: subjectIds[i],
+                    stove_type: 'eco',
+                    starts_at: cpEcoStart,
+                    ends_at: cpEcoEnd,
+                    notes: '[MOCK] ช่วงเตาชีวมวล' + (selectedScenario === 'eco-fail' ? ' (eco-fail)' : ''),
+                    created_by: 'mock-generator',
+                });
+            }
         }
         log('Inserting ' + periods.length + ' collection_periods...');
         const { error: cpErr } = await sb.from('collection_periods').insert(periods);
