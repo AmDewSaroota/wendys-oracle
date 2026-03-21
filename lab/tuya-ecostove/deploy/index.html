@@ -1813,7 +1813,7 @@
             currentLang = currentLang === 'th' ? 'en' : 'th';
             localStorage.setItem('biomass_stove_lang', currentLang);
             applyLang();
-            if (currentView === 'basic') updateBasicView();
+            if (currentView === 'basic') refreshBasicLang();
             else if (currentView === 'deep') updateDeepView();
             if (isAdmin) {
                 loadAdminData(); loadAdminsList();
@@ -1822,6 +1822,28 @@
                 if (typeof collectionPeriods !== 'undefined' && collectionPeriods.length) renderPeriodsList();
                 updateAllDataTable();
             }
+        }
+
+        // Lightweight lang refresh for Basic page — no chart rebuild, no DB queries
+        function refreshBasicLang() {
+            // Update data range label
+            const range = getDataDateRange(allDataWithPending);
+            const rangeEl = document.getElementById('basic-range-label');
+            if (range && rangeEl) rangeEl.textContent = t('basic.range', range.from, range.to, range.days);
+            // Update big number cards (stove labels)
+            updateBigNumbers();
+            // Update chart legends (just relabel, no rebuild)
+            Object.values(basicCharts).forEach(chart => {
+                if (chart.data.datasets[0]) chart.data.datasets[0].label = t('chart.old');
+                if (chart.data.datasets[1]) chart.data.datasets[1].label = t('compare.eco');
+                chart.update('none'); // 'none' = skip animation
+            });
+            // Update sensor table
+            updateLatestReadings();
+            // Update map text
+            refreshMapLang();
+            // Update activity feed
+            updateActivityFeed();
         }
 
         // Translate known session note patterns for EN display
@@ -7010,6 +7032,18 @@
         }
 
         // ==================== Map ====================
+        let _mapSensorCount = 0, _mapStoveCount = 0, _mapLegendDiv = null;
+        function refreshMapLang() {
+            const statsEl = document.getElementById('map-stats');
+            if (statsEl) statsEl.innerHTML = '📡 <b>' + _mapSensorCount + '</b> ' + t('map.with.sensor') + ' &nbsp;·&nbsp; 🏠 <b>' + _mapStoveCount + '</b> ' + t('map.stove.only') + ' &nbsp;·&nbsp; 📍 <b>' + (_mapSensorCount + _mapStoveCount) + '</b> ' + t('map.total');
+            refreshMapLegend();
+        }
+        function refreshMapLegend() {
+            if (!_mapLegendDiv) return;
+            _mapLegendDiv.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:50%"></span> 📡 ' + t('map.sensor.house') + '</div>' +
+                '<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:12px;background:#f97316;border-radius:50%"></span> 🔥 ' + t('map.stove.house') + '</div>';
+        }
+
         function initMap() {
             try {
                 map = L.map('map').setView([18.7883, 98.9853], 8);
@@ -7065,16 +7099,16 @@
             });
             map.addLayer(cluster);
             if (bounds.length) map.fitBounds(bounds, { padding: [30, 30] });
-            // Map stats
-            const statsEl = document.getElementById('map-stats');
-            if (statsEl) statsEl.innerHTML = '📡 <b>' + sensorCount + '</b> ' + t('map.with.sensor') + ' &nbsp;·&nbsp; 🏠 <b>' + stoveCount + '</b> ' + t('map.stove.only') + ' &nbsp;·&nbsp; 📍 <b>' + (sensorCount + stoveCount) + '</b> ' + t('map.total');
-            // Legend
+            // Map stats + legend (stored for lang refresh)
+            _mapSensorCount = sensorCount;
+            _mapStoveCount = stoveCount;
+            refreshMapLang();
             const legend = L.control({ position: 'bottomright' });
             legend.onAdd = function() {
                 const div = L.DomUtil.create('div');
                 div.style.cssText = 'background:white;padding:8px 12px;border-radius:8px;font-size:11px;box-shadow:0 2px 6px rgba(0,0,0,0.15)';
-                div.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:50%"></span> 📡 ' + t('map.sensor.house') + '</div>' +
-                    '<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:12px;background:#f97316;border-radius:50%"></span> 🔥 ' + t('map.stove.house') + '</div>';
+                _mapLegendDiv = div;
+                refreshMapLegend();
                 return div;
             };
             legend.addTo(map);
