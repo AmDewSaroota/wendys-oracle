@@ -2997,7 +2997,10 @@
             try {
                 // Load last 180 days with pagination (research project spans old → eco phases)
                 const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
+                const MAX_RECORDS = 50000; // OOM safety cap
                 const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
+                // Free old data before fetching to reduce peak memory during auto-refresh
+                allDataWithPending = []; allData = [];
                 let allRecords = [];
                 let offset = 0;
                 const pageSize = 1000;
@@ -3010,18 +3013,16 @@
                         .range(offset, offset + pageSize - 1);
                     if (bErr) throw bErr;
                     if (!batch || !batch.length) break;
-                    allRecords = allRecords.concat(batch);
+                    allRecords.push(...batch); // push in-place instead of concat (avoids O(n²) peak memory)
                     if (batch.length < pageSize) break;
                     offset += pageSize;
+                    if (allRecords.length >= MAX_RECORDS) { console.warn('MAX_RECORDS cap reached:', allRecords.length); break; }
                 }
-                const error = null;
 
-                if (error) {
-                    throw error;
-                } else {
-                    allDataWithPending = allRecords || [];
-                }
-                allData = allDataWithPending.filter(d => d.status === 'approved');
+                allDataWithPending = allRecords;
+                // Avoid duplicating entire array when all records are already approved (common with mock data)
+                const hasPending = allDataWithPending.some(d => d.status !== 'approved');
+                allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
                 dataLoaded = true;
 
                 // Load house names from devices → subjects (use separate var to avoid overwriting admin-loaded devices)
