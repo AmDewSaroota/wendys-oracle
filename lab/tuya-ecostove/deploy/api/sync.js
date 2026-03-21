@@ -527,6 +527,7 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
       avg_pm25: avgOf(completed, 'avg_pm25'),
       max_pm25: pm25Maxes.length > 0 ? Math.max(...pm25Maxes) : null,
       min_pm25: pm25Mins.length > 0 ? Math.min(...pm25Mins) : null,
+      avg_pm10: avgOf(completed, 'avg_pm10'),
       avg_co2: avgOf(completed, 'avg_co2'),
       avg_temperature: avgOf(completed, 'avg_temperature'),
       avg_humidity: avgOf(completed, 'avg_humidity'),

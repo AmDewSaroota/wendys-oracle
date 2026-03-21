@@ -1034,6 +1034,8 @@
 
         let isAdmin = false, map, mapDeep, allData = [], volunteers = [], subjects = [], devices = [];
         let allDataWithPending = [];
+        let dailySummariesData = []; // rows from daily_summaries table
+        let fullDataLoaded = false;  // true after full 180-day raw data is loaded
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
         let volunteerNameMap = {}; // volunteer_id → full_name
         let countdownInterval = null;
@@ -1827,7 +1829,7 @@
         // Lightweight lang refresh for Basic page — no chart rebuild, no DB queries
         function refreshBasicLang() {
             // Update data range label
-            const range = getDataDateRange(allDataWithPending);
+            const range = getDataDateRange();
             const rangeEl = document.getElementById('basic-range-label');
             if (range && rangeEl) rangeEl.textContent = t('basic.range', range.from, range.to, range.days);
             // Update big number cards (stove labels)
@@ -2147,6 +2149,62 @@
             });
         }
 
+        // Build dailyAgg from daily_summaries table (fast path — no raw data needed)
+        // Maps: avg_pm25→pm25_value, avg_pm10→pm10_value, avg_co2→co2_value, avg_temperature→temperature, avg_humidity→humidity
+        function buildDailyAggFromSummaries(summaries) {
+            dailyAgg = {};
+            const fieldMap = {
+                pm25_value: { avg: 'avg_pm25', min: 'min_pm25', max: 'max_pm25' },
+                pm10_value: { avg: 'avg_pm10' },
+                co2_value:  { avg: 'avg_co2' },
+                temperature: { avg: 'avg_temperature' },
+                humidity:   { avg: 'avg_humidity' },
+            };
+            summaries.forEach(s => {
+                const day = s.summary_date;
+                const st = (s.stove_type === 'old' || s.stove_type === 'traditional') ? 'old' : 'eco';
+                const readings = s.total_readings || 0;
+                if (!readings || !day || !s.stove_type) return;
+
+                if (!dailyAgg[day]) dailyAgg[day] = {};
+                if (!dailyAgg[day][st]) {
+                    dailyAgg[day][st] = {};
+                    AGG_FIELDS.forEach(f => { dailyAgg[day][st][f] = { sum: 0, count: 0, min: Infinity, max: -Infinity }; });
+                }
+                const bucket = dailyAgg[day][st];
+                Object.entries(fieldMap).forEach(([field, cols]) => {
+                    const avgVal = s[cols.avg];
+                    if (avgVal != null) {
+                        bucket[field].sum += avgVal * readings;
+                        bucket[field].count += readings;
+                        if (cols.min != null && s[cols.min] != null) bucket[field].min = Math.min(bucket[field].min, s[cols.min]);
+                        if (cols.max != null && s[cols.max] != null) bucket[field].max = Math.max(bucket[field].max, s[cols.max]);
+                    }
+                });
+            });
+            // Merge recent raw data into dailyAgg for fields not in daily_summaries (co, hcho, tvoc, aqi)
+            const rawFields = ['co_value', 'tvoc_value', 'hcho_value', 'aqi'];
+            (allData || []).forEach(d => {
+                if (!d.recorded_at || !d.stove_type) return;
+                const day = d.recorded_at.slice(0, 10);
+                const st = (d.stove_type === 'old' || d.stove_type === 'traditional') ? 'old' : 'eco';
+                if (!dailyAgg[day]) dailyAgg[day] = {};
+                if (!dailyAgg[day][st]) {
+                    dailyAgg[day][st] = {};
+                    AGG_FIELDS.forEach(f => { dailyAgg[day][st][f] = { sum: 0, count: 0, min: Infinity, max: -Infinity }; });
+                }
+                rawFields.forEach(f => {
+                    const v = d[f];
+                    if (v != null) {
+                        dailyAgg[day][st][f].sum += v;
+                        dailyAgg[day][st][f].count++;
+                        if (v < dailyAgg[day][st][f].min) dailyAgg[day][st][f].min = v;
+                        if (v > dailyAgg[day][st][f].max) dailyAgg[day][st][f].max = v;
+                    }
+                });
+            });
+        }
+
         function getDailyAggSeries(stoveType, field) {
             const days = Object.keys(dailyAgg).sort();
             return days.map(day => {
@@ -2160,6 +2218,16 @@
                     count: bucket.count,
                 };
             }).filter(Boolean);
+        }
+
+        // Compute overall weighted average from dailyAgg for a stove type + field
+        function getOverallAvgFromDailyAgg(stoveType, field) {
+            let totalSum = 0, totalCount = 0;
+            Object.values(dailyAgg).forEach(dayData => {
+                const b = dayData[stoveType]?.[field];
+                if (b && b.count) { totalSum += b.sum; totalCount += b.count; }
+            });
+            return totalCount ? totalSum / totalCount : null;
         }
 
         function getDeviceName(d) {
@@ -2190,7 +2258,47 @@
 
             window.scrollTo(0, 0);
             if (view === 'basic') updateBasicView();
-            if (view === 'deep') updateDeepView();
+            if (view === 'deep') {
+                if (!fullDataLoaded) { loadFullData().then(() => updateDeepView()); }
+                else updateDeepView();
+            }
+        }
+
+        // Lazy load: fetch full 180-day raw data for Deep view
+        async function loadFullData() {
+            if (fullDataLoaded) return;
+            showLoading(t('loading.data'));
+            try {
+                const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
+                const MAX_RECORDS = 50000;
+                const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
+                let allRecords = [];
+                let offset = 0;
+                const pageSize = 1000;
+                while (true) {
+                    const { data: batch, error: bErr } = await supabaseClient
+                        .from('pollution_logs')
+                        .select(selectCols)
+                        .gte('recorded_at', cutoff)
+                        .order('recorded_at', { ascending: false })
+                        .range(offset, offset + pageSize - 1);
+                    if (bErr) throw bErr;
+                    if (!batch || !batch.length) break;
+                    allRecords.push(...batch);
+                    if (batch.length < pageSize) break;
+                    offset += pageSize;
+                    if (allRecords.length >= MAX_RECORDS) break;
+                }
+                allDataWithPending = allRecords;
+                const hasPending = allDataWithPending.some(d => d.status !== 'approved');
+                allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
+                computeDailyAggregates(); // rebuild from raw data (more accurate, all fields)
+                fullDataLoaded = true;
+            } catch (e) {
+                console.error('Error loading full data:', e);
+            } finally {
+                hideLoading();
+            }
         }
 
         function toggleMobileMenu() {
@@ -2225,17 +2333,27 @@
         let currentScenario = 'normal'; // 'normal' | 'no-eco' | 'eco-fail'
 
         function detectScenario() {
+            // Fast path: use dailyAgg weighted averages (covers full date range from daily_summaries)
+            if (!fullDataLoaded && Object.keys(dailyAgg).length) {
+                const ecoAvgPm = getOverallAvgFromDailyAgg('eco', 'pm25_value');
+                const oldAvgPm = getOverallAvgFromDailyAgg('old', 'pm25_value');
+                if (ecoAvgPm == null) return 'no-eco';
+                if (oldAvgPm == null || oldAvgPm === 0) return 'normal';
+                if (ecoAvgPm >= oldAvgPm) return 'eco-fail';
+                return 'normal';
+            }
+            // Full data path: use raw records with baseline subtraction
             const data = applyBaselineSubtraction(getFilteredData(allDataWithPending));
             const ecoData = data.filter(d => d.stove_type === 'eco');
             const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
-            if (ecoData.length === 0) return 'no-eco'; // no eco data yet
+            if (ecoData.length === 0) return 'no-eco';
 
             const ecoAvgPm = avg(ecoData, 'pm25_value');
             const oldAvgPm = avg(oldData, 'pm25_value');
 
-            if (ecoAvgPm == null) return 'no-eco'; // eco data but no pm25
-            if (oldAvgPm == null || oldAvgPm === 0) return 'normal'; // eco exists, old missing → show eco
+            if (ecoAvgPm == null) return 'no-eco';
+            if (oldAvgPm == null || oldAvgPm === 0) return 'normal';
             if (ecoAvgPm >= oldAvgPm) return 'eco-fail';
             return 'normal';
         }
@@ -2261,14 +2379,23 @@
         }
 
         function updateHeroContent() {
-            const data = applyBaselineSubtraction(getFilteredData(allDataWithPending));
-            const ecoData = data.filter(d => d.stove_type === 'eco');
-            const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
-            const ecoAvgPm = avg(ecoData, 'pm25_value');
-            const oldAvgPm = avg(oldData, 'pm25_value');
-            const range = getDataDateRange(allDataWithPending);
-            const sensorIds = new Set(data.map(d => d.tuya_device_id).filter(Boolean));
-            const metaText = (range ? 'ข้อมูล ' + range.days + ' วัน' : '') + ' · ' + sensorIds.size + ' ครัวเรือน';
+            let ecoAvgPm, oldAvgPm, range, sensorCount;
+            if (!fullDataLoaded && Object.keys(dailyAgg).length) {
+                // Fast path: compute from dailyAgg
+                ecoAvgPm = getOverallAvgFromDailyAgg('eco', 'pm25_value');
+                oldAvgPm = getOverallAvgFromDailyAgg('old', 'pm25_value');
+                range = getDataDateRange();
+                sensorCount = new Set(dailySummariesData.map(d => d.device_id).filter(Boolean)).size;
+            } else {
+                const data = applyBaselineSubtraction(getFilteredData(allDataWithPending));
+                const ecoData = data.filter(d => d.stove_type === 'eco');
+                const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+                ecoAvgPm = avg(ecoData, 'pm25_value');
+                oldAvgPm = avg(oldData, 'pm25_value');
+                range = getDataDateRange();
+                sensorCount = new Set(data.map(d => d.tuya_device_id).filter(Boolean)).size;
+            }
+            const metaText = (range ? 'ข้อมูล ' + range.days + ' วัน' : '') + ' · ' + sensorCount + ' ครัวเรือน';
 
             // Always update meta text for all hero variants
             ['hero-meta-normal', 'hero-meta-noeco', 'hero-meta-fail'].forEach(id => {
@@ -2992,78 +3119,63 @@
 
         // ==================== Data Loading ====================
         let dataLoaded = false;
+
+        // Fast path: daily_summaries + 7-day raw + metadata → Basic renders in <2s
         async function loadData(showSpinner, _retry) {
             if (showSpinner) showLoading(t('loading.data'));
             try {
-                // Load last 180 days with pagination (research project spans old → eco phases)
-                const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
-                const MAX_RECORDS = 50000; // OOM safety cap
+                const recentCutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
                 const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
-                // Free old data before fetching to reduce peak memory during auto-refresh
-                allDataWithPending = []; allData = [];
-                let allRecords = [];
-                let offset = 0;
-                const pageSize = 1000;
-                while (true) {
-                    const { data: batch, error: bErr } = await supabaseClient
-                        .from('pollution_logs')
-                        .select(selectCols)
-                        .gte('recorded_at', cutoff)
-                        .order('recorded_at', { ascending: false })
-                        .range(offset, offset + pageSize - 1);
-                    if (bErr) throw bErr;
-                    if (!batch || !batch.length) break;
-                    allRecords.push(...batch); // push in-place instead of concat (avoids O(n²) peak memory)
-                    if (batch.length < pageSize) break;
-                    offset += pageSize;
-                    if (allRecords.length >= MAX_RECORDS) { console.warn('MAX_RECORDS cap reached:', allRecords.length); break; }
-                }
 
-                allDataWithPending = allRecords;
-                // Avoid duplicating entire array when all records are already approved (common with mock data)
-                const hasPending = allDataWithPending.some(d => d.status !== 'approved');
-                allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
+                // Fetch daily_summaries + recent raw data + metadata in parallel
+                const [sumRes, rawRes, devRes, volRes, projRes, spRes, sessRes] = await Promise.all([
+                    supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }),
+                    supabaseClient.from('pollution_logs').select(selectCols).gte('recorded_at', recentCutoff).order('recorded_at', { ascending: false }).limit(5000),
+                    supabaseClient.from('devices').select('tuya_device_id, subject_id, subjects(full_name)'),
+                    supabaseClient.from('volunteers').select('id, full_name'),
+                    supabaseClient.from('projects').select('*').eq('status', 'active'),
+                    supabaseClient.from('subject_projects').select('*'),
+                    supabaseClient.from('sessions').select('id, baseline_avg_pm25, baseline_avg_co2, baseline_avg_temperature, baseline_avg_humidity, baseline_ended_at').not('baseline_avg_pm25', 'is', null),
+                ]);
+
+                // Daily summaries (for charts + big numbers)
+                dailySummariesData = sumRes.data || [];
+
+                // Raw data: keep full dataset if already loaded, otherwise use 7-day data
+                if (!fullDataLoaded) {
+                    allDataWithPending = rawRes.data || [];
+                    const hasPending = allDataWithPending.some(d => d.status !== 'approved');
+                    allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
+                }
                 dataLoaded = true;
 
-                // Load house names from devices → subjects (use separate var to avoid overwriting admin-loaded devices)
-                try {
-                    const { data: devs } = await supabaseClient.from('devices').select('tuya_device_id, subject_id, subjects(full_name)');
-                    if (devs) devs.forEach(d => {
-                        if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name;
-                        if (d.tuya_device_id && d.subject_id) DEVICE_HOUSE[d.tuya_device_id] = d.subject_id;
-                    });
-                    if (!isAdmin) devices = devs || []; // only overwrite if not in admin mode
-                } catch (_) {}
+                // Metadata
+                if (devRes.data) devRes.data.forEach(d => {
+                    if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name;
+                    if (d.tuya_device_id && d.subject_id) DEVICE_HOUSE[d.tuya_device_id] = d.subject_id;
+                });
+                if (!isAdmin) devices = devRes.data || [];
+                if (volRes.data) volRes.data.forEach(v => { volunteerNameMap[v.id] = v.full_name; });
+                projects = projRes.data || [];
+                subjectProjects = spRes.data || [];
+                populateProjectFilters();
+                sessionBaselines = {};
+                if (sessRes.data) sessRes.data.forEach(s => { sessionBaselines[s.id] = s; });
 
-                // Load volunteer name map (for manual records display)
-                try {
-                    const { data: vols } = await supabaseClient.from('volunteers').select('id, full_name');
-                    if (vols) vols.forEach(v => { volunteerNameMap[v.id] = v.full_name; });
-                } catch (_) {}
+                // Build dailyAgg
+                if (fullDataLoaded) {
+                    computeDailyAggregates(); // full raw data available
+                } else if (dailySummariesData.length) {
+                    buildDailyAggFromSummaries(dailySummariesData);
+                } else {
+                    computeDailyAggregates(); // fallback
+                }
 
-                // Load projects + subject-project links
-                try {
-                    const [pRes, spRes] = await Promise.all([
-                        supabaseClient.from('projects').select('*').eq('status', 'active'),
-                        supabaseClient.from('subject_projects').select('*'),
-                    ]);
-                    projects = pRes.data || [];
-                    subjectProjects = spRes.data || [];
-                    populateProjectFilters();
-                } catch (_) {}
-
-                // Load baseline data from sessions
-                try {
-                    const { data: sessData } = await supabaseClient.from('sessions')
-                        .select('id, baseline_avg_pm25, baseline_avg_co2, baseline_avg_temperature, baseline_avg_humidity, baseline_ended_at')
-                        .not('baseline_avg_pm25', 'is', null);
-                    sessionBaselines = {};
-                    if (sessData) sessData.forEach(s => { sessionBaselines[s.id] = s; });
-                } catch (_) {}
-
-                computeDailyAggregates();
                 if (currentView === 'basic') updateBasicView();
-                else if (currentView === 'deep') updateDeepView();
+                else if (currentView === 'deep') {
+                    if (!fullDataLoaded) { await loadFullData(); }
+                    updateDeepView();
+                }
             } catch (e) {
                 console.error('Error loading data:', e);
                 const msg = e?.message || '';
@@ -3117,8 +3229,19 @@
 
         // ==================== BASIC VIEW ====================
         function getDataDateRange(data) {
-            if (!data || !data.length) return null;
-            const dates = data.map(d => d.recorded_at).filter(Boolean).sort();
+            // Fast path: use daily_summaries dates (covers full project range)
+            if (!data && !fullDataLoaded && dailySummariesData.length) {
+                const dates = dailySummariesData.map(d => d.summary_date).filter(Boolean).sort();
+                if (!dates.length) return null;
+                const from = fmtDateDMY(dates[0] + 'T00:00:00');
+                const to = fmtDateDMY(dates[dates.length - 1] + 'T00:00:00');
+                const days = Math.ceil((new Date(dates[dates.length - 1]) - new Date(dates[0])) / 86400000);
+                return { from, to, days };
+            }
+            // Full data path or explicit data array passed
+            const src = data || allDataWithPending;
+            if (!src || !src.length) return null;
+            const dates = src.map(d => d.recorded_at).filter(Boolean).sort();
             if (!dates.length) return null;
             const from = fmtDateDMY(dates[0]);
             const to = fmtDateDMY(dates[dates.length - 1]);
@@ -3129,7 +3252,7 @@
             // Detect and apply scenario
             updateScenario();
             // Show data date range on basic view
-            const range = getDataDateRange(allDataWithPending);
+            const range = getDataDateRange();
             const rangeEl = document.getElementById('basic-range-label');
             if (range) {
                 const label = t('basic.range', range.from, range.to, range.days);
@@ -3163,18 +3286,37 @@
         }
 
         function updateBigNumbers() {
-            const filteredPending = applyBaselineSubtraction(getFilteredData(allDataWithPending));
-            const ecoData = filteredPending.filter(d => d.stove_type === 'eco');
-            const oldData = filteredPending.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+            let ecoAvgPm, oldAvgPm, ecoAvgCo2, oldAvgCo2, ecoAvgCo, oldAvgCo, avgTemp, avgHum;
 
-            const ecoAvgPm = avg(ecoData, 'pm25_value');
-            const oldAvgPm = avg(oldData, 'pm25_value');
-            const ecoAvgCo2 = avg(ecoData, 'co2_value');
-            const oldAvgCo2 = avg(oldData, 'co2_value');
-            const ecoAvgCo = avg(ecoData.filter(d => d.co_value != null), 'co_value');
-            const oldAvgCo = avg(oldData.filter(d => d.co_value != null), 'co_value');
-            const avgTemp = avg(filteredPending, 'temperature');
-            const avgHum = avg(filteredPending, 'humidity');
+            if (!fullDataLoaded && Object.keys(dailyAgg).length) {
+                // Fast path: compute from dailyAgg (covers full date range)
+                ecoAvgPm = getOverallAvgFromDailyAgg('eco', 'pm25_value');
+                oldAvgPm = getOverallAvgFromDailyAgg('old', 'pm25_value');
+                ecoAvgCo2 = getOverallAvgFromDailyAgg('eco', 'co2_value');
+                oldAvgCo2 = getOverallAvgFromDailyAgg('old', 'co2_value');
+                ecoAvgCo = getOverallAvgFromDailyAgg('eco', 'co_value');
+                oldAvgCo = getOverallAvgFromDailyAgg('old', 'co_value');
+                // Temp/humidity: weighted average across both stove types
+                const ecoTemp = getOverallAvgFromDailyAgg('eco', 'temperature');
+                const oldTemp = getOverallAvgFromDailyAgg('old', 'temperature');
+                avgTemp = ecoTemp != null && oldTemp != null ? (ecoTemp + oldTemp) / 2 : (ecoTemp || oldTemp);
+                const ecoHum = getOverallAvgFromDailyAgg('eco', 'humidity');
+                const oldHum = getOverallAvgFromDailyAgg('old', 'humidity');
+                avgHum = ecoHum != null && oldHum != null ? (ecoHum + oldHum) / 2 : (ecoHum || oldHum);
+            } else {
+                // Full data path: raw records with baseline subtraction
+                const filteredPending = applyBaselineSubtraction(getFilteredData(allDataWithPending));
+                const ecoData = filteredPending.filter(d => d.stove_type === 'eco');
+                const oldData = filteredPending.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
+                ecoAvgPm = avg(ecoData, 'pm25_value');
+                oldAvgPm = avg(oldData, 'pm25_value');
+                ecoAvgCo2 = avg(ecoData, 'co2_value');
+                oldAvgCo2 = avg(oldData, 'co2_value');
+                ecoAvgCo = avg(ecoData.filter(d => d.co_value != null), 'co_value');
+                oldAvgCo = avg(oldData.filter(d => d.co_value != null), 'co_value');
+                avgTemp = avg(filteredPending, 'temperature');
+                avgHum = avg(filteredPending, 'humidity');
+            }
 
             // Helper to render scenario-aware card content
             function renderCard(elId, detailId, ecoVal, oldVal, unit, fmt) {
