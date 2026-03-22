@@ -406,10 +406,10 @@
                         <option value="all" data-i18n="project.all">ทุกโครงการ</option>
                     </select>
                     <div id="deep-range-buttons" class="flex gap-1">
-                        <button onclick="setQuickRange(7)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">7 วัน</button>
-                        <button onclick="setQuickRange(30)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">30 วัน</button>
-                        <button onclick="setQuickRange(60)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50">60 วัน</button>
-                        <button onclick="setQuickRange(0)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600">ทั้งหมด</button>
+                        <button onclick="setQuickRange(7)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50" data-i18n="deep.range.7d">7 วัน</button>
+                        <button onclick="setQuickRange(30)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50" data-i18n="deep.range.30d">30 วัน</button>
+                        <button onclick="setQuickRange(60)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50" data-i18n="deep.range.60d">60 วัน</button>
+                        <button onclick="setQuickRange(0)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600" data-i18n="deep.range.all">ทั้งหมด</button>
                     </div>
                     <div class="flex items-center gap-1.5 text-sm text-gray-500">
                         <span class="text-[10px]">📅</span>
@@ -423,13 +423,13 @@
             <!-- Research Stat Cards — Row 1 -->
             <div class="flex items-center gap-3 mb-1">
                 <p id="deep-range-label" class="text-[11px] text-slate-400"></p>
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
-                <span class="info-btn text-emerald-600" onclick="showInfo(this,'คำศัพท์ (Glossary)','<b>Ambient</b> = ค่าแวดล้อม — ค่าเฉลี่ย 10 นาทีแรกก่อนจุดเตา ใช้เป็นค่าพื้นหลังสำหรับหักออก\n\n<b>Benchmark</b> = ค่าเปรียบเทียบ — ค่าจากเตาดั้งเดิม ใช้เป็นฐานเปรียบเทียบว่าเตาชีวมวลลดมลพิษได้เท่าไหร่\n\n<b>Net (สุทธิ)</b> = ค่าที่วัดได้ − Ambient = มลพิษจากเตาจริงๆ')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200" data-i18n="deep.ambient.badge">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
+                <span class="info-btn text-emerald-600" onclick="showInfo(this,t('deep.glossary.title'),t('deep.glossary.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
             </div>
             <!-- Research Stat Cards — Row 1: Pollutants -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
-                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5 <span class="info-btn" onclick="showInfo(this,t('deep.info.pm25.title'),t('deep.info.pm25.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <h3 id="r-stat-pm25" class="text-2xl font-bold text-navy mt-1">--</h3>
                     <div id="r-stat-pm25-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                     <div id="r-stat-pm25-badge" class="mt-0.5"></div>
@@ -445,7 +445,7 @@
                     <div id="r-stat-co2-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-500">
-                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO <span class="info-btn" onclick="showInfo(this,t('deep.info.co.title'),t('deep.info.co.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <h3 id="r-stat-co" class="text-2xl font-bold text-navy mt-1">--</h3>
                     <div id="r-stat-co-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
@@ -468,7 +468,7 @@
                     <div id="r-stat-tvoc-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
-                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider" data-i18n="deep.stat.temp.hum">🌡 อุณหภูมิ / 💧 ความชื้น</p>
                     <div class="flex gap-2 mt-1"><span id="r-stat-temp" class="text-xl font-bold text-gray-800">--°C</span><span class="text-gray-300">/</span><span id="r-stat-humidity" class="text-xl font-bold text-gray-800">--%</span></div>
                     <div id="r-stat-env-detail" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
@@ -476,38 +476,38 @@
 
             <!-- STACKED BAR: PM2.5 Ambient Decomposition -->
             <div class="card-styled p-6 rounded-[2.5rem]">
-                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม <span class="info-btn" onclick="showInfo(this,'อ่านกราฟนี้อย่างไร?','แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient = ค่าฝุ่นแวดล้อมก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเตาชีวมวลควรมี emission ต่ำกว่าเตาดั้งเดิม')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
-                <p class="text-[10px] text-gray-400 mb-4">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <h4 class="font-bold text-sm text-gray-800 mb-1"><span data-i18n="deep.stacked.title">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</span> <span class="info-btn" onclick="showInfo(this,t('deep.info.stacked.title'),t('deep.info.stacked.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
+                <p class="text-[10px] text-gray-400 mb-4" data-i18n="deep.stacked.subtitle">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
                 <div id="stacked-bar-container" class="space-y-4"></div>
                 <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
-                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient (แวดล้อม)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span><span data-i18n="deep.stacked.legend.ambient">Ambient (แวดล้อม)</span></span>
                     <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (<span data-i18n="compare.old">เตาดั้งเดิม</span>)</span>
                     <span id="stacked-legend-eco"><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (<span data-i18n="compare.eco">เตาชีวมวล</span>)</span>
                 </div>
             </div>
 
             <!-- DAILY AVG CHARTS — 6 charts grouped by type -->
-            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.particulate">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
             </div>
-            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.carbon">ก๊าซคาร์บอน (Carbon Gases)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
             </div>
-            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
+            <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.volatile">สารระเหย (Volatile Compounds)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
             </div>
 
             <!-- Drill-down panel (hidden by default) -->
             <div id="drilldown-panel" class="hidden space-y-4">
                 <div class="flex items-center justify-between">
                     <h4 class="font-bold text-lg text-navy" id="drilldown-title">📅 รายละเอียดวันที่ --</h4>
-                    <button onclick="clearDrilldown()" class="text-sm text-slate-400 hover:text-slate-600 font-bold">✕ ปิด</button>
+                    <button onclick="clearDrilldown()" class="text-sm text-slate-400 hover:text-slate-600 font-bold" data-i18n="deep.drilldown.close">✕ ปิด</button>
                 </div>
                 <div id="drilldown-legend" class="flex flex-wrap gap-2 mb-4"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="drilldown-charts-container"></div>
@@ -515,26 +515,26 @@
 
             <!-- Comparison Table: Gross / Ambient / Net -->
             <div class="card-styled p-6 rounded-[2.5rem]">
-                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
+                <h4 class="font-bold text-sm text-gray-800 mb-3"><span data-i18n="deep.compare.title">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net)</span> <span class="info-btn" onclick="showInfo(this,t('deep.info.compare.title'),t('deep.info.compare.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
                 <div class="overflow-x-auto">
                     <table class="w-full text-[11px]" id="comparison-table">
                         <thead id="comparison-table-head"></thead>
                         <tbody id="comparison-table-body"></tbody>
                     </table>
-                    <p class="text-[9px] text-gray-400 mt-2">Mean ± SD · Net = Gross − Ambient (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
+                    <p class="text-[9px] text-gray-400 mt-2" data-i18n="deep.compare.footnote">Mean ± SD · Net = Gross − Ambient (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
                 </div>
             </div>
 
             <!-- Methodology Panel -->
             <div class="methodology-panel p-5">
                 <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('meth-body').classList.toggle('open'); document.getElementById('meth-arrow').style.transform = document.getElementById('meth-body').classList.contains('open') ? 'rotate(180deg)' : '';">
-                    <h4 class="font-bold text-sm text-gray-700">📋 วิธีวิเคราะห์ข้อมูล (Methodology)</h4>
+                    <h4 class="font-bold text-sm text-gray-700" data-i18n="deep.meth.title">📋 วิธีวิเคราะห์ข้อมูล (Methodology)</h4>
                     <span id="meth-arrow" class="text-gray-400 transition-transform">▼</span>
                 </div>
                 <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
-                    <div><p class="font-bold text-gray-700 mb-1">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li>เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)</li><li>ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li>10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
-                    <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าแวดล้อม (Ambient Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ค่าแวดล้อม (Ambient)</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − Ambient ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง Ambient ไม่นำมาวิเคราะห์</li></ul></div>
-                    <div><p class="font-bold text-gray-700 mb-1">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li>เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li>Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li>CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.1.title">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n="deep.meth.1.sensor">เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)</li><li data-i18n="deep.meth.1.freq">ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li data-i18n="deep.meth.1.scope">10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.2.title">2. การหักค่าแวดล้อม (Ambient Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n-html="deep.meth.2.baseline">ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ค่าแวดล้อม (Ambient)</li><li data-i18n="deep.meth.2.net">ค่าสุทธิ (Net) = ค่าที่วัดได้ − Ambient ของ session นั้น</li><li data-i18n="deep.meth.2.note">ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง Ambient ไม่นำมาวิเคราะห์</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.3.title">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n="deep.meth.3.a">เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li data-i18n="deep.meth.3.b">Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li data-i18n="deep.meth.3.c">CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ</li></ul></div>
                 </div>
             </div>
 
@@ -902,6 +902,10 @@
                             </thead>
                             <tbody id="all-data-table-body" class="divide-y"></tbody>
                         </table>
+                    </div>
+                    <div id="data-load-more-wrap" class="hidden text-center py-4">
+                        <button onclick="loadMoreDataRows()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-2.5 rounded-xl font-bold text-[13px] transition-all">ดูเพิ่ม 100 รายการ ▼</button>
+                        <p id="data-showing-count" class="text-xs text-slate-400 mt-1.5"></p>
                     </div>
                 </div>
 
@@ -1802,6 +1806,71 @@
             'action.export.csv': { th: 'Export CSV', en: 'Export CSV' },
             'action.export.daily': { th: 'Export สรุปรายวัน', en: 'Export Daily Summary' },
             'action.export.compare': { th: 'Export เปรียบเทียบ', en: 'Export Comparison' },
+            // Deep view i18n
+            'deep.ambient.badge': { th: '✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session', en: '✓ Ambient-subtracted · Net values after subtracting first 10 min ambient per session' },
+            'deep.glossary.title': { th: 'คำศัพท์ (Glossary)', en: 'Glossary' },
+            'deep.glossary.body': { th: '<b>Ambient</b> = ค่าแวดล้อม — ค่าเฉลี่ย 10 นาทีแรกก่อนจุดเตา ใช้เป็นค่าพื้นหลังสำหรับหักออก\n\n<b>Benchmark</b> = ค่าเปรียบเทียบ — ค่าจากเตาดั้งเดิม ใช้เป็นฐานเปรียบเทียบว่าเตาชีวมวลลดมลพิษได้เท่าไหร่\n\n<b>Net (สุทธิ)</b> = ค่าที่วัดได้ − Ambient = มลพิษจากเตาจริงๆ', en: '<b>Ambient</b> = environmental baseline — avg of first 10 min before cooking, subtracted from readings\n\n<b>Benchmark</b> = reference value from traditional stove, used to compare biomass stove reduction\n\n<b>Net</b> = measured value − Ambient = actual stove pollution' },
+            'deep.stat.temp.hum': { th: '🌡 อุณหภูมิ / 💧 ความชื้น', en: '🌡 Temperature / 💧 Humidity' },
+            'deep.stacked.title': { th: 'PM2.5: องค์ประกอบมลพิษขณะหุงต้ม', en: 'PM2.5: Pollution Composition During Cooking' },
+            'deep.stacked.subtitle': { th: 'แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)', en: 'Separating Ambient from Stove Emission' },
+            'deep.stacked.legend.ambient': { th: 'Ambient (แวดล้อม)', en: 'Ambient (baseline)' },
+            'deep.info.stacked.title': { th: 'อ่านกราฟนี้อย่างไร?', en: 'How to read this chart?' },
+            'deep.info.stacked.body': { th: 'แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient = ค่าฝุ่นแวดล้อมก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเตาชีวมวลควรมี emission ต่ำกว่าเตาดั้งเดิม', en: 'Decomposes measured PM2.5 into 2 parts:\n• Ambient = background particulate before cooking\n• Stove emission = actual pollution from the stove\n\nBiomass stove should have lower emission than traditional' },
+            'deep.cat.particulate': { th: 'ฝุ่นละออง (Particulate Matter)', en: 'Particulate Matter' },
+            'deep.cat.carbon': { th: 'ก๊าซคาร์บอน (Carbon Gases)', en: 'Carbon Gases' },
+            'deep.cat.volatile': { th: 'สารระเหย (Volatile Compounds)', en: 'Volatile Compounds' },
+            'deep.chart.subtitle': { th: 'หลังหัก Ambient · ขณะหุงต้ม', en: 'Ambient-subtracted · During cooking' },
+            'deep.compare.title': { th: 'ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net)', en: 'Comparison Table — Gross / Ambient / Net' },
+            'deep.compare.footnote': { th: 'Mean ± SD · Net = Gross − Ambient (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)', en: 'Mean ± SD · Net = Gross − Ambient (first 10 min avg per session · per stove type)' },
+            'deep.compare.pollutant': { th: 'สารมลพิษ', en: 'Pollutant' },
+            'deep.compare.gross': { th: 'ค่าดิบ (Gross)', en: 'Gross' },
+            'deep.compare.net': { th: 'ค่าสุทธิ (Net)', en: 'Net' },
+            'deep.compare.decrease': { th: 'ลดลง', en: 'Reduction' },
+            'deep.compare.change': { th: 'เปลี่ยนแปลง', en: 'Change' },
+            'deep.compare.old.short': { th: '🪵 เก่า', en: '🪵 Old' },
+            'deep.compare.eco.short': { th: '✨ ใหม่', en: '✨ New' },
+            'deep.info.compare.title': { th: 'อ่านตารางนี้อย่างไร?', en: 'How to read this table?' },
+            'deep.info.compare.body': { th: '• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน', en: '• Gross = raw sensor reading during cooking\n• Ambient = background air before cooking (avg first 10 min)\n• Net = Gross − Ambient = actual stove pollution\n\nAmbient calculated per stove type since data is from different days' },
+            'deep.meth.title': { th: '📋 วิธีวิเคราะห์ข้อมูล (Methodology)', en: '📋 Data Analysis Methodology' },
+            'deep.meth.1.title': { th: '1. การเก็บข้อมูล', en: '1. Data Collection' },
+            'deep.meth.1.sensor': { th: 'เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)', en: 'Sensor: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)' },
+            'deep.meth.1.freq': { th: 'ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)', en: 'Frequency: every 5 min during cooking (~2 hrs/session)' },
+            'deep.meth.1.scope': { th: '10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล', en: '10 households · 2 sessions/day · traditional + biomass stoves' },
+            'deep.meth.2.title': { th: '2. การหักค่าแวดล้อม (Ambient Subtraction)', en: '2. Ambient Subtraction' },
+            'deep.meth.2.baseline': { th: 'ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ค่าแวดล้อม (Ambient)', en: 'Average of <b>first 10 minutes</b> per session = Ambient baseline' },
+            'deep.meth.2.net': { th: 'ค่าสุทธิ (Net) = ค่าที่วัดได้ − Ambient ของ session นั้น', en: 'Net = measured value − session Ambient' },
+            'deep.meth.2.note': { th: 'ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง Ambient ไม่นำมาวิเคราะห์', en: 'Negative values clamped to 0 · Ambient-phase readings excluded' },
+            'deep.meth.3.title': { th: '3. ข้อจำกัด', en: '3. Limitations' },
+            'deep.meth.3.a': { th: 'เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)', en: 'Data collected at different times (not a paired design)' },
+            'deep.meth.3.b': { th: 'Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method', en: 'Semiconductor sensors have higher variance than gravimetric methods' },
+            'deep.meth.3.c': { th: 'CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ', en: 'CO and TVOC manually recorded — not from automatic sensors' },
+            'deep.range.7d': { th: '7 วัน', en: '7 days' },
+            'deep.range.30d': { th: '30 วัน', en: '30 days' },
+            'deep.range.60d': { th: '60 วัน', en: '60 days' },
+            'deep.range.all': { th: 'ทั้งหมด', en: 'All' },
+            'deep.env.temp': { th: '🌡 ใหม่ {0}°C / เก่า {1}°C', en: '🌡 New {0}°C / Old {1}°C' },
+            'deep.env.hum': { th: '💧 ใหม่ {0}% / เก่า {1}%', en: '💧 New {0}% / Old {1}%' },
+            'deep.env.default': { th: 'สภาพแวดล้อมขณะเก็บข้อมูล', en: 'Environmental conditions during data collection' },
+            'deep.drilldown.title': { th: '📅 รายละเอียดวันที่ {0}', en: '📅 Details for {0}' },
+            'deep.drilldown.close': { th: '✕ ปิด', en: '✕ Close' },
+            'deep.info.pm25.title': { th: 'PM2.5 คืออะไร?', en: 'What is PM2.5?' },
+            'deep.info.pm25.body': { th: 'ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³', en: 'Fine particles smaller than 2.5 microns — can reach deep into lungs. Key indicator of biomass combustion pollution.\n\nWHO Standards:\n• IT-1: 35 µg/m³ (24hr avg)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³' },
+            'deep.info.co.title': { th: 'CO คืออะไร?', en: 'What is CO?' },
+            'deep.info.co.body': { th: 'คาร์บอนมอนอกไซด์ — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)', en: 'Carbon monoxide — toxic gas from incomplete combustion, colorless and odorless.\n\nSafe level: ≤ 9 ppm (8hr avg, WHO)' },
+            'hero.meta': { th: 'ข้อมูล {0} วัน · {1} ครัวเรือน', en: '{0} days · {1} households' },
+            'map.legend.title': { th: 'สัญลักษณ์', en: 'Legend' },
+            'deep.stacked.saved': { th: '↓ ลดได้ {0} µg/m³ ({1}%)', en: '↓ Reduced {0} µg/m³ ({1}%)' },
+            'deep.stacked.noeco': { th: '⏳ ยังไม่มีข้อมูลเตาชีวมวล — จะแสดงเมื่อเริ่มระยะที่ 2', en: '⏳ No biomass stove data yet — will show when phase 2 begins' },
+            // Deep map
+            'map.deep.legend.title': { th: 'PM2.5 สุทธิ (µg/m³)', en: 'PM2.5 Net (µg/m³)' },
+            'map.deep.excellent': { th: '≤15 ดีมาก', en: '≤15 Excellent' },
+            'map.deep.good': { th: '≤25 ดี', en: '≤25 Good' },
+            'map.deep.moderate': { th: '≤37.5 ปานกลาง', en: '≤37.5 Moderate' },
+            'map.deep.unhealthy': { th: '≤75 มีผลต่อสุขภาพ', en: '≤75 Unhealthy' },
+            'map.deep.hazardous': { th: '>75 อันตราย', en: '>75 Hazardous' },
+            'map.deep.nodata': { th: 'ไม่มีข้อมูล', en: 'No data' },
+            'map.deep.nosensor': { th: 'ไม่มีเซนเซอร์', en: 'No sensor' },
+            'map.sessions': { th: 'จำนวน session', en: 'Sessions' },
         };
 
         function t(key, ...args) {
@@ -1815,6 +1884,7 @@
             currentLang = currentLang === 'th' ? 'en' : 'th';
             localStorage.setItem('biomass_stove_lang', currentLang);
             applyLang();
+            refreshMapLang(); // always refresh map text immediately
             if (currentView === 'basic') refreshBasicLang();
             else if (currentView === 'deep') updateDeepView();
             if (isAdmin) {
@@ -1828,24 +1898,22 @@
 
         // Lightweight lang refresh for Basic page — no chart rebuild, no DB queries
         function refreshBasicLang() {
-            // Update data range label
-            const range = getDataDateRange();
-            const rangeEl = document.getElementById('basic-range-label');
-            if (range && rangeEl) rangeEl.textContent = t('basic.range', range.from, range.to, range.days);
-            // Update big number cards (stove labels)
-            updateBigNumbers();
-            // Update chart legends (just relabel, no rebuild)
-            Object.values(basicCharts).forEach(chart => {
-                if (chart.data.datasets[0]) chart.data.datasets[0].label = t('chart.old');
-                if (chart.data.datasets[1]) chart.data.datasets[1].label = t('compare.eco');
-                chart.update('none'); // 'none' = skip animation
-            });
-            // Update sensor table
-            updateLatestReadings();
-            // Update map text
-            refreshMapLang();
-            // Update activity feed
-            updateActivityFeed();
+            try {
+                const range = getDataDateRange();
+                const rangeEl = document.getElementById('basic-range-label');
+                if (range && rangeEl) rangeEl.textContent = t('basic.range', range.from, range.to, range.days);
+                updateBigNumbers();
+                Object.values(basicCharts).forEach(chart => {
+                    if (chart.data.datasets[0]) chart.data.datasets[0].label = t('chart.old');
+                    if (chart.data.datasets[1]) chart.data.datasets[1].label = t('compare.eco');
+                    chart.update('none');
+                });
+                updateLatestReadings();
+                refreshMapLang();
+                updateActivityFeed();
+            } catch (e) {
+                console.error('refreshBasicLang error:', e);
+            }
         }
 
         // Translate known session note patterns for EN display
@@ -2005,6 +2073,16 @@
             return { color: 'bg-purple-100 text-purple-700', label: t('aqi.level.hazardous'), level: 201 };
         }
 
+        function pm25HexColor(pm25) {
+            if (pm25 == null) return '#94a3b8'; // slate (no data)
+            if (pm25 <= 15) return '#06b6d4';   // cyan (excellent)
+            if (pm25 <= 25) return '#10b981';   // emerald (good)
+            if (pm25 <= 37.5) return '#eab308'; // yellow (moderate)
+            if (pm25 <= 75) return '#f97316';   // orange (unhealthy)
+            if (pm25 <= 150) return '#ef4444';  // red (very unhealthy)
+            return '#a855f7';                    // purple (hazardous)
+        }
+
         function pm25AqiBadge(pm25) {
             const info = getPm25AqiLevel(pm25);
             return '<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold ' + info.color + '">' + info.label + '</span>';
@@ -2153,12 +2231,13 @@
         // Maps: avg_pm25→pm25_value, avg_pm10→pm10_value, avg_co2→co2_value, avg_temperature→temperature, avg_humidity→humidity
         function buildDailyAggFromSummaries(summaries) {
             dailyAgg = {};
+            // Prefer adjusted (baseline-subtracted) averages, fallback to raw averages
             const fieldMap = {
-                pm25_value: { avg: 'avg_pm25', min: 'min_pm25', max: 'max_pm25' },
+                pm25_value: { avg: 'adjusted_avg_pm25', fallbackAvg: 'avg_pm25', min: 'min_pm25', max: 'max_pm25' },
                 pm10_value: { avg: 'avg_pm10' },
-                co2_value:  { avg: 'avg_co2' },
-                temperature: { avg: 'avg_temperature' },
-                humidity:   { avg: 'avg_humidity' },
+                co2_value:  { avg: 'adjusted_avg_co2', fallbackAvg: 'avg_co2' },
+                temperature: { avg: 'adjusted_avg_temperature', fallbackAvg: 'avg_temperature' },
+                humidity:   { avg: 'adjusted_avg_humidity', fallbackAvg: 'avg_humidity' },
             };
             summaries.forEach(s => {
                 const day = s.summary_date;
@@ -2173,7 +2252,7 @@
                 }
                 const bucket = dailyAgg[day][st];
                 Object.entries(fieldMap).forEach(([field, cols]) => {
-                    const avgVal = s[cols.avg];
+                    const avgVal = s[cols.avg] != null ? s[cols.avg] : (cols.fallbackAvg ? s[cols.fallbackAvg] : null);
                     if (avgVal != null) {
                         bucket[field].sum += avgVal * readings;
                         bucket[field].count += readings;
@@ -2257,7 +2336,11 @@
             }
 
             window.scrollTo(0, 0);
-            if (view === 'basic') updateBasicView();
+            if (view === 'basic') {
+                updateBasicView();
+                // Resume auto-refresh countdown when returning to Basic
+                countdownSeconds = REFRESH_INTERVAL_SEC;
+            }
             if (view === 'deep') {
                 if (!fullDataLoaded) { loadFullData().then(() => updateDeepView()); }
                 else updateDeepView();
@@ -2265,40 +2348,50 @@
         }
 
         // Lazy load: fetch full 180-day raw data for Deep view
-        async function loadFullData() {
-            if (fullDataLoaded) return;
-            showLoading(t('loading.data'));
-            try {
-                const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
-                const MAX_RECORDS = 50000;
-                const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
-                let allRecords = [];
-                let offset = 0;
-                const pageSize = 1000;
-                while (true) {
-                    const { data: batch, error: bErr } = await supabaseClient
-                        .from('pollution_logs')
-                        .select(selectCols)
-                        .gte('recorded_at', cutoff)
-                        .order('recorded_at', { ascending: false })
-                        .range(offset, offset + pageSize - 1);
-                    if (bErr) throw bErr;
-                    if (!batch || !batch.length) break;
-                    allRecords.push(...batch);
-                    if (batch.length < pageSize) break;
-                    offset += pageSize;
-                    if (allRecords.length >= MAX_RECORDS) break;
-                }
-                allDataWithPending = allRecords;
-                const hasPending = allDataWithPending.some(d => d.status !== 'approved');
-                allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
-                computeDailyAggregates(); // rebuild from raw data (more accurate, all fields)
-                fullDataLoaded = true;
-            } catch (e) {
-                console.error('Error loading full data:', e);
-            } finally {
-                hideLoading();
+        let _fullDataPromise = null;
+        function loadFullData(silent) {
+            if (fullDataLoaded) return Promise.resolve();
+            if (_fullDataPromise) {
+                // Already loading — just wait, but show spinner if caller wants it
+                if (!silent) showLoading(t('loading.data'));
+                return _fullDataPromise.finally(() => { if (!silent) hideLoading(); });
             }
+            if (!silent) showLoading(t('loading.data'));
+            _fullDataPromise = (async () => {
+                try {
+                    const cutoff = new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString();
+                    const MAX_RECORDS = 50000;
+                    const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
+                    let allRecords = [];
+                    let offset = 0;
+                    const pageSize = 1000;
+                    while (true) {
+                        const { data: batch, error: bErr } = await supabaseClient
+                            .from('pollution_logs')
+                            .select(selectCols)
+                            .gte('recorded_at', cutoff)
+                            .order('recorded_at', { ascending: false })
+                            .range(offset, offset + pageSize - 1);
+                        if (bErr) throw bErr;
+                        if (!batch || !batch.length) break;
+                        allRecords.push(...batch);
+                        if (batch.length < pageSize) break;
+                        offset += pageSize;
+                        if (allRecords.length >= MAX_RECORDS) break;
+                    }
+                    allDataWithPending = allRecords;
+                    const hasPending = allDataWithPending.some(d => d.status !== 'approved');
+                    allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
+                    computeDailyAggregates();
+                    fullDataLoaded = true;
+                } catch (e) {
+                    console.error('Error loading full data:', e);
+                } finally {
+                    if (!silent) hideLoading();
+                    _fullDataPromise = null;
+                }
+            })();
+            return _fullDataPromise;
         }
 
         function toggleMobileMenu() {
@@ -2395,7 +2488,7 @@
                 range = getDataDateRange();
                 sensorCount = new Set(data.map(d => d.tuya_device_id).filter(Boolean)).size;
             }
-            const metaText = (range ? 'ข้อมูล ' + range.days + ' วัน' : '') + ' · ' + sensorCount + ' ครัวเรือน';
+            const metaText = range ? t('hero.meta', range.days, sensorCount) : sensorCount + (currentLang === 'th' ? ' ครัวเรือน' : ' households');
 
             // Always update meta text for all hero variants
             ['hero-meta-normal', 'hero-meta-noeco', 'hero-meta-fail'].forEach(id => {
@@ -3171,8 +3264,11 @@
                     computeDailyAggregates(); // fallback
                 }
 
-                if (currentView === 'basic') updateBasicView();
-                else if (currentView === 'deep') {
+                if (currentView === 'basic') {
+                    updateBasicView();
+                    // Preload full data in background while user reviews Basic
+                    if (!fullDataLoaded) loadFullData(true);
+                } else if (currentView === 'deep') {
                     if (!fullDataLoaded) { await loadFullData(); }
                     updateDeepView();
                 }
@@ -3258,10 +3354,13 @@
                 const label = t('basic.range', range.from, range.to, range.days);
                 if (rangeEl) rangeEl.textContent = label;
             }
-            updateBigNumbers();
-            updateBeforeAfter();
+            // Pre-compute baseline-subtracted data ONCE for all sub-functions
+            const _basicNet = fullDataLoaded ? applyBaselineSubtraction(getFilteredData()) : null;
+            const _basicNetPending = fullDataLoaded ? applyBaselineSubtraction(getFilteredData(allDataWithPending)) : null;
+            updateBigNumbers(_basicNetPending);
+            updateBeforeAfter(_basicNet);
             updateBasicCharts();
-            updateLatestReadings();
+            updateLatestReadings(_basicNet);
             loadTodaySummary();
             updateActivityFeed();
         }
@@ -3285,7 +3384,7 @@
             }
         }
 
-        function updateBigNumbers() {
+        function updateBigNumbers(_cachedNetPending) {
             let ecoAvgPm, oldAvgPm, ecoAvgCo2, oldAvgCo2, ecoAvgCo, oldAvgCo, avgTemp, avgHum;
 
             if (!fullDataLoaded && Object.keys(dailyAgg).length) {
@@ -3305,7 +3404,7 @@
                 avgHum = ecoHum != null && oldHum != null ? (ecoHum + oldHum) / 2 : (ecoHum || oldHum);
             } else {
                 // Full data path: raw records with baseline subtraction
-                const filteredPending = applyBaselineSubtraction(getFilteredData(allDataWithPending));
+                const filteredPending = _cachedNetPending || applyBaselineSubtraction(getFilteredData(allDataWithPending));
                 const ecoData = filteredPending.filter(d => d.stove_type === 'eco');
                 const oldData = filteredPending.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
                 ecoAvgPm = avg(ecoData, 'pm25_value');
@@ -3476,14 +3575,14 @@
             });
         }
 
-        function updateBeforeAfter() {
+        function updateBeforeAfter(_cachedNet) {
             // Elements were removed from HTML — guard against null
             const ecoEl = document.getElementById('basic-eco-pm25');
             const oldEl = document.getElementById('basic-old-pm25');
             const redEl = document.getElementById('basic-reduction');
             if (!ecoEl && !oldEl) return;
 
-            const filtered = applyBaselineSubtraction(getFilteredData());
+            const filtered = _cachedNet || applyBaselineSubtraction(getFilteredData());
             const ecoData = filtered.filter(d => d.stove_type === 'eco');
             const oldData = filtered.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
@@ -3508,10 +3607,10 @@
             }
         }
 
-        function updateLatestReadings() {
+        function updateLatestReadings(_cachedNet) {
             const tbody = document.getElementById('latest-readings-body');
             if (!tbody) return;
-            const cleaned = applyBaselineSubtraction(getFilteredData());
+            const cleaned = _cachedNet || applyBaselineSubtraction(getFilteredData());
             // Group by device, get latest reading per device
             const byDevice = {};
             cleaned.forEach(d => {
@@ -3684,20 +3783,13 @@
 
         function setQuickRange(days) {
             activeQuickRange = days;
-            if (days > 0) {
-                const end = new Date();
-                const start = new Date(Date.now() - days * 86400000);
-                deepDateStart = start.toISOString().slice(0, 10);
-                deepDateEnd = end.toISOString().slice(0, 10);
-            } else {
-                deepDateStart = null;
-                deepDateEnd = null;
-            }
-            // Update date inputs
+            // Quick range buttons use per-stove filtering, not absolute dates
+            deepDateStart = null;
+            deepDateEnd = null;
             const startEl = document.getElementById('deep-date-start');
             const endEl = document.getElementById('deep-date-end');
-            if (startEl) startEl.value = deepDateStart || '';
-            if (endEl) endEl.value = deepDateEnd || '';
+            if (startEl) startEl.value = '';
+            if (endEl) endEl.value = '';
             // Update button styles
             document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
                 const btnDays = parseInt(btn.getAttribute('onclick').match(/\d+/)?.[0] || '0');
@@ -3725,37 +3817,74 @@
             updateDeepView();
         }
 
+        let _perStoveRanges = null; // cached for range label display
+
         function applyDeepRangeFilter(data) {
-            if (!deepDateStart && !deepDateEnd) return data;
+            _perStoveRanges = null;
+            // Custom date picker: absolute date range
+            if (activeQuickRange < 0 && (deepDateStart || deepDateEnd)) {
+                return data.filter(d => {
+                    const dt = d.recorded_at?.slice(0, 10);
+                    if (!dt) return false;
+                    if (deepDateStart && dt < deepDateStart) return false;
+                    if (deepDateEnd && dt > deepDateEnd) return false;
+                    return true;
+                });
+            }
+            // "All" or no range: return everything
+            if (activeQuickRange <= 0) return data;
+            // Per-stove-type: find max date per stove type, filter N days back from each
+            const maxDates = {};
+            data.forEach(d => {
+                const st = d.stove_type;
+                if (!st) return;
+                const dt = d.recorded_at?.slice(0, 10);
+                if (dt && (!maxDates[st] || dt > maxDates[st])) maxDates[st] = dt;
+            });
+            const cutoffs = {};
+            Object.entries(maxDates).forEach(([st, maxDate]) => {
+                cutoffs[st] = new Date(new Date(maxDate).getTime() - (activeQuickRange - 1) * 86400000).toISOString().slice(0, 10);
+            });
+            _perStoveRanges = { maxDates, cutoffs };
             return data.filter(d => {
+                const st = d.stove_type;
                 const dt = d.recorded_at?.slice(0, 10);
                 if (!dt) return false;
-                if (deepDateStart && dt < deepDateStart) return false;
-                if (deepDateEnd && dt > deepDateEnd) return false;
+                const cutoff = cutoffs[st];
+                if (cutoff && dt < cutoff) return false;
                 return true;
             });
         }
         function updateDeepView() {
-            // Update range label on stat cards
+            // Pre-compute filtered data ONCE to avoid repeated copies
+            const _rawFiltered = applyDeepRangeFilter(getFilteredData());
+            const _netFiltered = applyDeepRangeFilter(applyBaselineSubtraction(_rawFiltered));
+
+            // Update range label (after filter, so _perStoveRanges is set)
             const rangeLabelEl = document.getElementById('deep-range-label');
             if (rangeLabelEl) {
-                if (deepDateStart && deepDateEnd) {
+                if (_perStoveRanges) {
+                    const r = _perStoveRanges;
+                    const parts = [];
+                    if (r.cutoffs.old && r.maxDates.old) parts.push((currentLang === 'th' ? 'เตาเก่า: ' : 'Old: ') + r.cutoffs.old + ' — ' + r.maxDates.old);
+                    if (r.cutoffs.eco && r.maxDates.eco) parts.push((currentLang === 'th' ? 'เตาใหม่: ' : 'Eco: ') + r.cutoffs.eco + ' — ' + r.maxDates.eco);
+                    rangeLabelEl.textContent = '📊 ' + (parts.join(' · ') || t('stat.range.all'));
+                } else if (deepDateStart && deepDateEnd) {
                     rangeLabelEl.textContent = '📊 ' + deepDateStart + ' — ' + deepDateEnd;
                 } else {
                     rangeLabelEl.textContent = t('stat.range.all');
                 }
             }
 
-            updateResearchStats();
-            updateStackedBar();
-            updateComparisonTable();
+            updateResearchStats(_rawFiltered, _netFiltered);
+            updateStackedBar(_rawFiltered, _netFiltered);
+            updateComparisonTable(_rawFiltered, _netFiltered);
             updateSensorCharts();
             loadSessionsTab();
             loadDailySummaries();
 
-            const filtered = applyDeepRangeFilter(getFilteredData());
             const countEl = document.getElementById('deep-data-count');
-            if (countEl) countEl.textContent = t('deep.count', filtered.length);
+            if (countEl) countEl.textContent = t('deep.count', _rawFiltered.length);
         }
 
         function applyBaselineSubtraction(data) {
@@ -3765,23 +3894,28 @@
                 if (!d.session_id) return true;
                 const bl = sessionBaselines[d.session_id];
                 if (!bl || !bl.baseline_ended_at) return true;
-                // Exclude readings recorded during baseline phase
                 return d.recorded_at >= bl.baseline_ended_at;
             }).map(d => {
                 if (!d.session_id) return d;
                 const bl = sessionBaselines[d.session_id];
                 if (!bl) return d;
-                const copy = { ...d };
-                if (copy.pm25_value != null && bl.baseline_avg_pm25 != null) copy.pm25_value = Math.max(0, copy.pm25_value - bl.baseline_avg_pm25);
-                if (copy.co2_value != null && bl.baseline_avg_co2 != null) copy.co2_value = Math.max(0, copy.co2_value - bl.baseline_avg_co2);
-                if (copy.temperature != null && bl.baseline_avg_temperature != null) copy.temperature = Math.max(0, copy.temperature - bl.baseline_avg_temperature);
-                if (copy.humidity != null && bl.baseline_avg_humidity != null) copy.humidity = Math.max(0, copy.humidity - bl.baseline_avg_humidity);
+                // Only copy records that actually need modification (skip ~40-60% of copies)
+                const hasPm = d.pm25_value != null && bl.baseline_avg_pm25 != null;
+                const hasCo2 = d.co2_value != null && bl.baseline_avg_co2 != null;
+                const hasTemp = d.temperature != null && bl.baseline_avg_temperature != null;
+                const hasHum = d.humidity != null && bl.baseline_avg_humidity != null;
+                if (!hasPm && !hasCo2 && !hasTemp && !hasHum) return d;
+                const copy = Object.assign({}, d);
+                if (hasPm) copy.pm25_value = Math.max(0, d.pm25_value - bl.baseline_avg_pm25);
+                if (hasCo2) copy.co2_value = Math.max(0, d.co2_value - bl.baseline_avg_co2);
+                if (hasTemp) copy.temperature = Math.max(0, d.temperature - bl.baseline_avg_temperature);
+                if (hasHum) copy.humidity = Math.max(0, d.humidity - bl.baseline_avg_humidity);
                 return copy;
             });
         }
 
-        function updateResearchStats() {
-            const baseData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
+        function updateResearchStats(_rawFiltered, _netFiltered) {
+            const baseData = _netFiltered;
             const ecoData = baseData.filter(d => d.stove_type === 'eco');
             const oldData = baseData.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
@@ -3846,20 +3980,20 @@
             if (humEl) humEl.textContent = ((ecoHum ?? oldHum) != null ? (ecoHum ?? oldHum).toFixed(1) : '--') + '%';
             if (envDetailEl) {
                 let html = '';
-                if (ecoTemp != null && oldTemp != null) html += '<div>🌡 ใหม่ ' + ecoTemp.toFixed(1) + '°C / เก่า ' + oldTemp.toFixed(1) + '°C</div>';
-                if (ecoHum != null && oldHum != null) html += '<div>💧 ใหม่ ' + ecoHum.toFixed(1) + '% / เก่า ' + oldHum.toFixed(1) + '%</div>';
-                envDetailEl.innerHTML = html || '<div>สภาพแวดล้อมขณะเก็บข้อมูล</div>';
+                if (ecoTemp != null && oldTemp != null) html += '<div>' + t('deep.env.temp', ecoTemp.toFixed(1), oldTemp.toFixed(1)) + '</div>';
+                if (ecoHum != null && oldHum != null) html += '<div>' + t('deep.env.hum', ecoHum.toFixed(1), oldHum.toFixed(1)) + '</div>';
+                envDetailEl.innerHTML = html || '<div>' + t('deep.env.default') + '</div>';
             }
         }
 
         // ==================== Stacked Bar: PM2.5 Decomposition ====================
-        function updateStackedBar() {
+        function updateStackedBar(_rawFiltered, _netFiltered) {
             const container = document.getElementById('stacked-bar-container');
             const ecoLegend = document.getElementById('stacked-legend-eco');
             if (!container) return;
 
-            const rawData = applyDeepRangeFilter(getFilteredData());
-            const netData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
+            const rawData = _rawFiltered;
+            const netData = _netFiltered;
 
             const oldRaw = rawData.filter(d => (d.stove_type === 'old' || d.stove_type === 'traditional') && d.pm25_value != null);
             const ecoRaw = rawData.filter(d => d.stove_type === 'eco' && d.pm25_value != null);
@@ -3908,12 +4042,12 @@
                     const savedAmt = oldNetAvg - ecoNetAvg;
                     const savedPct = (savedAmt / oldNetAvg * 100);
                     const savedWidth = Math.max((savedAmt / maxVal * 100), 15);
-                    html += '<div class="bg-emerald-100 flex items-center justify-center text-emerald-500 border border-dashed border-emerald-300" style="width:' + savedWidth.toFixed(0) + '%">↓ ลดได้ ' + savedAmt.toFixed(1) + ' µg/m³ (' + savedPct.toFixed(1) + '%)</div>';
+                    html += '<div class="bg-emerald-100 flex items-center justify-center text-emerald-500 border border-dashed border-emerald-300" style="width:' + savedWidth.toFixed(0) + '%">' + t('deep.stacked.saved', savedAmt.toFixed(1), savedPct.toFixed(1)) + '</div>';
                 }
 
                 html += '</div></div>';
             } else if (currentScenario === 'no-eco') {
-                html += '<div class="bg-slate-50 rounded-lg p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-300">⏳ ยังไม่มีข้อมูลเตาชีวมวล — จะแสดงเมื่อเริ่มระยะที่ 2</div>';
+                html += '<div class="bg-slate-50 rounded-lg p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-300">' + t('deep.stacked.noeco') + '</div>';
             }
 
             container.innerHTML = html;
@@ -3930,13 +4064,13 @@
         }
 
         // ==================== Comparison Table: Gross / Ambient / Net ====================
-        function updateComparisonTable() {
+        function updateComparisonTable(_rawFiltered, _netFiltered) {
             const headEl = document.getElementById('comparison-table-head');
             const bodyEl = document.getElementById('comparison-table-body');
             if (!headEl || !bodyEl) return;
 
-            const rawData = applyDeepRangeFilter(getFilteredData());
-            const netData = applyDeepRangeFilter(applyBaselineSubtraction(getFilteredData()));
+            const rawData = _rawFiltered;
+            const netData = _netFiltered;
             const hasEco = netData.some(d => d.stove_type === 'eco');
             const isNormal = currentScenario === 'normal';
 
@@ -3956,13 +4090,13 @@
             if (hasEco) {
                 const netBg = isNormal ? 'bg-emerald-50' : 'bg-red-50';
                 const changeBg = isNormal ? 'bg-green-50' : 'bg-red-50';
-                const changeLabel = isNormal ? 'ลดลง' : 'เปลี่ยนแปลง';
+                const changeLabel = isNormal ? t('deep.compare.decrease') : t('deep.compare.change');
                 headEl.innerHTML =
-                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50" colspan="2">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 ' + netBg + '" colspan="2">ค่าสุทธิ (Net)</th><th class="text-center py-2 ' + changeBg + '">' + changeLabel + '</th></tr>' +
-                    '<tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1">🪵 เก่า</th><th class="text-center py-1">✨ ใหม่</th><th class="text-center py-1 bg-blue-50">🪵 เก่า</th><th class="text-center py-1 bg-blue-50">✨ ใหม่</th><th class="text-center py-1 ' + netBg + '">🪵 เก่า</th><th class="text-center py-1 ' + netBg + '">✨ ใหม่</th><th class="text-center py-1 ' + changeBg + '">Net %</th></tr>';
+                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">' + t('deep.compare.pollutant') + '</th><th class="text-center py-2 bg-slate-50" colspan="2">' + t('deep.compare.gross') + '</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 ' + netBg + '" colspan="2">' + t('deep.compare.net') + '</th><th class="text-center py-2 ' + changeBg + '">' + changeLabel + '</th></tr>' +
+                    '<tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1">' + t('deep.compare.old.short') + '</th><th class="text-center py-1">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 bg-blue-50">' + t('deep.compare.old.short') + '</th><th class="text-center py-1 bg-blue-50">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 ' + netBg + '">' + t('deep.compare.old.short') + '</th><th class="text-center py-1 ' + netBg + '">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 ' + changeBg + '">Net %</th></tr>';
             } else {
                 headEl.innerHTML =
-                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50">Ambient</th><th class="text-center py-2 bg-orange-50">ค่าสุทธิ (Net)</th></tr>';
+                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">' + t('deep.compare.pollutant') + '</th><th class="text-center py-2 bg-slate-50">' + t('deep.compare.gross') + '</th><th class="text-center py-2 bg-blue-50">Ambient</th><th class="text-center py-2 bg-orange-50">' + t('deep.compare.net') + '</th></tr>';
             }
 
             // Pollutant rows
@@ -4041,9 +4175,17 @@
         let drilldownCharts = {};
 
         function updateSensorCharts() {
-            // Filter dailyAgg by date range
             let days = Object.keys(dailyAgg).sort();
-            if (deepDateStart || deepDateEnd) {
+
+            // Per-stove cutoffs for daily charts
+            let oldCutoff = null, ecoCutoff = null;
+            if (activeQuickRange > 0) {
+                let oldMax = null, ecoMax = null;
+                days.forEach(d => { if (dailyAgg[d]?.old) oldMax = d; if (dailyAgg[d]?.eco) ecoMax = d; });
+                if (oldMax) oldCutoff = new Date(new Date(oldMax).getTime() - (activeQuickRange - 1) * 86400000).toISOString().slice(0, 10);
+                if (ecoMax) ecoCutoff = new Date(new Date(ecoMax).getTime() - (activeQuickRange - 1) * 86400000).toISOString().slice(0, 10);
+            } else if (activeQuickRange < 0 && (deepDateStart || deepDateEnd)) {
+                // Custom date picker: absolute range (same cutoff for both)
                 days = days.filter(d => {
                     if (deepDateStart && d < deepDateStart) return false;
                     if (deepDateEnd && d > deepDateEnd) return false;
@@ -4075,11 +4217,11 @@
                     const dateMs = new Date(day + 'T12:00:00').getTime();
                     const ob = dailyAgg[day]?.old?.[cfg.field];
                     const eb = dailyAgg[day]?.eco?.[cfg.field];
-                    if (ob && ob.count) {
+                    if (ob && ob.count && (!oldCutoff || day >= oldCutoff)) {
                         oldPoints.push({ x: dateMs, y: +(ob.sum / ob.count).toFixed(2) });
                         oldBandUp.push({ x: dateMs, y: ob.max }); oldBandLo.push({ x: dateMs, y: ob.min });
                     }
-                    if (eb && eb.count) {
+                    if (eb && eb.count && (!ecoCutoff || day >= ecoCutoff)) {
                         ecoPoints.push({ x: dateMs, y: +(eb.sum / eb.count).toFixed(2) });
                         ecoBandUp.push({ x: dateMs, y: eb.max }); ecoBandLo.push({ x: dateMs, y: eb.min });
                     }
@@ -4437,6 +4579,7 @@
             updateCountdownDisplay();
             countdownInterval = setInterval(() => {
                 if (document.hidden) return;
+                if (currentView === 'deep') return; // skip auto-refresh on Deep view
                 countdownSeconds--;
                 updateCountdownDisplay();
                 if (countdownSeconds <= 0) {
@@ -4569,7 +4712,11 @@
             }).join('');
         }
 
-        // ==================== Data Table ====================
+        // ==================== Data Table (paginated — 100 rows at a time) ====================
+        const DATA_PAGE_SIZE = 100;
+        let _dataFiltered = [];
+        let _dataShowing = 0;
+
         function updateAllDataTable() {
             const tbody = document.getElementById('all-data-table-body');
             if (!tbody) return;
@@ -4577,19 +4724,30 @@
             const houseFilter = document.getElementById('sensor-house-filter')?.value || 'all';
 
             // Only sensor (auto) data — exclude manual TVOC
-            let filtered = (allDataWithPending || []).filter(d => d.data_source === 'sensor');
-            if (houseFilter !== 'all') filtered = filtered.filter(d => {
-                // Check house_id first, fallback to device→subject mapping
+            _dataFiltered = (allDataWithPending || []).filter(d => d.data_source === 'sensor');
+            if (houseFilter !== 'all') _dataFiltered = _dataFiltered.filter(d => {
                 const hid = d.house_id || DEVICE_HOUSE[d.tuya_device_id];
                 return String(hid) === String(houseFilter);
             });
 
-            if (filtered.length === 0) {
+            if (_dataFiltered.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
+                document.getElementById('data-load-more-wrap').classList.add('hidden');
                 return;
             }
 
-            tbody.innerHTML = filtered.map(d => {
+            // Reset and render first page
+            _dataShowing = 0;
+            tbody.innerHTML = '';
+            loadMoreDataRows();
+        }
+
+        function loadMoreDataRows() {
+            const tbody = document.getElementById('all-data-table-body');
+            const end = Math.min(_dataShowing + DATA_PAGE_SIZE, _dataFiltered.length);
+            const chunk = _dataFiltered.slice(_dataShowing, end);
+
+            const html = chunk.map(d => {
                 const pm25Class = (d.pm25_value || 0) > 35 ? 'text-red-500 font-bold' : 'text-orange-500';
                 const houseName = HOUSE_NAMES[d.tuya_device_id] || d.house_name || t('house.unassigned');
                 return `<tr class="hover:bg-slate-50">
@@ -4605,6 +4763,19 @@
                     <td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold bg-blue-100 text-blue-600">${esc(houseName)}</span></td>
                 </tr>`;
             }).join('');
+            tbody.insertAdjacentHTML('beforeend', html);
+            _dataShowing = end;
+
+            // Update load-more button
+            const wrap = document.getElementById('data-load-more-wrap');
+            const countEl = document.getElementById('data-showing-count');
+            if (_dataShowing >= _dataFiltered.length) {
+                wrap.classList.add('hidden');
+            } else {
+                wrap.classList.remove('hidden');
+                const remaining = _dataFiltered.length - _dataShowing;
+                countEl.textContent = 'แสดง ' + _dataShowing.toLocaleString() + ' / ' + _dataFiltered.length.toLocaleString() + ' รายการ (เหลืออีก ' + remaining.toLocaleString() + ')';
+            }
         }
 
         // ==================== TVOC Tab ====================
@@ -4725,7 +4896,7 @@
             if (showSpinner) showLoading(t('common.loading'));
             loadApiQuota();
             try {
-                const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false });
+                const { data, error } = await supabaseClient.from('pollution_logs').select('*').eq('status', 'pending').order('recorded_at', { ascending: false }).limit(500);
                 if (error) throw error;
 
                 // Separate manual TVOC vs sensor records
@@ -7183,7 +7354,8 @@
         }
         function refreshMapLegend() {
             if (!_mapLegendDiv) return;
-            _mapLegendDiv.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:50%"></span> 📡 ' + t('map.sensor.house') + '</div>' +
+            _mapLegendDiv.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;font-size:11px;color:#374151">' + t('map.legend.title') + '</div>' +
+                '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span style="display:inline-block;width:12px;height:12px;background:#10b981;border-radius:50%"></span> 📡 ' + t('map.sensor.house') + '</div>' +
                 '<div style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:12px;height:12px;background:#f97316;border-radius:50%"></span> 🔥 ' + t('map.stove.house') + '</div>';
         }
 
@@ -7262,6 +7434,23 @@
                 if (mapDeep) return;
                 mapDeep = L.map('map-deep').setView([18.7883, 98.9853], 8);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapDeep);
+                // Add legend to deep map
+                const deepLegend = L.control({ position: 'bottomright' });
+                deepLegend.onAdd = function() {
+                    const div = L.DomUtil.create('div');
+                    div.style.cssText = 'background:white;padding:8px 12px;border-radius:8px;font-size:11px;box-shadow:0 2px 6px rgba(0,0,0,0.15)';
+                    const row = (color, label) => '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="display:inline-block;width:12px;height:12px;background:' + color + ';border-radius:50%"></span> ' + label + '</div>';
+                    div.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;font-size:11px;color:#374151">' + t('map.deep.legend.title') + '</div>' +
+                        row('#06b6d4', t('map.deep.excellent')) +
+                        row('#10b981', t('map.deep.good')) +
+                        row('#eab308', t('map.deep.moderate')) +
+                        row('#f97316', t('map.deep.unhealthy')) +
+                        row('#ef4444', t('map.deep.hazardous')) +
+                        row('#94a3b8', t('map.deep.nodata')) +
+                        '<div style="display:flex;align-items:center;gap:6px;margin-top:4px;padding-top:4px;border-top:1px solid #e5e7eb"><span style="font-size:14px">🔥</span> ' + t('map.deep.nosensor') + '</div>';
+                    return div;
+                };
+                deepLegend.addTo(mapDeep);
                 loadSubjectMarkers();
             } catch (e) { console.log('Map deep init skipped'); }
         }
@@ -7280,6 +7469,29 @@
             }
             const sensorMap = {};
             (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = DEVICE_NAMES[d.tuya_device_id] || d.name; });
+
+            // Compute per-house PM2.5/CO2 stats from allData (O(n), no copies, no API calls)
+            const houseStats = {};
+            allData.forEach(d => {
+                if (d.pm25_value == null) return;
+                const sid = DEVICE_HOUSE[d.tuya_device_id];
+                if (!sid) return;
+                const bl = sessionBaselines[d.session_id];
+                if (bl && bl.baseline_ended_at && d.recorded_at < bl.baseline_ended_at) return;
+                let pm25 = d.pm25_value;
+                if (bl && bl.baseline_avg_pm25 != null) pm25 = Math.max(0, pm25 - bl.baseline_avg_pm25);
+                if (!houseStats[sid]) houseStats[sid] = { pm25T: 0, pm25N: 0, co2T: 0, co2N: 0, sess: new Set() };
+                houseStats[sid].pm25T += pm25;
+                houseStats[sid].pm25N++;
+                if (d.co2_value != null) {
+                    let co2 = d.co2_value;
+                    if (bl && bl.baseline_avg_co2 != null) co2 = Math.max(0, co2 - bl.baseline_avg_co2);
+                    houseStats[sid].co2T += co2;
+                    houseStats[sid].co2N++;
+                }
+                if (d.session_id) houseStats[sid].sess.add(d.session_id);
+            });
+
             const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
             const bounds = [];
             data.forEach(s => {
@@ -7289,19 +7501,23 @@
                 bounds.push([lat, lng]);
                 const deviceName = sensorMap[s.id];
                 const hasSensor = !!deviceName;
-                const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : s.connectivity === 'hotspot' ? '📱 Hotspot' : '';
-                const volunteer = s.volunteers?.full_name || '-';
                 if (hasSensor) {
-                    const icon = L.divIcon({ html: '<div style="background:#10b981;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">📡</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
-                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
-                        '<b>📡 ' + s.full_name + '</b>' +
-                        '<br><span style="color:#10b981;font-weight:bold">🔧 ' + deviceName + '</span>' +
-                        (connLabel ? '<br>' + connLabel : '') +
-                        '<br>' + t('map.volunteer') + ': ' + volunteer +
-                        '<br><span style="color:#10b981">✅ ' + t('sub.has.sensor') + ' + ' + t('map.stove.installed') + '</span>'
-                    ));
+                    const hs = houseStats[s.id];
+                    const avgPm25 = hs && hs.pm25N ? +(hs.pm25T / hs.pm25N).toFixed(0) : null;
+                    const avgCo2 = hs && hs.co2N ? +(hs.co2T / hs.co2N).toFixed(0) : null;
+                    const sessCount = hs ? hs.sess.size : 0;
+                    const color = pm25HexColor(avgPm25);
+                    const label = avgPm25 != null ? avgPm25 : '\u2014';
+                    const icon = L.divIcon({ html: '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">' + label + '</div>', iconSize: [32, 32], iconAnchor: [16, 16], className: '' });
+                    const popup = '<b>' + s.full_name + '</b>' +
+                        '<br>🔧 ' + deviceName +
+                        '<br>PM2.5 (net): <b style="color:' + color + '">' + (avgPm25 != null ? avgPm25 + ' \u00b5g/m\u00b3' : '\u2014') + '</b>' +
+                        (avgCo2 != null ? '<br>CO\u2082 (net): <b>' + avgCo2 + ' ppm</b>' : '') +
+                        '<br>' + t('map.sessions') + ': ' + sessCount;
+                    cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(popup));
                 } else {
                     const icon = L.divIcon({ html: '<div style="background:#f97316;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔥</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
+                    const volunteer = s.volunteers?.full_name || '-';
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
                         '<b>🏠 ' + s.full_name + '</b>' +
                         '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>' +

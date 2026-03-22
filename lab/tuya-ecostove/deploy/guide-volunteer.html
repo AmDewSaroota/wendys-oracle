@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มืออาสาสมัคร — Biomass Stove</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Chakra Petch', sans-serif; }
+
+  .step-num {
+    width: 56px; height: 56px; min-width: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; color: white;
+  }
+
+  .step-card {
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 6px solid;
+  }
+
+  .warning-box {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    margin-top: 0.75rem;
+  }
+
+  .tip-box {
+    background: #ecfdf5;
+    border: 2px solid #10b981;
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    margin-top: 0.75rem;
+  }
+
+  .btn-setting {
+    display: flex; align-items: center; gap: 12px;
+    background: white;
+    border-radius: 1rem;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .btn-count {
+    width: 40px; height: 40px; min-width: 40px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 700; color: white;
+    background: #6366f1;
+  }
+
+  @media print {
+    body { font-size: 14px; }
+    .no-print { display: none !important; }
+    .step-card { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; }
+    header { background: white !important; color: black !important; border-bottom: 2px solid #064e3b; }
+    header h1 { color: #064e3b !important; }
+    header p { color: #333 !important; }
+  }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-12">
+
+<!-- Header -->
+<header class="bg-emerald-800 text-white px-4 py-5 shadow-lg sticky top-0 z-50 no-print">
+  <div class="max-w-lg mx-auto flex items-center gap-3">
+    <a href="volunteer.html" class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/20 text-xl">←</a>
+    <div class="flex-1">
+      <h1 class="text-xl font-bold">📖 คู่มืออาสาสมัคร</h1>
+      <p class="text-emerald-200 text-sm">วิธีใช้เซนเซอร์เก็บข้อมูลอากาศ</p>
+    </div>
+  </div>
+</header>
+
+<!-- Print Header -->
+<div class="hidden print:block text-center py-6 border-b-2 border-emerald-800 mb-6">
+  <h1 class="text-2xl font-bold text-emerald-800">📖 คู่มืออาสาสมัคร</h1>
+  <p class="text-gray-600">โครงการนวัตกรรมเตาชีวมวลเพื่ออากาศสะอาด</p>
+</div>
+
+<main class="max-w-lg mx-auto px-4 pt-6">
+
+  <!-- ============================= -->
+  <!-- STEP 1: ตั้งไวไฟมือถือ -->
+  <!-- ============================= -->
+  <div class="step-card bg-blue-50 border-blue-500">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-blue-500">1</div>
+      <div>
+        <h2 class="text-xl font-bold text-blue-800">ตั้งไวไฟมือถือ</h2>
+        <p class="text-blue-600 text-base mt-1">เปิด Hotspot เพื่อให้เซนเซอร์เชื่อมต่อ</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-lg text-gray-800 mb-3">📱 ตั้งค่า Hotspot</p>
+
+      <div class="space-y-3">
+        <div class="flex items-center gap-3 bg-blue-100 rounded-xl p-3">
+          <span class="text-3xl">📶</span>
+          <div>
+            <p class="text-sm text-blue-600 font-bold">ชื่อ Hotspot</p>
+            <p class="text-xl font-bold text-blue-900 tracking-wide">Biomass</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 bg-blue-100 rounded-xl p-3">
+          <span class="text-3xl">🔑</span>
+          <div>
+            <p class="text-sm text-blue-600 font-bold">รหัสผ่าน</p>
+            <p class="text-xl font-bold text-blue-900 tracking-wide">Biomass2026</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p class="font-bold text-amber-800 text-base">⚠️ สำคัญมาก!</p>
+      <p class="text-amber-700 text-base mt-1">ชื่อและรหัสต้อง <strong>ตรงทุกตัว</strong> ตัวใหญ่-เล็กต้องตรง ห้ามเว้นวรรค</p>
+    </div>
+
+    <!-- Android -->
+    <div class="bg-white rounded-2xl p-4 mt-3 shadow-sm">
+      <p class="font-bold text-base text-green-700 mb-2">🤖 มือถือ Android</p>
+      <ol class="text-base text-gray-700 space-y-2 list-decimal list-inside">
+        <li>เข้า <strong>ตั้งค่า</strong> (Settings)</li>
+        <li>กด <strong>ฮอตสปอตส่วนบุคคล</strong> หรือ Mobile Hotspot</li>
+        <li>เปลี่ยน <strong>ชื่อ</strong> เป็น <strong>Biomass</strong></li>
+        <li>เปลี่ยน <strong>รหัสผ่าน</strong> เป็น <strong>Biomass2026</strong></li>
+        <li>กด <strong>เปิด Hotspot</strong></li>
+      </ol>
+    </div>
+
+  </div>
+
+  <!-- ============================= -->
+  <!-- STEP 2: ตั้งค่าเซนเซอร์ -->
+  <!-- ============================= -->
+  <div class="step-card bg-emerald-50 border-emerald-500">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-emerald-600">2</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-800">ตั้งค่าเซนเซอร์</h2>
+        <p class="text-emerald-600 text-base mt-1">เปิดเครื่อง + ตั้งค่าเบื้องต้น</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-lg text-gray-800 mb-3">🔌 เปิดเครื่อง</p>
+      <p class="text-base text-gray-700"><strong>กดปุ่มค้าง</strong> เพื่อเปิดเครื่อง → รอจอติดสว่าง</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-lg text-gray-800 mb-3">⚙️ ตั้งค่าปุ่ม (ด้านหลังเครื่อง)</p>
+
+      <div class="btn-setting">
+        <div class="btn-count">1</div>
+        <div>
+          <p class="font-bold text-base text-gray-800">กด 1 ครั้ง</p>
+          <p class="text-gray-500 text-sm">สลับหน่วย °C / °F → ให้อยู่ที่ <strong>°C</strong></p>
+        </div>
+      </div>
+
+      <div class="btn-setting">
+        <div class="btn-count">2</div>
+        <div>
+          <p class="font-bold text-base text-gray-800">กด 2 ครั้ง</p>
+          <p class="text-gray-500 text-sm">เปิด / ปิด เสียงแจ้งเตือน</p>
+        </div>
+      </div>
+
+      <div class="btn-setting">
+        <div class="btn-count">3</div>
+        <div>
+          <p class="font-bold text-base text-gray-800">กด 3 ครั้ง</p>
+          <p class="text-gray-500 text-sm">ปรับเทียบค่า (Calibrate) → ค่าจะตรงขึ้น</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p class="font-bold text-emerald-800 text-base">⏱ รอ 10 นาที</p>
+      <p class="text-emerald-700 text-base mt-1">หลังเปิดเครื่อง <strong>รอ 10 นาที</strong> ก่อนเริ่มเก็บข้อมูล เครื่องต้อง warm up ก่อนถึงจะวัดค่าได้แม่นยำ</p>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- STEP 3: เข้าหน้าอาสา -->
+  <!-- ============================= -->
+  <div class="step-card bg-amber-50 border-amber-500">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-amber-500">3</div>
+      <div>
+        <h2 class="text-xl font-bold text-amber-800">เปิดหน้าเก็บข้อมูล</h2>
+        <p class="text-amber-600 text-base mt-1">Scan QR บนสติกเกอร์เซนเซอร์</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <div class="text-center">
+        <p class="text-5xl mb-3">📷</p>
+        <p class="text-lg font-bold text-gray-800">เปิดกล้องมือถือ → ส่อง QR Code</p>
+        <p class="text-base text-gray-500 mt-2">QR อยู่บน <strong>สติกเกอร์ที่ติดเซนเซอร์</strong></p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-gray-800 mb-2">📍 อนุญาตตำแหน่ง</p>
+      <p class="text-base text-gray-600">มือถือจะถาม "อนุญาตให้เข้าถึงตำแหน่ง?" หรือ "Allow location access?" → กด <strong>อนุญาต / Allow</strong></p>
+      <p class="text-base text-gray-600 mt-2">ระบบจะหาบ้านให้อัตโนมัติ → กด <strong>✅ ยืนยัน</strong></p>
+    </div>
+
+    <!-- ตัวอย่างหน้าจอ: เลือกบ้าน -->
+    <div class="bg-gray-800 rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="text-xs text-gray-400 mb-2 text-center">ตัวอย่างหน้าจอ</p>
+      <div class="bg-emerald-50 rounded-xl p-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">🏠</span>
+          <div class="flex-1">
+            <p class="font-bold text-gray-800">บ้านนายสมชาย</p>
+            <p class="text-xs text-gray-500">ห่างจากคุณ 12 เมตร</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-2">
+        <div class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-center font-bold text-sm">✅ ยืนยัน</div>
+        <div class="px-3 bg-gray-200 text-gray-600 py-2 rounded-xl text-center font-bold text-sm">เปลี่ยน</div>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p class="text-amber-800 text-base">⚠️ ถ้าระบบหาบ้านไม่เจอ ให้เลือกบ้านจากรายการเอง</p>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- STEP 4: กดเริ่มจุดเตา -->
+  <!-- ============================= -->
+  <div class="step-card bg-red-50 border-red-500">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-red-500">4</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-800">เริ่มจุดเตา</h2>
+        <p class="text-red-600 text-base mt-1">รอเซนเซอร์พร้อม แล้วกดปุ่ม</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-gray-800 mb-2">🔍 ระบบจะค้นหาเซนเซอร์</p>
+      <p class="text-base text-gray-600">รอจนหน้าจอขึ้นว่า <strong>"เซนเซอร์พร้อม"</strong></p>
+      <p class="text-sm text-gray-400 mt-1">ถ้ารอนานเกิน → ตรวจสอบว่า Hotspot เปิดอยู่ และชื่อถูกต้อง</p>
+    </div>
+
+    <div class="bg-red-100 rounded-2xl p-5 text-center shadow-sm">
+      <p class="text-5xl mb-2">🔥</p>
+      <p class="text-xl font-bold text-red-800">เมื่อจุดเตาแล้ว</p>
+      <p class="text-lg text-red-600 mt-1">กดปุ่มแดงใหญ่ <strong>"เริ่มจุดเตาแล้ว"</strong></p>
+    </div>
+
+    <!-- ตัวอย่างหน้าจอ: ปุ่มจุดเตา -->
+    <div class="bg-gray-800 rounded-2xl p-4 mt-3 shadow-sm">
+      <p class="text-xs text-gray-400 mb-3 text-center">ตัวอย่างหน้าจอ</p>
+      <div class="bg-emerald-50 rounded-xl p-3 mb-2 text-center">
+        <p class="text-sm text-emerald-700 font-bold">📊 Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้</p>
+      </div>
+      <div class="bg-red-500 text-white py-5 rounded-2xl text-center">
+        <div class="text-4xl mb-1">🔥</div>
+        <div class="text-lg font-bold">เริ่มจุดเตาแล้ว</div>
+        <div class="text-xs opacity-70 mt-1">กดเมื่อเริ่มจุดเตา</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- STEP 5: กรอกค่า TVOC/CO -->
+  <!-- ============================= -->
+  <div class="step-card bg-purple-50 border-purple-500">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-purple-600">5</div>
+      <div>
+        <h2 class="text-xl font-bold text-purple-800">กรอกค่า (เฉพาะวันที่กำหนด)</h2>
+        <p class="text-purple-600 text-base mt-1">อ่านค่าจากจอเซนเซอร์ แล้วพิมพ์ตัวเลข</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-gray-800 mb-2">ระบบจะถามว่า "วันนี้ต้องกรอกค่ามั้ย?"</p>
+      <div class="flex gap-3 mt-3">
+        <div class="flex-1 bg-purple-100 rounded-xl p-3 text-center">
+          <p class="text-2xl">✅</p>
+          <p class="font-bold text-purple-800 text-base">กด "เก็บ"</p>
+          <p class="text-sm text-purple-600">ถ้าวันนี้ต้องกรอก</p>
+        </div>
+        <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
+          <p class="text-2xl">❌</p>
+          <p class="font-bold text-gray-700 text-base">กด "ไม่เก็บ"</p>
+          <p class="text-sm text-gray-500">ปิดจอได้เลย</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-purple-800 mb-3">📝 ถ้าต้องเก็บข้อมูล ทุกๆ 5 นาที:</p>
+      <ol class="text-base text-gray-700 space-y-3 list-decimal list-inside">
+        <li>ดูค่า <strong>TVOC</strong> บนจอเซนเซอร์ → พิมพ์ตัวเลข</li>
+        <li>ดูค่า <strong>CO</strong> บนจอเซนเซอร์ → พิมพ์ตัวเลข</li>
+        <li>กดปุ่ม <strong>บันทึก</strong></li>
+      </ol>
+      <p class="text-sm text-purple-500 mt-3">⏰ เมื่อเปิดจอกรอกข้อมูลไว้ ระบบจะเตือนเมื่อถึงเวลากรอก — ไม่ต้องจับเวลาเอง</p>
+    </div>
+
+    <!-- ตัวอย่างหน้าจอ: กรอก TVOC/CO -->
+    <div class="bg-gray-800 rounded-2xl p-4 mt-3 shadow-sm">
+      <p class="text-xs text-gray-400 mb-3 text-center">ตัวอย่างหน้าจอ</p>
+      <div class="bg-purple-50 rounded-xl p-3 border border-purple-200">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm font-bold text-purple-800">📝 บันทึกค่า</p>
+          <span class="text-xs text-purple-500 font-bold">กรอกค่าถัดไปใน 4:32</span>
+        </div>
+        <div class="mb-2">
+          <p class="text-xs font-bold text-purple-600 mb-1">TVOC (mg/m³)</p>
+          <div class="bg-white rounded-lg border border-purple-200 py-2 px-3 text-center text-gray-400 text-sm">0.000</div>
+        </div>
+        <div class="mb-3">
+          <p class="text-xs font-bold text-amber-600 mb-1">CO (ppm)</p>
+          <div class="bg-white rounded-lg border border-purple-200 py-2 px-3 text-center text-gray-400 text-sm">0</div>
+        </div>
+        <div class="bg-purple-600 text-white py-2 rounded-lg text-center font-bold text-sm">📝 บันทึก</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- STEP 6: จบ -->
+  <!-- ============================= -->
+  <div class="step-card bg-emerald-50 border-emerald-600">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-emerald-600">6</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-800">เสร็จแล้ว!</h2>
+        <p class="text-emerald-600 text-base mt-1">ระบบเก็บข้อมูลจนครบเอง</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <div class="text-center">
+        <p class="text-5xl mb-2">✅</p>
+        <p class="text-lg font-bold text-gray-800">ระบบจะเก็บข้อมูลประมาณ 2 ชั่วโมง</p>
+        <p class="text-base text-gray-500 mt-2">เมื่อครบ หน้าจอจะแสดงสรุป</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm">
+      <p class="font-bold text-base text-gray-800 mb-2">หลังเสร็จ:</p>
+      <ul class="text-base text-gray-700 space-y-2">
+        <li>🔌 <strong>ปิดเซนเซอร์</strong> (กดปุ่มค้าง)</li>
+        <li>📶 ปิด Hotspot มือถือ</li>
+        <li>📦 เก็บเซนเซอร์ในที่แห้ง</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- คำเตือนสำคัญ -->
+  <!-- ============================= -->
+  <div class="bg-red-50 border-2 border-red-300 rounded-2xl p-5 mb-6">
+    <p class="text-xl font-bold text-red-800 mb-3">🚨 ข้อควรระวัง</p>
+    <ul class="text-base text-red-700 space-y-3">
+      <li>❌ <strong>อย่าวางเซนเซอร์ใกล้ควันเกินไป</strong> — ค่าอาจค้างไม่ลง</li>
+      <li>🔄 ถ้าค่าค้างไม่ลด → <strong>กดปุ่มหลังเครื่อง 3 ครั้งติด</strong> เพื่อ Calibrate ใหม่</li>
+      <li>📶 ถ้าเซนเซอร์ไม่เชื่อม → ตรวจสอบ <strong>ชื่อและรหัส Hotspot ให้ตรง</strong></li>
+      <li>🔋 ระหว่างเก็บข้อมูล <strong>อย่าปิด Hotspot</strong> มือถือ</li>
+    </ul>
+  </div>
+
+  <!-- ============================= -->
+  <!-- ต้องการความช่วยเหลือ -->
+  <!-- ============================= -->
+  <div class="bg-gray-100 rounded-2xl p-5 mb-6 text-center">
+    <p class="text-3xl mb-2">🙋</p>
+    <p class="text-lg font-bold text-gray-700">มีปัญหาหรือสงสัย?</p>
+    <p class="text-base text-gray-500 mt-1">ติดต่อผู้ดูแลโครงการ</p>
+  </div>
+
+</main>
+
+<!-- Floating back button -->
+<a href="volunteer.html"
+  class="no-print fixed bottom-6 right-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center text-2xl active:scale-95 transition-transform z-50">
+  ←
+</a>
+
+</body>
+</html>

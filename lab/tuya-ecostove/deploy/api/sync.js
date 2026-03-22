@@ -400,12 +400,13 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
 async function closeSession(sbUrl, sbKey, session, closeReason) {
   try {
     // Query pollution_logs for this session (prefer session_id, fallback to time range)
+    const logSelect = 'pm25_value,pm10_value,co2_value,temperature,humidity,recorded_at';
     const logsUrl = session.id
-      ? sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + session.id + '&select=pm25_value,pm10_value,co2_value,temperature,humidity'
+      ? sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + session.id + '&select=' + logSelect
       : sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
         '&recorded_at=gte.' + encodeURIComponent(session.started_at) +
         '&recorded_at=lte.' + encodeURIComponent(new Date().toISOString()) +
-        '&select=pm25_value,pm10_value,co2_value,temperature,humidity';
+        '&select=' + logSelect;
     const logs = await fetch(logsUrl, { headers: sbHeaders(sbKey) });
     if (!logs.ok) {
       console.error('closeSession: failed to fetch logs for session ' + session.id + ', status=' + logs.status);
@@ -427,6 +428,22 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
     const co2s = vals('co2_value');
     const temps = vals('temperature');
     const hums = vals('humidity');
+
+    // Compute baseline-adjusted averages (cooking phase only, minus baseline)
+    let adjustedPm25 = null, adjustedCo2 = null, adjustedTemp = null, adjustedHum = null;
+    if (session.baseline_ended_at) {
+      const cookingData = data.filter(d => d.recorded_at && d.recorded_at >= session.baseline_ended_at);
+      if (cookingData.length > 0) {
+        const cookPm25 = avg(cookingData.map(d => d.pm25_value).filter(v => v != null));
+        const cookCo2 = avg(cookingData.map(d => d.co2_value).filter(v => v != null));
+        const cookTemp = avg(cookingData.map(d => d.temperature).filter(v => v != null));
+        const cookHum = avg(cookingData.map(d => d.humidity).filter(v => v != null));
+        adjustedPm25 = cookPm25 != null && session.baseline_avg_pm25 != null ? Math.max(0, cookPm25 - session.baseline_avg_pm25) : cookPm25;
+        adjustedCo2 = cookCo2 != null && session.baseline_avg_co2 != null ? Math.max(0, cookCo2 - session.baseline_avg_co2) : cookCo2;
+        adjustedTemp = cookTemp != null && session.baseline_avg_temperature != null ? Math.max(0, cookTemp - session.baseline_avg_temperature) : cookTemp;
+        adjustedHum = cookHum != null && session.baseline_avg_humidity != null ? Math.max(0, cookHum - session.baseline_avg_humidity) : cookHum;
+      }
+    }
 
     const isComplete = data.length >= 24;
 
@@ -458,6 +475,10 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
       avg_co2: avg(co2s),
       avg_temperature: avg(temps),
       avg_humidity: avg(hums),
+      adjusted_avg_pm25: adjustedPm25,
+      adjusted_avg_co2: adjustedCo2,
+      adjusted_avg_temperature: adjustedTemp,
+      adjusted_avg_humidity: adjustedHum,
       notes: finalNotes,
       updated_at: new Date().toISOString(),
     };
@@ -531,6 +552,10 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
       avg_co2: avgOf(completed, 'avg_co2'),
       avg_temperature: avgOf(completed, 'avg_temperature'),
       avg_humidity: avgOf(completed, 'avg_humidity'),
+      adjusted_avg_pm25: avgOf(completed, 'adjusted_avg_pm25'),
+      adjusted_avg_co2: avgOf(completed, 'adjusted_avg_co2'),
+      adjusted_avg_temperature: avgOf(completed, 'adjusted_avg_temperature'),
+      adjusted_avg_humidity: avgOf(completed, 'adjusted_avg_humidity'),
       stove_type: stoveType || null,
       project_id: projectId || null,
       updated_at: new Date().toISOString(),

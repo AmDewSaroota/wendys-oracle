@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สติกเกอร์คู่มือเซนเซอร์</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap');
+
+  body {
+    margin: 0;
+    padding: 40px;
+    background: #f0f0f0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    font-family: 'Sarabun', sans-serif;
+  }
+
+  /* ===== สติกเกอร์คู่มือ ===== */
+  .guide-sticker {
+    width: 85mm;
+    height: 54mm;
+    background: white;
+    border-radius: 4mm;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header strip */
+  .gs-header {
+    background: linear-gradient(135deg, #065f46, #059669);
+    color: white;
+    padding: 2.5mm 4mm;
+    display: flex;
+    align-items: center;
+    gap: 2mm;
+  }
+  .gs-header .gs-icon { font-size: 14pt; }
+  .gs-header .gs-title {
+    font-size: 9pt;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+  }
+  .gs-header .gs-subtitle {
+    font-size: 6pt;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+
+  /* Body */
+  .gs-body {
+    flex: 1;
+    padding: 2mm 3.5mm 1.5mm 3.5mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* Rows */
+  .gs-row {
+    display: flex;
+    align-items: center;
+    gap: 2mm;
+    padding: 0.6mm 0;
+  }
+  .gs-row:not(:last-child) {
+    border-bottom: 0.3px solid #e5e7eb;
+  }
+
+  .gs-press {
+    flex-shrink: 0;
+    width: 18mm;
+    font-size: 7pt;
+    font-weight: 700;
+    color: #065f46;
+    display: flex;
+    align-items: center;
+    gap: 1mm;
+  }
+  .gs-press .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5mm;
+    height: 4.5mm;
+    background: #065f46;
+    color: white;
+    border-radius: 50%;
+    font-size: 6.5pt;
+    font-weight: 800;
+  }
+  .gs-press .hold-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3mm 1.5mm;
+    background: #065f46;
+    color: white;
+    border-radius: 2mm;
+    font-size: 5.5pt;
+    font-weight: 800;
+  }
+
+  .gs-desc {
+    flex: 1;
+    font-size: 7pt;
+    color: #374151;
+    font-weight: 600;
+  }
+  .gs-desc .warn {
+    color: #b45309;
+    font-size: 5.5pt;
+    font-weight: 600;
+  }
+
+  /* Footer note */
+  .gs-footer {
+    background: #f0fdf4;
+    padding: 1.5mm 3.5mm;
+    display: flex;
+    gap: 3mm;
+    font-size: 5.5pt;
+    color: #065f46;
+    font-weight: 600;
+    border-top: 0.5px solid #d1fae5;
+  }
+  .gs-footer span { white-space: nowrap; }
+
+  /* ===== Print ===== */
+  @media print {
+    body {
+      background: white;
+      padding: 0;
+      margin: 0;
+      gap: 4mm;
+    }
+    .guide-sticker {
+      box-shadow: none;
+      border: 0.3px dashed #ccc;
+      page-break-inside: avoid;
+    }
+    @page { size: A4; margin: 10mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- สติกเกอร์ 1 -->
+<div class="guide-sticker">
+  <div class="gs-header">
+    <span class="gs-icon">🌿</span>
+    <div>
+      <div class="gs-title">วิธีใช้เซนเซอร์ — ปุ่มเดียว</div>
+      <div class="gs-subtitle">Biomass Stove · MT13W Air Quality Detector</div>
+    </div>
+  </div>
+  <div class="gs-body">
+    <div class="gs-row">
+      <div class="gs-press"><span class="hold-badge">ค้าง 3 วิ</span></div>
+      <div class="gs-desc">เปิด / ปิดเครื่อง</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">1</span> ครั้ง</div>
+      <div class="gs-desc">เปลี่ยน °C / °F</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">2</span> ครั้ง</div>
+      <div class="gs-desc">เปิด / ปิดเสียงเตือน</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">3</span> ครั้ง</div>
+      <div class="gs-desc">ปรับเทียบค่า <span class="warn">(รอ 60 วินาที)</span></div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">4</span> ครั้ง</div>
+      <div class="gs-desc">หน้าจอเปิดตลอด</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">5</span> ครั้ง</div>
+      <div class="gs-desc">จับคู่ WiFi ใหม่ <span class="warn">(ปกติไม่ต้องกด)</span></div>
+    </div>
+  </div>
+  <div class="gs-footer">
+    <span>⏱ เปิดเครื่องรอ 10 นาทีก่อนใช้งาน</span>
+    <span>🔌 ชาร์จ USB-C</span>
+    <span>🔋 ~15 ชม.</span>
+  </div>
+</div>
+
+<!-- ก๊อปเพิ่มได้ — สติกเกอร์ 2-10 -->
+<div class="guide-sticker">
+  <div class="gs-header">
+    <span class="gs-icon">🌿</span>
+    <div>
+      <div class="gs-title">วิธีใช้เซนเซอร์ — ปุ่มเดียว</div>
+      <div class="gs-subtitle">Biomass Stove · MT13W Air Quality Detector</div>
+    </div>
+  </div>
+  <div class="gs-body">
+    <div class="gs-row">
+      <div class="gs-press"><span class="hold-badge">ค้าง 3 วิ</span></div>
+      <div class="gs-desc">เปิด / ปิดเครื่อง</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">1</span> ครั้ง</div>
+      <div class="gs-desc">เปลี่ยน °C / °F</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">2</span> ครั้ง</div>
+      <div class="gs-desc">เปิด / ปิดเสียงเตือน</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">3</span> ครั้ง</div>
+      <div class="gs-desc">ปรับเทียบค่า <span class="warn">(รอ 60 วินาที)</span></div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">4</span> ครั้ง</div>
+      <div class="gs-desc">หน้าจอเปิดตลอด</div>
+    </div>
+    <div class="gs-row">
+      <div class="gs-press"><span class="num">5</span> ครั้ง</div>
+      <div class="gs-desc">จับคู่ WiFi ใหม่ <span class="warn">(ปกติไม่ต้องกด)</span></div>
+    </div>
+  </div>
+  <div class="gs-footer">
+    <span>⏱ เปิดเครื่องรอ 10 นาทีก่อนใช้งาน</span>
+    <span>🔌 ชาร์จ USB-C</span>
+    <span>🔋 ~15 ชม.</span>
+  </div>
+</div>
+
+</body>
+</html>
