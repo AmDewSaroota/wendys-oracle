@@ -6,16 +6,10 @@
  * Returns: { valid, role, adminId, adminName, adminEmail }
  */
 
-const crypto = require('crypto');
-
-function hashPin(pin) {
-  return crypto.createHash('sha256').update(pin).digest('hex');
-}
+const { hashPin, timingSafeCompare, corsHeaders, sbHeaders } = require('./_auth');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  corsHeaders(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -31,15 +25,14 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Look up admin by email
     const userRes = await fetch(
-      sbUrl + '/rest/v1/admin_users?email=ilike.' + encodeURIComponent(email) + '&select=id,name,email,role,pin_hash&limit=1',
-      { headers: { 'apikey': sbKey, 'Authorization': 'Bearer ' + sbKey } }
+      sbUrl + '/rest/v1/admin_users?email=eq.' + encodeURIComponent(email.toLowerCase().trim()) + '&select=id,name,email,role,pin_hash&limit=1',
+      { headers: sbHeaders(sbKey) }
     );
     const users = userRes.ok ? await userRes.json() : [];
 
     if (users.length === 0) {
-      return res.status(401).json({ valid: false, error: 'ไม่พบ Email นี้ในระบบ' });
+      return res.status(401).json({ valid: false, error: 'Email หรือ PIN ไม่ถูกต้อง' });
     }
 
     const admin = users[0];
@@ -49,8 +42,8 @@ module.exports = async function handler(req, res) {
     }
 
     const hash = pinHash || hashPin(pin);
-    if (hash !== admin.pin_hash) {
-      return res.status(401).json({ valid: false, error: 'PIN ไม่ถูกต้อง' });
+    if (!timingSafeCompare(hash, admin.pin_hash)) {
+      return res.status(401).json({ valid: false, error: 'Email หรือ PIN ไม่ถูกต้อง' });
     }
 
     return res.status(200).json({

@@ -441,7 +441,17 @@ async function createSession(sbUrl, sbKey, deviceId, stoveType, houseId, project
     headers: { ...sbHeaders(sbKey), 'Prefer': 'return=representation' },
     body: JSON.stringify(record),
   });
-  if (res.ok) {
+  if (!res.ok) {
+    const errText = await res.text();
+    // Unique constraint violation = race condition blocked at DB level
+    if (errText.includes('duplicate') || errText.includes('unique') || errText.includes('23505')) {
+      console.log('[createSession] duplicate blocked by constraint for', deviceId);
+      return null;
+    }
+    console.error('[createSession] insert failed:', errText);
+    return null;
+  }
+  {
     const result = await res.json();
     const created = result[0];
     // Post-check: if another cron snuck in, rollback this session
@@ -494,28 +504,35 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
     const avg = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
 
     const pm25s = vals('pm25_value');
+    const pm10s = vals('pm10_value');
     const co2s = vals('co2_value');
     const cos = vals('co_value');
     const temps = vals('temperature');
     const hums = vals('humidity');
 
     // Compute baseline-adjusted averages (cooking phase only, minus baseline)
-    let adjustedPm25 = null, adjustedCo2 = null, adjustedTemp = null, adjustedHum = null;
+    let adjustedPm25 = null, adjustedPm10 = null, adjustedCo2 = null, adjustedTemp = null, adjustedHum = null;
     if (session.baseline_ended_at) {
       const cookingData = data.filter(d => d.recorded_at && d.recorded_at >= session.baseline_ended_at);
       if (cookingData.length > 0) {
         const cookPm25 = avg(cookingData.map(d => d.pm25_value).filter(v => v != null));
+        const cookPm10 = avg(cookingData.map(d => d.pm10_value).filter(v => v != null));
         const cookCo2 = avg(cookingData.map(d => d.co2_value).filter(v => v != null));
         const cookTemp = avg(cookingData.map(d => d.temperature).filter(v => v != null));
         const cookHum = avg(cookingData.map(d => d.humidity).filter(v => v != null));
         adjustedPm25 = cookPm25 != null && session.baseline_avg_pm25 != null ? Math.max(0, cookPm25 - session.baseline_avg_pm25) : cookPm25;
+        adjustedPm10 = cookPm10 != null && session.baseline_avg_pm10 != null ? Math.max(0, cookPm10 - session.baseline_avg_pm10) : cookPm10;
         adjustedCo2 = cookCo2 != null && session.baseline_avg_co2 != null ? Math.max(0, cookCo2 - session.baseline_avg_co2) : cookCo2;
         adjustedTemp = cookTemp != null && session.baseline_avg_temperature != null ? Math.max(0, cookTemp - session.baseline_avg_temperature) : cookTemp;
         adjustedHum = cookHum != null && session.baseline_avg_humidity != null ? Math.max(0, cookHum - session.baseline_avg_humidity) : cookHum;
       }
     }
 
-    const isComplete = data.length >= 24;
+    // S-C4 fix: count only post-baseline readings for completeness
+    const postBaselineData = session.baseline_ended_at
+      ? data.filter(d => d.recorded_at && d.recorded_at >= session.baseline_ended_at)
+      : data;
+    const isComplete = postBaselineData.length >= 24;
 
     // Check if Tuya API errors were tracked during this session
     const tuyaErrorMatch = ((session.notes || '').match(/tuya_api_errors:(\d+)/) || []);
@@ -538,15 +555,17 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
       session_status: isComplete ? 'complete' : 'incomplete',
       ended_at: new Date().toISOString(),
       collection_ended_at: new Date().toISOString(),
-      readings_count: data.length,
+      readings_count: postBaselineData.length,
       avg_pm25: avg(pm25s),
       max_pm25: pm25s.length ? Math.max(...pm25s) : null,
       min_pm25: pm25s.length ? Math.min(...pm25s) : null,
+      avg_pm10: avg(pm10s),
       avg_co2: avg(co2s),
       avg_co: avg(cos),
       avg_temperature: avg(temps),
       avg_humidity: avg(hums),
       adjusted_avg_pm25: adjustedPm25,
+      adjusted_avg_pm10: adjustedPm10,
       adjusted_avg_co2: adjustedCo2,
       adjusted_avg_temperature: adjustedTemp,
       adjusted_avg_humidity: adjustedHum,

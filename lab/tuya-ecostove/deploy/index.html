@@ -1630,6 +1630,7 @@
         // HTML sanitize helper — prevent XSS from DB data
         function esc(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
         function escAttr(str) { return esc(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
+        function getThaiToday() { return new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10); }
         function debounce(fn, ms) { let t; return function(...a) { clearTimeout(t); t = setTimeout(() => fn.apply(this, a), ms); }; }
         const _debouncedOverview = debounce(() => renderOverviewTable(), 250);
         const _debouncedVolunteers = debounce(() => renderVolunteersList(), 250);
@@ -2634,7 +2635,7 @@
 
         async function loadRegisteredSensors() {
             try {
-                const { data, error } = await supabaseClient.from('registered_sensors').select('*').order('created_at');
+                const { data, error } = await supabaseClient.from('registered_sensors').select('*').order('name');
                 if (!error && data) {
                     KNOWN_SENSORS = data.map(s => ({
                         tuyaId: s.tuya_device_id,
@@ -3090,7 +3091,7 @@
             overlay.onclick = () => { overlay.remove(); popup.remove(); };
             const popup = document.createElement('div');
             popup.className = 'info-popup';
-            popup.innerHTML = '<span class="close-pop" onclick="this.parentElement.previousElementSibling.remove(); this.parentElement.remove();">×</span><h5>' + title + '</h5>' + content.split('\n').map(l => '<div>' + l + '</div>').join('');
+            popup.innerHTML = '<span class="close-pop" onclick="this.parentElement.previousElementSibling.remove(); this.parentElement.remove();">×</span><h5>' + esc(title) + '</h5>' + content.split('\n').map(l => '<div>' + esc(l) + '</div>').join('');
             // Position near the button
             const rect = btn.getBoundingClientRect();
             document.body.appendChild(overlay);
@@ -3605,36 +3606,44 @@
             if (currentAdminRole !== 'super') return;
             const container = document.getElementById('admins-list');
             if (!container) return;
-            const { data: admins } = await supabaseClient.from('admin_users').select('*').order('created_at');
-            if (!admins || admins.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 text-center py-8">' + t('admin.no.data') + '</p>';
-                return;
-            }
-            container.innerHTML = admins.map(a => {
-                const canManage = currentAdminRole === 'super';
-                return `
-                <div class="card-styled p-6 rounded-2xl">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-bold text-lg text-navy">${a.name}</h4>
-                            <p class="text-sm text-slate-500 mt-1">${a.email}</p>
-                            <span class="inline-block mt-2 text-[11px] px-3 py-1 rounded-full font-bold ${a.role === 'super' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">
-                                ${a.role === 'super' ? t('admin.role.super') : t('admin.role.admin')}
-                            </span>
-                        </div>
-                        ${canManage ? `
-                            <div class="flex gap-1 shrink-0 flex-wrap justify-end">
-                                ${String(a.id) !== String(currentAdminId) ? `
-                                <button onclick="toggleAdminRole(${a.id}, '${a.name}', '${a.role}')" class="${a.role === 'super' ? 'text-blue-600 hover:bg-blue-50' : 'text-amber-600 hover:bg-amber-50'} text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${a.role === 'super' ? t('admin.demote') : t('admin.promote')}</button>
-                                <button onclick="resetAdminPin(${a.id}, '${a.name}')" class="text-emerald-600 hover:bg-emerald-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.reset.pin')}</button>
-                                <button onclick="deleteAdmin(${a.id}, '${a.name}')" class="text-red-500 hover:bg-red-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.delete.btn')}</button>
-                                ` : ''}
+            try {
+                const resp = await fetch('/api/admin/list', {
+                    headers: { 'X-Admin-ID': currentAdminId, 'X-Admin-PIN': getStoredPin() }
+                });
+                const result = await resp.json();
+                const admins = result.admins || [];
+                if (!admins.length) {
+                    container.innerHTML = '<p class="text-slate-400 text-center py-8">' + t('admin.no.data') + '</p>';
+                    return;
+                }
+                container.innerHTML = admins.map(a => {
+                    const canManage = currentAdminRole === 'super';
+                    return `
+                    <div class="card-styled p-6 rounded-2xl">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-lg text-navy">${esc(a.name)}</h4>
+                                <p class="text-sm text-slate-500 mt-1">${esc(a.email)}</p>
+                                <span class="inline-block mt-2 text-[11px] px-3 py-1 rounded-full font-bold ${a.role === 'super' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">
+                                    ${a.role === 'super' ? t('admin.role.super') : t('admin.role.admin')}
+                                </span>
                             </div>
-                        ` : ''}
-                    </div>
-                    <p class="text-[11px] text-slate-400 mt-3">${t('admin.registered')} ${fmtDateDMY(a.created_at)}</p>
-                </div>`;
-            }).join('');
+                            ${canManage ? `
+                                <div class="flex gap-1 shrink-0 flex-wrap justify-end">
+                                    ${String(a.id) !== String(currentAdminId) ? `
+                                    <button onclick="toggleAdminRole(${a.id}, '${escAttr(a.name)}', '${a.role}')" class="${a.role === 'super' ? 'text-blue-600 hover:bg-blue-50' : 'text-amber-600 hover:bg-amber-50'} text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${a.role === 'super' ? t('admin.demote') : t('admin.promote')}</button>
+                                    <button onclick="resetAdminPin(${a.id}, '${escAttr(a.name)}')" class="text-emerald-600 hover:bg-emerald-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.reset.pin')}</button>
+                                    <button onclick="deleteAdmin(${a.id}, '${escAttr(a.name)}')" class="text-red-500 hover:bg-red-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.delete.btn')}</button>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-3">${t('admin.registered')} ${fmtDateDMY(a.created_at)}</p>
+                    </div>`;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = '<p class="text-red-400 text-center py-8">Load failed</p>';
+            }
         }
 
         function deleteAdmin(id, name) {
@@ -3811,12 +3820,12 @@
             showModal(`
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 ${confirmColor === 'red' ? 'bg-red-100' : confirmColor === 'amber' ? 'bg-amber-100' : 'bg-emerald-100'} rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">${icon}</div>
-                    <h3 class="text-xl font-bold text-navy">${title}</h3>
-                    <p class="text-sm text-slate-500 mt-2">${message}</p>
+                    <h3 class="text-xl font-bold text-navy">${esc(title)}</h3>
+                    <p class="text-sm text-slate-500 mt-2">${esc(message)}</p>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
-                    <button id="modal-confirm-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all ${confirmColor === 'red' ? 'bg-red-600 hover:bg-red-700' : confirmColor === 'amber' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700'}">${confirmText}</button>
+                    <button id="modal-confirm-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all ${confirmColor === 'red' ? 'bg-red-600 hover:bg-red-700' : confirmColor === 'amber' ? 'bg-amber-600 hover:bg-amber-700' : 'bg-emerald-600 hover:bg-emerald-700'}">${esc(confirmText)}</button>
                 </div>
             `);
             document.getElementById('modal-confirm-btn').onclick = () => { closeModal(); onConfirm(); };
@@ -3826,10 +3835,10 @@
             showModal(`
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 ${confirmColor === 'amber' ? 'bg-amber-100' : 'bg-emerald-100'} rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">${icon}</div>
-                    <h3 class="text-xl font-bold text-navy">${title}</h3>
+                    <h3 class="text-xl font-bold text-navy">${esc(title)}</h3>
                 </div>
                 <div class="relative mb-6">
-                    <input type="${inputType}" id="modal-input" placeholder="${placeholder}" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center ${inputType === 'password' ? 'font-mono tracking-[0.3em] pr-14' : ''}" onkeyup="if(event.key==='Enter') document.getElementById('modal-confirm-btn')?.click()">
+                    <input type="${escAttr(inputType)}" id="modal-input" placeholder="${escAttr(placeholder)}" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-emerald-500 text-lg text-center ${inputType === 'password' ? 'font-mono tracking-[0.3em] pr-14' : ''}" onkeyup="if(event.key==='Enter') document.getElementById('modal-confirm-btn')?.click()">
                     ${inputType === 'password' ? '<button type="button" onclick="togglePinVis(\'modal-input\', this)" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xl select-none" tabindex="-1">🔒</button>' : ''}
                 </div>
                 <div class="flex gap-3">
@@ -4326,7 +4335,7 @@
 
         async function loadTodaySummary() {
             try {
-                let targetDate = new Date().toISOString().slice(0, 10);
+                let targetDate = getThaiToday();
 
                 // Try today first, fallback to latest date with data
                 const projDevIds = getProjectDeviceIds(getActiveProjectFilter());
@@ -5631,7 +5640,7 @@
         let adminLoaded = false;
         async function loadApiQuota() {
             try {
-                const month = new Date().toISOString().slice(0, 7);
+                const month = getThaiToday().slice(0, 7);
                 const { data, error } = await supabaseClient.from('api_quota').select('*').eq('month', month).limit(1);
                 if (error || !data) return; // table may not exist
                 const bar = document.getElementById('api-quota-bar');
@@ -6364,7 +6373,7 @@
         function renderHolidaysList() {
             const list = document.getElementById('holidays-list');
             if (!list) return;
-            const today = new Date().toISOString().slice(0, 10);
+            const today = getThaiToday();
             const upcoming = syncHolidays.filter(h => h.holiday_date >= today);
             if (upcoming.length === 0) {
                 list.innerHTML = '<p class="text-xs text-slate-400">' + t('holiday.none') + '</p>';
@@ -6482,7 +6491,7 @@
             const container = document.getElementById('periods-list');
             if (!container) return;
 
-            const today = new Date().toISOString().slice(0, 10);
+            const today = getThaiToday();
             const subjectMap = {};
             for (const s of subjects) subjectMap[s.id] = s.full_name || s.id;
 
@@ -6715,7 +6724,7 @@
         function getHousePeriodStatus(subjectId) {
             const periods = collectionPeriods.filter(p => p.subject_id === subjectId);
             if (!periods.length) return null;
-            const today = new Date().toISOString().slice(0, 10);
+            const today = getThaiToday();
             const active = periods.find(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
             if (active) return { label: active.stove_type === 'old' ? 'เตาดั้งเดิม' : 'เตาชีวมวล', active: true, stove: active.stove_type, ends: active.ends_at };
             const latest = periods[0]; // sorted desc
@@ -7633,7 +7642,7 @@
             const sensorOptions = availableSensors.map(s => `<option value="${escAttr(s.tuyaId)}">${esc(s.name)}</option>`).join('');
             // Hide houses that already have a sensor linked (1 house = 1 sensor)
             const assignedSubjectIds = devices.filter(d => d.subject_id).map(d => String(d.subject_id));
-            const availableSubjects = subjects.filter(s => !assignedSubjectIds.includes(String(s.id)));
+            const availableSubjects = subjects.filter(s => s.has_sensor && !assignedSubjectIds.includes(String(s.id)));
             const houseOptions = availableSubjects.length
                 ? availableSubjects.map(s => `<option value="${s.id}">${esc(s.full_name)}</option>`).join('')
                 : `<option value="" disabled>${t('dev.no.house')}</option>`;
@@ -8182,8 +8191,8 @@
                     const icon = L.divIcon({ html: '<div style="background:#10b981;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">📡</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
                     const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : s.connectivity === 'hotspot' ? '📱 Hotspot' : '';
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
-                        '<b>📡 ' + s.full_name + '</b>' +
-                        '<br><span style="color:#10b981;font-weight:bold">🔧 ' + deviceName + '</span>' +
+                        '<b>📡 ' + esc(s.full_name) + '</b>' +
+                        '<br><span style="color:#10b981;font-weight:bold">🔧 ' + esc(deviceName) + '</span>' +
                         (connLabel ? '<br>' + connLabel : '') +
                         '<br><span style="color:#10b981">✅ ' + t('sub.has.sensor') + ' + ' + t('map.stove.installed') + '</span>'
                     ));
@@ -8191,7 +8200,7 @@
                     stoveCount++;
                     const icon = L.divIcon({ html: '<div style="background:#f97316;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔥</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
-                        '<b>🏠 ' + s.full_name + '</b>' +
+                        '<b>🏠 ' + esc(s.full_name) + '</b>' +
                         '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>'
                     ));
                 }
@@ -8289,8 +8298,8 @@
                     const color = pm25HexColor(avgPm25);
                     const label = avgPm25 != null ? avgPm25 : '\u2014';
                     const icon = L.divIcon({ html: '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">' + label + '</div>', iconSize: [32, 32], iconAnchor: [16, 16], className: '' });
-                    const popup = '<b>' + s.full_name + '</b>' +
-                        '<br>🔧 ' + deviceName +
+                    const popup = '<b>' + esc(s.full_name) + '</b>' +
+                        '<br>🔧 ' + esc(deviceName) +
                         '<br>PM2.5: <b style="color:' + color + '">' + (avgPm25 != null ? avgPm25 + ' \u00b5g/m\u00b3' : '\u2014') + '</b>' +
                         (avgCo2 != null ? '<br>CO\u2082: <b>' + avgCo2 + ' ppm</b>' : '') +
                         '<br>' + t('map.sessions') + ': ' + sessCount;
@@ -8299,9 +8308,9 @@
                     const icon = L.divIcon({ html: '<div style="background:#f97316;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔥</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
                     const volunteer = s.volunteers?.full_name || '-';
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
-                        '<b>🏠 ' + s.full_name + '</b>' +
+                        '<b>🏠 ' + esc(s.full_name) + '</b>' +
                         '<br><span style="color:#f97316">' + t('sub.stove.only') + '</span>' +
-                        '<br>' + t('map.volunteer') + ': ' + volunteer
+                        '<br>' + t('map.volunteer') + ': ' + esc(volunteer)
                     ));
                 }
             });

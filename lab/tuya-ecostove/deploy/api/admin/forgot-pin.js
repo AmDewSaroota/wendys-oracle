@@ -6,16 +6,10 @@
  * No auth required (user forgot their PIN)
  */
 
-const crypto = require('crypto');
-
-function hashPin(pin) {
-  return crypto.createHash('sha256').update(pin).digest('hex');
-}
+const { hashPin, timingSafeCompare, corsHeaders, sbHeaders } = require('./_auth');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  corsHeaders(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -25,11 +19,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Server misconfigured' });
   }
 
-  const headers = {
-    'apikey': sbKey,
-    'Authorization': 'Bearer ' + sbKey,
-    'Content-Type': 'application/json',
-  };
+  const headers = sbHeaders(sbKey);
 
   const { email, recoveryCode, newPin } = req.body || {};
   if (!email || !recoveryCode || !newPin) {
@@ -40,15 +30,14 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Look up admin by email
     const userRes = await fetch(
-      sbUrl + '/rest/v1/admin_users?email=ilike.' + encodeURIComponent(email) + '&select=id,name,email,recovery_code&limit=1',
+      sbUrl + '/rest/v1/admin_users?email=eq.' + encodeURIComponent(email.toLowerCase().trim()) + '&select=id,name,email,recovery_code&limit=1',
       { headers }
     );
     const users = userRes.ok ? await userRes.json() : [];
 
     if (users.length === 0) {
-      return res.status(401).json({ error: 'ไม่พบ Email นี้ในระบบ' });
+      return res.status(401).json({ error: 'ข้อมูลไม่ถูกต้อง' });
     }
 
     const admin = users[0];
@@ -57,18 +46,17 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'ยังไม่มี Recovery Code — กรุณาติดต่อ Super Admin' });
     }
 
-    // Compare recovery code (case-insensitive)
-    if (recoveryCode.trim().toUpperCase() !== admin.recovery_code.toUpperCase()) {
-      return res.status(401).json({ error: 'Recovery Code ไม่ถูกต้อง' });
+    if (!timingSafeCompare(recoveryCode.trim().toUpperCase(), admin.recovery_code.toUpperCase())) {
+      return res.status(401).json({ error: 'ข้อมูลไม่ถูกต้อง' });
     }
 
-    // Update PIN
+    // Update PIN + nullify recovery code (A-C3: prevent reuse)
     const updateRes = await fetch(
       sbUrl + '/rest/v1/admin_users?id=eq.' + admin.id,
       {
         method: 'PATCH',
         headers: { ...headers, 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ pin_hash: hashPin(newPin) }),
+        body: JSON.stringify({ pin_hash: hashPin(newPin), recovery_code: null }),
       }
     );
 
@@ -92,6 +80,6 @@ module.exports = async function handler(req, res) {
       message: 'ตั้ง PIN ใหม่สำเร็จ กรุณา Login ด้วย PIN ใหม่',
     });
   } catch (err) {
-    return res.status(500).json({ error: 'Internal error: ' + err.message });
+    return res.status(500).json({ error: 'Server error' });
   }
 };

@@ -47,7 +47,8 @@ function getThaiDate() {
 
 module.exports = async function handler(req, res) {
   // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const corsOrigin = process.env.CORS_ORIGIN || 'https://biomassstove.vercel.app';
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') { res.status(200).end(); return; }
@@ -91,6 +92,11 @@ module.exports = async function handler(req, res) {
       }
 
       const session = sessions[0];
+
+      // V-H5: Validate session belongs to claimed house
+      if (houseId && session.house_id && String(session.house_id) !== String(houseId)) {
+        return res.json({ ok: false, error: 'Session does not belong to this house' });
+      }
 
       // Already collecting? Handle retroactive cooking-start
       if (session.session_status === 'collecting') {

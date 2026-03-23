@@ -3,29 +3,13 @@
  * Self-register a new admin with invite code + personal PIN
  *
  * Body: { name, email, inviteCode, pin }
- * Auth: invite code (ไม่ต้อง login — ลงทะเบียนเองได้)
+ * Auth: invite code (no login required)
  */
 
-const crypto = require('crypto');
-
-function hashPin(pin) {
-  return crypto.createHash('sha256').update(pin).digest('hex');
-}
-
-function generateRecoveryCode() {
-  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  const bytes = crypto.randomBytes(8);
-  let code = '';
-  for (let i = 0; i < 8; i++) {
-    code += chars[bytes[i] % chars.length];
-  }
-  return code.slice(0, 4) + '-' + code.slice(4);
-}
+const { hashPin, generateRecoveryCode, corsHeaders, sbHeaders } = require('./_auth');
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  corsHeaders(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -45,11 +29,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Server misconfigured' });
   }
 
-  const headers = {
-    'apikey': sbKey,
-    'Authorization': 'Bearer ' + sbKey,
-    'Content-Type': 'application/json',
-  };
+  const headers = sbHeaders(sbKey);
 
   // Validate invite code — check DB first, fallback to env var
   let validCode = process.env.ADMIN_INVITE_CODE;
@@ -68,9 +48,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Check duplicate email
+    // Check duplicate email (normalized to lowercase)
+    const normalizedEmail = email.toLowerCase().trim();
     const checkRes = await fetch(
-      sbUrl + '/rest/v1/admin_users?email=eq.' + encodeURIComponent(email) + '&select=id',
+      sbUrl + '/rest/v1/admin_users?email=eq.' + encodeURIComponent(normalizedEmail) + '&select=id',
       { headers }
     );
     const existing = checkRes.ok ? await checkRes.json() : [];
@@ -83,12 +64,11 @@ module.exports = async function handler(req, res) {
     const insertRes = await fetch(sbUrl + '/rest/v1/admin_users', {
       method: 'POST',
       headers: { ...headers, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({ name, email, role: 'admin', pin_hash: hashPin(pin), recovery_code: recoveryCode }),
+      body: JSON.stringify({ name, email: normalizedEmail, role: 'admin', pin_hash: hashPin(pin), recovery_code: recoveryCode }),
     });
 
     if (!insertRes.ok) {
-      const errText = await insertRes.text();
-      return res.status(500).json({ error: 'Failed to insert: ' + errText });
+      return res.status(500).json({ error: 'Failed to register' });
     }
 
     return res.status(200).json({
@@ -97,6 +77,6 @@ module.exports = async function handler(req, res) {
       message: 'เพิ่ม ' + name + ' เป็น Admin สำเร็จ',
     });
   } catch (err) {
-    return res.status(500).json({ error: 'Internal error: ' + err.message });
+    return res.status(500).json({ error: 'Server error' });
   }
 };
