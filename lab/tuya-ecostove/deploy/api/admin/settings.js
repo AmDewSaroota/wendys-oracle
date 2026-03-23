@@ -41,7 +41,8 @@ module.exports = async function handler(req, res) {
       { headers }
     );
     const admins = verifyRes.ok ? await verifyRes.json() : [];
-    if (!admins.length || admins[0].pin_hash !== hashPin(pin)) {
+    // X-Admin-PIN is now a SHA-256 hash from client — compare directly
+    if (!admins.length || admins[0].pin_hash !== pin) {
       return res.status(401).json({ error: 'PIN ไม่ถูกต้อง' });
     }
 
@@ -65,7 +66,8 @@ module.exports = async function handler(req, res) {
       { headers }
     );
     const admins = verifyRes.ok ? await verifyRes.json() : [];
-    if (!admins.length || admins[0].pin_hash !== hashPin(pin)) {
+    // X-Admin-PIN is now a SHA-256 hash from client — compare directly
+    if (!admins.length || admins[0].pin_hash !== pin) {
       return res.status(401).json({ error: 'PIN ไม่ถูกต้อง' });
     }
     if (admins[0].role !== 'super') {

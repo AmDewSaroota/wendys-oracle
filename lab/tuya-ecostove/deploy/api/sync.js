@@ -16,6 +16,15 @@ function getThaiDate() {
   return d.toISOString().slice(0, 10);
 }
 
+// Convert Thai date to UTC boundary for DB queries
+// Thai midnight = previous day 17:00 UTC (e.g. Thai 2026-03-23 00:00 = 2026-03-22T17:00:00Z)
+function thaiDayStartUTC(thaiDate) {
+  return new Date(thaiDate + 'T00:00:00+07:00').toISOString();
+}
+function thaiDayEndUTC(thaiDate) {
+  return new Date(new Date(thaiDate + 'T00:00:00+07:00').getTime() + 86400000).toISOString();
+}
+
 const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
 // SESSION_GAP_MINUTES removed — sessions now close only on 130 min timer
 const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
@@ -59,8 +68,12 @@ async function loadSensors(sbUrl, sbKey) {
       for (const sp of spData) {
         projectMap[sp.subject_id] = sp.project_id;
       }
+    } else {
+      console.error('loadSensors: subject_projects query failed, status=' + spRes.status);
     }
-  } catch (_) {}
+  } catch (err) {
+    console.error('loadSensors: subject_projects error:', err.message);
+  }
 
   // 4. Get active collection periods per house (stove_type from period > sensor fallback)
   const periodMap = {}; // subject_id → stove_type
@@ -82,9 +95,13 @@ async function loadSensors(sbUrl, sbKey) {
         for (const p of periods) {
           if (!periodMap[p.subject_id]) periodMap[p.subject_id] = p.stove_type;
         }
+      } else {
+        console.error('loadSensors: collection_periods query failed, status=' + periodsRes.status);
       }
     }
-  } catch (_) {}
+  } catch (err) {
+    console.error('loadSensors: collection_periods error:', err.message);
+  }
 
   // 5. Build SENSORS array — stoveType from collection_period only
   return sensors.map(s => {
@@ -194,7 +211,7 @@ async function getBatchDeviceInfo(accessId, secret, token, deviceIds, appUserUid
   // DEBUG: log what Tuya returned vs what we're looking for
   map._debug = {
     tuyaReturned: tuyaDevices.length,
-    tuyaIds: tuyaDevices.map(d => d.id + ':' + (d.online ? 'ON' : 'OFF')),
+    tuyaIds: tuyaDevices.map(d => d.id + ':' + (d.online ? 'ON' : 'OFF') + ':' + (d.name || '')),
     lookingFor: deviceIds,
     matched: 0,
   };
@@ -279,7 +296,7 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId)
         const lastAge = (Date.now() - new Date(lastData[0].recorded_at).getTime()) / 60000;
         if (lastAge < 4.5) {
           console.log('insertLog dedup: skipping ' + deviceId + ', last log ' + lastAge.toFixed(1) + ' min ago');
-          return null;
+          return 'dedup';
         }
       }
     }
@@ -313,6 +330,13 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId)
     const result = await res.json();
     return result[0];
   }
+  // Log why insert failed
+  try {
+    const errText = await res.text();
+    console.error('insertLog FAILED for', deviceId, '| status:', res.status, '| body:', errText);
+  } catch (_) {
+    console.error('insertLog FAILED for', deviceId, '| status:', res.status);
+  }
   return null;
 }
 
@@ -321,7 +345,7 @@ async function getSessionCountToday(sbUrl, sbKey, deviceId) {
   const today = getThaiDate();
   const res = await fetch(
     sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
-    '&started_at=gte.' + today + 'T00:00:00Z&select=id',
+    '&started_at=gte.' + encodeURIComponent(thaiDayStartUTC(today)) + '&select=id',
     { headers: sbHeaders(sbKey) }
   );
   if (!res.ok) return 0;
@@ -373,7 +397,7 @@ async function getBatchLastClosedSessions(sbUrl, sbKey, deviceIds) {
 async function getBatchSessionCountToday(sbUrl, sbKey, deviceIds) {
   const today = getThaiDate();
   const res = await fetch(
-    sbUrl + '/rest/v1/sessions?device_id=in.(' + deviceIds.join(',') + ')&started_at=gte.' + today + 'T00:00:00Z&select=id,device_id',
+    sbUrl + '/rest/v1/sessions?device_id=in.(' + deviceIds.join(',') + ')&started_at=gte.' + encodeURIComponent(thaiDayStartUTC(today)) + '&select=id,device_id',
     { headers: sbHeaders(sbKey) }
   );
   if (!res.ok) return {};
@@ -445,7 +469,7 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
 async function closeSession(sbUrl, sbKey, session, closeReason) {
   try {
     // Query pollution_logs for this session — sensor only (exclude manual TVOC/CO entries)
-    const logSelect = 'pm25_value,pm10_value,co2_value,temperature,humidity,recorded_at';
+    const logSelect = 'pm25_value,pm10_value,co2_value,co_value,temperature,humidity,recorded_at';
     const logsUrl = session.id
       ? sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + session.id + '&data_source=eq.sensor&select=' + logSelect
       : sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
@@ -555,11 +579,12 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
 async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) {
   try {
     const today = getThaiDate();
-    // Use PostgREST and() operator to avoid duplicate param name issue
-    const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().slice(0, 10);
+    // Use Thai timezone-aware UTC boundaries (Thai midnight = prev day 17:00 UTC)
+    const dayStart = thaiDayStartUTC(today);
+    const dayEnd = thaiDayEndUTC(today);
     const res = await fetch(
       sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
-      '&and=(started_at.gte.' + today + 'T00:00:00Z,started_at.lt.' + tomorrow + 'T00:00:00Z)',
+      '&and=(started_at.gte.' + encodeURIComponent(dayStart) + ',started_at.lt.' + encodeURIComponent(dayEnd) + ')',
       { headers: sbHeaders(sbKey) }
     );
     if (!res.ok) {
@@ -677,7 +702,7 @@ async function loadSyncSchedule(sbUrl, sbKey) {
   }
 }
 
-async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId, cachedActive, projectId) {
+async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseId, cachedActive, projectId, cachedLastClosed, cachedCountToday) {
   try {
     const active = cachedActive !== undefined ? cachedActive : await getActiveSession(sbUrl, sbKey, deviceId);
 
@@ -744,16 +769,16 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
         return { action: active.session_status === 'baseline' ? 'baseline' : 'continued', sessionId: active.id, gapMinutes: gapMin > 10 ? gapMin : undefined };
       }
     } else {
-      // No active session — check cooldown from last closed session
-      const last = await getLastClosedSession(sbUrl, sbKey, deviceId);
+      // No active session — check cooldown from last closed session (use cached if available)
+      const last = cachedLastClosed !== undefined ? cachedLastClosed : await getLastClosedSession(sbUrl, sbKey, deviceId);
       if (last && last.ended_at) {
         const sinceEnded = (Date.now() - new Date(last.ended_at).getTime()) / 60000;
         if (sinceEnded < SESSION_COOLDOWN_MINUTES) {
           return { action: 'cooldown', minutesLeft: Math.round(SESSION_COOLDOWN_MINUTES - sinceEnded) };
         }
       }
-      // Daily limit check
-      const countToday = await getSessionCountToday(sbUrl, sbKey, deviceId);
+      // Daily limit check (use cached if available)
+      const countToday = cachedCountToday !== undefined ? cachedCountToday : await getSessionCountToday(sbUrl, sbKey, deviceId);
       if (countToday >= MAX_SESSIONS_PER_DAY) {
         return { action: 'daily-limit', sessionsToday: countToday };
       }
@@ -981,7 +1006,7 @@ module.exports = async function handler(req, res) {
       try {
         const isOnline = deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online;
 
-        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id], sensor.projectId);
+        const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id], sensor.projectId, closedMap[sensor.id] || null, countMap[sensor.id] || 0);
         const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
 
         if (skipActions.includes(session.action)) {
@@ -999,7 +1024,7 @@ module.exports = async function handler(req, res) {
 
         results.push({
           sensor: sensor.name,
-          status: inserted ? 'ok' : 'insert_failed',
+          status: inserted === 'dedup' ? 'dedup' : (inserted ? 'ok' : 'insert_failed'),
           pm25: readings.pm25_value,
           co2: readings.co2_value,
           temp: readings.temp_current,
@@ -1036,6 +1061,7 @@ module.exports = async function handler(req, res) {
       results,
     });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('sync handler error:', err.message, err.stack);
+    return res.status(500).json({ error: 'Internal sync error' });
   }
 };

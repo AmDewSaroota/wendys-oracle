@@ -382,7 +382,7 @@
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
                 <div class="flex items-center justify-between mb-3">
                     <h4 class="font-bold text-sm text-navy" data-i18n="sensor.title">📡 ค่าเซนเซอร์ล่าสุดแต่ละบ้าน</h4>
-                    <span class="text-[10px] text-slate-400 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="badge.ambient">🧹 หักค่าแวดล้อม (Ambient) แล้ว</span>
+                    <span class="text-[10px] text-slate-400 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200" data-i18n="badge.raw">📊 ค่าดิบจากเซนเซอร์</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
@@ -429,6 +429,12 @@
                 </div>
 
                 <div id="today-house-breakdown" class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px]"></div>
+                <div class="flex flex-wrap justify-center gap-x-5 gap-y-1 mt-3 text-[10px]">
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> <span class="text-blue-600" data-i18n="session.legend.online">กำลังเก็บข้อมูล</span></span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> <span class="text-amber-600" data-i18n="session.legend.partial">ออฟไลน์ / เสร็จบางส่วน</span></span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> <span class="text-emerald-600" data-i18n="session.legend.done">ครบ 2 รอบ</span></span>
+                    <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block"></span> <span class="text-slate-400" data-i18n="session.legend.waiting">รอเปิดเซนเซอร์</span></span>
+                </div>
             </div>
 
             <!-- 6. Map + Activity Feed -->
@@ -705,7 +711,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-center gap-3">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="overview.title">ภาพรวมระบบ</h3>
                     <div class="flex items-center gap-3">
-                        <input id="overview-search" type="text" oninput="renderOverviewTable()" data-i18n="overview.search" placeholder="🔍 ค้นหาบ้าน, อาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-48 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="overview-search" type="text" oninput="_debouncedOverview()" data-i18n="overview.search" placeholder="🔍 ค้นหาบ้าน, อาสา..." class="px-4 py-2 rounded-xl border text-[13px] w-48 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="loadAdminData(true)" class="text-[13px] px-4 py-2 rounded-xl bg-slate-100 text-slate-500 font-bold hover:bg-slate-200 transition-all" data-i18n="overview.refresh">🔄 รีเฟรช</button>
                     </div>
                 </div>
@@ -739,7 +745,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="vol.list">รายชื่ออาสาสมัคร</h3>
                     <div class="flex items-center gap-3">
-                        <input id="volunteers-search" type="text" oninput="renderVolunteersList()" placeholder="🔍 ค้นหาอาสา..." data-i18n="vol.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="volunteers-search" type="text" oninput="_debouncedVolunteers()" placeholder="🔍 ค้นหาอาสา..." data-i18n="vol.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="vol.add">+ เพิ่มอาสา</button>
                     </div>
                 </div>
@@ -762,7 +768,7 @@
                             <option value="linked" data-i18n="filter.sensor.linked">ผูกแล้ว</option>
                             <option value="unlinked" data-i18n="filter.sensor.unlinked">ยังไม่ผูก</option>
                         </select>
-                        <input id="subjects-search" type="text" oninput="renderSubjectsList()" placeholder="🔍 ค้นหาบ้าน..." data-i18n="sub.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="subjects-search" type="text" oninput="_debouncedSubjects()" placeholder="🔍 ค้นหาบ้าน..." data-i18n="sub.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="sub.add">+ เพิ่มบ้าน</button>
                     </div>
                 </div>
@@ -783,7 +789,7 @@
                             <option value="inactive" data-i18n="dev.filter.inactive">ปิดใช้งาน</option>
                             <option value="unassigned" data-i18n="dev.filter.unassigned">ยังไม่ผูกบ้าน</option>
                         </select>
-                        <input id="devices-search" type="text" oninput="renderDevicesList()" placeholder="🔍 ค้นหาอุปกรณ์..." data-i18n="dev.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
+                        <input id="devices-search" type="text" oninput="_debouncedDevices()" placeholder="🔍 ค้นหาอุปกรณ์..." data-i18n="dev.search" class="px-4 py-2 rounded-xl border text-[13px] w-44 focus:outline-none focus:ring-2 focus:ring-emerald-200">
                         <button onclick="discoverTuyaDevices()" class="bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-600 transition-all" data-i18n="dev.tuya.discover">🔍 ค้นหาจาก Tuya Cloud</button>
                         <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ ผูกเซนเซอร์กับบ้าน</button>
                     </div>
@@ -1594,6 +1600,11 @@
         // HTML sanitize helper — prevent XSS from DB data
         function esc(str) { const d = document.createElement('div'); d.textContent = str ?? ''; return d.innerHTML; }
         function escAttr(str) { return esc(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
+        function debounce(fn, ms) { let t; return function(...a) { clearTimeout(t); t = setTimeout(() => fn.apply(this, a), ms); }; }
+        const _debouncedOverview = debounce(() => renderOverviewTable(), 250);
+        const _debouncedVolunteers = debounce(() => renderVolunteersList(), 250);
+        const _debouncedSubjects = debounce(() => renderSubjectsList(), 250);
+        const _debouncedDevices = debounce(() => renderDevicesList(), 250);
 
         const SUPABASE_URL = "https://zijybzjstjlqvhmckgor.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InppanliempzdGpscXZobWNrZ29yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjExOTYsImV4cCI6MjA4NDEzNzE5Nn0.XE3_EsMWsJ71T71JTURuVIHrFz7J7I2kfJb4zIcSeoA";
@@ -1605,11 +1616,16 @@
             if (!raw) return null;
             try { return JSON.parse(raw); } catch { return null; }
         }
-        function storeAdminSession(id, name, email, role, pin) {
-            sessionStorage.setItem('adminSession', JSON.stringify({ id, name, email, role, pin }));
+        async function hashPinClient(pin) {
+            const data = new TextEncoder().encode(pin);
+            const buf = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        function storeAdminSession(id, name, email, role, pinHash) {
+            sessionStorage.setItem('adminSession', JSON.stringify({ id, name, email, role, pinHash }));
         }
         function clearAdminSession() { sessionStorage.removeItem('adminSession'); }
-        function getStoredPin() { const s = getStoredAdmin(); return s ? s.pin : ''; }
+        function getStoredPin() { const s = getStoredAdmin(); return s ? (s.pinHash || s.pin || '') : ''; }
         function togglePinVis(id, btn) {
             const input = document.getElementById(id);
             if (!input) return;
@@ -1639,12 +1655,13 @@
         // Auto-login: check sessionStorage for stored admin session
         (async function autoLoginFromSession() {
             const session = getStoredAdmin();
-            if (!session || !session.email || !session.pin) return;
+            if (!session || !session.email || !(session.pinHash || session.pin)) return;
             try {
+                const hash = session.pinHash || await hashPinClient(session.pin);
                 const resp = await fetch('/api/admin/verify-pin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: session.email, pin: session.pin }),
+                    body: JSON.stringify({ email: session.email, pinHash: hash }),
                 });
                 const data = await resp.json();
                 if (resp.ok && data.valid) {
@@ -1843,6 +1860,10 @@
             'session.card.offline.data': { th: '{0} ค่า', en: '{0} readings' },
             'session.card.done.partial': { th: 'เสร็จ {0} รอบ', en: 'Done {0} session' },
             'session.card.waiting': { th: 'รอเปิด', en: 'Waiting' },
+            'session.legend.online': { th: 'กำลังเก็บข้อมูล', en: 'Collecting' },
+            'session.legend.partial': { th: 'ออฟไลน์ / เสร็จบางส่วน', en: 'Offline / Partial' },
+            'session.legend.done': { th: 'ครบ 2 รอบ', en: 'Done (2 sessions)' },
+            'session.legend.waiting': { th: 'รอเปิดเซนเซอร์', en: 'Waiting for sensor' },
             'session.all.devices': { th: 'ทุกเครื่อง', en: 'All devices' },
             'session.last.7d': { th: '7 วันล่าสุด', en: 'Last 7 days' },
             'session.last.30d': { th: '30 วันล่าสุด', en: 'Last 30 days' },
@@ -1899,6 +1920,7 @@
             'hero.info.fail': { th: 'เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่าแวดล้อม Ambient ออกแล้ว — ผลเบื้องต้นพบว่าเตาชีวมวลยังไม่ลดมลพิษตามเป้า', en: 'Comparing average PM2.5 while cooking after Ambient subtraction — preliminary results show biomass stove has not reduced pollution as targeted' },
             // Big number cards
             'badge.ambient': { th: '🧹 หักค่าแวดล้อม (Ambient) แล้ว', en: '🧹 Ambient-subtracted' },
+            'badge.raw': { th: '📊 ค่าดิบจากเซนเซอร์', en: '📊 Raw sensor values' },
             'card.temp.hum': { th: 'อุณหภูมิ / ความชื้น', en: 'Temp / Humidity' },
             'card.temp.hum.desc': { th: 'ค่าเฉลี่ยสภาพแวดล้อมขณะวัด', en: 'Average conditions during measurement' },
             'card.info.pm25': { th: 'PM2.5 คืออะไร?', en: 'What is PM2.5?' },
@@ -3291,7 +3313,7 @@
                             <p class="text-sm text-slate-500 mt-3">นี่คือ <strong>Recovery Code</strong> ส่วนตัว</p>
                             <p class="text-xs text-red-500 mt-1 font-bold">แสดงครั้งเดียว กรุณาจดบันทึกไว้!</p>
                         </div>
-                        <div class="bg-slate-900 text-white text-3xl font-mono tracking-[0.3em] text-center py-5 rounded-2xl mb-4 select-all cursor-pointer" onclick="navigator.clipboard.writeText('${data.recoveryCode}'); this.style.outline='3px solid #10b981'; setTimeout(()=>this.style.outline='',1000)">${data.recoveryCode}</div>
+                        <div class="bg-slate-900 text-white text-3xl font-mono tracking-[0.3em] text-center py-5 rounded-2xl mb-4 select-all cursor-pointer" onclick="navigator.clipboard.writeText('${escAttr(data.recoveryCode)}'); this.style.outline='3px solid #10b981'; setTimeout(()=>this.style.outline='',1000)">${esc(data.recoveryCode)}</div>
                         <p class="text-xs text-slate-400 text-center mb-6">คลิกเพื่อคัดลอก — ใช้รีเซ็ต PIN หากลืม</p>
                         <button onclick="closeModal(); promptAdmin()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">จดแล้ว → ไปหน้า Login</button>
                     `);
@@ -3333,8 +3355,9 @@
                     return;
                 }
 
-                // Store admin session
-                storeAdminSession(data.adminId, data.adminName, data.adminEmail, data.role, pin);
+                // Store admin session (hash PIN before storing)
+                const pinHash = await hashPinClient(pin);
+                storeAdminSession(data.adminId, data.adminName, data.adminEmail, data.role, pinHash);
                 isAdmin = true;
                 currentAdminId = data.adminId;
                 currentAdmin = data.adminName;
@@ -3393,7 +3416,7 @@
                         <h3 class="text-xl font-bold text-emerald-700">Recovery Code ใหม่</h3>
                         <p class="text-xs text-red-500 mt-2 font-bold">แสดงครั้งเดียว กรุณาจดบันทึกไว้!</p>
                     </div>
-                    <div class="bg-slate-900 text-white text-3xl font-mono tracking-[0.3em] text-center py-5 rounded-2xl mb-4 select-all cursor-pointer" onclick="navigator.clipboard.writeText('${data.recoveryCode}'); this.style.outline='3px solid #10b981'; setTimeout(()=>this.style.outline='',1000)">${data.recoveryCode}</div>
+                    <div class="bg-slate-900 text-white text-3xl font-mono tracking-[0.3em] text-center py-5 rounded-2xl mb-4 select-all cursor-pointer" onclick="navigator.clipboard.writeText('${escAttr(data.recoveryCode)}'); this.style.outline='3px solid #10b981'; setTimeout(()=>this.style.outline='',1000)">${esc(data.recoveryCode)}</div>
                     <p class="text-xs text-slate-400 text-center mb-6">คลิกเพื่อคัดลอก — ใช้รีเซ็ต PIN หากลืม</p>
                     <button onclick="closeModal()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold shadow-xl">จดแล้ว → ปิด</button>
                 `);
@@ -3500,7 +3523,7 @@
                 const newPin = (document.getElementById('pin-new')?.value || '').trim();
                 const confirmPin = (document.getElementById('pin-confirm')?.value || '').trim();
                 if (!currentPin) { showToast('กรุณากรอก PIN เดิม', 'warning'); document.getElementById('pin-current')?.focus(); return; }
-                if (currentPin !== getStoredPin()) { showToast('PIN เดิมไม่ถูกต้อง', 'error'); document.getElementById('pin-current')?.focus(); return; }
+                if (await hashPinClient(currentPin) !== getStoredPin()) { showToast('PIN เดิมไม่ถูกต้อง', 'error'); document.getElementById('pin-current')?.focus(); return; }
                 if (!newPin || newPin.length < 4) { showToast('กรุณาตั้ง PIN อย่างน้อย 4 หลัก', 'warning'); document.getElementById('pin-new')?.focus(); return; }
                 if (newPin === currentPin) { showToast('กรุณาตั้ง PIN ที่แตกต่างจากเดิม', 'warning'); document.getElementById('pin-new')?.focus(); return; }
                 if (newPin !== confirmPin) { showToast('PIN ทั้งสองช่องไม่ตรงกัน', 'warning'); document.getElementById('pin-confirm')?.focus(); return; }
@@ -3515,7 +3538,7 @@
                     const data = await resp.json();
                     if (!resp.ok) { showToast(data.error || 'เปลี่ยน PIN ไม่สำเร็จ', 'error'); btn.disabled = false; btn.textContent = 'เปลี่ยน PIN'; return; }
                     const session = getStoredAdmin();
-                    if (session) storeAdminSession(session.id, session.name, session.email, session.role, newPin);
+                    if (session) { const newHash = await hashPinClient(newPin); storeAdminSession(session.id, session.name, session.email, session.role, newHash); }
                     closeModal();
                     showToast('เปลี่ยน PIN สำเร็จ', 'success');
                     logActivity('เปลี่ยน PIN', 'เปลี่ยน PIN ส่วนตัว');
@@ -3998,7 +4021,7 @@
             updateBigNumbers(_basicNetPending);
             updateBeforeAfter(_basicNet);
             updateBasicCharts();
-            updateLatestReadings(_basicNet);
+            updateLatestReadings();
             loadTodaySummary();
             updateActivityFeed();
         }
@@ -4096,6 +4119,7 @@
         }
 
         // ==================== Threshold Lines Plugin (IAQ/PCD standards) ====================
+        // thresholdLinesPlugin defined once above (near THRESHOLDS object)
         const CHART_THRESHOLDS = {
             pm25_value: [
                 { value: 25, label: 'PCD 25', color: '#f59e0b' },
@@ -4105,35 +4129,6 @@
                 { value: 1000, label: 'IAQ 1,000', color: '#ef4444' },
             ],
         };
-        function thresholdLinesPlugin(thresholds) {
-            return {
-                id: 'thresholdLines',
-                afterDraw(chart) {
-                    const { ctx, chartArea, scales } = chart;
-                    if (!chartArea || !scales?.y) return;
-                    const { left, right, top, bottom } = chartArea;
-                    thresholds.forEach(t => {
-                        const yPos = scales.y.getPixelForValue(t.value);
-                        if (yPos < top || yPos > bottom) return;
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.setLineDash([6, 4]);
-                        ctx.strokeStyle = t.color;
-                        ctx.lineWidth = 1.5;
-                        ctx.globalAlpha = 0.7;
-                        ctx.moveTo(left, yPos);
-                        ctx.lineTo(right, yPos);
-                        ctx.stroke();
-                        ctx.fillStyle = t.color;
-                        ctx.font = '10px Chakra Petch, sans-serif';
-                        ctx.textAlign = 'right';
-                        ctx.globalAlpha = 0.9;
-                        ctx.fillText(t.label, right - 4, yPos - 4);
-                        ctx.restore();
-                    });
-                }
-            };
-        }
 
         // ==================== Basic Daily Charts (PM2.5 + CO2) ====================
         let basicCharts = {};
@@ -4245,10 +4240,11 @@
             }
         }
 
-        function updateLatestReadings(_cachedNet) {
+        function updateLatestReadings() {
             const tbody = document.getElementById('latest-readings-body');
             if (!tbody) return;
-            const cleaned = _cachedNet || applyBaselineSubtraction(getFilteredData());
+            // Use RAW data (no baseline subtraction) — this table shows actual sensor readings
+            const cleaned = getFilteredData();
             // Group by device, get latest reading per device
             const byDevice = {};
             cleaned.forEach(d => {
@@ -6894,7 +6890,7 @@
                 <div class="space-y-4">
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.name')}</label>
-                        <input id="edit-device-name" value="${name}" class="w-full p-4 rounded-2xl border">
+                        <input id="edit-device-name" value="${escAttr(name)}" class="w-full p-4 rounded-2xl border">
                     </div>
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.select')}</label>
@@ -6909,7 +6905,7 @@
                             ${subjectOptions}
                         </select>
                     </div>
-                    <button onclick="updateDevice('${id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save.changes')}</button>
+                    <button onclick="updateDevice('${escAttr(id)}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save.changes')}</button>
                 </div>
             `);
         }
@@ -6934,10 +6930,10 @@
                 return `
                 <div class="card-styled p-6 rounded-2xl">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">📋 ${p.name}</p>
+                        <p class="font-bold text-navy text-lg">📋 ${esc(p.name)}</p>
                         <div class="flex gap-2">
                             <button onclick="showEditProjectModal('${p.id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="deleteProject('${p.id}', '${p.name.replace(/'/g, "\\'")}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                            <button onclick="deleteProject('${escAttr(p.id)}', '${escAttr(p.name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                         </div>
                     </div>
                     <p class="text-[13px] text-slate-500">${esc(p.description) || '-'}</p>
@@ -6970,8 +6966,8 @@
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('project.edit')}</h3>
                 <div class="space-y-4">
-                    <input id="edit-proj-name" value="${p.name}" placeholder="${t('project.name.ph')}" class="w-full p-4 rounded-2xl border">
-                    <input id="edit-proj-desc" value="${p.description || ''}" placeholder="${t('project.desc.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-proj-name" value="${escAttr(p.name)}" placeholder="${t('project.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-proj-desc" value="${escAttr(p.description || '')}" placeholder="${t('project.desc.ph')}" class="w-full p-4 rounded-2xl border">
                     <button onclick="saveProject('${p.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
@@ -7139,7 +7135,7 @@
             showModal(`
                 <h3 class="text-2xl font-bold text-navy mb-6">${t('sub.edit')}</h3>
                 <div class="space-y-4">
-                    <input id="edit-sub-name" value="${s.full_name || ''}" placeholder="${t('sub.name.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-sub-name" value="${escAttr(s.full_name || '')}" placeholder="${t('sub.name.ph')}" class="w-full p-4 rounded-2xl border">
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('project.label')}</label>
                         <select id="edit-sub-project" class="w-full p-4 rounded-2xl border custom-select">
@@ -7147,7 +7143,7 @@
                             ${projects.map(p => `<option value="${p.id}" ${String(p.id) === currentProjectId ? 'selected' : ''}>${p.name}</option>`).join('')}
                         </select>
                     </div>
-                    <input id="edit-sub-address" value="${s.address || ''}" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
+                    <input id="edit-sub-address" value="${escAttr(s.address || '')}" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
                     <div class="grid grid-cols-3 gap-3">
                         <div>
                             <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>

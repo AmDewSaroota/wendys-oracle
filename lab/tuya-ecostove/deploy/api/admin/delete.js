@@ -34,8 +34,8 @@ module.exports = async function handler(req, res) {
   const callers = callerRes.ok ? await callerRes.json() : [];
   if (!callers.length) return res.status(403).json({ error: 'Admin not found' });
 
-  const hash = crypto.createHash('sha256').update(callerPin).digest('hex');
-  if (hash !== callers[0].pin_hash || callers[0].role !== 'super') {
+  // X-Admin-PIN is now a SHA-256 hash from client — compare directly
+  if (callerPin !== callers[0].pin_hash || callers[0].role !== 'super') {
     return res.status(403).json({ error: 'เฉพาะ Super Admin เท่านั้น' });
   }
 

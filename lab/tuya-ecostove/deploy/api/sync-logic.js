@@ -48,9 +48,11 @@ function isHoliday(todayStr, holidays) {
   return holidays.find(h => h.holiday_date === todayStr) || null;
 }
 
-function shouldSkipSync(config, holidays, thaiNow) {
-  const hhmm = getThaiHHMM(thaiNow);
-  const todayStr = getThaiDate(thaiNow);
+function shouldSkipSync(config, holidays, now) {
+  // 'now' is a UTC Date — getThaiHHMM/getThaiDate add +7 internally
+  const thaiShifted = new Date((now || new Date()).getTime() + 7 * 3600000);
+  const hhmm = thaiShifted.toISOString().slice(11, 16);
+  const todayStr = thaiShifted.toISOString().slice(0, 10);
 
   // 1. Quiet hours
   if (config && config.quiet_hours_enabled) {
@@ -59,9 +61,9 @@ function shouldSkipSync(config, holidays, thaiNow) {
     }
   }
 
-  // 2. Day-of-week
+  // 2. Day-of-week (reuse thaiShifted — no double-offset)
   if (config && config.active_days) {
-    const jsDay = new Date(thaiNow.getTime() + 7 * 3600000).getUTCDay();
+    const jsDay = thaiShifted.getUTCDay();
     if (!isActiveDay(jsDay, config.active_days)) {
       return { reason: 'rest_day', detail: jsDay };
     }

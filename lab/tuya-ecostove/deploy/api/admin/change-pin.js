@@ -39,8 +39,8 @@ module.exports = async function handler(req, res) {
   const callers = callerRes.ok ? await callerRes.json() : [];
   if (!callers.length) return res.status(403).json({ error: 'Admin not found' });
 
-  const callerHash = hashPin(callerPin);
-  if (callerHash !== callers[0].pin_hash) {
+  // X-Admin-PIN is now a SHA-256 hash from client — compare directly
+  if (callerPin !== callers[0].pin_hash) {
     return res.status(403).json({ error: 'PIN ไม่ถูกต้อง' });
   }
 

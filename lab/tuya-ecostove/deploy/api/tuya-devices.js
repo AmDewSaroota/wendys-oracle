@@ -46,8 +46,8 @@ async function validatePin(req) {
     });
     const users = r.ok ? await r.json() : [];
     if (!users.length || !users[0].pin_hash) return false;
-    const hash = crypto.createHash('sha256').update(pin).digest('hex');
-    if (hash !== users[0].pin_hash) return false;
+    // X-Admin-PIN is now a SHA-256 hash from client — compare directly
+    if (pin !== users[0].pin_hash) return false;
     return users[0].role;
   } catch (_) { return false; }
 }

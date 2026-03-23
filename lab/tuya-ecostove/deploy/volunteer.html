@@ -256,6 +256,40 @@
 <!-- Toast -->
 <div id="toast" class="fixed top-20 left-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-xl text-center text-sm font-bold z-50 hidden transition-all max-w-md mx-auto"></div>
 
+<!-- Troubleshoot Popup — shown when sensor not found after max attempts -->
+<div id="troubleshoot-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4" onclick="closeTroubleshoot()">
+  <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+    <div class="text-5xl text-center mb-3">🔍</div>
+    <h2 class="text-xl font-bold text-red-700 text-center mb-4">ไม่พบเซนเซอร์</h2>
+    <div class="space-y-3 text-sm text-gray-700 mb-5">
+      <div class="flex gap-2 items-start bg-blue-50 rounded-xl p-3">
+        <span class="text-lg">📶</span>
+        <div><b>ตรวจสอบ Hotspot</b><br>ชื่อ: <b>Biomass</b> / รหัส: <b>Biomass2026</b><br>ใช้ 2.4 GHz เท่านั้น</div>
+      </div>
+      <div class="flex gap-2 items-start bg-amber-50 rounded-xl p-3">
+        <span class="text-lg">🔌</span>
+        <div><b>ปิด-เปิดเซนเซอร์ใหม่</b><br>ถอดสาย USB แล้วเสียบใหม่ รอ 1-2 นาที</div>
+      </div>
+      <div class="flex gap-2 items-start bg-green-50 rounded-xl p-3">
+        <span class="text-lg">🏠</span>
+        <div><b>ตรวจสอบว่าเลือกบ้านถูกต้อง</b><br>เซนเซอร์ต้องตรงกับบ้านที่เลือก</div>
+      </div>
+      <div class="flex gap-2 items-start bg-purple-50 rounded-xl p-3">
+        <span class="text-lg">📞</span>
+        <div><b>ติดต่อแอดมิน</b><br>หากยังไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ</div>
+      </div>
+    </div>
+    <button onclick="retryPolling()"
+      class="w-full py-3 bg-blue-600 text-white text-lg font-bold rounded-2xl active:scale-95 transition-transform mb-2">
+      ลองใหม่อีกครั้ง
+    </button>
+    <button onclick="closeTroubleshoot()"
+      class="w-full py-2 text-gray-400 text-sm font-medium">
+      ปิด
+    </button>
+  </div>
+</div>
+
 <!-- Manual Reading Reminder Modal -->
 <div id="tvoc-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4" onclick="closeTvocModal()">
   <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl" onclick="event.stopPropagation()">
@@ -270,6 +304,9 @@
 </div>
 
 <script>
+// HTML sanitize helper — prevent XSS from DB data
+function esc(s) { if (s == null) return ''; const d = document.createElement('div'); d.textContent = String(s); return d.innerHTML; }
+
 // ================================================
 // Config
 // ================================================
@@ -309,9 +346,14 @@ let lockPingTimer = null; // ping interval for device lock
 let pollCountdownTimer = null; // countdown between polls
 let pollCheckCount = 0; // how many times we've checked
 let isResumedSession = false; // true if continuing from another device
+let pollGaveUp = false; // true when poll limit reached
+let sensorFoundAlerted = false; // true after first sensor detection alert
+let lastPingAt = 0; // timestamp of last ping-sensor call
 
 const LOCK_STALE_MS = 3 * 60 * 1000; // 3 minutes = stale
 const MIN_BASELINE_READINGS = 2; // ต้องเก็บ baseline อย่างน้อย 2 ค่า (~10 นาที) ก่อนกดจุดเตา
+const MAX_POLL_ATTEMPTS = 20; // หยุด poll หลัง 20 ครั้ง (~5 นาที) แล้วแสดงวิธีแก้ไข
+const PING_INTERVAL = 30000; // ping Tuya ทุก 30 วินาที (ไม่ถี่เกิน ประหยัด API)
 
 // ================================================
 // Init
@@ -343,8 +385,9 @@ async function init() {
     if (house) {
       document.getElementById('gps-detecting').classList.add('hidden');
       document.getElementById('gps-matched').classList.remove('hidden');
-      document.getElementById('matched-house-name').textContent = house.full_name;
+      document.getElementById('matched-house-name').textContent = house.full_name + (house._sensorName ? ' (' + house._sensorName + ')' : '');
       const parts = ['📎 สแกน QR'];
+      if (house._sensorName) parts.push('📡 ' + house._sensorName);
       if (house.volunteers?.full_name) parts.push('👤 ' + house.volunteers.full_name);
       document.getElementById('matched-house-detail').textContent = parts.join(' · ');
       selectedHouse = house;
@@ -356,17 +399,30 @@ async function init() {
 }
 
 async function loadHouses() {
-  const { data } = await sb.from('subjects')
-    .select('id, full_name, gps_lat, gps_long, volunteer_id, volunteers(full_name), status')
-    .eq('status', 'active')
-    .order('full_name');
-  houses = data || [];
+  // Load houses + their assigned sensors (only show houses with a sensor)
+  const [subRes, devRes] = await Promise.all([
+    sb.from('subjects')
+      .select('id, full_name, gps_lat, gps_long, volunteer_id, volunteers(full_name), status')
+      .eq('status', 'active')
+      .order('full_name'),
+    sb.from('devices')
+      .select('subject_id, name')
+      .eq('is_active', true),
+  ]);
+  const allHouses = subRes.data || [];
+  const devicesByHouse = {};
+  (devRes.data || []).forEach(d => { if (d.subject_id) devicesByHouse[d.subject_id] = d.name; });
+
+  // Only keep houses that have an active sensor assigned
+  houses = allHouses.filter(h => devicesByHouse[h.id]);
+  // Attach sensor name to each house for display
+  houses.forEach(h => { h._sensorName = devicesByHouse[h.id] || ''; });
 
   const dd = document.getElementById('house-dropdown');
   houses.forEach(h => {
     const opt = document.createElement('option');
     opt.value = h.id;
-    opt.textContent = h.full_name;
+    opt.textContent = h.full_name + (h._sensorName ? ' (' + h._sensorName + ')' : '');
     dd.appendChild(opt);
   });
 }
@@ -403,8 +459,9 @@ function matchNearestHouse(lat, lng) {
   if (nearest && minDist < 200) {
     document.getElementById('gps-detecting').classList.add('hidden');
     document.getElementById('gps-matched').classList.remove('hidden');
-    document.getElementById('matched-house-name').textContent = nearest.full_name;
+    document.getElementById('matched-house-name').textContent = nearest.full_name + (nearest._sensorName ? ' (' + nearest._sensorName + ')' : '');
     const parts = ['📍 ห่าง ' + Math.round(minDist) + ' เมตร'];
+    if (nearest._sensorName) parts.push('📡 ' + nearest._sensorName);
     if (nearest.volunteers?.full_name) parts.push('👤 ' + nearest.volunteers.full_name);
     document.getElementById('matched-house-detail').textContent = parts.join(' · ');
     selectedHouse = nearest;
@@ -618,10 +675,12 @@ async function loadPreviousTvoc() {
 async function startPolling() {
   const pollFn = DEMO_MODE ? demoPollStatus : pollStatus;
   pollCheckCount = 0;
+  pollGaveUp = false;
   await pollFn();
   pollCheckCount++;
   updatePollCountdown(15);
   pollTimer = setInterval(async () => {
+    if (pollGaveUp) return; // stop polling after give-up
     await pollFn();
     pollCheckCount++;
     updatePollCountdown(15);
@@ -659,6 +718,15 @@ function startTimeUpdate() {
     updateTimers();
   }, 1000);
 }
+
+// Visibility change: re-fetch session state when user returns to tab
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  if (!selectedHouse) return;
+  // Immediate re-poll to refresh stale session data
+  const pollFn = DEMO_MODE ? demoPollStatus : pollStatus;
+  pollFn();
+});
 
 async function pollStatus() {
   if (!selectedHouse) return;
@@ -720,8 +788,41 @@ async function pollStatus() {
           return;
         }
       }
-      setSensorUI('waiting', '⏳', 'รอเซนเซอร์ออนไลน์...',
-        'เปิด Hotspot แล้วรอระบบตรวจจับ (ทุก ~5 นาที)');
+      if (pollCheckCount >= MAX_POLL_ATTEMPTS) {
+        pollGaveUp = true;
+        setSensorUI('give-up', '❗', 'ไม่พบเซนเซอร์',
+          'ตรวจสอบแล้ว ' + pollCheckCount + ' ครั้ง — กรุณาตรวจสอบตามคำแนะนำ');
+        showTroubleshootPopup();
+      } else {
+        // Ping Tuya directly (every 30s) to detect sensor faster than cron
+        const now = Date.now();
+        if (now - lastPingAt >= PING_INTERVAL) {
+          lastPingAt = now;
+          try {
+            const pingRes = await fetch(API_BASE + '/api/volunteer?action=ping-sensor&house_id=' + selectedHouse.id);
+            const ping = await pingRes.json();
+            if (ping.ok && ping.online) {
+              if (ping.sessionCreated || ping.hasSession) {
+                setSensorUI('waiting', '📡', 'พบเซนเซอร์! กำลังเริ่มเก็บข้อมูล...',
+                  'รอสักครู่...');
+                return; // next poll will find the session
+              }
+              if (ping.reason === 'daily-limit') {
+                setSensorUI('daily-limit', '✅', 'ครบ 2 sessions แล้ววันนี้',
+                  'เซนเซอร์เก็บข้อมูลครบตามกำหนด');
+                hideAllActions(); return;
+              }
+              if (ping.reason === 'cooldown') {
+                setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เหลืออีก ~' + ping.minutesLeft + ' นาที',
+                  'เซนเซอร์ออนไลน์ แต่อยู่ช่วงพัก');
+                hideAllActions(); return;
+              }
+            }
+          } catch (_) {} // fail silently — keep showing waiting
+        }
+        setSensorUI('waiting', '⏳', 'รอเซนเซอร์ออนไลน์...',
+          'กำลังตรวจสอบเซนเซอร์');
+      }
     }
     hideAllActions();
     return;
@@ -729,9 +830,24 @@ async function pollStatus() {
 
   activeSession = sessions[0];
 
+  // Alert volunteer when sensor is first found (transition from waiting → active)
+  if (!sensorFoundAlerted) {
+    sensorFoundAlerted = true;
+    playBeep();
+    try { navigator.vibrate?.([200, 100, 200]); } catch (_) {}
+    showToast('📡 เจอเซนเซอร์แล้ว! (' + (currentDevice.name || '') + ')');
+  }
+
+  // Get sensor-only readings count (exclude manual entries)
+  const { count: sensorCount } = await sb.from('pollution_logs')
+    .select('id', { count: 'exact', head: true })
+    .eq('session_id', activeSession.id)
+    .eq('data_source', 'sensor');
+  activeSession._sensorReadings = sensorCount || 0;
+
   if (activeSession.session_status === 'baseline') {
     const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
-    const readings = activeSession.readings_count || 0;
+    const readings = activeSession._sensorReadings;
     const remaining = MIN_BASELINE_READINGS - readings;
     if (readings < MIN_BASELINE_READINGS) {
       setSensorUI('baseline', '📊', 'กำลังเก็บค่า Baseline...',
@@ -752,9 +868,14 @@ async function pollStatus() {
   } else if (activeSession.session_status === 'collecting') {
     const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
     setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
-      'เก็บได้ ' + (activeSession.readings_count || 0) + ' ค่า');
+      'เก็บได้ ' + activeSession._sensorReadings + ' ค่า');
     showCollectingProgress();
-    hideCookingButton();
+    // Show retroactive cooking button if auto-transitioned and not yet marked
+    if (activeSession.baseline_transition === 'auto' && !cookingStartedAt) {
+      showCookingButton();
+    } else {
+      hideCookingButton();
+    }
     if (tvocEnabled) showTvocSection();
     // If resumed from old device with TVOC data, skip the question
     if (isResumedSession && tvocReadings.length > 0 && !tvocEnabled) {
@@ -786,6 +907,7 @@ function setSensorUI(state, emoji, text, detail) {
   const colors = {
     'no-device': 'text-red-600',
     'waiting': 'text-gray-600',
+    'give-up': 'text-red-600',
     'cooldown': 'text-amber-600',
     'daily-limit': 'text-emerald-700',
     'baseline': 'text-blue-700',
@@ -826,7 +948,7 @@ function updateTimers() {
 
   if (activeSession.session_status === 'baseline') {
     const elapsed = elapsedMin(activeSession.started_at);
-    const readings = activeSession.readings_count || 0;
+    const readings = activeSession._sensorReadings || 0;
     document.getElementById('baseline-count').textContent = readings + ' ค่า';
     document.getElementById('baseline-time').textContent = '⏱ ' + elapsed + ' / 10 นาที';
     // Progress bar: approximate 10 min baseline
@@ -835,9 +957,9 @@ function updateTimers() {
   }
 
   if (activeSession.session_status === 'collecting' || cookingStartedAt) {
-    const startRef = cookingStartedAt || (activeSession.baseline_ended_at ? new Date(activeSession.baseline_ended_at) : new Date(activeSession.started_at));
-    const elapsed = elapsedMin(startRef);
-    const readings = activeSession.readings_count || 0;
+    // Timer counts from session start (includes baseline) — total 130 min
+    const elapsed = elapsedMin(activeSession.started_at);
+    const readings = activeSession._sensorReadings || 0;
     document.getElementById('collecting-count').textContent = readings + ' ค่า';
     const totalMin = 130;
     const hrs = Math.floor(elapsed / 60);
@@ -947,10 +1069,12 @@ async function markCookingStart() {
   if (DEMO_MODE) { await demoMarkCookingStart(); return; }
   cookingSubmitting = true;
   if (!activeSession) { showToast('❌ ไม่พบ session ที่กำลังทำงาน'); cookingSubmitting = false; return; }
-  if ((activeSession.readings_count || 0) < MIN_BASELINE_READINGS) {
+  // Allow during baseline (normal) or collecting with auto-transition (retroactive)
+  const isRetroactive = activeSession.session_status === 'collecting' && activeSession.baseline_transition === 'auto';
+  if (!isRetroactive && (activeSession._sensorReadings || 0) < MIN_BASELINE_READINGS) {
     showToast('⏳ รอเก็บ Baseline ก่อน — ยังไม่ครบ ' + MIN_BASELINE_READINGS + ' ค่า'); cookingSubmitting = false; return;
   }
-  if (activeSession.session_status !== 'baseline') {
+  if (activeSession.session_status !== 'baseline' && !isRetroactive) {
     showToast('⚠️ ระบบเปลี่ยนเฟสไปแล้ว');
     cookingSubmitting = false; return;
   }
@@ -974,7 +1098,12 @@ async function markCookingStart() {
     if (result.ok) {
       cookingStartedAt = new Date();
       activeSession.session_status = 'collecting';
-      showToast('✅ บันทึกแล้ว — เริ่มเก็บข้อมูลการใช้เตา');
+      if (result.retroactive) {
+        activeSession.baseline_transition = 'manual-retroactive';
+        showToast('✅ บันทึกเวลาจุดเตาแล้ว');
+      } else {
+        showToast('✅ บันทึกแล้ว — เริ่มเก็บข้อมูลการใช้เตา');
+      }
       hideCookingButton();
       showCollectingProgress();
       showEndButton();
@@ -1008,8 +1137,12 @@ function resetCookingBtn(btn) {
 // Keep old name for backward compat (called from HTML onclick)
 async function submitTvoc() { return submitManualReadings(); }
 
+let manualSubmitting = false;
 async function submitManualReadings() {
+  if (manualSubmitting) return;
   if (DEMO_MODE) { await demoSubmitManual(); return; }
+  manualSubmitting = true;
+  try {
   const tvocInput = document.getElementById('tvoc-input');
   const coInput = document.getElementById('co-input');
   const tvocVal = tvocInput.value.trim() !== '' ? parseFloat(tvocInput.value) : null;
@@ -1060,6 +1193,7 @@ async function submitManualReadings() {
   showToast('✅ บันทึก ' + parts.join(' + '));
   updateManualList();
   resetTvocCountdown();
+  } finally { manualSubmitting = false; }
 }
 
 function updateTvocList() { updateManualList(); }
@@ -1091,7 +1225,7 @@ function endVolunteerSession() {
     const hrs = Math.floor(elapsed / 60);
     const mins = elapsed % 60;
     msg += '\n⏱ เวลา: ' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที';
-    msg += '\n📊 เซนเซอร์: ' + (activeSession.readings_count || 0) + ' ค่า';
+    msg += '\n📊 เซนเซอร์: ' + (activeSession._sensorReadings || 0) + ' ค่า';
   }
   msg += '\n📝 กรอกมือ: ' + manualReadings.length + ' ค่า';
   if (tvocReadings.length > 0) msg += ' (TVOC ' + tvocReadings.length + ')';
@@ -1111,10 +1245,10 @@ function endVolunteerSession() {
 
   const det = document.getElementById('summary-details');
   const items = [];
-  items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + selectedHouse.full_name + '</span></div>');
+  items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + esc(selectedHouse.full_name) + '</span></div>');
 
   if (activeSession) {
-    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">' + (activeSession.readings_count || 0) + ' ค่า</span></div>');
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">' + (activeSession._sensorReadings || 0) + ' ค่า</span></div>');
 
     const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
     const hrs = Math.floor(elapsed / 60);
@@ -1181,6 +1315,24 @@ let tvocReminderTimer = null;
 function closeTvocModal() {
   const m = document.getElementById('tvoc-modal');
   if (m) m.classList.add('hidden');
+}
+
+function showTroubleshootPopup() {
+  const m = document.getElementById('troubleshoot-modal');
+  if (m) m.classList.remove('hidden');
+}
+function closeTroubleshoot() {
+  const m = document.getElementById('troubleshoot-modal');
+  if (m) m.classList.add('hidden');
+}
+function retryPolling() {
+  closeTroubleshoot();
+  pollGaveUp = false;
+  pollCheckCount = 0;
+  setSensorUI('waiting', '⏳', 'รอเซนเซอร์ออนไลน์...',
+    'เปิด Hotspot แล้วรอระบบตรวจจับ (ทุก ~5 นาที)');
+  const pollFn = DEMO_MODE ? demoPollStatus : pollStatus;
+  pollFn();
 }
 
 function playBeep() {

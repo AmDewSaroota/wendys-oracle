@@ -19,8 +19,8 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { email, pin } = req.body || {};
-  if (!email || !pin) {
+  const { email, pin, pinHash } = req.body || {};
+  if (!email || (!pin && !pinHash)) {
     return res.status(400).json({ error: 'กรุณากรอก Email และ PIN' });
   }
 
@@ -48,7 +48,8 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ valid: false, error: 'ยังไม่ได้ตั้ง PIN — กรุณาติดต่อ Super Admin' });
     }
 
-    if (hashPin(pin) !== admin.pin_hash) {
+    const hash = pinHash || hashPin(pin);
+    if (hash !== admin.pin_hash) {
       return res.status(401).json({ valid: false, error: 'PIN ไม่ถูกต้อง' });
     }
 
@@ -60,6 +61,7 @@ module.exports = async function handler(req, res) {
       adminEmail: admin.email,
     });
   } catch (err) {
-    return res.status(500).json({ error: 'Server error: ' + err.message });
+    console.error('verify-pin error:', err.message);
+    return res.status(500).json({ error: 'Server error' });
   }
 };
