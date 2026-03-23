@@ -1000,23 +1000,49 @@
                             <button onclick="exportManualData()" class="bg-[#064e3b] text-white px-6 py-2 rounded-xl font-bold text-[13px] shadow hover:bg-[#043327] transition-all">📊 Export</button>
                         </div>
                     </div>
+                    <p class="text-sm font-bold text-purple-700 flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full bg-purple-500"></span> TVOC — สารอินทรีย์ระเหยง่าย (mg/m³)</p>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="tvoc-stats-row">
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
-                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.count">จำนวนรายการ</p>
+                            <p class="text-xs text-slate-400">จำนวน</p>
                             <p id="tvoc-stat-count" class="text-2xl font-bold text-purple-700">--</p>
                         </div>
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-purple-300 text-center">
-                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.avg">ค่าเฉลี่ย</p>
+                            <p class="text-xs text-slate-400">เฉลี่ย</p>
                             <p id="tvoc-stat-avg" class="text-2xl font-bold text-purple-700">-- <span class="text-sm font-normal">mg/m³</span></p>
                         </div>
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-emerald-300 text-center">
-                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.min">ต่ำสุด</p>
+                            <p class="text-xs text-slate-400">ต่ำสุด</p>
                             <p id="tvoc-stat-min" class="text-2xl font-bold text-emerald-600">-- <span class="text-sm font-normal">mg/m³</span></p>
                         </div>
                         <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-red-300 text-center">
-                            <p class="text-xs text-slate-400" data-i18n="tvoc.stat.max">สูงสุด</p>
+                            <p class="text-xs text-slate-400">สูงสุด</p>
                             <p id="tvoc-stat-max" class="text-2xl font-bold text-red-500">-- <span class="text-sm font-normal">mg/m³</span></p>
                         </div>
+                    </div>
+                    <p class="text-sm font-bold text-rose-600 flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-full bg-rose-500"></span> CO — คาร์บอนมอนอกไซด์ (ppm)</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-rose-300 text-center">
+                            <p class="text-xs text-slate-400">จำนวน</p>
+                            <p id="co-stat-count" class="text-2xl font-bold text-rose-600">--</p>
+                        </div>
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-rose-300 text-center">
+                            <p class="text-xs text-slate-400">เฉลี่ย</p>
+                            <p id="co-stat-avg" class="text-2xl font-bold text-rose-600">-- <span class="text-sm font-normal">ppm</span></p>
+                        </div>
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-emerald-300 text-center">
+                            <p class="text-xs text-slate-400">ต่ำสุด</p>
+                            <p id="co-stat-min" class="text-2xl font-bold text-emerald-600">-- <span class="text-sm font-normal">ppm</span></p>
+                        </div>
+                        <div class="bg-white/60 rounded-2xl p-4 shadow-sm border-b-4 border-red-300 text-center">
+                            <p class="text-xs text-slate-400">สูงสุด</p>
+                            <p id="co-stat-max" class="text-2xl font-bold text-red-500">-- <span class="text-sm font-normal">ppm</span></p>
+                        </div>
+                    </div>
+                    <div class="text-[11px] text-slate-400 bg-slate-50 rounded-xl px-4 py-2 flex flex-wrap gap-x-6 gap-y-1">
+                        <span><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1"></span>เขียว = ต่ำสุด (ดี)</span>
+                        <span><span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1"></span>แดง = สูงสุด (สูงผิดปกติ)</span>
+                        <span><span class="inline-block w-2 h-2 rounded-full bg-purple-500 mr-1"></span>ม่วง = TVOC</span>
+                        <span><span class="inline-block w-2 h-2 rounded-full bg-rose-500 mr-1"></span>ชมพู = CO</span>
                     </div>
                     <div class="bg-white/60 rounded-[2.5rem] shadow-sm p-6 border-b-4 border-purple-200">
                         <h4 class="font-bold text-sm text-navy mb-4" data-i18n="tvoc.chart.title">กราฟ TVOC ตามเวลา</h4>
@@ -1037,6 +1063,10 @@
                                 </thead>
                                 <tbody id="tvoc-table-body" class="divide-y"></tbody>
                             </table>
+                        </div>
+                        <div id="tvoc-load-more-wrap" class="hidden text-center py-4">
+                            <p id="tvoc-showing-count" class="text-xs text-slate-400 mb-2"></p>
+                            <button onclick="loadMoreTvoc()" class="px-6 py-2 rounded-xl font-bold text-[13px] bg-purple-100 text-purple-600 hover:bg-purple-200 transition-all">โหลดเพิ่ม 100 รายการ</button>
                         </div>
                     </div>
                 </div>
@@ -2632,7 +2662,7 @@
         }
 
         function populateHouseDropdowns() {
-            // Houses with sensors — for sensor data tab
+            // Houses with sensors only — for both data tabs
             const housesWithSensor = new Set(Object.values(DEVICE_HOUSE).map(String));
             const sensorSel = document.getElementById('sensor-house-filter');
             if (sensorSel) {
@@ -2641,18 +2671,21 @@
                     if (!housesWithSensor.has(String(s.id))) continue;
                     const opt = document.createElement('option');
                     opt.value = s.id;
-                    opt.textContent = s.full_name || t('sched.house.fallback') + s.id;
+                    const label = s.full_name || t('sched.house.fallback') + s.id;
+                    opt.textContent = withSensor(label, null, s.id);
                     sensorSel.appendChild(opt);
                 }
             }
-            // All houses — for TVOC tab
+            // TVOC tab — also only houses with sensors
             const tvocSel = document.getElementById('tvoc-house-filter');
             if (tvocSel) {
                 while (tvocSel.options.length > 1) tvocSel.remove(1);
                 for (const s of (subjects || [])) {
+                    if (!housesWithSensor.has(String(s.id))) continue;
                     const opt = document.createElement('option');
                     opt.value = s.id;
-                    opt.textContent = s.full_name || t('sched.house.fallback') + s.id;
+                    const label = s.full_name || t('sched.house.fallback') + s.id;
+                    opt.textContent = withSensor(label, null, s.id);
                     tvocSel.appendChild(opt);
                 }
             }
@@ -2675,6 +2708,14 @@
         let HOUSE_NAMES = {};
         let SUBJECT_NAMES = {}; // subject_id → full_name (fallback when HOUSE_NAMES misses)
         let DEVICE_HOUSE = {}; // tuya_device_id → subject_id mapping for house filter
+        let HOUSE_SENSOR_NAMES = {}; // subject_id → sensor name (ES-XX)
+
+        // Append sensor name to house name: "บ้านริมใต้ (ES-01)"
+        function withSensor(houseName, tuyaDeviceId, subjectId) {
+            const sensor = (tuyaDeviceId && DEVICE_NAMES[tuyaDeviceId]) || (subjectId && HOUSE_SENSOR_NAMES[subjectId]) || '';
+            if (!houseName) return sensor || tuyaDeviceId || '?';
+            return sensor ? houseName + ' (' + sensor + ')' : houseName;
+        }
 
         // ==================== AQI Helper ====================
         // Calculate AQI from PM2.5 using Thai PCD breakpoints (กรมควบคุมมลพิษ พ.ศ.2566)
@@ -3908,6 +3949,10 @@
                     if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name;
                     if (d.tuya_device_id && d.subject_id) DEVICE_HOUSE[d.tuya_device_id] = d.subject_id;
                 });
+                // Build reverse mapping: subject_id → sensor name (ES-XX)
+                for (const tuyaId of Object.keys(DEVICE_HOUSE)) {
+                    if (DEVICE_NAMES[tuyaId]) HOUSE_SENSOR_NAMES[DEVICE_HOUSE[tuyaId]] = DEVICE_NAMES[tuyaId];
+                }
                 if (!isAdmin) devices = devRes.data || [];
                 if (volRes.data) volRes.data.forEach(v => { volunteerNameMap[v.id] = v.full_name; });
                 projects = projRes.data || [];
@@ -4258,7 +4303,7 @@
                 return;
             }
             tbody.innerHTML = devices.map(d => {
-                const name = HOUSE_NAMES[d.tuya_device_id] || getDeviceName(d);
+                const name = withSensor(HOUSE_NAMES[d.tuya_device_id], d.tuya_device_id);
                 const stoveLabel = d.stove_type === 'eco' ? '<span class="text-emerald-600 font-bold">' + t('stove.eco.short') + '</span>' : '<span class="text-slate-400">' + t('stove.old.short') + '</span>';
                 const pm25 = d.pm25_value != null ? d.pm25_value.toFixed(1) : '--';
                 const pm25Color = d.pm25_value != null ? (d.pm25_value < 25 ? 'text-emerald-600' : d.pm25_value < 50 ? 'text-amber-500' : 'text-red-500') : '';
@@ -4336,7 +4381,9 @@
                     const summary = (summaries || []).find(s => s.device_id === devId);
                     const completed = summary?.sessions_completed || 0;
                     const incomplete = summary?.sessions_incomplete || 0;
-                    const houseName = dev.subjects?.full_name || DEVICE_NAMES[devId] || HOUSE_NAMES[devId] || dev.name;
+                    const rawHouseName = dev.subjects?.full_name || HOUSE_NAMES[devId] || dev.name;
+                    const sensorLabel = DEVICE_NAMES[devId] || '';
+                    const houseName = sensorLabel ? rawHouseName + ' (' + sensorLabel + ')' : rawHouseName;
                     // Online = last reading within 10 min (not just "has readings today")
                     const latestMs = devLogs.length > 0 ? Math.max(...devLogs.map(d => new Date(d.recorded_at).getTime())) : 0;
                     const isOnline = latestMs > 0 && (Date.now() - latestMs) < 10 * 60000;
@@ -4996,7 +5043,7 @@
             const deviceIds = [...new Set(sensorData.map(d => d.tuya_device_id))];
             const groups = deviceIds.map((id, i) => ({
                 id,
-                name: HOUSE_NAMES[id] || DEVICE_NAMES[id] || (id || '').slice(-6),
+                name: withSensor(HOUSE_NAMES[id], id),
                 color: drilldownColors[i % drilldownColors.length],
                 data: sensorData.filter(d => d.tuya_device_id === id).sort((a, b) => a.recorded_at.localeCompare(b.recorded_at)),
                 hidden: hiddenHouses.has(id),
@@ -5148,7 +5195,7 @@
                 const icon = statusIcons[s.session_status] || '❓';
                 const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
                 const sensorName = DEVICE_NAMES[s.device_id] || s.device_id;
-                const houseName = HOUSE_NAMES[s.device_id] || sensorName;
+                const houseName = withSensor(HOUSE_NAMES[s.device_id], s.device_id);
                 const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const sessNum = numMap[s.id] || '';
                 const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
@@ -5214,7 +5261,7 @@
             const filtered = latestDate ? data.filter(d => d.summary_date === latestDate && !d.device_id?.startsWith('MOCK-')) : [];
 
             tbody.innerHTML = filtered.map(d => {
-                const houseName = HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id;
+                const houseName = withSensor(HOUSE_NAMES[d.device_id], d.device_id);
                 const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
                 const completed = d.sessions_completed || 0;
                 const todayStr = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
@@ -5433,7 +5480,8 @@
 
             const html = chunk.map(d => {
                 const pm25Class = (d.pm25_value || 0) > 35 ? 'text-red-500 font-bold' : 'text-orange-500';
-                const houseName = HOUSE_NAMES[d.tuya_device_id] || SUBJECT_NAMES[d.house_id] || d.house_name || t('house.unassigned');
+                const rawHouse = HOUSE_NAMES[d.tuya_device_id] || SUBJECT_NAMES[d.house_id] || d.house_name || t('house.unassigned');
+                const houseName = withSensor(rawHouse, d.tuya_device_id);
                 return `<tr class="hover:bg-slate-50">
                     <td class="p-3 text-[13px] whitespace-nowrap">${fmtDateTimeDMY(d.recorded_at)}</td>
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
@@ -5464,6 +5512,39 @@
 
         // ==================== TVOC Tab ====================
         let tvocTabChartInstance = null;
+        let _tvocFiltered = [];
+        let _tvocShowing = 0;
+        const TVOC_PAGE_SIZE = 100;
+        let _tvocHouseNameMap = {};
+
+        function loadMoreTvoc() {
+            const tbody = document.getElementById('tvoc-table-body');
+            const end = Math.min(_tvocShowing + TVOC_PAGE_SIZE, _tvocFiltered.length);
+            const chunk = _tvocFiltered.slice(_tvocShowing, end);
+            const html = chunk.map(d => {
+                const houseName = _tvocHouseNameMap[d.house_id] || '-';
+                const vol = (d.volunteer_id && volunteerNameMap[d.volunteer_id]) ? volunteerNameMap[d.volunteer_id] : '-';
+                const tvocDisplay = d.tvoc_value != null ? Number(d.tvoc_value).toFixed(3) : '-';
+                const coDisplay = d.co_value != null ? Number(d.co_value) : '-';
+                return '<tr class="hover:bg-purple-50/50"><td class="p-3 whitespace-nowrap text-[13px]">' +
+                    fmtDateTimeDMY(d.recorded_at) + '</td><td class="p-3 text-[13px]">' +
+                    houseName + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
+                    tvocDisplay + '</td><td class="p-3 text-center text-rose-600 font-bold text-base">' +
+                    coDisplay + '</td><td class="p-3 text-[13px] text-slate-500">' +
+                    vol + '</td></tr>';
+            }).join('');
+            tbody.insertAdjacentHTML('beforeend', html);
+            _tvocShowing = end;
+            const wrap = document.getElementById('tvoc-load-more-wrap');
+            const countEl = document.getElementById('tvoc-showing-count');
+            if (_tvocShowing >= _tvocFiltered.length) {
+                wrap.classList.add('hidden');
+            } else {
+                wrap.classList.remove('hidden');
+                countEl.textContent = 'แสดง ' + _tvocShowing + ' / ' + _tvocFiltered.length + ' รายการ';
+            }
+        }
+
         function updateTvocTab() {
             const houseFilter = document.getElementById('tvoc-house-filter')?.value || 'all';
             // stove filter removed
@@ -5488,31 +5569,35 @@
             document.getElementById('tvoc-stat-avg').innerHTML = avgVal + ' <span class="text-sm font-normal">mg/m³</span>';
             document.getElementById('tvoc-stat-min').innerHTML = minVal + ' <span class="text-sm font-normal">mg/m³</span>';
             document.getElementById('tvoc-stat-max').innerHTML = maxVal + ' <span class="text-sm font-normal">mg/m³</span>';
+
+            // CO stats
+            const coValues = tvocData.map(d => d.co_value).filter(v => v != null);
+            const coCount = coValues.length;
+            const coAvg = coCount > 0 ? (coValues.reduce((a,b) => a+b, 0) / coCount).toFixed(1) : '--';
+            const coMin = coCount > 0 ? Math.min(...coValues) : '--';
+            const coMax = coCount > 0 ? Math.max(...coValues) : '--';
+            document.getElementById('co-stat-count').textContent = coCount;
+            document.getElementById('co-stat-avg').innerHTML = coAvg + ' <span class="text-sm font-normal">ppm</span>';
+            document.getElementById('co-stat-min').innerHTML = coMin + ' <span class="text-sm font-normal">ppm</span>';
+            document.getElementById('co-stat-max').innerHTML = coMax + ' <span class="text-sm font-normal">ppm</span>';
             document.getElementById('tvoc-tab-summary').textContent = currentLang === 'th'
                 ? count + ' รายการ' + (houseFilter !== 'all' ? '' : ' จากทุกบ้าน')
                 : count + ' records' + (houseFilter !== 'all' ? '' : ' from all houses');
 
-            // House name lookup
-            const houseNameMap = {};
-            (subjects || []).forEach(s => { houseNameMap[s.id] = s.full_name || s.id; });
+            // House name lookup (with sensor name)
+            _tvocHouseNameMap = {};
+            (subjects || []).forEach(s => { _tvocHouseNameMap[s.id] = withSensor(s.full_name || s.id, null, s.id); });
 
-            // Table
+            // Table — paginated (100 per page)
+            _tvocFiltered = tvocData;
+            _tvocShowing = 0;
             const tbody = document.getElementById('tvoc-table-body');
+            tbody.innerHTML = '';
             if (count === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">' + t('common.no.data') + '</td></tr>';
+                document.getElementById('tvoc-load-more-wrap').classList.add('hidden');
             } else {
-                tbody.innerHTML = tvocData.map(d => {
-                    const houseName = houseNameMap[d.house_id] || '-';
-                    const vol = (d.volunteer_id && volunteerNameMap[d.volunteer_id]) ? volunteerNameMap[d.volunteer_id] : '-';
-                    const tvocDisplay = d.tvoc_value != null ? Number(d.tvoc_value).toFixed(3) : '-';
-                    const coDisplay = d.co_value != null ? Number(d.co_value) : '-';
-                    return '<tr class="hover:bg-purple-50/50"><td class="p-3 whitespace-nowrap text-[13px]">' +
-                        fmtDateTimeDMY(d.recorded_at) + '</td><td class="p-3 text-[13px]">' +
-                        houseName + '</td><td class="p-3 text-center text-purple-700 font-bold text-base">' +
-                        tvocDisplay + '</td><td class="p-3 text-center text-rose-600 font-bold text-base">' +
-                        coDisplay + '</td><td class="p-3 text-[13px] text-slate-500">' +
-                        vol + '</td></tr>';
-                }).join('');
+                loadMoreTvoc();
             }
 
             // Chart
@@ -5536,7 +5621,7 @@
                 data: { datasets },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    scales: { x: { type: 'time', time: { tooltipFormat: 'dd/MM HH:mm' } }, y: { beginAtZero: true, title: { display: true, text: 'mg/m³' } } },
+                    scales: { x: { type: 'time', time: { tooltipFormat: 'dd/MM HH:mm', displayFormats: { hour: 'HH:mm', minute: 'HH:mm' } }, ticks: { maxTicksLimit: 10, maxRotation: 45 } }, y: { beginAtZero: true, title: { display: true, text: 'mg/m³' } } },
                     plugins: { legend: { display: datasets.length > 1 } }
                 }
             });
@@ -5983,7 +6068,7 @@
 
             if (activeSessions && activeSessions.length > 0) {
                 const names = activeSessions.map(s => {
-                    const name = HOUSE_NAMES[s.device_id] || DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
+                    const name = withSensor(HOUSE_NAMES[s.device_id], s.device_id);
                     return '  • ' + name + ' (' + (s.readings_count || 0) + ' readings)';
                 }).join('\n');
                 warnings.push(t('approval.active.warn', activeSessions.length) + '\n' + names
@@ -5992,7 +6077,7 @@
 
             if (incompleteSessions && incompleteSessions.length > 0) {
                 const names = incompleteSessions.map(s => {
-                    const name = HOUSE_NAMES[s.device_id] || DEVICE_NAMES[s.device_id] || (s.device_id || 'unknown').slice(0, 8);
+                    const name = withSensor(HOUSE_NAMES[s.device_id], s.device_id);
                     const locale = currentLang === 'th' ? 'th-TH' : 'en-US';
                     const date = s.started_at ? fmtDateDMY(s.started_at) : '?';
                     return '  • ' + name + ' — ' + date + ' (' + (s.readings_count || 0) + ' readings)';
@@ -7752,7 +7837,7 @@
 
         function exportDataRows(data) {
             return data.map(d => ({
-                [t('export.date')]: d.recorded_at, [t('export.house')]: d.house_name || HOUSE_NAMES[d.tuya_device_id] || '', [t('export.stove.type')]: d.stove_type,
+                [t('export.date')]: d.recorded_at, [t('export.house')]: withSensor(d.house_name || HOUSE_NAMES[d.tuya_device_id] || '', d.tuya_device_id), [t('export.stove.type')]: d.stove_type,
                 'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
                 'CO2': d.co2_value, 'CO': d.co_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
                 'HCHO': d.hcho_value, 'TVOC (mg/m³)': d.tvoc_value,
@@ -7993,7 +8078,7 @@
                 const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
                 return {
                     [t('export.daily.date')]: d.summary_date,
-                    [t('export.daily.house')]: HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id,
+                    [t('export.daily.house')]: withSensor(HOUSE_NAMES[d.device_id], d.device_id),
                     [t('export.daily.sess.ok')]: d.sessions_completed || 0,
                     [t('export.daily.sess.total')]: total,
                     [t('export.daily.readings')]: d.total_readings || 0,

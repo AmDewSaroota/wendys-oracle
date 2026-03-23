@@ -524,7 +524,7 @@ async function onHouseConfirmed(house) {
   document.getElementById('step-session').classList.remove('hidden');
 
   // Set house info
-  document.getElementById('session-house-name').textContent = house.full_name;
+  document.getElementById('session-house-name').textContent = house.full_name + (house._sensorName ? ' (' + house._sensorName + ')' : '');
   document.getElementById('session-volunteer-name').textContent =
     house.volunteers?.full_name ? '👤 ' + house.volunteers.full_name : '';
 
@@ -542,9 +542,9 @@ async function onHouseConfirmed(house) {
   if (isResumedSession && tvocReadings.length > 0) {
     // Toast already shown inside loadPreviousTvoc
   } else if (isResumedSession) {
-    showToast('🔄 ต่อจากอุปกรณ์เดิม — เลือกบ้าน: ' + house.full_name);
+    showToast('🔄 ต่อจากอุปกรณ์เดิม — เลือกบ้าน: ' + house.full_name + (house._sensorName ? ' (' + house._sensorName + ')' : ''));
   } else {
-    showToast('✅ เลือกบ้าน: ' + house.full_name);
+    showToast('✅ เลือกบ้าน: ' + house.full_name + (house._sensorName ? ' (' + house._sensorName + ')' : ''));
   }
 
   // Start polling for sensor/session status
@@ -1219,7 +1219,7 @@ function updateManualList() {
 // End Session
 // ================================================
 function endVolunteerSession() {
-  let msg = 'จบ Session นี้?\n\n🏠 ' + selectedHouse.full_name;
+  let msg = 'จบ Session นี้?\n\n🏠 ' + selectedHouse.full_name + (selectedHouse._sensorName ? ' (' + selectedHouse._sensorName + ')' : '');
   if (activeSession) {
     const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
     const hrs = Math.floor(elapsed / 60);
@@ -1245,7 +1245,7 @@ function endVolunteerSession() {
 
   const det = document.getElementById('summary-details');
   const items = [];
-  items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + esc(selectedHouse.full_name) + '</span></div>');
+  items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + esc(selectedHouse.full_name) + (selectedHouse._sensorName ? ' (' + esc(selectedHouse._sensorName) + ')' : '') + '</span></div>');
 
   if (activeSession) {
     items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">' + (activeSession._sensorReadings || 0) + ' ค่า</span></div>');
