@@ -7367,54 +7367,23 @@
         // ==================== Health Monitor ====================
         async function loadSensorHealth() {
             sensorHealthMap = {};
-            // Get all registered device tuya_ids
             const allTuyaIds = devices.map(d => d.tuya_device_id).filter(Boolean);
             if (allTuyaIds.length === 0) return;
 
-            // Query latest pollution_log per device (limit to recent only — 10 per device max)
-            const { data: latestLogs } = await supabaseClient
-                .from('pollution_logs')
-                .select('tuya_device_id, recorded_at')
-                .in('tuya_device_id', allTuyaIds)
-                .order('recorded_at', { ascending: false })
-                .limit(allTuyaIds.length * 3);
+            // Read is_online from registered_sensors (written by sync.js from Tuya Cloud)
+            const { data: sensorRows } = await supabaseClient
+                .from('registered_sensors')
+                .select('tuya_device_id, is_online, last_checked_at')
+                .in('tuya_device_id', allTuyaIds);
 
-            // Query active sessions
-            const { data: activeSessions } = await supabaseClient
-                .from('sessions')
-                .select('device_id, session_status, started_at')
-                .in('device_id', allTuyaIds)
-                .is('ended_at', null);
-
-            const activeSessionMap = {};
-            (activeSessions || []).forEach(s => { activeSessionMap[s.device_id] = s; });
-
-            // Build a map of latest log per device
-            const latestLogMap = {};
-            (latestLogs || []).forEach(l => {
-                if (!latestLogMap[l.tuya_device_id]) latestLogMap[l.tuya_device_id] = l;
-            });
-
-            const now = Date.now();
             allTuyaIds.forEach(tuyaId => {
-                const latestLog = latestLogMap[tuyaId];
-                const activeSession = activeSessionMap[tuyaId];
-
-                if (!latestLog) {
+                const row = (sensorRows || []).find(r => r.tuya_device_id === tuyaId);
+                if (!row || row.is_online == null) {
                     sensorHealthMap[tuyaId] = { status: 'none', label: t('common.no.data'), color: 'bg-slate-200 text-slate-500', emoji: '⚪' };
-                    return;
-                }
-
-                const minutesAgo = (now - new Date(latestLog.recorded_at).getTime()) / 60000;
-
-                if (minutesAgo < 6) {
-                    sensorHealthMap[tuyaId] = { status: 'online', label: t('health.online'), color: 'bg-emerald-100 text-emerald-700', emoji: '🟢', minutesAgo: Math.round(minutesAgo) };
-                } else if (minutesAgo < 30 && activeSession) {
-                    sensorHealthMap[tuyaId] = { status: 'waiting', label: t('health.waiting'), color: 'bg-amber-100 text-amber-700', emoji: '🟡', minutesAgo: Math.round(minutesAgo) };
+                } else if (row.is_online) {
+                    sensorHealthMap[tuyaId] = { status: 'online', label: t('health.online'), color: 'bg-emerald-100 text-emerald-700', emoji: '🟢' };
                 } else {
-                    const hrs = Math.floor(minutesAgo / 60);
-                    const agoStr = hrs > 0 ? hrs + t('time.hours.short') : Math.round(minutesAgo) + t('time.mins.short');
-                    sensorHealthMap[tuyaId] = { status: 'offline', label: t('health.offline') + ' · ' + agoStr + ' ' + t('time.ago'), color: 'bg-red-100 text-red-600', emoji: '🔴', minutesAgo: Math.round(minutesAgo) };
+                    sensorHealthMap[tuyaId] = { status: 'offline', label: t('health.offline'), color: 'bg-red-100 text-red-600', emoji: '🔴' };
                 }
             });
         }
@@ -8293,15 +8262,11 @@
                 if (!sid) return;
                 const bl = sessionBaselines[d.session_id];
                 if (bl && bl.baseline_ended_at && d.recorded_at < bl.baseline_ended_at) return;
-                let pm25 = d.pm25_value;
-                if (bl && bl.baseline_avg_pm25 != null) pm25 = Math.max(0, pm25 - bl.baseline_avg_pm25);
                 if (!houseStats[sid]) houseStats[sid] = { pm25T: 0, pm25N: 0, co2T: 0, co2N: 0, sess: new Set() };
-                houseStats[sid].pm25T += pm25;
+                houseStats[sid].pm25T += d.pm25_value;
                 houseStats[sid].pm25N++;
                 if (d.co2_value != null) {
-                    let co2 = d.co2_value;
-                    if (bl && bl.baseline_avg_co2 != null) co2 = Math.max(0, co2 - bl.baseline_avg_co2);
-                    houseStats[sid].co2T += co2;
+                    houseStats[sid].co2T += d.co2_value;
                     houseStats[sid].co2N++;
                 }
                 if (d.session_id) houseStats[sid].sess.add(d.session_id);
@@ -8326,8 +8291,8 @@
                     const icon = L.divIcon({ html: '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;font-weight:bold;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">' + label + '</div>', iconSize: [32, 32], iconAnchor: [16, 16], className: '' });
                     const popup = '<b>' + s.full_name + '</b>' +
                         '<br>🔧 ' + deviceName +
-                        '<br>PM2.5 (net): <b style="color:' + color + '">' + (avgPm25 != null ? avgPm25 + ' \u00b5g/m\u00b3' : '\u2014') + '</b>' +
-                        (avgCo2 != null ? '<br>CO\u2082 (net): <b>' + avgCo2 + ' ppm</b>' : '') +
+                        '<br>PM2.5: <b style="color:' + color + '">' + (avgPm25 != null ? avgPm25 + ' \u00b5g/m\u00b3' : '\u2014') + '</b>' +
+                        (avgCo2 != null ? '<br>CO\u2082: <b>' + avgCo2 + ' ppm</b>' : '') +
                         '<br>' + t('map.sessions') + ': ' + sessCount;
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(popup));
                 } else {

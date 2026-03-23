@@ -268,7 +268,7 @@
       </div>
       <div class="flex gap-2 items-start bg-amber-50 rounded-xl p-3">
         <span class="text-lg">🔌</span>
-        <div><b>ปิด-เปิดเซนเซอร์ใหม่</b><br>ถอดสาย USB แล้วเสียบใหม่ รอ 1-2 นาที</div>
+        <div><b>ปิด-เปิดเซนเซอร์ใหม่</b><br>กดปุ่มเปิด-ปิด รอ 10 วินาที แล้วเปิดอีกครั้ง</div>
       </div>
       <div class="flex gap-2 items-start bg-green-50 rounded-xl p-3">
         <span class="text-lg">🏠</span>
@@ -286,6 +286,37 @@
     <button onclick="closeTroubleshoot()"
       class="w-full py-2 text-gray-400 text-sm font-medium">
       ปิด
+    </button>
+  </div>
+</div>
+
+<!-- Sensor Stall Warning Modal -->
+<div id="stall-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4" onclick="closeStallModal()">
+  <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl" onclick="event.stopPropagation()">
+    <div class="text-5xl text-center mb-3">⚠️</div>
+    <h2 class="text-xl font-bold text-amber-700 text-center mb-2">ข้อมูลไม่มีการอัปเดต</h2>
+    <p class="text-sm text-gray-600 text-center mb-4">เซนเซอร์อาจหลุดการเชื่อมต่อ กรุณาลองแก้ไขตามขั้นตอนด้านล่าง</p>
+    <div class="space-y-3 text-sm text-gray-700 mb-5">
+      <div class="flex gap-2 items-start bg-amber-50 rounded-xl p-3">
+        <span class="text-lg">1️⃣</span>
+        <div><b>กดปุ่มบนเซนเซอร์ 3 ครั้ง</b><br>เพื่อปรับเทียบค่า (Calibrate) รอ 2-3 นาที แล้วสังเกตว่าจำนวนข้อมูลเพิ่มขึ้นหรือไม่</div>
+      </div>
+      <div class="flex gap-2 items-start bg-orange-50 rounded-xl p-3">
+        <span class="text-lg">2️⃣</span>
+        <div><b>ปิดเซนเซอร์แล้วเปิดใหม่</b><br>กดปุ่มเปิด-ปิด รอ 10 วินาที แล้วเปิดอีกครั้ง รอให้สัญญาณ WiFi กลับมา</div>
+      </div>
+      <div class="flex gap-2 items-start bg-blue-50 rounded-xl p-3">
+        <span class="text-lg">3️⃣</span>
+        <div><b>ตรวจสอบ Hotspot</b><br>ชื่อ: <b>Biomass</b> / รหัส: <b>Biomass2026</b><br>ต้องเป็น 2.4 GHz และเปิด Mobile Data</div>
+      </div>
+      <div class="flex gap-2 items-start bg-purple-50 rounded-xl p-3">
+        <span class="text-lg">📞</span>
+        <div><b>ติดต่อผู้ดูแลระบบ</b><br>หากยังไม่สำเร็จ กรุณาแจ้งผู้ดูแล</div>
+      </div>
+    </div>
+    <button onclick="closeStallModal()"
+      class="w-full py-3 bg-amber-500 text-white text-lg font-bold rounded-2xl active:scale-95 transition-transform">
+      รับทราบ
     </button>
   </div>
 </div>
@@ -349,6 +380,10 @@ let isResumedSession = false; // true if continuing from another device
 let pollGaveUp = false; // true when poll limit reached
 let sensorFoundAlerted = false; // true after first sensor detection alert
 let lastPingAt = 0; // timestamp of last ping-sensor call
+let stallLastCount = -1; // last known sensor readings count
+let stallSince = 0; // timestamp when readings stopped increasing
+let stallAlerted = false; // true after showing stall popup
+const STALL_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes
 
 const LOCK_STALE_MS = 3 * 60 * 1000; // 3 minutes = stale
 const MIN_BASELINE_READINGS = 2; // ต้องเก็บ baseline อย่างน้อย 2 ค่า (~10 นาที) ก่อนกดจุดเตา
@@ -845,6 +880,17 @@ async function pollStatus() {
     .eq('data_source', 'sensor');
   activeSession._sensorReadings = sensorCount || 0;
 
+  // Stall detection — readings not increasing for 15 min
+  const nowMs = Date.now();
+  if (activeSession._sensorReadings !== stallLastCount) {
+    stallLastCount = activeSession._sensorReadings;
+    stallSince = nowMs;
+    stallAlerted = false;
+  } else if (stallLastCount > 0 && !stallAlerted && nowMs - stallSince >= STALL_THRESHOLD_MS) {
+    stallAlerted = true;
+    showStallPopup();
+  }
+
   if (activeSession.session_status === 'baseline') {
     const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
     const readings = activeSession._sensorReadings;
@@ -1314,6 +1360,17 @@ let tvocNextReminder = 0; // timestamp of next reminder
 let tvocReminderTimer = null;
 function closeTvocModal() {
   const m = document.getElementById('tvoc-modal');
+  if (m) m.classList.add('hidden');
+}
+
+function showStallPopup() {
+  playBeep();
+  try { navigator.vibrate?.([300, 100, 300]); } catch (_) {}
+  const m = document.getElementById('stall-modal');
+  if (m) m.classList.remove('hidden');
+}
+function closeStallModal() {
+  const m = document.getElementById('stall-modal');
   if (m) m.classList.add('hidden');
 }
 

@@ -8,8 +8,10 @@ const {
   computeBaselineAvg, computeAdjustedAvg,
   isSessionComplete, isQuotaExceeded,
   isCollectionPeriodActive, buildPeriodMap, buildSensorList,
+  isDedupActive, checkDataStall, resolveDeviceOnline, resolveSessionAction,
   SESSION_MAX_MINUTES, SESSION_COOLDOWN_MINUTES, MAX_SESSIONS_PER_DAY,
   BASELINE_MINUTES, MONTHLY_API_LIMIT, MIN_COMPLETE_READINGS,
+  DEDUP_GAP_MINUTES, STALL_THRESHOLD_MS,
 } = require('./sync-logic.js');
 
 // Helper: create UTC date
@@ -632,6 +634,322 @@ describe('buildSensorList', () => {
       const list = buildSensorList(realSensors, realDeviceMap, realProjectMap, realPeriodMap);
       assert.equal(list[0].stoveType, null);  // ← this was the bug
       assert.equal(list[0].houseId, 179);      // house still there
+    });
+  });
+});
+
+// ==================== Q. Dedup Check ====================
+describe('isDedupActive', () => {
+  it('DEDUP_GAP_MINUTES = 4.5', () => {
+    assert.equal(DEDUP_GAP_MINUTES, 4.5);
+  });
+
+  it('null lastRecordedAt → no dedup', () => {
+    const result = isDedupActive(null, new Date());
+    assert.equal(result.dedup, false);
+    assert.equal(result.gapMinutes, Infinity);
+  });
+
+  it('1 min ago → dedup (too soon)', () => {
+    const now = new Date('2026-03-23T10:01:00Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now);
+    assert.equal(result.dedup, true);
+    assert.equal(result.gapMinutes, 1);
+  });
+
+  it('4 min ago → dedup (still within 4.5 min gap)', () => {
+    const now = new Date('2026-03-23T10:04:00Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now);
+    assert.equal(result.dedup, true);
+    assert.equal(result.gapMinutes, 4);
+  });
+
+  it('4.5 min ago → NO dedup (exact boundary)', () => {
+    const now = new Date('2026-03-23T10:04:30Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now);
+    assert.equal(result.dedup, false);
+    assert.equal(result.gapMinutes, 4.5);
+  });
+
+  it('5 min ago → NO dedup', () => {
+    const now = new Date('2026-03-23T10:05:00Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now);
+    assert.equal(result.dedup, false);
+    assert.equal(result.gapMinutes, 5);
+  });
+
+  it('30 min ago → NO dedup', () => {
+    const now = new Date('2026-03-23T10:30:00Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now);
+    assert.equal(result.dedup, false);
+    assert.equal(result.gapMinutes, 30);
+  });
+
+  it('custom gap: 10 min threshold', () => {
+    const now = new Date('2026-03-23T10:08:00Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now, 10);
+    assert.equal(result.dedup, true); // 8 min < 10 min gap
+  });
+
+  it('0 sec gap (exact same time) → dedup', () => {
+    const now = new Date('2026-03-23T10:00:00Z');
+    const result = isDedupActive('2026-03-23T10:00:00Z', now);
+    assert.equal(result.dedup, true);
+    assert.equal(result.gapMinutes, 0);
+  });
+});
+
+// ==================== R. Stall Detection ====================
+describe('checkDataStall', () => {
+  const FIFTEEN_MIN = 15 * 60 * 1000;
+
+  it('STALL_THRESHOLD_MS = 15 min', () => {
+    assert.equal(STALL_THRESHOLD_MS, 15 * 60 * 1000);
+  });
+
+  it('first check (lastCount = -1) → not stalled, updates lastCount', () => {
+    const result = checkDataStall(5, -1, 0, 1000000);
+    assert.equal(result.stalled, false);
+    assert.equal(result.shouldAlert, false);
+    assert.equal(result.newLastCount, 5);
+  });
+
+  it('count increased → not stalled, resets stallSince', () => {
+    const now = 2000000;
+    const result = checkDataStall(10, 5, 1000000, now);
+    assert.equal(result.stalled, false);
+    assert.equal(result.newStallSince, now); // reset
+    assert.equal(result.newLastCount, 10);
+  });
+
+  it('count same, 5 min elapsed → not yet stalled', () => {
+    const stallSince = 1000000;
+    const now = stallSince + 5 * 60 * 1000; // 5 min later
+    const result = checkDataStall(10, 10, stallSince, now);
+    assert.equal(result.stalled, false);
+    assert.equal(result.shouldAlert, false);
+  });
+
+  it('count same, 14 min elapsed → not yet stalled', () => {
+    const stallSince = 1000000;
+    const now = stallSince + 14 * 60 * 1000;
+    const result = checkDataStall(10, 10, stallSince, now);
+    assert.equal(result.stalled, false);
+  });
+
+  it('count same, 15 min elapsed → STALLED + alert', () => {
+    const stallSince = 1000000;
+    const now = stallSince + FIFTEEN_MIN;
+    const result = checkDataStall(10, 10, stallSince, now);
+    assert.equal(result.stalled, true);
+    assert.equal(result.shouldAlert, true);
+  });
+
+  it('count same, 30 min elapsed → STALLED', () => {
+    const stallSince = 1000000;
+    const now = stallSince + 30 * 60 * 1000;
+    const result = checkDataStall(10, 10, stallSince, now);
+    assert.equal(result.stalled, true);
+  });
+
+  it('count = 0 (no data yet) → NOT stalled even after 15 min', () => {
+    const stallSince = 1000000;
+    const now = stallSince + FIFTEEN_MIN;
+    const result = checkDataStall(0, 0, stallSince, now);
+    assert.equal(result.stalled, false);
+    assert.equal(result.shouldAlert, false);
+  });
+
+  it('count went from 0 to 5 → not stalled', () => {
+    const result = checkDataStall(5, 0, 1000000, 2000000);
+    assert.equal(result.stalled, false);
+    assert.equal(result.newLastCount, 5);
+  });
+
+  it('custom threshold: 5 min', () => {
+    const stallSince = 1000000;
+    const fiveMin = 5 * 60 * 1000;
+    const now = stallSince + fiveMin;
+    const result = checkDataStall(10, 10, stallSince, now, fiveMin);
+    assert.equal(result.stalled, true);
+  });
+
+  describe('real scenario: ES-04 stall', () => {
+    it('readings stuck at 15 for 15+ min → alert volunteer', () => {
+      const startTime = Date.parse('2026-03-23T08:00:00Z');
+      // Poll 1: count = 15 (first seen)
+      const r1 = checkDataStall(15, -1, 0, startTime);
+      assert.equal(r1.stalled, false);
+      assert.equal(r1.newLastCount, 15);
+
+      // Poll 2: 5 min later, still 15
+      const r2 = checkDataStall(15, r1.newLastCount, r1.newStallSince, startTime + 5 * 60000);
+      assert.equal(r2.stalled, false);
+
+      // Poll 3: 10 min later, still 15
+      const r3 = checkDataStall(15, r2.newLastCount, r2.newStallSince, startTime + 10 * 60000);
+      assert.equal(r3.stalled, false);
+
+      // Poll 4: 15 min later, still 15 → ALERT!
+      const r4 = checkDataStall(15, r3.newLastCount, r3.newStallSince, startTime + 15 * 60000);
+      assert.equal(r4.stalled, true);
+      assert.equal(r4.shouldAlert, true);
+    });
+
+    it('readings resume after stall → clears stall', () => {
+      const stallSince = Date.parse('2026-03-23T08:00:00Z');
+      const now = stallSince + 20 * 60000; // 20 min of stall
+      // Data resumes: 15 → 16
+      const result = checkDataStall(16, 15, stallSince, now);
+      assert.equal(result.stalled, false);
+      assert.equal(result.newLastCount, 16);
+      assert.equal(result.newStallSince, now); // reset
+    });
+  });
+});
+
+// ==================== S. Device Online Check ====================
+describe('resolveDeviceOnline', () => {
+  it('null → false', () => {
+    assert.equal(resolveDeviceOnline(null), false);
+  });
+  it('undefined → false', () => {
+    assert.equal(resolveDeviceOnline(undefined), false);
+  });
+  it('{ online: true } → true', () => {
+    assert.equal(resolveDeviceOnline({ online: true }), true);
+  });
+  it('{ online: false } → false', () => {
+    assert.equal(resolveDeviceOnline({ online: false }), false);
+  });
+  it('{ online: undefined } → false', () => {
+    assert.equal(resolveDeviceOnline({ online: undefined }), false);
+  });
+  it('empty object {} → false', () => {
+    assert.equal(resolveDeviceOnline({}), false);
+  });
+  it('real Tuya response: { id: "abc", online: true, name: "MT13W 5" } → true', () => {
+    assert.equal(resolveDeviceOnline({ id: 'abc', online: true, name: 'MT13W 5' }), true);
+  });
+});
+
+// ==================== T. Session Action Resolver ====================
+describe('resolveSessionAction', () => {
+  describe('active session', () => {
+    it('overtime → auto-cutoff', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: true, sessionAge: 135, isOnline: true,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: true,
+      }), 'auto-cutoff');
+    });
+
+    it('device offline mid-session → device-offline', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: true, sessionAge: 50, isOnline: false,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'device-offline');
+    });
+
+    it('normal active session → continue', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: true, sessionAge: 50, isOnline: true,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'continue');
+    });
+
+    it('overtime takes priority over offline', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: true, sessionAge: 135, isOnline: false,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: true,
+      }), 'auto-cutoff');
+    });
+  });
+
+  describe('no active session', () => {
+    it('daily limit reached → daily-limit', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: true,
+        completedToday: 2, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'daily-limit');
+    });
+
+    it('3 sessions (over limit) → daily-limit', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: true,
+        completedToday: 3, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'daily-limit');
+    });
+
+    it('in cooldown → cooldown', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: true,
+        completedToday: 1, cooldownMinutesLeft: 200, isOvertime: false,
+      }), 'cooldown');
+    });
+
+    it('device offline, no session → device-offline', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: false,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'device-offline');
+    });
+
+    it('online + no limits → new-session', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: true,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'new-session');
+    });
+
+    it('online + 1 session done + cooldown over → new-session', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: true,
+        completedToday: 1, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'new-session');
+    });
+
+    it('daily-limit takes priority over cooldown', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: true,
+        completedToday: 2, cooldownMinutesLeft: 100, isOvertime: false,
+      }), 'daily-limit');
+    });
+
+    it('cooldown takes priority over offline', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: false,
+        completedToday: 1, cooldownMinutesLeft: 100, isOvertime: false,
+      }), 'cooldown');
+    });
+  });
+
+  describe('real scenario: ES-04 today', () => {
+    it('ES-04 active session + offline → device-offline (skip, no inflate)', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: true, sessionAge: 45, isOnline: false,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'device-offline');
+    });
+
+    it('ES-09 active session + online → continue', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: true, sessionAge: 60, isOnline: true,
+        completedToday: 0, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'continue');
+    });
+
+    it('ES-01 no session + cooldown 253 min → cooldown', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: false,
+        completedToday: 1, cooldownMinutesLeft: 253, isOvertime: false,
+      }), 'cooldown');
+    });
+
+    it('ES-07 completed 2/2 today → daily-limit', () => {
+      assert.equal(resolveSessionAction({
+        hasActiveSession: false, sessionAge: 0, isOnline: false,
+        completedToday: 2, cooldownMinutesLeft: 0, isOvertime: false,
+      }), 'daily-limit');
     });
   });
 });

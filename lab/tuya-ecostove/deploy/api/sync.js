@@ -926,17 +926,33 @@ module.exports = async function handler(req, res) {
       }
     }
 
-    // ===== Phase 2: Early exit if no sensor needs Tuya (0 Tuya calls) =====
+    // ===== Phase 2: Early exit if no sensor needs Tuya =====
     if (sensorsNeedingTuya.length === 0) {
+      // Still update online/offline status from Tuya (1 API call)
+      try {
+        const { token: t2 } = await getCachedToken(accessId, accessSecret);
+        if (t2) {
+          const infoMap = await getBatchDeviceInfo(accessId, accessSecret, t2, allIds, appUserUid);
+          tuyaCalls += infoMap._attempts || 1;
+          if (!infoMap._apiError) {
+            const nowISO = new Date().toISOString();
+            await Promise.all(SENSORS.map(s => fetch(sbUrl + '/rest/v1/registered_sensors?tuya_device_id=eq.' + s.id, {
+              method: 'PATCH', headers: sbHeaders(sbKey),
+              body: JSON.stringify({ is_online: !!(infoMap[s.id] && infoMap[s.id].online), last_checked_at: nowISO }),
+            })));
+          }
+        }
+      } catch (_) {}
       for (const sensor of SENSORS) {
         try { await upsertDailySummary(sbUrl, sbKey, sensor.id, sensor.stoveType, sensor.projectId); } catch (_) {}
       }
+      await updateMonthlyQuota(sbUrl, sbKey, tuyaCalls);
       return res.status(200).json({
         success: true,
         synced: '0/' + SENSORS.length,
         skipped: 'all sensors idle',
         time: new Date().toISOString(),
-        tuya_calls: 0,
+        tuya_calls: tuyaCalls,
         results,
       });
     }
@@ -961,9 +977,8 @@ module.exports = async function handler(req, res) {
     }
     if (!tokenCached) tuyaCalls++;
 
-    // ===== Phase 4: Device info — online check (N parallel Smart Home API calls) =====
-    const needingIds = sensorsNeedingTuya.map(s => s.id);
-    const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds, appUserUid);
+    // ===== Phase 4: Device info — online check (1 Smart Home API call for ALL sensors) =====
+    const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, allIds, appUserUid);
     tuyaCalls += deviceInfoMap._attempts || 1;
 
     // If Tuya API itself failed, track error count in session notes
@@ -987,6 +1002,13 @@ module.exports = async function handler(req, res) {
       await updateMonthlyQuota(sbUrl, sbKey, tuyaCalls);
       return res.status(200).json({ success: true, synced: '0/' + SENSORS.length, tuya_api_error: deviceInfoMap._errorMsg, time: new Date().toISOString(), tuya_calls: tuyaCalls, results });
     }
+
+    // ===== Phase 4.5: Write online/offline status for ALL sensors =====
+    const nowISO = new Date().toISOString();
+    await Promise.all(SENSORS.map(s => fetch(sbUrl + '/rest/v1/registered_sensors?tuya_device_id=eq.' + s.id, {
+      method: 'PATCH', headers: sbHeaders(sbKey),
+      body: JSON.stringify({ is_online: !!(deviceInfoMap[s.id] && deviceInfoMap[s.id].online), last_checked_at: nowISO }),
+    })));
 
     // ===== Phase 5: Device status — ONLY if any sensor is online (N parallel calls) =====
     const onlineSensors = sensorsNeedingTuya.filter(s => {

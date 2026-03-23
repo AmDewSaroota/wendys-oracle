@@ -194,6 +194,81 @@ function buildSensorList(sensors, deviceMap, projectMap, periodMap) {
   });
 }
 
+// ===== Dedup Check =====
+const DEDUP_GAP_MINUTES = 4.5;
+
+/**
+ * Check if a new data insert should be skipped (duplicate).
+ * @param {string|null} lastRecordedAt - ISO timestamp of last log
+ * @param {Date} now - current time
+ * @param {number} [gapMinutes] - minimum gap between inserts (default 4.5)
+ * @returns {{ dedup: boolean, gapMinutes: number }}
+ */
+function isDedupActive(lastRecordedAt, now, gapMinutes) {
+  const gap = gapMinutes != null ? gapMinutes : DEDUP_GAP_MINUTES;
+  if (!lastRecordedAt) return { dedup: false, gapMinutes: Infinity };
+  const elapsed = ((now || new Date()).getTime() - new Date(lastRecordedAt).getTime()) / 60000;
+  return { dedup: elapsed < gap, gapMinutes: Math.round(elapsed * 10) / 10 };
+}
+
+// ===== Stall Detection (Volunteer Page) =====
+const STALL_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes
+
+/**
+ * Check if sensor data collection has stalled.
+ * @param {number} currentCount - current readings count
+ * @param {number} lastCount - previous readings count (-1 = first check)
+ * @param {number} stallSince - timestamp when count stopped increasing
+ * @param {number} now - current timestamp (ms)
+ * @param {number} [thresholdMs] - stall threshold (default 15 min)
+ * @returns {{ stalled: boolean, shouldAlert: boolean, newStallSince: number, newLastCount: number }}
+ */
+function checkDataStall(currentCount, lastCount, stallSince, now, thresholdMs) {
+  const threshold = thresholdMs != null ? thresholdMs : STALL_THRESHOLD_MS;
+  if (currentCount !== lastCount) {
+    // Count changed — reset stall tracking
+    return { stalled: false, shouldAlert: false, newStallSince: now, newLastCount: currentCount };
+  }
+  // Count unchanged
+  if (lastCount <= 0) {
+    // No data yet — not a stall (sensor might not have started)
+    return { stalled: false, shouldAlert: false, newStallSince: stallSince || now, newLastCount: lastCount };
+  }
+  const elapsed = now - (stallSince || now);
+  const stalled = elapsed >= threshold;
+  return { stalled, shouldAlert: stalled, newStallSince: stallSince || now, newLastCount: lastCount };
+}
+
+// ===== Device Online Check =====
+/**
+ * Resolve device online status from Tuya device info.
+ * @param {Object|null} deviceInfo - Tuya device info object with .online property
+ * @returns {boolean}
+ */
+function resolveDeviceOnline(deviceInfo) {
+  return !!(deviceInfo && deviceInfo.online);
+}
+
+// ===== Session Action Resolver =====
+/**
+ * Determine what action to take for a sensor based on its state.
+ * Pure logic version of manageSession's decision tree.
+ * @param {Object} params
+ * @returns {string} action name
+ */
+function resolveSessionAction({ hasActiveSession, sessionAge, isOnline, completedToday, cooldownMinutesLeft, isOvertime }) {
+  if (hasActiveSession) {
+    if (isOvertime) return 'auto-cutoff';
+    if (!isOnline) return 'device-offline';
+    return 'continue';
+  }
+  // No active session
+  if (completedToday >= MAX_SESSIONS_PER_DAY) return 'daily-limit';
+  if (cooldownMinutesLeft > 0) return 'cooldown';
+  if (!isOnline) return 'device-offline';
+  return 'new-session';
+}
+
 module.exports = {
   // Constants
   SESSION_MAX_MINUTES,
@@ -202,6 +277,8 @@ module.exports = {
   BASELINE_MINUTES,
   MONTHLY_API_LIMIT,
   MIN_COMPLETE_READINGS,
+  DEDUP_GAP_MINUTES,
+  STALL_THRESHOLD_MS,
   // Functions
   getThaiDate,
   getThaiHHMM,
@@ -222,4 +299,8 @@ module.exports = {
   isCollectionPeriodActive,
   buildPeriodMap,
   buildSensorList,
+  isDedupActive,
+  checkDataStall,
+  resolveDeviceOnline,
+  resolveSessionAction,
 };
