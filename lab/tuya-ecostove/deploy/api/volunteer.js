@@ -85,6 +85,7 @@ module.exports = async function handler(req, res) {
       };
 
       const now = new Date().toISOString();
+      const thaiTimeStr = new Date(Date.now() + 7 * 3600000).toISOString().slice(11, 16);
       const gpsNote = (gpsLat && gpsLng) ? ' GPS:' + gpsLat + ',' + gpsLng : '';
       const update = {
         session_status: 'collecting',
@@ -94,8 +95,10 @@ module.exports = async function handler(req, res) {
         baseline_avg_co2: avg(logs, 'co2_value'),
         baseline_avg_temperature: avg(logs, 'temperature'),
         baseline_avg_humidity: avg(logs, 'humidity'),
+        baseline_avg_tvoc: avg(logs, 'tvoc_value'),
+        baseline_avg_co: avg(logs, 'co_value'),
         baseline_readings_count: logs.length,
-        notes: ((session.notes || '') + ' อาสากดเริ่มจุดเตา ' + now + gpsNote).trim(),
+        notes: ((session.notes || '') + ' อาสากดเริ่มจุดเตา ' + thaiTimeStr + ' น.' + gpsNote).trim(),
         updated_at: now,
       };
 

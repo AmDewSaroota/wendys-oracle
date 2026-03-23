@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biomass Stove — A3 Sticker Sheet</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
+  body { font-family: 'Chakra Petch', 'Sarabun', sans-serif; }
+
+  /* ===== Sensor sticker: 80×28mm ===== */
+  .sensor-sticker {
+    width: 80mm; height: 28mm;
+    border: 0.3px dashed #aaa;
+    border-radius: 2mm;
+    padding: 1.5mm 3mm;
+    display: flex;
+    align-items: center;
+    gap: 2.5mm;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+  }
+  .sensor-sticker .qr-box { width: 20mm; height: 20mm; flex-shrink: 0; }
+  .sensor-sticker .qr-box canvas { width: 20mm !important; height: 20mm !important; }
+  .sensor-sticker .code-text { font-size: 16pt; font-weight: 700; color: #065f46; letter-spacing: 1px; }
+  .sensor-sticker .brand-text { font-size: 6pt; color: #065f46; font-weight: 600; }
+  .sensor-sticker .scan-text { font-size: 5.5pt; color: #999; }
+
+  /* ===== Guide sticker: 80×50mm ===== */
+  .guide-sticker {
+    width: 80mm; height: 50mm;
+    border: 0.3px dashed #aaa;
+    border-radius: 2mm;
+    padding: 2.5mm 3mm 2mm 3mm;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    font-family: 'Sarabun', 'Chakra Petch', sans-serif;
+  }
+  .guide-sticker .guide-title {
+    font-size: 8pt; font-weight: 700; color: #065f46;
+    text-align: center;
+    margin-bottom: 1.5mm;
+    border-bottom: 0.4px solid #d1d5db;
+    padding-bottom: 1mm;
+  }
+  .guide-sticker .guide-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5mm;
+    font-size: 7pt;
+    line-height: 1.5;
+    padding: 0.3mm 0;
+  }
+  .guide-sticker .guide-btn {
+    flex-shrink: 0;
+    width: 22mm;
+    font-weight: 700;
+    color: #1e3a5f;
+    font-size: 6.5pt;
+  }
+  .guide-sticker .guide-arrow {
+    flex-shrink: 0;
+    color: #999;
+    font-size: 6pt;
+  }
+  .guide-sticker .guide-desc {
+    color: #333;
+    font-size: 6.5pt;
+  }
+  .guide-sticker .guide-note {
+    font-size: 5.5pt;
+    color: #b45309;
+    margin-top: 1.5mm;
+    padding-top: 1mm;
+    border-top: 0.4px solid #d1d5db;
+    line-height: 1.4;
+  }
+
+  /* ===== Screen preview ===== */
+  @media screen {
+    body { background: #f3f4f6; }
+    #print-area {
+      background: white;
+      width: 420mm;
+      margin: 20px auto;
+      padding: 10mm;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .section-label {
+      font-size: 10pt;
+      color: #6b7280;
+      font-weight: 600;
+      margin: 4mm 0 2mm 0;
+      padding-bottom: 1mm;
+      border-bottom: 1px solid #e5e7eb;
+    }
+  }
+
+  /* ===== Print styles ===== */
+  @media print {
+    body { margin: 0; padding: 0; background: white; }
+    #controls { display: none !important; }
+    .section-label { display: none !important; }
+    #print-area {
+      padding: 8mm;
+      margin: 0;
+    }
+    @page {
+      size: A3 portrait;
+      margin: 0;
+    }
+  }
+
+  .sticker-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3mm;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Controls (screen only) ===== -->
+<div id="controls" class="bg-emerald-800 text-white sticky top-0 z-50 shadow-lg">
+  <div class="max-w-5xl mx-auto px-4 py-4">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-inner">
+        <span class="text-xl">🌿</span>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold">Biomass Stove — A3 Sticker Sheet</h1>
+        <p class="text-emerald-200 text-xs">สติกเกอร์เซนเซอร์ + คู่มือปุ่มกด (A3 portrait)</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">Prefix</label>
+        <input id="inp-prefix" type="text" value="ES"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm font-semibold">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">จำนวนเซนเซอร์</label>
+        <input id="inp-count" type="number" value="10" min="1" max="20"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">เริ่มจากเลข</label>
+        <input id="inp-start" type="number" value="1" min="1"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">QR URL</label>
+        <input id="inp-url" type="url" value="https://biomassstove.vercel.app/volunteer.html"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+      <div>
+        <label class="text-emerald-200 text-xs font-medium">จำนวนคู่มือ</label>
+        <input id="inp-guide-count" type="number" value="10" min="0" max="20"
+               class="w-full mt-1 px-3 py-2 rounded-lg text-gray-800 text-sm">
+      </div>
+    </div>
+
+    <div class="flex gap-3 mt-4">
+      <button onclick="generate()"
+              class="bg-emerald-500 hover:bg-emerald-400 text-white font-semibold px-5 py-2 rounded-lg text-sm transition">
+        สร้างสติกเกอร์
+      </button>
+      <button onclick="window.print()"
+              class="bg-white text-emerald-800 font-semibold px-5 py-2 rounded-lg text-sm hover:bg-emerald-50 transition">
+        🖨️ พิมพ์ A3
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Print Area (A3) ===== -->
+<div id="print-area">
+  <div class="section-label">สติกเกอร์ติดเซนเซอร์ (80×28mm)</div>
+  <div id="sensor-grid" class="sticker-grid"></div>
+
+  <div class="section-label" style="margin-top:6mm">คู่มือปุ่มกด (80×50mm)</div>
+  <div id="guide-grid" class="sticker-grid"></div>
+</div>
+
+<script>
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function createGuideSticker() {
+  const el = document.createElement('div');
+  el.className = 'guide-sticker';
+  el.innerHTML = `
+    <div class="guide-title">🌿 วิธีใช้เซนเซอร์ — ปุ่มเดียว</div>
+    <div class="guide-row">
+      <span class="guide-btn">กดค้าง 3 วิ</span>
+      <span class="guide-arrow">→</span>
+      <span class="guide-desc">เปิด / ปิดเครื่อง</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-btn">กด 1 ครั้ง</span>
+      <span class="guide-arrow">→</span>
+      <span class="guide-desc">เปลี่ยน °C / °F</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-btn">กด 2 ครั้ง</span>
+      <span class="guide-arrow">→</span>
+      <span class="guide-desc">เปิด / ปิดเสียงเตือน</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-btn">กด 3 ครั้ง</span>
+      <span class="guide-arrow">→</span>
+      <span class="guide-desc">ปรับเทียบค่า (รอ 60 วินาที)</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-btn">กด 4 ครั้ง</span>
+      <span class="guide-arrow">→</span>
+      <span class="guide-desc">หน้าจอเปิดตลอด</span>
+    </div>
+    <div class="guide-row">
+      <span class="guide-btn">กด 5 ครั้ง</span>
+      <span class="guide-arrow">→</span>
+      <span class="guide-desc">จับคู่ WiFi ใหม่</span>
+    </div>
+    <div class="guide-note">
+      ⚡ เปิดเครื่องแล้วรอ 10 นาทีก่อนเก็บข้อมูล<br>
+      🔌 ชาร์จด้วยสาย USB-C &nbsp;|&nbsp; 🔋 แบตใช้ได้ ~15 ชม.
+    </div>
+  `;
+  return el;
+}
+
+async function generate() {
+  const prefix = document.getElementById('inp-prefix').value.trim() || 'ES';
+  const count  = parseInt(document.getElementById('inp-count').value) || 10;
+  const start  = parseInt(document.getElementById('inp-start').value) || 1;
+  const url    = document.getElementById('inp-url').value.trim();
+  const guideCount = parseInt(document.getElementById('inp-guide-count').value) || 10;
+
+  // --- Sensor stickers ---
+  const sGrid = document.getElementById('sensor-grid');
+  sGrid.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const num  = start + i;
+    const code = `${prefix}-${pad(num)}`;
+    const card = document.createElement('div');
+    card.className = 'sensor-sticker';
+    card.innerHTML = `
+      <div class="qr-box"><canvas></canvas></div>
+      <div style="display:flex;flex-direction:column;justify-content:center;min-width:0">
+        <div style="display:flex;align-items:center;gap:1.5mm;margin-bottom:0.5mm">
+          <span style="font-size:8pt">🌿</span>
+          <span class="brand-text">Biomass Stove</span>
+        </div>
+        <span class="code-text">${code}</span>
+        <span class="scan-text">สแกน QR เพื่อเริ่มเก็บข้อมูล</span>
+      </div>
+    `;
+    sGrid.appendChild(card);
+    const canvas = card.querySelector('canvas');
+    await QRCode.toCanvas(canvas, url, { width: 80, margin: 1, color: { dark: '#065f46', light: '#ffffff' } });
+  }
+
+  // --- Guide stickers ---
+  const gGrid = document.getElementById('guide-grid');
+  gGrid.innerHTML = '';
+  for (let i = 0; i < guideCount; i++) {
+    gGrid.appendChild(createGuideSticker());
+  }
+}
+
+generate();
+</script>
+
+</body>
+</html>

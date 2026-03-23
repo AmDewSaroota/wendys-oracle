@@ -29,18 +29,17 @@
 <!-- Header -->
 <header class="bg-emerald-800 text-white px-4 py-4 shadow-lg sticky top-0 z-50">
   <div class="max-w-md mx-auto flex items-center gap-3">
-    <div class="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-inner">
-      <img src="logo.png" alt="Biomass Stove" class="w-9 h-9 object-contain">
-    </div>
-    <div>
-      <h1 class="text-lg font-bold leading-tight">Biomass Stove อาสาสมัคร</h1>
-      <p class="text-emerald-200 text-xs">ระบบเก็บข้อมูลภาคสนาม</p>
-    </div>
+    <a href="index.html" class="flex items-center gap-3 flex-1 min-w-0" title="แดชบอร์ด">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-inner shrink-0">
+        <img src="logo.png" alt="Biomass Stove" class="w-9 h-9 object-contain">
+      </div>
+      <div class="min-w-0">
+        <h1 class="text-base font-bold leading-tight truncate">Biomass Stove อาสาสมัคร</h1>
+        <p class="text-emerald-200 text-xs">ระบบเก็บข้อมูลภาคสนาม</p>
+      </div>
+    </a>
     <div id="demo-badge" class="hidden bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-lg">DEMO</div>
-    <div class="ml-auto flex gap-2">
-      <a href="index.html" class="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-lg" title="แดชบอร์ด">แดชบอร์ด</a>
-      <a href="guide-volunteer.html" class="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-lg" title="คู่มือ">คู่มือ</a>
-    </div>
+    <a href="guide-volunteer.html" class="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-lg shrink-0" title="คู่มือ">คู่มือ</a>
   </div>
 </header>
 
@@ -175,7 +174,7 @@
       <div class="text-center mb-4">
         <div class="text-4xl">📝</div>
         <p class="font-bold text-lg text-purple-800 mt-2">วันนี้ต้องกรอกค่าด้วยมือมั้ย?</p>
-        <p class="text-sm text-purple-500 mt-1">TVOC และ/หรือ CO — เก็บเฉพาะวันที่กำหนด</p>
+        <p class="text-sm text-purple-500 mt-1">TVOC และ/หรือ CO — เก็บตั้งแต่ช่วง Baseline เพื่อเทียบกับตอนจุดเตา</p>
       </div>
       <div class="flex gap-3">
         <button onclick="answerTvoc(true)" class="flex-1 bg-purple-600 text-white py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform">
@@ -234,12 +233,8 @@
       <p class="text-blue-500 text-xs mt-1" id="session-remaining-text">เหลืออีก ~2 ชม. — กรุณาอยู่กรอกค่าต่อ</p>
     </div>
 
-    <!-- End session (hidden until near completion) -->
-    <div id="end-btn-wrap" class="hidden">
-      <button onclick="endVolunteerSession()" class="w-full bg-gray-100 text-gray-500 py-3 rounded-xl font-bold text-sm hover:bg-red-50 hover:text-red-500 transition-all">
-        ⏹ จบ Session
-      </button>
-    </div>
+    <!-- End session — removed: sessions end via auto-cutoff only -->
+    <div id="end-btn-wrap" class="hidden"></div>
   </div>
 
   <!-- ==================== -->
@@ -283,6 +278,14 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const API_BASE = window.location.origin;
 const DEMO_MODE = new URLSearchParams(window.location.search).has('demo');
+const DEMO_TIME_X = 20; // Demo time multiplier: 15 sec real = 5 min demo
+
+// Helper: elapsed minutes from a timestamp (applies demo multiplier)
+// Multiply ms BEFORE converting to minutes — so demo time ticks smoothly
+function elapsedMin(from) {
+  const ms = Date.now() - new Date(from).getTime();
+  return Math.floor(ms * (DEMO_MODE ? DEMO_TIME_X : 1) / 60000);
+}
 
 // ================================================
 // State
@@ -297,6 +300,7 @@ let tvocReadings = [];
 let coReadings = [];
 let manualReadings = []; // combined list [{tvoc, co, time}]
 let tvocEnabled = false; // true only when volunteer chooses to record TVOC/CO
+let tvocQuestionAnswered = false; // true after volunteer answers the TVOC/CO question
 let pollTimer = null;
 let timeTimer = null;
 let userGPS = null; // { lat, lng }
@@ -475,11 +479,13 @@ async function onHouseConfirmed(house) {
 
   if (lockCheck.resumed) {
     isResumedSession = true;
-    await loadPreviousTvoc();
-    // Resume toast shown inside loadPreviousTvoc if TVOC found
-    if (!isResumedSession || tvocReadings.length === 0) {
-      showToast('🔄 ต่อจากอุปกรณ์เดิม — เลือกบ้าน: ' + house.full_name);
-    }
+  }
+  // Always load previous TVOC/CO data (handles both resume and same-browser refresh)
+  await loadPreviousTvoc();
+  if (isResumedSession && tvocReadings.length > 0) {
+    // Toast already shown inside loadPreviousTvoc
+  } else if (isResumedSession) {
+    showToast('🔄 ต่อจากอุปกรณ์เดิม — เลือกบ้าน: ' + house.full_name);
   } else {
     showToast('✅ เลือกบ้าน: ' + house.full_name);
   }
@@ -596,6 +602,7 @@ async function loadPreviousTvoc() {
         manualReadings.push({ tvoc: r.tvoc_value, co: r.co_value, time });
       });
       tvocEnabled = true;
+      tvocQuestionAnswered = true;
       updateManualList();
       const parts = [];
       if (tvocReadings.length > 0) parts.push('TVOC ' + tvocReadings.length);
@@ -728,26 +735,36 @@ async function pollStatus() {
     const remaining = MIN_BASELINE_READINGS - readings;
     if (readings < MIN_BASELINE_READINGS) {
       setSensorUI('baseline', '📊', 'กำลังเก็บค่า Baseline...',
-        'เก็บได้ ' + readings + '/' + MIN_BASELINE_READINGS + ' ค่า · ' + elapsed + ' นาที — รอข้อมูลอีก ' + remaining + ' ค่า');
+        'เก็บได้ ' + readings + '/' + MIN_BASELINE_READINGS + ' ค่า — รอข้อมูลอีก ' + remaining + ' ค่า');
       showBaselineProgress();
       hideCookingButton();
     } else {
       setSensorUI('baseline', '📊', 'Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้',
-        'เก็บได้ ' + readings + ' ค่า · ' + elapsed + ' นาที');
+        'เก็บได้ ' + readings + ' ค่า');
       showBaselineProgress();
       showCookingButton();
     }
+    // Show TVOC/CO question during baseline (so volunteer can record ambient values)
+    if (!tvocQuestionAnswered) {
+      document.getElementById('tvoc-question').classList.remove('hidden');
+    }
+    if (tvocEnabled) showTvocSection();
   } else if (activeSession.session_status === 'collecting') {
     const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
     setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
-      (activeSession.readings_count || 0) + ' ค่า · ' + elapsed + ' นาที');
+      'เก็บได้ ' + (activeSession.readings_count || 0) + ' ค่า');
     showCollectingProgress();
     hideCookingButton();
     if (tvocEnabled) showTvocSection();
     // If resumed from old device with TVOC data, skip the question
     if (isResumedSession && tvocReadings.length > 0 && !tvocEnabled) {
       tvocEnabled = true;
+      tvocQuestionAnswered = true;
       showTvocSection();
+    }
+    // If collecting but TVOC question not answered yet, ask now
+    if (!tvocQuestionAnswered) {
+      document.getElementById('tvoc-question').classList.remove('hidden');
     }
     showEndButton();
   }
@@ -808,10 +825,10 @@ function updateTimers() {
   if (!activeSession) return;
 
   if (activeSession.session_status === 'baseline') {
-    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    const elapsed = elapsedMin(activeSession.started_at);
     const readings = activeSession.readings_count || 0;
     document.getElementById('baseline-count').textContent = readings + ' ค่า';
-    document.getElementById('baseline-time').textContent = '⏱ ' + elapsed + ' นาที';
+    document.getElementById('baseline-time').textContent = '⏱ ' + elapsed + ' / 10 นาที';
     // Progress bar: approximate 10 min baseline
     const pct = Math.min(100, (elapsed / 10) * 100);
     document.getElementById('baseline-bar').style.width = pct + '%';
@@ -819,14 +836,19 @@ function updateTimers() {
 
   if (activeSession.session_status === 'collecting' || cookingStartedAt) {
     const startRef = cookingStartedAt || (activeSession.baseline_ended_at ? new Date(activeSession.baseline_ended_at) : new Date(activeSession.started_at));
-    const elapsed = Math.floor((Date.now() - startRef.getTime()) / 60000);
+    const elapsed = elapsedMin(startRef);
     const readings = activeSession.readings_count || 0;
     document.getElementById('collecting-count').textContent = readings + ' ค่า';
+    const totalMin = 130;
     const hrs = Math.floor(elapsed / 60);
     const mins = elapsed % 60;
-    document.getElementById('collecting-time').textContent = '⏱ ' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที';
+    const elapsedText = hrs > 0 ? hrs + ' ชม. ' + mins + ' น.' : mins + ' นาที';
+    const totalHrs = Math.floor(totalMin / 60);
+    const totalMins = totalMin % 60;
+    const totalText = totalHrs + ' ชม. ' + totalMins + ' น.';
+    document.getElementById('collecting-time').textContent = '⏱ ' + elapsedText + ' / ' + totalText;
     // Progress bar: approximate 130 min session
-    const pct = Math.min(100, (elapsed / 130) * 100);
+    const pct = Math.min(100, (elapsed / totalMin) * 100);
     document.getElementById('collecting-bar').style.width = pct + '%';
   }
 
@@ -836,7 +858,7 @@ function updateTimers() {
 
 function updateSessionRemaining() {
   if (!activeSession) return;
-  const sessionAge = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+  const sessionAge = elapsedMin(activeSession.started_at);
   const remaining = 130 - sessionAge; // SESSION_MAX_MINUTES = 130
   const endWrap = document.getElementById('end-btn-wrap');
   const remainWrap = document.getElementById('session-remaining-wrap');
@@ -908,6 +930,7 @@ function hideAllActions() {
 function answerTvoc(yes) {
   document.getElementById('tvoc-question').classList.add('hidden');
   tvocEnabled = yes;
+  tvocQuestionAnswered = true;
   if (yes) {
     showTvocSection();
     showToast('📝 เปิดบันทึก TVOC/CO — จะเตือนทุก 5 นาที');
@@ -957,8 +980,10 @@ async function markCookingStart() {
       showEndButton();
       setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
         'Baseline: ' + (result.baseline_readings || 0) + ' ค่า');
-      // Ask if volunteer needs to record TVOC today
-      document.getElementById('tvoc-question').classList.remove('hidden');
+      // If TVOC question wasn't answered during baseline, ask now
+      if (!tvocQuestionAnswered) {
+        document.getElementById('tvoc-question').classList.remove('hidden');
+      }
     } else {
       showToast('❌ ' + thaiError(result.error));
       resetCookingBtn(btn);
@@ -1025,7 +1050,8 @@ async function submitManualReadings() {
   manualReadings.push({ tvoc: tvocVal, co: coVal, time: now });
   tvocInput.value = '';
   coInput.value = '';
-  tvocInput.focus();
+  tvocInput.blur();
+  coInput.blur();
 
   // Toast message
   const parts = [];
@@ -1149,7 +1175,7 @@ function showToast(msg, duration) {
 // ================================================
 // TVOC Reminder — Notification + Beep + Vibrate
 // ================================================
-const TVOC_INTERVAL_MS = 300 * 1000; // 5 minutes
+const TVOC_INTERVAL_MS = DEMO_MODE ? 300000 / DEMO_TIME_X : 300000; // 5 min real, 15 sec demo
 let tvocNextReminder = 0; // timestamp of next reminder
 let tvocReminderTimer = null;
 function closeTvocModal() {
@@ -1207,27 +1233,48 @@ function focusManualInput() {
   if (banner) banner.classList.add('hidden');
 }
 
+let tvocOverdue = false; // true = ครบเวลาแล้ว รอกรอกค่า
+const TVOC_NAG_MS = DEMO_MODE ? 30000 / DEMO_TIME_X : 30000; // สะกิดซ้ำทุก 30 วิ real, 1.5 วิ demo
+let tvocLastNag = 0;
+
 function updateTvocCountdown() {
   const wrap = document.getElementById('tvoc-countdown-wrap');
   const text = document.getElementById('tvoc-countdown-text');
   if (!wrap || !text) return;
   wrap.classList.remove('hidden');
-  const remaining = Math.max(0, Math.round((tvocNextReminder - Date.now()) / 1000));
-  const m = Math.floor(remaining / 60);
-  const s = remaining % 60;
-  text.textContent = 'กรอกค่าถัดไปใน ' + m + ':' + String(s).padStart(2, '0');
+  const tx = DEMO_MODE ? DEMO_TIME_X : 1;
+  if (tvocOverdue) {
+    const overdueSec = Math.round((Date.now() - tvocNextReminder) * tx / 1000);
+    const m = Math.floor(overdueSec / 60);
+    const s = overdueSec % 60;
+    text.textContent = '⏰ รอกรอกค่า! (เกิน ' + m + ':' + String(s).padStart(2, '0') + ')';
+  } else {
+    const remaining = Math.max(0, Math.round((tvocNextReminder - Date.now()) * tx / 1000));
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    text.textContent = 'กรอกค่าถัดไปใน ' + m + ':' + String(s).padStart(2, '0');
+  }
 }
 
 function startTvocReminder() {
   if (tvocReminderTimer) clearInterval(tvocReminderTimer);
   tvocNextReminder = Date.now() + TVOC_INTERVAL_MS;
+  tvocOverdue = false;
+  tvocLastNag = 0;
   updateTvocCountdown();
 
-  // Check every second (foreground) — but works even if throttled to 1/min (background)
   tvocReminderTimer = setInterval(() => {
     if (Date.now() >= tvocNextReminder) {
-      sendTvocNotification();
-      tvocNextReminder = Date.now() + TVOC_INTERVAL_MS;
+      if (!tvocOverdue) {
+        // เพิ่งครบเวลา — แจ้งเตือนครั้งแรก
+        tvocOverdue = true;
+        tvocLastNag = Date.now();
+        sendTvocNotification();
+      } else if (Date.now() - tvocLastNag >= TVOC_NAG_MS) {
+        // ยังไม่กรอก — สะกิดซ้ำทุก 30 วินาที
+        tvocLastNag = Date.now();
+        sendTvocNotification();
+      }
     }
     updateTvocCountdown();
   }, 1000);
@@ -1241,6 +1288,8 @@ function stopTvocReminder() {
 
 function resetTvocCountdown() {
   tvocNextReminder = Date.now() + TVOC_INTERVAL_MS;
+  tvocOverdue = false;
+  tvocLastNag = 0;
   updateTvocCountdown();
   const banner = document.getElementById('tvoc-reminder-banner');
   if (banner) banner.classList.add('hidden');
@@ -1286,10 +1335,10 @@ async function demoPollStatus() {
       started_at: startTime,
       readings_count: 0,
     };
-    // Increment readings each poll (simulate sync every 5 min)
-    if (!wasIdle) activeSession.readings_count = (activeSession.readings_count || 0) + 1;
+    // Readings based on demo-accelerated time (1 reading per 5 demo-min)
+    const elapsed = elapsedMin(activeSession.started_at);
+    activeSession.readings_count = Math.max(1, Math.floor(elapsed / 5) + 1);
     const readings = activeSession.readings_count;
-    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
     const remaining = MIN_BASELINE_READINGS - readings;
     if (readings < MIN_BASELINE_READINGS) {
       setSensorUI('baseline', '📊', 'กำลังเก็บค่า Baseline...',
@@ -1298,16 +1347,24 @@ async function demoPollStatus() {
       hideCookingButton();
     } else {
       setSensorUI('baseline', '📊', 'Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้',
-        'เก็บได้ ' + readings + ' ค่า · ' + elapsed + ' นาที (DEMO)');
+        'เก็บได้ ' + readings + ' ค่า (DEMO)');
       showBaselineProgress();
       showCookingButton();
     }
+    // Show TVOC/CO question during baseline (same as real flow)
+    if (!tvocQuestionAnswered) {
+      document.getElementById('tvoc-question').classList.remove('hidden');
+    }
+    if (tvocEnabled) showTvocSection();
   } else if (demoPhase === 'collecting') {
     activeSession.session_status = 'collecting';
-    activeSession.readings_count = (activeSession.readings_count || 0) + 1;
-    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    // Readings based on demo-accelerated time since cooking started (1 per 5 demo-min)
+    const cookStart = cookingStartedAt || (activeSession.baseline_ended_at ? new Date(activeSession.baseline_ended_at) : new Date(activeSession.started_at));
+    const cookElapsed = elapsedMin(cookStart);
+    const baselineReadings = activeSession.baseline_readings || 0;
+    activeSession.readings_count = baselineReadings + Math.max(1, Math.floor(cookElapsed / 5) + 1);
     setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
-      activeSession.readings_count + ' ค่า · ' + elapsed + ' นาที (DEMO)');
+      'เก็บได้ ' + activeSession.readings_count + ' ค่า (DEMO)');
     showCollectingProgress();
     hideCookingButton();
     if (tvocEnabled) showTvocSection();
@@ -1328,16 +1385,19 @@ async function demoMarkCookingStart() {
   cookingStartedAt = new Date();
   activeSession.session_status = 'collecting';
   activeSession.baseline_ended_at = new Date().toISOString();
+  activeSession.baseline_readings = activeSession.readings_count || 0;
 
   showToast('✅ [DEMO] บันทึกแล้ว — เริ่มเก็บข้อมูลการใช้เตา');
   hideCookingButton();
   showCollectingProgress();
   showEndButton();
   setSensorUI('collecting', '🔥', 'กำลังเก็บข้อมูลการใช้เตา',
-    'Baseline: ' + activeSession.readings_count + ' ค่า (DEMO)');
+    'เก็บได้ ' + activeSession.readings_count + ' ค่า (DEMO)');
 
-  // Ask TVOC question
-  document.getElementById('tvoc-question').classList.remove('hidden');
+  // TVOC question already asked during baseline — only ask here if not answered yet
+  if (!tvocQuestionAnswered) {
+    document.getElementById('tvoc-question').classList.remove('hidden');
+  }
 }
 
 async function demoSubmitTvoc() { return demoSubmitManual(); }
@@ -1358,7 +1418,8 @@ async function demoSubmitManual() {
   manualReadings.push({ tvoc: tvocVal, co: coVal, time: now });
   tvocInput.value = '';
   coInput.value = '';
-  tvocInput.focus();
+  tvocInput.blur();
+  coInput.blur();
 
   const parts = [];
   if (tvocVal !== null) parts.push('TVOC ' + tvocVal.toFixed(3));

@@ -28,38 +28,32 @@
         <!-- Config Panel -->
         <div class="bg-white rounded-2xl shadow-lg p-6">
             <h2 class="text-lg font-bold text-slate-800 mb-4">ตั้งค่า</h2>
-            <!-- Old Stove Date Range -->
+            <!-- Old Stove Days -->
             <div class="mb-3">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="inline-block w-3 h-3 rounded-full bg-red-400"></span>
                     <span class="text-sm font-bold text-slate-700">เตาเก่า (old)</span>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs font-medium text-slate-500">วันเริ่ม</label>
-                        <input type="date" id="oldStartDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <label class="text-xs font-medium text-slate-500">จำนวนวัน</label>
+                        <input type="number" id="oldDays" value="15" min="1" max="180" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
                     </div>
-                    <div>
-                        <label class="text-xs font-medium text-slate-500">วันสิ้นสุด</label>
-                        <input type="date" id="oldEndDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
-                    </div>
+                    <span id="oldDatePreview" class="text-xs text-slate-400 mt-5"></span>
                 </div>
             </div>
-            <!-- Eco Stove Date Range -->
+            <!-- Eco Stove Days -->
             <div class="mb-3">
                 <div class="flex items-center gap-2 mb-2">
                     <span class="inline-block w-3 h-3 rounded-full bg-emerald-400"></span>
                     <span class="text-sm font-bold text-slate-700">เตาใหม่ (eco)</span>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs font-medium text-slate-500">วันเริ่ม</label>
-                        <input type="date" id="ecoStartDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
+                <div class="flex items-center gap-3">
+                    <div class="flex-1">
+                        <label class="text-xs font-medium text-slate-500">จำนวนวัน</label>
+                        <input type="number" id="ecoDays" value="15" min="1" max="180" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
                     </div>
-                    <div>
-                        <label class="text-xs font-medium text-slate-500">วันสิ้นสุด</label>
-                        <input type="date" id="ecoEndDate" class="w-full mt-1 px-3 py-2 border rounded-xl text-sm">
-                    </div>
+                    <span id="ecoDatePreview" class="text-xs text-slate-400 mt-5"></span>
                 </div>
             </div>
             <!-- Scenario Selector -->
@@ -160,28 +154,46 @@ function selectScenario(scenario) {
             btn.className = 'px-4 py-3 rounded-xl text-sm font-bold border-2 transition-all bg-white border-slate-200 text-slate-500 hover:border-slate-300';
         }
     });
-    // Toggle eco date inputs
-    const ecoInputs = document.querySelectorAll('#ecoStartDate, #ecoEndDate');
-    ecoInputs.forEach(el => {
-        el.disabled = scenario === 'no-eco';
-        el.style.opacity = scenario === 'no-eco' ? '0.3' : '1';
-    });
+    // Toggle eco days input
+    const ecoInput = document.getElementById('ecoDays');
+    ecoInput.disabled = scenario === 'no-eco';
+    ecoInput.style.opacity = scenario === 'no-eco' ? '0.3' : '1';
+    updateDatePreview();
 }
 
 // ==================== Defaults ====================
 window.addEventListener('DOMContentLoaded', () => {
-    const today = new Date();
-    // Old stove: 30 days ago → 16 days ago (first half)
-    const oldStart = new Date(today); oldStart.setDate(oldStart.getDate() - 30);
-    const oldEnd = new Date(today); oldEnd.setDate(oldEnd.getDate() - 16);
-    // Eco stove: 15 days ago → yesterday (second half)
-    const ecoStart = new Date(today); ecoStart.setDate(ecoStart.getDate() - 15);
-    const ecoEnd = new Date(today); ecoEnd.setDate(ecoEnd.getDate() - 1);
-    document.getElementById('oldStartDate').value = fmt(oldStart);
-    document.getElementById('oldEndDate').value = fmt(oldEnd);
-    document.getElementById('ecoStartDate').value = fmt(ecoStart);
-    document.getElementById('ecoEndDate').value = fmt(ecoEnd);
+    updateDatePreview();
+    document.getElementById('oldDays').addEventListener('input', updateDatePreview);
+    document.getElementById('ecoDays').addEventListener('input', updateDatePreview);
 });
+
+function shortDate(d) {
+    const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    return d.getDate() + ' ' + months[d.getMonth()];
+}
+
+function computeDateRanges() {
+    const oldD = parseInt(document.getElementById('oldDays').value) || 15;
+    const ecoD = parseInt(document.getElementById('ecoDays').value) || 15;
+    const today = new Date();
+    const ecoEnd = new Date(today); ecoEnd.setDate(today.getDate() - 1);
+    const ecoStart = new Date(ecoEnd); ecoStart.setDate(ecoEnd.getDate() - ecoD + 1);
+    const oldEnd = new Date(ecoStart); oldEnd.setDate(ecoStart.getDate() - 1);
+    const oldStart = new Date(oldEnd); oldStart.setDate(oldEnd.getDate() - oldD + 1);
+    return { oldStart, oldEnd, ecoStart, ecoEnd, oldDays: oldD, ecoDays: ecoD };
+}
+
+function updateDatePreview() {
+    const r = computeDateRanges();
+    document.getElementById('oldDatePreview').textContent = shortDate(r.oldStart) + ' — ' + shortDate(r.oldEnd);
+    const ecoPreview = document.getElementById('ecoDatePreview');
+    if (selectedScenario === 'no-eco') {
+        ecoPreview.textContent = '(ไม่ใช้)';
+    } else {
+        ecoPreview.textContent = shortDate(r.ecoStart) + ' — ' + shortDate(r.ecoEnd);
+    }
+}
 
 function fmt(d) { return d.toISOString().split('T')[0]; }
 function rand(min, max) { return Math.random() * (max - min) + min; }
@@ -250,15 +262,11 @@ function generateCurve(numReadings, baseVal, peakMin, peakMax, mult) {
 let generatedData = null;
 
 function generateAllData() {
-    const oldStart = new Date(document.getElementById('oldStartDate').value + 'T00:00:00');
-    const oldEnd = new Date(document.getElementById('oldEndDate').value + 'T00:00:00');
-    const ecoStart = new Date(document.getElementById('ecoStartDate').value + 'T00:00:00');
-    const ecoEnd = new Date(document.getElementById('ecoEndDate').value + 'T00:00:00');
+    const r = computeDateRanges();
+    const oldStart = r.oldStart, oldEnd = r.oldEnd, ecoStart = r.ecoStart, ecoEnd = r.ecoEnd;
+    const oldDays = r.oldDays, ecoDays = r.ecoDays;
     const incPct = parseInt(document.getElementById('incompletePercent').value) / 100;
     const tvocPct = parseInt(document.getElementById('tvocPercent').value) / 100;
-
-    const oldDays = Math.round((oldEnd - oldStart) / 86400000) + 1;
-    const ecoDays = Math.round((ecoEnd - ecoStart) / 86400000) + 1;
 
     // Layer 1: Subjects (all houses — with + without sensor)
     const subjects = HOUSE_PROFILES.map((h, i) => ({
@@ -332,6 +340,7 @@ function generateAllData() {
             let dayCompleted = 0, dayIncomplete = 0, dayCancelled = 0;
             let dayReadings = 0;
             const dayPm25s = [], dayCo2s = [], dayTemps = [], dayHums = [], dayPm10s = [];
+            const dayAdjPm25s = [], dayAdjCo2s = [], dayAdjTemps = [], dayAdjHums = [];
 
             // 2 sessions per day: morning (06:00 TH) and evening (17:00 TH)
             const sessionStarts = [
@@ -463,6 +472,20 @@ function generateAllData() {
                 const blAvgTemp = baselineReadings > 0 ? +(allTemp.slice(0, baselineReadings).reduce((a, b) => a + b, 0) / baselineReadings).toFixed(1) : null;
                 const blAvgHum = baselineReadings > 0 ? +(allHum.slice(0, baselineReadings).reduce((a, b) => a + b, 0) / baselineReadings).toFixed(1) : null;
 
+                // Cooking-phase averages (after baseline) minus baseline = adjusted
+                const cookPm25s = allPm25.slice(baselineReadings);
+                const cookCo2s = allCo2.slice(baselineReadings);
+                const cookTemps = allTemp.slice(baselineReadings);
+                const cookHums = allHum.slice(baselineReadings);
+                const cookAvgPm25 = cookPm25s.length ? cookPm25s.reduce((a, b) => a + b, 0) / cookPm25s.length : null;
+                const cookAvgCo2 = cookCo2s.length ? cookCo2s.reduce((a, b) => a + b, 0) / cookCo2s.length : null;
+                const cookAvgTemp = cookTemps.length ? cookTemps.reduce((a, b) => a + b, 0) / cookTemps.length : null;
+                const cookAvgHum = cookHums.length ? cookHums.reduce((a, b) => a + b, 0) / cookHums.length : null;
+                const adjPm25 = cookAvgPm25 != null && blAvgPm25 != null ? +Math.max(0, cookAvgPm25 - blAvgPm25).toFixed(2) : cookAvgPm25;
+                const adjCo2 = cookAvgCo2 != null && blAvgCo2 != null ? +Math.max(0, cookAvgCo2 - blAvgCo2).toFixed(0) : cookAvgCo2;
+                const adjTemp = cookAvgTemp != null && blAvgTemp != null ? +Math.max(0, cookAvgTemp - blAvgTemp).toFixed(1) : cookAvgTemp;
+                const adjHum = cookAvgHum != null && blAvgHum != null ? +Math.max(0, cookAvgHum - blAvgHum).toFixed(1) : cookAvgHum;
+
                 const sessionIdx = sessionsTemplate.length;
                 readings.forEach(r => r._session_idx = sessionIdx);
                 logsTemplate.push(...readings);
@@ -487,12 +510,22 @@ function generateAllData() {
                     avg_temperature: avgTemp != null ? +avgTemp : null,
                     avg_humidity: avgHum != null ? +avgHum : null,
                     max_pm25: maxPm25, min_pm25: minPm25,
+                    adjusted_avg_pm25: adjPm25,
+                    adjusted_avg_co2: adjCo2,
+                    adjusted_avg_temperature: adjTemp,
+                    adjusted_avg_humidity: adjHum,
                     stove_type: stoveType,
                     notes: null,
                 });
 
                 // Track daily stats
-                if (!isIncomplete) { dayCompleted++; } else { dayIncomplete++; }
+                if (!isIncomplete) {
+                    dayCompleted++;
+                    if (adjPm25 != null) dayAdjPm25s.push(adjPm25);
+                    if (adjCo2 != null) dayAdjCo2s.push(adjCo2);
+                    if (adjTemp != null) dayAdjTemps.push(adjTemp);
+                    if (adjHum != null) dayAdjHums.push(adjHum);
+                } else { dayIncomplete++; }
                 dayReadings += totalReadings;
                 dayPm25s.push(...allPm25); dayCo2s.push(...allCo2);
                 dayTemps.push(...allTemp); dayHums.push(...allHum); dayPm10s.push(...allPm10);
@@ -519,6 +552,10 @@ function generateAllData() {
                 avg_pm10: dAvgPm10, avg_co2: dAvgCo2 != null ? +dAvgCo2 : null,
                 avg_temperature: dAvgTemp != null ? +dAvgTemp : null,
                 avg_humidity: dAvgHum != null ? +dAvgHum : null,
+                adjusted_avg_pm25: dayAdjPm25s.length ? +(dayAdjPm25s.reduce((a, b) => a + b, 0) / dayAdjPm25s.length).toFixed(2) : null,
+                adjusted_avg_co2: dayAdjCo2s.length ? +(dayAdjCo2s.reduce((a, b) => a + b, 0) / dayAdjCo2s.length).toFixed(0) : null,
+                adjusted_avg_temperature: dayAdjTemps.length ? +(dayAdjTemps.reduce((a, b) => a + b, 0) / dayAdjTemps.length).toFixed(1) : null,
+                adjusted_avg_humidity: dayAdjHums.length ? +(dayAdjHums.reduce((a, b) => a + b, 0) / dayAdjHums.length).toFixed(1) : null,
                 compliance_status: dayCompleted >= 2 ? 'complete' : dayCompleted >= 1 ? 'partial' : 'missed',
                 stove_type: stoveType,
             });
@@ -537,8 +574,9 @@ function generatePreview() {
     const sample = document.getElementById('previewSample');
     panel.classList.remove('hidden');
 
-    const oldDaysCount = Math.round((new Date(document.getElementById('oldEndDate').value) - new Date(document.getElementById('oldStartDate').value)) / 86400000) + 1;
-    const ecoDaysCount = Math.round((new Date(document.getElementById('ecoEndDate').value) - new Date(document.getElementById('ecoStartDate').value)) / 86400000) + 1;
+    const r = computeDateRanges();
+    const oldDaysCount = r.oldDays;
+    const ecoDaysCount = r.ecoDays;
     const sensorCount = SENSOR_HOUSES.length;
     const noSensorCount = NOSENSOR_HOUSES.length;
 
@@ -675,10 +713,11 @@ async function insertMockData() {
 
         // Step 4: Insert collection_periods (separate old/eco ranges)
         setProgress('กำลัง insert collection periods...', 25);
-        const cpOldStart = document.getElementById('oldStartDate').value;
-        const cpOldEnd = document.getElementById('oldEndDate').value;
-        const cpEcoStart = document.getElementById('ecoStartDate').value;
-        const cpEcoEnd = document.getElementById('ecoEndDate').value;
+        const cpR = computeDateRanges();
+        const cpOldStart = fmt(cpR.oldStart);
+        const cpOldEnd = fmt(cpR.oldEnd);
+        const cpEcoStart = fmt(cpR.ecoStart);
+        const cpEcoEnd = fmt(cpR.ecoEnd);
 
         const periods = [];
         // Only sensor houses get collection periods

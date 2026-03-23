@@ -3,7 +3,7 @@
  * Fetches sensor data from Tuya Cloud → inserts to Supabase + manages sessions
  *
  * Env vars required (set in Vercel dashboard):
- *   TUYA_ACCESS_ID, TUYA_ACCESS_SECRET
+ *   TUYA_ACCESS_ID, TUYA_ACCESS_SECRET, TUYA_APP_USER_UID
  *   SUPABASE_URL, SUPABASE_KEY, SUPABASE_SERVICE_KEY
  *   CRON_SECRET  (ป้องกันไม่ให้คนอื่นเรียก)
  */
@@ -164,9 +164,16 @@ async function tuyaFetchWithRetry(url, headers, label) {
   }
 }
 
-async function getBatchDeviceInfo(accessId, secret, token, deviceIds) {
+// Smart Home API: /v1.0/users/{uid}/devices — gets ALL devices in 1 call
+// (replaces Industry batch API that requires "Industry General Device Management" subscription)
+async function getBatchDeviceInfo(accessId, secret, token, deviceIds, appUserUid) {
+  if (!appUserUid) {
+    console.error('getBatchDeviceInfo: TUYA_APP_USER_UID not set');
+    return { _apiError: true, _errorMsg: 'TUYA_APP_USER_UID not configured', _attempts: 0 };
+  }
+
   const timestamp = Date.now().toString();
-  const path = '/v1.0/iot-03/devices?device_ids=' + deviceIds.join(',');
+  const path = '/v1.0/users/' + appUserUid + '/devices';
   const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
 
   const result = await tuyaFetchWithRetry(
@@ -177,37 +184,57 @@ async function getBatchDeviceInfo(accessId, secret, token, deviceIds) {
 
   if (!result.ok) {
     const msg = result.error ? 'fetch: ' + result.error.message : 'Tuya API: ' + (result.data?.msg || result.data?.code || 'unknown');
-    console.error('getBatchDeviceInfo: failed after retry — ' + msg);
+    console.error('getBatchDeviceInfo: failed — ' + msg);
     return { _apiError: true, _errorMsg: msg, _attempts: result.attempts };
   }
-  const map = {};
-  map._attempts = result.attempts;
-  for (const device of (result.data.result && result.data.result.list || [])) {
-    map[device.id] = device;
+
+  const map = { _attempts: result.attempts };
+  const deviceSet = new Set(deviceIds);
+  const tuyaDevices = result.data.result || [];
+  // DEBUG: log what Tuya returned vs what we're looking for
+  map._debug = {
+    tuyaReturned: tuyaDevices.length,
+    tuyaIds: tuyaDevices.map(d => d.id + ':' + (d.online ? 'ON' : 'OFF')),
+    lookingFor: deviceIds,
+    matched: 0,
+  };
+  for (const device of tuyaDevices) {
+    if (deviceSet.has(device.id)) {
+      map[device.id] = device;
+      map._debug.matched++;
+    }
   }
   return map;
 }
 
+// Smart Home API: individual /v1.0/devices/{id}/status calls in parallel
 async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
-  const timestamp = Date.now().toString();
-  const path = '/v1.0/iot-03/devices/status?device_ids=' + deviceIds.join(',');
-  const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
-
-  const result = await tuyaFetchWithRetry(
-    TUYA_BASE_URL + path,
-    { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
-    'getBatchDeviceStatus'
-  );
-
-  if (!result.ok) return { _attempts: result.attempts };
-  const map = {};
-  map._attempts = result.attempts;
-  for (const device of (result.data.result || [])) {
-    const readings = {};
-    for (const item of (device.status || [])) {
-      readings[item.code] = item.value;
+  const fetchOne = async (deviceId) => {
+    const timestamp = Date.now().toString();
+    const path = '/v1.0/devices/' + deviceId + '/status';
+    const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
+    try {
+      const res = await fetch(TUYA_BASE_URL + path, {
+        headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+      });
+      const data = await res.json();
+      if (data.success && data.result) {
+        const readings = {};
+        for (const item of data.result) {
+          readings[item.code] = item.value;
+        }
+        return { id: deviceId, readings };
+      }
+      return { id: deviceId, error: data.msg || 'unknown' };
+    } catch (err) {
+      return { id: deviceId, error: err.message };
     }
-    map[device.id] = readings;
+  };
+
+  const results = await Promise.all(deviceIds.map(id => fetchOne(id)));
+  const map = { _attempts: deviceIds.length };
+  for (const r of results) {
+    if (r.readings) map[r.id] = r.readings;
   }
   return map;
 }
@@ -240,6 +267,24 @@ function sbHeaders(sbKey) {
 }
 
 async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId) {
+  // Dedup: skip if last log for this device was < 4.5 min ago (prevents cron jitter duplicates)
+  try {
+    const lastRes = await fetch(
+      sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + deviceId + '&data_source=eq.sensor&order=recorded_at.desc&limit=1&select=recorded_at',
+      { headers: sbHeaders(sbKey) }
+    );
+    if (lastRes.ok) {
+      const lastData = await lastRes.json();
+      if (lastData.length > 0) {
+        const lastAge = (Date.now() - new Date(lastData[0].recorded_at).getTime()) / 60000;
+        if (lastAge < 4.5) {
+          console.log('insertLog dedup: skipping ' + deviceId + ', last log ' + lastAge.toFixed(1) + ' min ago');
+          return null;
+        }
+      }
+    }
+  } catch (_) {} // fail-open: insert if dedup check fails
+
   const record = {
     pm25_value: readings.pm25_value ?? null,
     pm10_value: readings.pm10 ?? null,
@@ -399,14 +444,14 @@ async function updateSessionCount(sbUrl, sbKey, sessionId, newCount) {
 
 async function closeSession(sbUrl, sbKey, session, closeReason) {
   try {
-    // Query pollution_logs for this session (prefer session_id, fallback to time range)
+    // Query pollution_logs for this session — sensor only (exclude manual TVOC/CO entries)
     const logSelect = 'pm25_value,pm10_value,co2_value,temperature,humidity,recorded_at';
     const logsUrl = session.id
-      ? sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + session.id + '&select=' + logSelect
+      ? sbUrl + '/rest/v1/pollution_logs?session_id=eq.' + session.id + '&data_source=eq.sensor&select=' + logSelect
       : sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + session.device_id +
         '&recorded_at=gte.' + encodeURIComponent(session.started_at) +
         '&recorded_at=lte.' + encodeURIComponent(new Date().toISOString()) +
-        '&select=' + logSelect;
+        '&data_source=eq.sensor&select=' + logSelect;
     const logs = await fetch(logsUrl, { headers: sbHeaders(sbKey) });
     if (!logs.ok) {
       console.error('closeSession: failed to fetch logs for session ' + session.id + ', status=' + logs.status);
@@ -426,6 +471,7 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
 
     const pm25s = vals('pm25_value');
     const co2s = vals('co2_value');
+    const cos = vals('co_value');
     const temps = vals('temperature');
     const hums = vals('humidity');
 
@@ -473,6 +519,7 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
       max_pm25: pm25s.length ? Math.max(...pm25s) : null,
       min_pm25: pm25s.length ? Math.min(...pm25s) : null,
       avg_co2: avg(co2s),
+      avg_co: avg(cos),
       avg_temperature: avg(temps),
       avg_humidity: avg(hums),
       adjusted_avg_pm25: adjustedPm25,
@@ -525,7 +572,10 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
     const completed = sessions.filter(s => s.session_status === 'complete');
     const incomplete = sessions.filter(s => s.session_status === 'incomplete');
     const cancelled = sessions.filter(s => s.session_status === 'cancelled');
-    const totalReadings = completed.reduce((sum, s) => sum + (s.readings_count || 0), 0);
+    // Use all valid sessions (complete + incomplete) for readings & averages
+    // Incomplete sessions still have real data — hiding them is misleading
+    const validSessions = sessions.filter(s => s.session_status === 'complete' || s.session_status === 'incomplete');
+    const totalReadings = validSessions.reduce((sum, s) => sum + (s.readings_count || 0), 0);
 
     const avgOf = (arr, key) => {
       const vals = arr.map(s => s[key]).filter(v => v != null);
@@ -534,8 +584,8 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
 
     const houseId = sessions.length > 0 ? sessions[0].house_id : null;
 
-    const pm25Maxes = completed.map(c => c.max_pm25).filter(v => v != null);
-    const pm25Mins = completed.map(c => c.min_pm25).filter(v => v != null);
+    const pm25Maxes = validSessions.map(c => c.max_pm25).filter(v => v != null);
+    const pm25Mins = validSessions.map(c => c.min_pm25).filter(v => v != null);
 
     const summary = {
       summary_date: today,
@@ -545,17 +595,18 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
       sessions_incomplete: incomplete.length,
       sessions_cancelled: cancelled.length,
       total_readings: totalReadings,
-      avg_pm25: avgOf(completed, 'avg_pm25'),
+      avg_pm25: avgOf(validSessions, 'avg_pm25'),
       max_pm25: pm25Maxes.length > 0 ? Math.max(...pm25Maxes) : null,
       min_pm25: pm25Mins.length > 0 ? Math.min(...pm25Mins) : null,
-      avg_pm10: avgOf(completed, 'avg_pm10'),
-      avg_co2: avgOf(completed, 'avg_co2'),
-      avg_temperature: avgOf(completed, 'avg_temperature'),
-      avg_humidity: avgOf(completed, 'avg_humidity'),
-      adjusted_avg_pm25: avgOf(completed, 'adjusted_avg_pm25'),
-      adjusted_avg_co2: avgOf(completed, 'adjusted_avg_co2'),
-      adjusted_avg_temperature: avgOf(completed, 'adjusted_avg_temperature'),
-      adjusted_avg_humidity: avgOf(completed, 'adjusted_avg_humidity'),
+      avg_pm10: avgOf(validSessions, 'avg_pm10'),
+      avg_co2: avgOf(validSessions, 'avg_co2'),
+      avg_co: avgOf(validSessions, 'avg_co'),
+      avg_temperature: avgOf(validSessions, 'avg_temperature'),
+      avg_humidity: avgOf(validSessions, 'avg_humidity'),
+      adjusted_avg_pm25: avgOf(validSessions, 'adjusted_avg_pm25'),
+      adjusted_avg_co2: avgOf(validSessions, 'adjusted_avg_co2'),
+      adjusted_avg_temperature: avgOf(validSessions, 'adjusted_avg_temperature'),
+      adjusted_avg_humidity: avgOf(validSessions, 'adjusted_avg_humidity'),
       stove_type: stoveType || null,
       project_id: projectId || null,
       updated_at: new Date().toISOString(),
@@ -656,6 +707,8 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
           baseline_avg_co2: blAvg(baselineLogs, 'co2_value'),
           baseline_avg_temperature: blAvg(baselineLogs, 'temperature'),
           baseline_avg_humidity: blAvg(baselineLogs, 'humidity'),
+          baseline_avg_tvoc: blAvg(baselineLogs, 'tvoc_value'),
+          baseline_avg_co: blAvg(baselineLogs, 'co_value'),
           baseline_readings_count: baselineLogs.length,
           readings_count: (active.readings_count || 0) + 1,
           updated_at: new Date().toISOString(),
@@ -676,8 +729,19 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
         return { action: 'baseline-ended', sessionId: active.id, baselineReadings: baselineLogs.length };
       } else {
         // Continue session (baseline or collecting) — device is online and within time window
-        await updateSessionCount(sbUrl, sbKey, active.id, (active.readings_count || 0) + 1);
-        return { action: active.session_status === 'baseline' ? 'baseline' : 'continued', sessionId: active.id };
+        const gapMin = active.updated_at ? Math.round((Date.now() - new Date(active.updated_at).getTime()) / 60000) : 0;
+        if (gapMin > 10) {
+          // Device was offline — append gap note + update count in one PATCH
+          const thaiTime = new Date(Date.now() + 7 * 3600000).toISOString().slice(11, 16);
+          const gapNote = ' ⚠️ เซนเซอร์ออฟไลน์ ~' + gapMin + ' นาที กลับมา ' + thaiTime + ' น.';
+          await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + active.id, {
+            method: 'PATCH', headers: sbHeaders(sbKey),
+            body: JSON.stringify({ readings_count: (active.readings_count || 0) + 1, updated_at: new Date().toISOString(), notes: ((active.notes || '') + gapNote).trim() }),
+          });
+        } else {
+          await updateSessionCount(sbUrl, sbKey, active.id, (active.readings_count || 0) + 1);
+        }
+        return { action: active.session_status === 'baseline' ? 'baseline' : 'continued', sessionId: active.id, gapMinutes: gapMin > 10 ? gapMin : undefined };
       }
     } else {
       // No active session — check cooldown from last closed session
@@ -720,6 +784,7 @@ module.exports = async function handler(req, res) {
 
   const accessId = process.env.TUYA_ACCESS_ID;
   const accessSecret = process.env.TUYA_ACCESS_SECRET;
+  const appUserUid = (process.env.TUYA_APP_USER_UID || '').trim();
   const sbUrl = process.env.SUPABASE_URL;
   const sbKey = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_KEY;
 
@@ -871,9 +936,9 @@ module.exports = async function handler(req, res) {
     }
     if (!tokenCached) tuyaCalls++;
 
-    // ===== Phase 4: Batch device info — online check (1 Tuya call) =====
+    // ===== Phase 4: Device info — online check (N parallel Smart Home API calls) =====
     const needingIds = sensorsNeedingTuya.map(s => s.id);
-    const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds);
+    const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, needingIds, appUserUid);
     tuyaCalls += deviceInfoMap._attempts || 1;
 
     // If Tuya API itself failed, track error count in session notes
@@ -898,7 +963,7 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, synced: '0/' + SENSORS.length, tuya_api_error: deviceInfoMap._errorMsg, time: new Date().toISOString(), tuya_calls: tuyaCalls, results });
     }
 
-    // ===== Phase 5: Batch device status — ONLY if any sensor is online (0 or 1 call) =====
+    // ===== Phase 5: Device status — ONLY if any sensor is online (N parallel calls) =====
     const onlineSensors = sensorsNeedingTuya.filter(s => {
       const info = deviceInfoMap[s.id];
       return info && info.online;
@@ -967,6 +1032,7 @@ module.exports = async function handler(req, res) {
       tuya_calls: tuyaCalls,
       quota: quotaAfter !== null ? { used: quotaAfter, limit: MONTHLY_API_LIMIT, pct: quotaPct } : null,
       quota_warning: quotaPct !== null && quotaPct >= 80,
+      _debug: deviceInfoMap._debug || null,
       results,
     });
   } catch (err) {

@@ -241,79 +241,53 @@
   </div>
 
   <!-- ============================= -->
-  <!-- STEP 4: กดเริ่มจุดเตา -->
+  <!-- STEP 4: รอ Baseline + กรอก TVOC/CO -->
   <!-- ============================= -->
-  <div class="step-card bg-red-50 border-red-500">
+  <div class="step-card bg-purple-50 border-purple-500">
     <div class="flex items-start gap-4 mb-4">
-      <div class="step-num bg-red-500">4</div>
+      <div class="step-num bg-purple-600">4</div>
       <div>
-        <h2 class="text-xl font-bold text-red-800">เริ่มจุดเตา</h2>
-        <p class="text-red-600 text-base mt-1">รอเซนเซอร์พร้อม แล้วกดปุ่ม</p>
+        <h2 class="text-xl font-bold text-purple-800">รอ Baseline + เลือกเก็บ TVOC/CO</h2>
+        <p class="text-purple-600 text-base mt-1">ระบบเก็บค่าอากาศก่อนจุดเตา ~10 นาที</p>
       </div>
     </div>
 
     <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
       <p class="font-bold text-base text-gray-800 mb-2">🔍 ระบบจะค้นหาเซนเซอร์</p>
-      <p class="text-base text-gray-600">รอจนหน้าจอขึ้นว่า <strong>"เซนเซอร์พร้อม"</strong></p>
+      <p class="text-base text-gray-600">รอจนหน้าจอขึ้นว่า <strong>"กำลังเก็บค่า Baseline"</strong></p>
       <p class="text-sm text-gray-400 mt-1">ถ้ารอนานเกิน → ตรวจสอบว่า Hotspot เปิดอยู่ และชื่อถูกต้อง</p>
     </div>
 
-    <div class="bg-red-100 rounded-2xl p-5 text-center shadow-sm">
-      <p class="text-5xl mb-2">🔥</p>
-      <p class="text-xl font-bold text-red-800">เมื่อจุดเตาแล้ว</p>
-      <p class="text-lg text-red-600 mt-1">กดปุ่มแดงใหญ่ <strong>"เริ่มจุดเตาแล้ว"</strong></p>
-    </div>
-
-    <!-- ตัวอย่างหน้าจอ: ปุ่มจุดเตา -->
-    <div class="bg-gray-800 rounded-2xl p-4 mt-3 shadow-sm">
-      <p class="text-xs text-gray-400 mb-3 text-center">ตัวอย่างหน้าจอ</p>
-      <div class="bg-emerald-50 rounded-xl p-3 mb-2 text-center">
-        <p class="text-sm text-emerald-700 font-bold">📊 Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้</p>
-      </div>
-      <div class="bg-red-500 text-white py-5 rounded-2xl text-center">
-        <div class="text-4xl mb-1">🔥</div>
-        <div class="text-lg font-bold">เริ่มจุดเตาแล้ว</div>
-        <div class="text-xs opacity-70 mt-1">กดเมื่อเริ่มจุดเตา</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================= -->
-  <!-- STEP 5: กรอกค่า TVOC/CO -->
-  <!-- ============================= -->
-  <div class="step-card bg-purple-50 border-purple-500">
-    <div class="flex items-start gap-4 mb-4">
-      <div class="step-num bg-purple-600">5</div>
-      <div>
-        <h2 class="text-xl font-bold text-purple-800">กรอกค่า (เฉพาะวันที่กำหนด)</h2>
-        <p class="text-purple-600 text-base mt-1">อ่านค่าจากจอเซนเซอร์ แล้วพิมพ์ตัวเลข</p>
-      </div>
-    </div>
-
     <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
-      <p class="font-bold text-base text-gray-800 mb-2">ระบบจะถามว่า "วันนี้ต้องกรอกค่ามั้ย?"</p>
-      <div class="flex gap-3 mt-3">
+      <p class="font-bold text-base text-gray-800 mb-2">📝 ระบบจะถามว่า "วันนี้ต้องกรอกค่ามั้ย?"</p>
+      <p class="text-sm text-gray-500 mb-3">คำถามนี้จะขึ้นระหว่างรอ Baseline — เพื่อเก็บค่า TVOC/CO <strong>ก่อนจุดเตา</strong> ด้วย</p>
+      <div class="flex gap-3">
         <div class="flex-1 bg-purple-100 rounded-xl p-3 text-center">
           <p class="text-2xl">✅</p>
           <p class="font-bold text-purple-800 text-base">กด "เก็บ"</p>
-          <p class="text-sm text-purple-600">ถ้าวันนี้ต้องกรอก</p>
+          <p class="text-sm text-purple-600">เริ่มกรอกค่าเลย<br>ตั้งแต่ช่วง Baseline</p>
         </div>
         <div class="flex-1 bg-gray-100 rounded-xl p-3 text-center">
           <p class="text-2xl">❌</p>
           <p class="font-bold text-gray-700 text-base">กด "ไม่เก็บ"</p>
-          <p class="text-sm text-gray-500">ปิดจอได้เลย</p>
+          <p class="text-sm text-gray-500">ไม่ต้องกรอกค่า<br>รอ Baseline เสร็จเลย</p>
         </div>
       </div>
     </div>
 
     <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
-      <p class="font-bold text-base text-purple-800 mb-3">📝 ถ้าต้องเก็บข้อมูล ทุกๆ 5 นาที:</p>
+      <p class="font-bold text-base text-purple-800 mb-3">📝 ถ้ากด "เก็บ" — กรอกค่าทุกๆ 5 นาที:</p>
       <ol class="text-base text-gray-700 space-y-3 list-decimal list-inside">
         <li>ดูค่า <strong>TVOC</strong> บนจอเซนเซอร์ → พิมพ์ตัวเลข</li>
         <li>ดูค่า <strong>CO</strong> บนจอเซนเซอร์ → พิมพ์ตัวเลข</li>
         <li>กดปุ่ม <strong>บันทึก</strong></li>
       </ol>
-      <p class="text-sm text-purple-500 mt-3">⏰ เมื่อเปิดจอกรอกข้อมูลไว้ ระบบจะเตือนเมื่อถึงเวลากรอก — ไม่ต้องจับเวลาเอง</p>
+      <p class="text-sm text-purple-500 mt-3">⏰ ระบบจะเตือนทุก 5 นาที — ไม่ต้องจับเวลาเอง</p>
+    </div>
+
+    <div class="tip-box">
+      <p class="font-bold text-emerald-800 text-base">💡 ทำไมต้องเก็บตั้งแต่ Baseline?</p>
+      <p class="text-emerald-700 text-base mt-1">ค่า TVOC/CO ก่อนจุดเตา = ค่าอากาศปกติ ระบบจะนำไปเทียบกับค่าหลังจุดเตา เพื่อวัดว่าเตาสร้างมลพิษเพิ่มขึ้นเท่าไหร่</p>
     </div>
 
     <!-- ตัวอย่างหน้าจอ: กรอก TVOC/CO -->
@@ -334,6 +308,47 @@
         </div>
         <div class="bg-purple-600 text-white py-2 rounded-lg text-center font-bold text-sm">📝 บันทึก</div>
       </div>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- STEP 5: กดเริ่มจุดเตา -->
+  <!-- ============================= -->
+  <div class="step-card bg-red-50 border-red-500">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="step-num bg-red-500">5</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-800">กดเริ่มจุดเตา</h2>
+        <p class="text-red-600 text-base mt-1">เมื่อ Baseline พร้อม กดปุ่มแดง</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-gray-800 mb-2">🔥 เมื่อหน้าจอขึ้นว่า "Baseline พร้อม"</p>
+      <p class="text-base text-gray-600">จุดเตาแล้ว → กดปุ่มแดงใหญ่ <strong>"เริ่มจุดเตาแล้ว"</strong></p>
+      <p class="text-sm text-gray-400 mt-1">ถ้าไม่กดภายใน 10 นาที ระบบจะเปลี่ยนให้อัตโนมัติ</p>
+    </div>
+
+    <!-- ตัวอย่างหน้าจอ: ปุ่มจุดเตา -->
+    <div class="bg-gray-800 rounded-2xl p-4 mt-3 shadow-sm">
+      <p class="text-xs text-gray-400 mb-3 text-center">ตัวอย่างหน้าจอ</p>
+      <div class="bg-emerald-50 rounded-xl p-3 mb-2 text-center">
+        <p class="text-sm text-emerald-700 font-bold">📊 Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้</p>
+      </div>
+      <div class="bg-red-500 text-white py-5 rounded-2xl text-center">
+        <div class="text-4xl mb-1">🔥</div>
+        <div class="text-lg font-bold">เริ่มจุดเตาแล้ว</div>
+        <div class="text-xs opacity-70 mt-1">กดเมื่อเริ่มจุดเตา</div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 mt-3 shadow-sm">
+      <p class="font-bold text-base text-gray-800 mb-2">หลังกดปุ่ม:</p>
+      <ul class="text-base text-gray-700 space-y-2">
+        <li>📊 ระบบจะเปลี่ยนเป็น <strong>"กำลังเก็บข้อมูลการใช้เตา"</strong></li>
+        <li>📝 ถ้าเก็บ TVOC/CO → กรอกค่าต่อทุก 5 นาที จนกว่าจะครบ</li>
+        <li>😊 ถ้าไม่เก็บ TVOC/CO → ปิดหน้าจอมือถือได้เลย เซนเซอร์เก็บเอง</li>
+      </ul>
     </div>
   </div>
 

@@ -152,6 +152,63 @@
             border-top-color: #10b981; border-radius: 50%;
             animation: spin 3s linear infinite;
         }
+        /* Guide accordion */
+        .guide-section { border-radius: 1.25rem; overflow: hidden; }
+        .guide-header {
+            cursor: pointer; user-select: none;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; font-weight: 700; font-size: 15px;
+            transition: background-color 0.15s;
+        }
+        .guide-header:hover { filter: brightness(0.95); }
+        .guide-header .guide-arrow { transition: transform 0.2s; font-size: 12px; color: #64748b; }
+        .guide-header.open .guide-arrow { transform: rotate(180deg); }
+        .guide-body { display: none; padding: 0 20px 20px; }
+        .guide-body.open { display: block; }
+        .guide-important {
+            background: #fef3c7; border: 2px solid #f59e0b;
+            border-radius: 1rem; padding: 12px 16px; margin: 12px 0;
+        }
+        .guide-important b { color: #92400e; }
+        .guide-tip {
+            background: #ecfdf5; border: 2px solid #10b981;
+            border-radius: 1rem; padding: 12px 16px; margin: 12px 0;
+        }
+        .guide-tip b { color: #065f46; }
+        .guide-danger {
+            background: #fef2f2; border: 2px solid #ef4444;
+            border-radius: 1rem; padding: 12px 16px; margin: 12px 0;
+        }
+        .guide-danger b { color: #991b1b; }
+        .guide-step {
+            display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px;
+        }
+        .guide-step-num {
+            width: 32px; height: 32px; min-width: 32px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: white;
+        }
+        .guide-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .guide-table th { background: #f1f5f9; text-align: left; padding: 10px 14px; font-weight: 700; border-bottom: 2px solid #e2e8f0; }
+        .guide-table td { padding: 10px 14px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+        .guide-table tr:hover td { background: #f8fafc; }
+        .guide-param-card {
+            background: white; border-radius: 1rem; padding: 14px 18px;
+            border: 1px solid #e2e8f0; text-align: center;
+        }
+        .guide-param-card .param-val { font-size: 24px; font-weight: 700; color: #064e3b; }
+        .guide-param-card .param-label { font-size: 12px; color: #64748b; margin-top: 2px; }
+        @media print {
+            nav, .scenario-bar, #view-basic, #view-deep,
+            .guide-controls, footer, #modal-overlay { display: none !important; }
+            #view-admin, #admin-guide { display: block !important; }
+            #view-admin > *:not(.admin-tab-content),
+            .admin-tab-content:not(#admin-guide) { display: none !important; }
+            .guide-body { display: block !important; }
+            .guide-section { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: 12px; }
+            body { background: white !important; font-size: 12px; }
+            .guide-header .guide-arrow { display: none; }
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -487,6 +544,11 @@
             </div>
 
             <!-- DAILY AVG CHARTS — 6 charts grouped by type -->
+            <div class="flex items-center gap-2 mb-4">
+                <p class="text-base font-bold text-navy tracking-wide" data-i18n="deep.charts.heading">Net Daily Average</p>
+                <span class="info-btn text-gray-500" onclick="showInfo(this,t('deep.info.chart.title'),t('deep.info.chart.body'))"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
+                <span class="text-[10px] text-gray-400" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</span>
+            </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.particulate">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
@@ -573,8 +635,9 @@
             <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-4">
                 <h4 class="font-bold text-lg text-navy mb-3" data-i18n="daily.title">สรุปรายวัน</h4>
                 <div class="mb-3 text-[11px] text-slate-400 flex flex-wrap gap-2">
-                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold" data-i18n="daily.legend.complete">✅ ครบ 2/2</span>
-                    <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold" data-i18n="daily.legend.partial">⚠️ ได้ 1/2</span>
+                    <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold" data-i18n="daily.legend.complete">✅ ครบ 2 เซสชัน</span>
+                    <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold" data-i18n="daily.legend.partial">⚠️ ได้ 1 เซสชัน</span>
+                    <span class="px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 font-bold" data-i18n="daily.legend.incomplete">⚠️ เซสชันไม่สมบูรณ์</span>
                     <span class="px-1.5 py-0.5 rounded bg-red-100 text-red-500 font-bold" data-i18n="daily.legend.none">❌ ไม่มีข้อมูล</span>
                 </div>
                 <div class="overflow-x-auto custom-scrollbar">
@@ -631,6 +694,7 @@
                 <button onclick="switchAdminTab('schedule')" id="tab-btn-schedule" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.schedule">กำหนดการ</button>
                 <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.activity">ประวัติ</button>
                 <button onclick="switchAdminTab('admins')" id="tab-btn-admins" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" style="display:none" data-i18n="admin.manage">แอดมิน</button>
+                <button onclick="switchAdminTab('guide')" id="tab-btn-guide" class="admin-tab-btn px-3 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.guide">📖 คู่มือ</button>
             </div>
 
 
@@ -998,6 +1062,523 @@
                 <div id="admins-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
 
             </div>
+
+            <!-- Tab: คู่มือ (Guide) -->
+            <div id="admin-guide" class="admin-tab-content hidden space-y-6">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-navy" data-i18n="guide.title">📖 คู่มือการใช้งานระบบ</h3>
+                        <p class="text-slate-500 text-sm" data-i18n="guide.subtitle">สำหรับแอดมินและผู้ดูแลโครงการ — ใช้อ้างอิงและสอนอาสาสมัคร</p>
+                    </div>
+                    <div class="flex gap-2 guide-controls">
+                        <button onclick="toggleAllGuideSections(true)" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all" data-i18n="guide.expand">เปิดทั้งหมด</button>
+                        <button onclick="toggleAllGuideSections(false)" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all" data-i18n="guide.collapse">ปิดทั้งหมด</button>
+                        <button onclick="printGuide()" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-[#064e3b] text-white hover:bg-[#043327] transition-all" data-i18n="guide.print">🖨 พิมพ์</button>
+                    </div>
+                </div>
+
+                <!-- ==================== PART A: ระบบแอดมิน ==================== -->
+                <div class="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm inline-block">ส่วนที่ 1: ระบบแอดมิน</div>
+
+                <!-- A1: ภาพรวมระบบ -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>🏠 ภาพรวมระบบ</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">ระบบ <b>Biomass Stove Monitoring</b> ใช้เซนเซอร์วัดคุณภาพอากาศเปรียบเทียบระหว่าง <b>เตาชีวมวล (eco)</b> กับ <b>เตาดั้งเดิม (old)</b></p>
+
+                        <p class="font-bold text-navy mb-2">การไหลของข้อมูล:</p>
+                        <div class="flex flex-wrap items-center gap-2 mb-4 text-[12px]">
+                            <span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-bold">📡 เซนเซอร์ MT13W</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-bold">☁️ Tuya Cloud</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 font-bold">⚙️ Sync API (ทุก 5 นาที)</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-green-100 text-green-700 font-bold">🗄️ ฐานข้อมูล</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 font-bold">📊 Dashboard</span>
+                        </div>
+
+                        <p class="font-bold text-navy mb-2">คำศัพท์สำคัญ:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc">
+                            <li><b>Session (เซสชัน)</b> — รอบการเก็บข้อมูล 1 ครั้ง ใช้เวลา 130 นาที (2 ชม. 10 นาที)</li>
+                            <li><b>Baseline</b> — ค่าอากาศปกติก่อนจุดเตา (10 นาทีแรก) ใช้หักล้างค่าพื้นฐานออก</li>
+                            <li><b>ช่วงเก็บข้อมูล (Collection Period)</b> — กำหนดว่าแต่ละบ้านใช้เตาอะไร (eco/old) ในช่วงเวลาใด</li>
+                            <li><b>Cooldown</b> — ช่วงพักเครื่อง 5 ชม. ระหว่างเซสชัน</li>
+                        </ul>
+
+                        <p class="mt-3 font-bold text-navy mb-2">หน้าจอหลัก 3 ส่วน:</p>
+                        <ul class="space-y-1 ml-4 list-disc">
+                            <li><b>ข้อมูลเบื้องต้น</b> — ภาพรวมของทุกเซนเซอร์ สรุปรายวัน แผนที่</li>
+                            <li><b>ข้อมูลเชิงลึก</b> — วิเคราะห์ session, เปรียบเทียบ eco vs old, กราฟ</li>
+                            <li><b>จัดการระบบ (แอดมิน)</b> — ตั้งค่าบ้าน อุปกรณ์ ช่วงเก็บข้อมูล อนุมัติ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- A2: จัดการบ้าน -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>🏘️ จัดการบ้านกลุ่มตัวอย่าง</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">แท็บ <b>"บ้าน"</b> ใช้จัดการบ้านกลุ่มตัวอย่างที่เข้าร่วมโครงการ</p>
+
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">1</div>
+                            <div><b>เพิ่มบ้าน</b> — กรอกชื่อ, ที่อยู่, จังหวัด/อำเภอ/ตำบล, พิกัด GPS<br><span class="text-slate-500">GPS สำคัญมาก — ใช้ตรวจจับตำแหน่งอาสาอัตโนมัติ</span></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">2</div>
+                            <div><b>ผูกอาสาสมัคร</b> — เลือกอาสาที่รับผิดชอบบ้านนี้</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">3</div>
+                            <div><b>ผูกโครงการ</b> — เลือกโครงการวิจัยที่บ้านนี้สังกัด</div>
+                        </div>
+
+                        <div class="guide-tip">
+                            <b>💡 เคล็ดลับ:</b> ใช้ Google Maps หาพิกัด GPS ของบ้าน แล้ว copy มาวาง ระบบจะตรวจจับบ้านที่ใกล้ที่สุดเมื่ออาสาเปิดหน้าเก็บข้อมูล
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A3: จัดการอุปกรณ์ -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>📡 จัดการอุปกรณ์ (เซนเซอร์)</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">แท็บ <b>"อุปกรณ์"</b> ใช้ลงทะเบียนเซนเซอร์และผูกกับบ้าน</p>
+
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">1</div>
+                            <div><b>ค้นหาเซนเซอร์</b> — กดปุ่ม "🔍 ค้นหาอุปกรณ์จาก Tuya" เพื่อดึงรายชื่อจาก Tuya Cloud</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">2</div>
+                            <div><b>ลงทะเบียน</b> — ตั้งชื่อเซนเซอร์ตามรูปแบบ <b>ES-01</b> ถึง <b>ES-10</b><br><span class="text-slate-500">ES = EcoStove, ตัวเลขไม่ผูกกับบ้าน — ย้ายเครื่องได้</span></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">3</div>
+                            <div><b>ผูกกับบ้าน</b> — เลือกบ้านที่จะติดตั้งเซนเซอร์ตัวนี้</div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ สำคัญ:</b> เซนเซอร์ 1 ตัวผูกได้กับ 1 บ้านเท่านั้น ถ้าต้องการย้าย ให้ปลดจากบ้านเดิมก่อน แล้วผูกกับบ้านใหม่
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A4: ช่วงเก็บข้อมูล (สำคัญที่สุด!) -->
+                <div class="guide-section bg-white/60 border border-amber-300 shadow-sm ring-2 ring-amber-200">
+                    <div class="guide-header bg-amber-50" onclick="toggleGuideSection(this)">
+                        <span>⭐ ช่วงเก็บข้อมูล (Collection Periods) — สำคัญที่สุด!</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <div class="guide-danger">
+                            <b>🚨 ถ้าไม่ตั้งค่านี้ หรือหมดอายุแล้ว:</b> ข้อมูลที่เก็บได้จะไม่มี "ประเภทเตา" ทำให้ Dashboard ไม่สามารถเปรียบเทียบ eco กับ old ได้ และจะขึ้นข้อความเตือน "ยังอยู่ในระยะเก็บข้อมูลเตาดั้งเดิม"
+                        </div>
+
+                        <p class="mt-3 mb-3"><b>ช่วงเก็บข้อมูล</b> คือการกำหนดว่า แต่ละบ้านกำลังใช้เตาอะไร ในช่วงเวลาใด</p>
+
+                        <p class="font-bold text-navy mb-2">ตัวอย่างการตั้งค่า:</p>
+                        <table class="guide-table mb-4">
+                            <tr><th>บ้าน</th><th>ประเภทเตา</th><th>เริ่ม</th><th>สิ้นสุด</th></tr>
+                            <tr><td>บ้านสันคะยอม</td><td><span class="px-2 py-0.5 rounded bg-orange-100 text-orange-700 font-bold text-xs">เตาดั้งเดิม</span></td><td>1 มี.ค.</td><td>15 มี.ค.</td></tr>
+                            <tr><td>บ้านสันคะยอม</td><td><span class="px-2 py-0.5 rounded bg-green-100 text-green-700 font-bold text-xs">เตาชีวมวล</span></td><td>20 มี.ค.</td><td>30 เม.ย.</td></tr>
+                        </table>
+
+                        <p class="font-bold text-navy mb-2">วิธีตั้งค่า:</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">1</div>
+                            <div>ไปที่แท็บ <b>"กำหนดการ"</b> → เลื่อนลงมาที่ส่วน <b>"ช่วงเก็บข้อมูลแต่ละบ้าน"</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">2</div>
+                            <div>กด <b>"+ เพิ่มช่วงเก็บข้อมูล"</b> หรือ <b>"ตั้งค่าหลายบ้านพร้อมกัน"</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">3</div>
+                            <div>เลือก <b>บ้าน</b> → เลือก <b>ประเภทเตา</b> (เตาชีวมวล หรือ เตาดั้งเดิม) → กำหนด <b>วันเริ่ม-วันสิ้นสุด</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">4</div>
+                            <div>กด <b>"บันทึก"</b> — ระบบจะเริ่มใช้ประเภทเตานี้กับข้อมูลใหม่ทันที</div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ ตรวจสอบบ่อยๆ:</b> ถ้าเปลี่ยนเฟส (เช่น จากเก็บข้อมูลเตาดั้งเดิม → เตาชีวมวล) ต้องมาเพิ่มช่วงใหม่ที่นี่ ช่วงเก่าที่หมดอายุจะไม่ถูกใช้แล้ว
+                        </div>
+
+                        <div class="guide-tip">
+                            <b>💡 สังเกตง่าย:</b> ถ้ามีบ้านที่ยังไม่มีช่วงเก็บข้อมูล ระบบจะแสดงกล่องเตือนสีแดงด้านบนของส่วนนี้ บอกว่าบ้านไหนยังไม่ได้ตั้งค่า
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A5: ตั้งค่ากำหนดการ -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>📅 ตั้งค่ากำหนดการซิงค์</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">แท็บ <b>"กำหนดการ"</b> ควบคุมว่าระบบจะดึงข้อมูลจากเซนเซอร์เมื่อไหร่</p>
+
+                        <p class="font-bold text-navy mb-2">ตั้งค่าได้ 3 อย่าง:</p>
+                        <ul class="space-y-2 ml-4 list-disc mb-3">
+                            <li><b>ช่วงเวลาพัก (Quiet Hours)</b> — ช่วงเวลาที่ไม่ดึงข้อมูล เช่น 00:00–06:00 (กลางคืน) เพื่อประหยัด API quota</li>
+                            <li><b>วันเก็บข้อมูล (Active Days)</b> — เลือกวันในสัปดาห์ที่เก็บ เช่น จันทร์-ศุกร์ (วันเสาร์-อาทิตย์หยุด)</li>
+                            <li><b>วันหยุดพิเศษ (Holidays)</b> — เพิ่มวันหยุดเฉพาะ เช่น สงกรานต์ วันหยุดนักขัตฤกษ์</li>
+                        </ul>
+
+                        <p class="font-bold text-navy mb-2">API Quota:</p>
+                        <p>ระบบมีโควต้า <b>24,000 ครั้ง/เดือน</b> สำหรับเรียก Tuya Cloud ส่วน "สรุปโควต้า" จะแสดงว่าใช้ไปเท่าไหร่แล้ว และคาดว่าจะใช้เท่าไหร่ในเดือนนี้</p>
+
+                        <div class="guide-tip">
+                            <b>💡 ปฏิทิน:</b> ดูภาพรวมรายเดือนได้ที่ปฏิทิน — สีเขียว = วันเก็บ, สีเทา = วันหยุดประจำ, สีฟ้า = วันหยุดพิเศษ
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A6: อนุมัติ + Multi-Admin -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>✅ อนุมัติข้อมูล + จัดการแอดมิน</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="font-bold text-navy mb-2">การอนุมัติข้อมูล:</p>
+                        <p class="mb-3">แท็บ <b>"อนุมัติ"</b> แสดงเซสชันที่รอตรวจสอบ แต่ละเซสชันจะแสดง:</p>
+                        <ul class="space-y-1 ml-4 list-disc mb-3">
+                            <li>ชื่อบ้าน + ชื่อเซนเซอร์ + ช่วงเวลา</li>
+                            <li>จำนวนค่าที่เก็บได้ เทียบกับที่คาดหวัง (เช่น 25/27 ค่า)</li>
+                            <li>ค่า Baseline — ข้อมูลอากาศก่อนจุดเตา</li>
+                            <li>ค่าเฉลี่ย PM2.5, CO2</li>
+                            <li>สถานะ: ✅ เก็บครบ / ⚠️ ไม่ครบ</li>
+                        </ul>
+                        <p class="mb-4">กด <b>"✓ อนุมัติ"</b> เพื่อยืนยัน หรือ <b>"✕"</b> เพื่อปฏิเสธ</p>
+
+                        <p class="font-bold text-navy mb-2">ระบบ Multi-Admin:</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-slate-600">1</div>
+                            <div><b>ลงทะเบียนแอดมินใหม่:</b> กดปุ่ม "สมัครแอดมินใหม่" กรอก Email + ตั้ง PIN ส่วนตัว + ใส่รหัสเชิญ<br><span class="text-slate-500">รหัสเชิญ: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">ecostove2026</code></span></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-slate-600">2</div>
+                            <div><b>เข้าสู่ระบบ:</b> กดปุ่ม "จัดการระบบ" → กรอก Email + PIN ส่วนตัว</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-slate-600">3</div>
+                            <div><b>เปลี่ยน PIN:</b> กดปุ่ม "🔑 PIN" ที่มุมบนขวา</div>
+                        </div>
+
+                        <div class="guide-tip">
+                            <b>💡 ประวัติกิจกรรม:</b> ทุกการกระทำ (login, อนุมัติ, แก้ไข) จะถูกบันทึกไว้ในแท็บ "ประวัติ" อัตโนมัติ
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== PART B: ระบบอาสา ==================== -->
+                <div class="px-4 py-2 rounded-xl bg-blue-100 text-blue-800 font-bold text-sm inline-block mt-4">ส่วนที่ 2: ระบบอาสาสมัคร (สำหรับสอนอาสา)</div>
+                <p class="text-[12px] text-slate-500 -mt-4">อาสาสามารถดูคู่มือแยกได้ที่ <a href="guide-volunteer.html" target="_blank" class="text-blue-600 underline">guide-volunteer.html</a></p>
+
+                <!-- B1: เตรียมตัว -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
+                        <span>📶 ขั้นตอนที่ 1: เตรียม Hotspot มือถือ</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">เซนเซอร์ต้องเชื่อมต่อ WiFi เพื่อส่งข้อมูลขึ้น Cloud อาสาต้องเปิด Hotspot จากมือถือ:</p>
+
+                        <div class="flex gap-4 mb-4">
+                            <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200 text-center">
+                                <div class="text-[11px] text-slate-500 mb-1">ชื่อ Hotspot</div>
+                                <div class="text-xl font-bold text-navy">Biomass</div>
+                            </div>
+                            <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200 text-center">
+                                <div class="text-[11px] text-slate-500 mb-1">รหัสผ่าน</div>
+                                <div class="text-xl font-bold text-navy">Biomass2026</div>
+                            </div>
+                        </div>
+
+                        <div class="guide-danger">
+                            <b>🚨 ย่านความถี่: 2.4 GHz เท่านั้น!</b> เซนเซอร์ไม่รองรับ 5 GHz — ต้องตั้ง Hotspot เป็น 2.4 GHz (ดูในตั้งค่า Hotspot ของมือถือ)
+                        </div>
+
+                        <div class="guide-tip">
+                            <b>💡 ทำไมชื่อเดียวกันหมด:</b> เซนเซอร์ pair WiFi ครั้งเดียว อาสาทุกคนตั้ง Hotspot ชื่อ/รหัสเดียวกัน เซนเซอร์จะเชื่อมต่อเองอัตโนมัติไม่ว่าอยู่บ้านไหน
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B2: เปิดเซนเซอร์ -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
+                        <span>🔌 ขั้นตอนที่ 2: เปิดเซนเซอร์</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">กดปุ่มเปิดเครื่อง (ด้านหลัง) ค้างไว้จนหน้าจอติด</p>
+
+                        <p class="font-bold text-navy mb-2">ปุ่มกดบนเครื่อง:</p>
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
+                                <span class="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">1</span>
+                                <span><b>กด 1 ครั้ง</b> — เปลี่ยนหน่วยอุณหภูมิ °C / °F (ต้องอยู่ที่ °C)</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
+                                <span class="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">2</span>
+                                <span><b>กด 2 ครั้ง</b> — ปิด/เปิดเสียงเตือน</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
+                                <span class="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">3</span>
+                                <span><b>กด 3 ครั้ง</b> — ปรับเทียบเซนเซอร์ (Calibrate) — ใช้ตอนค่าค้าง</span>
+                            </div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ รอ Warm-up 10 นาที:</b> หลังเปิดเครื่อง เซนเซอร์ต้องอุ่นเครื่องก่อนค่าจะแม่นยำ แนะนำเปิดทิ้งไว้อย่างน้อย 10 นาทีก่อนเริ่มเก็บจริง
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B3: เปิดหน้าอาสา -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
+                        <span>📱 ขั้นตอนที่ 3: เปิดหน้าอาสา</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">1</div>
+                            <div><b>สแกน QR Code</b> บนสติกเกอร์ที่ติดเซนเซอร์ (ใช้กล้องมือถือ) หรือเปิด URL โดยตรง</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">2</div>
+                            <div><b>อนุญาตตำแหน่ง (GPS)</b> — ระบบจะตรวจจับบ้านที่ใกล้ที่สุดอัตโนมัติ</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">3</div>
+                            <div><b>ยืนยันบ้าน</b> — ตรวจสอบว่าชื่อบ้านถูกต้อง แล้วกดยืนยัน (หรือเลือกจากรายการถ้า GPS ไม่แม่น)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">4</div>
+                            <div><b>รอระบบค้นหาเซนเซอร์</b> — จะขึ้น "📊 กำลังเก็บค่า Baseline" เมื่อเจอเซนเซอร์และเริ่มเก็บข้อมูลแล้ว</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B4: Baseline + TVOC -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
+                        <span>🔥 ขั้นตอนที่ 4: Baseline + เลือกกรอก TVOC/CO</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="font-bold text-navy mb-2">Baseline (10 นาทีแรก):</p>
+                        <p class="mb-3">ระบบเก็บค่าอากาศปกติอัตโนมัติ ~10 นาที เพื่อเป็นค่าฐาน (ค่าอากาศแวดล้อมก่อนจุดเตา)</p>
+
+                        <p class="font-bold text-navy mb-2">ระบบจะถามว่า "วันนี้ต้องกรอกค่า TVOC/CO มั้ย?"</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                            <div class="bg-green-50 rounded-xl p-4 border border-green-200">
+                                <div class="font-bold text-green-700 mb-1">✅ ตอบ "เก็บ"</div>
+                                <ul class="text-[12px] space-y-1 text-green-800">
+                                    <li>• ทุก 5 นาที จะมีแจ้งเตือนให้กรอกค่า</li>
+                                    <li>• อ่านค่า TVOC (mg/m³) และ CO (ppm) จากหน้าจอเซนเซอร์</li>
+                                    <li>• กรอกทั้งสองค่า → กด "บันทึก"</li>
+                                    <li>• <b>ต้องอยู่ใกล้เซนเซอร์ตลอด</b></li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                                <div class="font-bold text-slate-600 mb-1">❌ ตอบ "ไม่เก็บ"</div>
+                                <ul class="text-[12px] space-y-1 text-slate-600">
+                                    <li>• ไม่ต้องกรอกอะไร</li>
+                                    <li>• เซนเซอร์เก็บค่า PM2.5, CO2 ฯลฯ อัตโนมัติ</li>
+                                    <li>• <b>ปิดหน้าจอไปเลยก็ได้</b> หลังกดเริ่มจุดเตา</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <p class="font-bold text-navy mb-2">เมื่อ Baseline พร้อม:</p>
+                        <p>จะปรากฏปุ่มสีแดงใหญ่ <b>"🔥 เริ่มจุดเตาแล้ว"</b> — จุดเตาจริง แล้วค่อยกดปุ่มนี้</p>
+                    </div>
+                </div>
+
+                <!-- B5: ระหว่างเก็บข้อมูล -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
+                        <span>⏱️ ขั้นตอนที่ 5: ระหว่างเก็บข้อมูล (130 นาที)</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <ul class="space-y-2 ml-4 list-disc mb-3">
+                            <li>ระบบเก็บข้อมูลจากเซนเซอร์ทุก 5 นาทีผ่าน Cloud อัตโนมัติ</li>
+                            <li>แถบ progress จะแสดงเวลาที่ผ่านไป เช่น "65 นาที / 130 นาที"</li>
+                            <li>คาดว่าจะได้ <b>~27 ค่า</b> ต่อเซสชัน</li>
+                            <li>เซสชันจะ <b>ปิดอัตโนมัติ</b> เมื่อครบ 130 นาที</li>
+                        </ul>
+
+                        <div class="guide-tip">
+                            <b>💡 ถ้าไม่ได้กรอก TVOC:</b> หลังกด "เริ่มจุดเตาแล้ว" สามารถปิดหน้าจอไปเลยได้ เซนเซอร์ + Cloud ทำงานเองอัตโนมัติ แค่อย่าปิด Hotspot!
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ อย่าปิด Hotspot!</b> เซนเซอร์ต้องใช้ WiFi จาก Hotspot ส่งข้อมูลขึ้น Cloud ตลอด ถ้าปิด Hotspot เซนเซอร์จะ offline และข้อมูลจะขาดช่วง
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B6: ข้อควรระวัง -->
+                <div class="guide-section bg-white/60 border border-red-200 shadow-sm">
+                    <div class="guide-header bg-red-50" onclick="toggleGuideSection(this)">
+                        <span>🛑 ข้อควรระวัง</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <div class="guide-danger">
+                            <b>🚨 ห้ามจ่อเซนเซอร์ใกล้แหล่งควันเข้มข้น!</b> เซนเซอร์ชนิด semiconductor จะ "อิ่มตัว" ทำให้ค่าค้างไม่ลดลง แม้เอาออกจากควันแล้ว — ต้อง power cycle หรือรอ 24-48 ชม.
+                        </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">ถ้าค่าค้าง (ไม่ลดลง) ทำอย่างไร:</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">1</div>
+                            <div><b>ปิด-เปิดเครื่องใหม่</b> (Power Cycle)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">2</div>
+                            <div><b>กดปุ่ม 3 ครั้ง</b> เพื่อ Calibrate เซนเซอร์</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">3</div>
+                            <div><b>ถ้ายังไม่หาย</b> วางไว้ในที่อากาศถ่ายเทดี รอ 24-48 ชม.</div>
+                        </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">ข้อควรระวังอื่นๆ:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc">
+                            <li>เก็บเซนเซอร์ในที่แห้ง ไม่โดนน้ำ</li>
+                            <li>วางเซนเซอร์ห่างจากเตา อย่างน้อย 1-2 เมตร (วัดอากาศในห้อง ไม่ใช่ในเตา)</li>
+                            <li>ไม่ต้องเปิดเซนเซอร์ทิ้งไว้ตลอดคืน — เปิดเฉพาะตอนเก็บข้อมูล</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- ==================== PART C: ข้อมูลอ้างอิง ==================== -->
+                <div class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 font-bold text-sm inline-block mt-4">ส่วนที่ 3: ข้อมูลอ้างอิงด่วน</div>
+
+                <!-- C1: พารามิเตอร์สำคัญ -->
+                <div class="bg-white/60 border border-slate-200 shadow-sm rounded-2xl p-5">
+                    <h4 class="font-bold text-navy mb-4">📋 พารามิเตอร์สำคัญ</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="guide-param-card">
+                            <div class="param-val">130</div>
+                            <div class="param-label">นาที/เซสชัน</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">5 ชม.</div>
+                            <div class="param-label">พักเครื่อง (Cooldown)</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">2</div>
+                            <div class="param-label">เซสชัน/วัน สูงสุด</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">~27</div>
+                            <div class="param-label">ค่าที่คาดหวัง/เซสชัน</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">10</div>
+                            <div class="param-label">นาที Baseline</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">5 นาที</div>
+                            <div class="param-label">ซิงค์ทุก</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">24,000</div>
+                            <div class="param-label">API quota/เดือน</div>
+                        </div>
+                        <div class="guide-param-card">
+                            <div class="param-val">10</div>
+                            <div class="param-label">นาที Warm-up</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- C2: Troubleshooting -->
+                <div class="bg-white/60 border border-slate-200 shadow-sm rounded-2xl p-5">
+                    <h4 class="font-bold text-navy mb-4">🔧 แก้ปัญหาเบื้องต้น</h4>
+                    <div class="overflow-x-auto">
+                        <table class="guide-table">
+                            <thead>
+                                <tr><th class="rounded-tl-lg">ปัญหา</th><th class="rounded-tr-lg">วิธีแก้</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>เซนเซอร์ไม่เชื่อมต่อ WiFi</td>
+                                    <td>ตรวจชื่อ Hotspot (<b>Biomass</b>) และรหัส (<b>Biomass2026</b>) ให้ตรงตัวพิมพ์ใหญ่-เล็ก + ต้องเป็น <b>2.4 GHz</b></td>
+                                </tr>
+                                <tr>
+                                    <td>ค่าเซนเซอร์ค้าง ไม่ลดลง</td>
+                                    <td>ปิด-เปิดเครื่องใหม่ / กดปุ่ม 3 ครั้ง (Calibrate) / วางในที่อากาศดี รอ 24-48 ชม.</td>
+                                </tr>
+                                <tr>
+                                    <td>GPS ไม่ตรวจจับบ้าน</td>
+                                    <td>อนุญาต Location Permission ในเบราว์เซอร์ / ถ้ายังไม่ได้ ให้เลือกบ้านจากรายการด้วยมือ</td>
+                                </tr>
+                                <tr>
+                                    <td>Dashboard ขึ้น "ยังไม่มีข้อมูลเตาชีวมวล"</td>
+                                    <td>ไปที่ <b>กำหนดการ → ช่วงเก็บข้อมูล</b> ตั้งค่าประเภทเตา (eco) ให้บ้านนั้น + ตรวจว่า date range ครอบคลุมวันนี้</td>
+                                </tr>
+                                <tr>
+                                    <td>เซสชันไม่เริ่ม</td>
+                                    <td>ตรวจว่า: (1) ครบ 2 เซสชันวันนี้แล้วหรือยัง (2) ยังอยู่ใน Cooldown 5 ชม. หรือเปล่า (3) เซนเซอร์ออนไลน์ไหม</td>
+                                </tr>
+                                <tr>
+                                    <td>ข้อมูลไม่ขึ้น Dashboard</td>
+                                    <td>รอรอบซิงค์ถัดไป (ทุก 5 นาที) / ตรวจว่า Hotspot ยังเปิดอยู่ / ดูแท็บ "อนุมัติ" ว่ามีเซสชันรอตรวจไหม</td>
+                                </tr>
+                                <tr>
+                                    <td>หน้าอาสาขึ้น "เซนเซอร์ออฟไลน์"</td>
+                                    <td>ตรวจว่า: (1) เปิดเซนเซอร์แล้ว (2) Hotspot ชื่อ/รหัสถูกต้อง (3) รอ warm-up 10 นาที</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- C3: Hotspot + Sensor quick cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white/60 border border-slate-200 shadow-sm rounded-2xl p-5">
+                        <h4 class="font-bold text-navy mb-3">📶 ข้อมูล Hotspot</h4>
+                        <table class="text-[13px] w-full">
+                            <tr><td class="py-1.5 text-slate-500 w-24">ชื่อ:</td><td class="font-bold">Biomass</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">รหัสผ่าน:</td><td class="font-bold">Biomass2026</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">ย่านความถี่:</td><td class="font-bold text-red-600">2.4 GHz เท่านั้น</td></tr>
+                        </table>
+                    </div>
+                    <div class="bg-white/60 border border-slate-200 shadow-sm rounded-2xl p-5">
+                        <h4 class="font-bold text-navy mb-3">🔘 ปุ่มเซนเซอร์</h4>
+                        <table class="text-[13px] w-full">
+                            <tr><td class="py-1.5 text-slate-500 w-24">กด 1 ครั้ง:</td><td>เปลี่ยน °C / °F</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">กด 2 ครั้ง:</td><td>ปิด/เปิดเสียง</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">กด 3 ครั้ง:</td><td class="font-bold text-indigo-600">Calibrate (แก้ค่าค้าง)</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-slate-400 text-center mt-4">คู่มือ v1.0 — ปรับปรุงล่าสุด: มีนาคม 2569</p>
+            </div>
+
         </section>
     </main>
 
@@ -1258,6 +1839,10 @@
             'session.view.session': { th: 'รายเซสชัน', en: 'By Session' },
             'session.no.data': { th: 'ยังไม่มี session', en: 'No sessions yet' },
             'session.no.today': { th: 'ยังไม่มีข้อมูลวันนี้', en: 'No data for today' },
+            'session.card.collecting': { th: '{0} ค่า', en: '{0} readings' },
+            'session.card.offline.data': { th: '{0} ค่า', en: '{0} readings' },
+            'session.card.done.partial': { th: 'เสร็จ {0} รอบ', en: 'Done {0} session' },
+            'session.card.waiting': { th: 'รอเปิด', en: 'Waiting' },
             'session.all.devices': { th: 'ทุกเครื่อง', en: 'All devices' },
             'session.last.7d': { th: '7 วันล่าสุด', en: 'Last 7 days' },
             'session.last.30d': { th: '30 วันล่าสุด', en: 'Last 30 days' },
@@ -1269,13 +1854,16 @@
             'daily.readings': { th: 'รายการ', en: 'Readings' },
             'daily.status': { th: 'สถานะ', en: 'Status' },
             'daily.no.data': { th: 'ยังไม่มีสรุปรายวัน', en: 'No daily summaries yet' },
-            'daily.legend.title': { th: 'หมายเหตุ — จำนวน session:', en: 'Note — Session count:' },
-            'daily.legend.complete': { th: '✅ ครบ 2/2', en: '✅ Complete 2/2' },
-            'daily.legend.partial': { th: '⚠️ ได้ 1/2', en: '⚠️ Partial 1/2' },
+            'daily.legend.title': { th: 'สถานะเซสชันเก็บข้อมูล:', en: 'Data collection session status:' },
+            'daily.legend.complete': { th: '✅ ครบ 2 เซสชัน', en: '✅ 2 sessions complete' },
+            'daily.legend.partial': { th: '⚠️ ได้ 1 เซสชัน', en: '⚠️ 1 session done' },
+            'daily.legend.incomplete': { th: '⚠️ เซสชันไม่สมบูรณ์', en: '⚠️ Session incomplete' },
             'daily.legend.none': { th: '❌ ไม่มีข้อมูล', en: '❌ No data' },
-            'daily.complete': { th: 'ครบ', en: 'Complete' },
-            'daily.incomplete': { th: 'ไม่ครบ', en: 'Incomplete' },
+            'daily.complete': { th: 'ครบ 2 เซสชัน', en: '2 sessions' },
+            'daily.partial': { th: 'ได้ {0} เซสชัน', en: '{0} session done' },
+            'daily.incomplete': { th: 'เซสชันไม่สมบูรณ์', en: 'Session incomplete' },
             'daily.no.sensor': { th: 'ไม่ได้เปิดเซนเซอร์', en: 'Sensor not active' },
+            'daily.waiting': { th: 'รอผล...', en: 'Awaiting...' },
             'map.no.gps': { th: 'ยังไม่มีข้อมูลพิกัด GPS ของบ้านอาสา', en: 'No GPS data for houses yet' },
             'map.sensor.house': { th: 'ติดเซนเซอร์วัดค่า', en: 'Sensor Installed' },
             'map.stove.house': { th: 'ได้รับเตาชีวมวล (ไม่มีเซนเซอร์)', en: 'Biomass Stove (No Sensor)' },
@@ -1622,19 +2210,23 @@
             'common.processing': { th: 'กำลังดำเนินการ...', en: 'Processing...' },
             // Pending card status badges
             'approval.status.collecting': { th: '🔄 กำลังเก็บ', en: '🔄 Collecting' },
-            'approval.status.complete': { th: '✅ เก็บเสร็จ', en: '✅ Complete' },
+            'approval.status.complete': { th: '✅ เก็บครบเซสชัน', en: '✅ Session Complete' },
             'approval.status.tuya.error': { th: '🔴 Tuya Cloud ขัดข้อง', en: '🔴 Tuya Cloud Error' },
             'approval.status.offline': { th: 'เซนเซอร์ออฟไลน์', en: 'Sensor Offline' },
-            'approval.status.incomplete': { th: '⚠️ เก็บไม่ครบ', en: '⚠️ Incomplete' },
+            'approval.status.incomplete': { th: '⚠️ เซสชันไม่ครบ', en: '⚠️ Session Incomplete' },
+            'approval.tip.collecting': { th: 'เซสชันกำลังเก็บข้อมูลจากเซนเซอร์อยู่', en: 'Session is collecting sensor data' },
+            'approval.tip.complete': { th: 'เซสชันเก็บข้อมูลครบแล้ว (≥24 ค่าจากเซนเซอร์)', en: 'Session data complete (≥24 sensor readings)' },
+            'approval.tip.incomplete': { th: 'เซสชันเก็บข้อมูลไม่ครบ (<24 ค่าจากเซนเซอร์)', en: 'Session data incomplete (<24 sensor readings)' },
             'approval.complete.but': { th: '⚠️ ครบแล้ว แต่ ', en: '⚠️ Complete but ' },
             'approval.collected.of': { th: 'เก็บได้ {0}/24 รายการ — ', en: 'Collected {0}/24 — ' },
             'approval.data.latest': { th: 'ข้อมูลล่าสุด {0} น. ({1}ที่แล้ว)', en: 'Latest data {0} ({1} ago)' },
             'approval.still.collecting': { th: 'กำลังเก็บข้อมูลอยู่ — รอเก็บเสร็จก่อน', en: 'Still collecting — wait until done' },
             // Ambient info
-            'baseline.auto': { th: 'Ambient: ระบบตัดให้อัตโนมัติ', en: 'Ambient: Auto-cut by system' },
-            'baseline.auto.note': { th: '(อาสาไม่ได้กด)', en: '(Volunteer did not press)' },
+            'baseline.auto': { th: 'ระบบตัด Ambient อัตโนมัติ', en: 'System auto-cut Ambient' },
+            'baseline.auto.note': { th: '— กรณีไม่มีการตอบสนองจากผู้ใช้', en: '— no user response detected' },
             'baseline.manual': { th: 'Ambient: อาสากดตัดเอง', en: 'Ambient: Volunteer pressed manually' },
             'baseline.none': { th: 'ไม่มีข้อมูล Ambient', en: 'No Ambient data' },
+            'baseline.collecting': { th: 'กำลังเก็บข้อมูล Ambient...', en: 'Collecting Ambient data...' },
             // Stat labels
             'stat.min': { th: 'ต่ำสุด', en: 'Min' },
             'stat.avg': { th: 'เฉลี่ย', en: 'Avg' },
@@ -1647,6 +2239,8 @@
             'approval.sensor.count': { th: '{0} รายการเซนเซอร์ ({1} เซสชัน)', en: '{0} sensor records ({1} sessions)' },
             'approval.manual.count': { th: '{0} รายการบันทึกด้วยมือ ({1} เซสชัน)', en: '{0} manual records ({1} sessions)' },
             'approval.no.pending': { th: 'ไม่มีข้อมูลรออนุมัติ', en: 'No pending data' },
+            'approval.coverage.readings': { th: 'ค่า', en: 'readings' },
+            'approval.coverage.gaps': { th: '⚠️ {0} ช่วงขาด', en: '⚠️ {0} gaps' },
             // Approval actions
             'approval.approving': { th: 'กำลังอนุมัติ {0} รายการ...', en: 'Approving {0} records...' },
             'approval.approved.count': { th: 'อนุมัติ {0} รายการ', en: 'Approved {0} records' },
@@ -1668,6 +2262,11 @@
             'status.complete': { th: 'ครบ', en: 'Complete' },
             'status.incomplete': { th: 'ไม่ครบ', en: 'Incomplete' },
             'status.cancelled': { th: 'ยกเลิก', en: 'Cancelled' },
+            'status.tip.baseline': { th: 'เซสชันกำลังเก็บค่า Ambient ก่อนเริ่มจุดเตา', en: 'Session collecting ambient data before cooking' },
+            'status.tip.collecting': { th: 'เซสชันกำลังเก็บข้อมูลจากเซนเซอร์', en: 'Session collecting sensor data' },
+            'status.tip.complete': { th: 'เซสชันเก็บข้อมูลครบแล้ว (≥24 ค่าจากเซนเซอร์)', en: 'Session data complete (≥24 sensor readings)' },
+            'status.tip.incomplete': { th: 'เซสชันเก็บข้อมูลไม่ครบ (<24 ค่าจากเซนเซอร์)', en: 'Session data incomplete (<24 sensor readings)' },
+            'status.tip.cancelled': { th: 'เซสชันถูกยกเลิก', en: 'Session was cancelled' },
             // Session info
             'session.count.info': { th: '{0} เซสชัน ({1} บ้าน)', en: '{0} sessions ({1} houses)' },
             // Time units
@@ -1685,6 +2284,8 @@
             'house.unassigned': { th: 'ไม่ระบุบ้าน', en: 'Unassigned house' },
             // Overview stats
             'overview.stat.houses': { th: 'บ้านทั้งหมด', en: 'Total Houses' },
+            'overview.stat.houses.online': { th: 'บ้านออนไลน์', en: 'Houses Online' },
+            'overview.stat.houses.offline': { th: 'บ้านออฟไลน์', en: 'offline' },
             'overview.stat.sensors': { th: 'เซนเซอร์จับคู่แล้ว', en: 'Paired Sensors' },
             'overview.stat.online': { th: 'ออนไลน์', en: 'Online' },
             'overview.stat.volunteers': { th: 'อาสาสมัคร', en: 'Volunteers' },
@@ -1815,7 +2416,8 @@
             'deep.stacked.subtitle': { th: 'แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)', en: 'Separating Ambient from Stove Emission' },
             'deep.stacked.legend.ambient': { th: 'Ambient (แวดล้อม)', en: 'Ambient (baseline)' },
             'deep.info.stacked.title': { th: 'อ่านกราฟนี้อย่างไร?', en: 'How to read this chart?' },
-            'deep.info.stacked.body': { th: 'แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient = ค่าฝุ่นแวดล้อมก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเตาชีวมวลควรมี emission ต่ำกว่าเตาดั้งเดิม', en: 'Decomposes measured PM2.5 into 2 parts:\n• Ambient = background particulate before cooking\n• Stove emission = actual pollution from the stove\n\nBiomass stove should have lower emission than traditional' },
+            'deep.info.stacked.body': { th: 'แสดงการแยกค่า PM2.5 ที่วัดได้ ออกเป็น 2 ส่วน:\n• Ambient = ค่าฝุ่นแวดล้อมก่อนจุดเตา\n• Stove emission = มลพิษที่เกิดจากเตาจริงๆ\n\nเปรียบเทียบสัดส่วน emission ระหว่างเตาแต่ละชนิด', en: 'Decomposes measured PM2.5 into 2 parts:\n• Ambient = background particulate before cooking\n• Stove emission = actual pollution from the stove\n\nCompare emission proportions between stove types' },
+            'deep.charts.heading': { th: 'ค่าเฉลี่ยสุทธิรายวัน (Net Daily Average)', en: 'Net Daily Average' },
             'deep.cat.particulate': { th: 'ฝุ่นละออง (Particulate Matter)', en: 'Particulate Matter' },
             'deep.cat.carbon': { th: 'ก๊าซคาร์บอน (Carbon Gases)', en: 'Carbon Gases' },
             'deep.cat.volatile': { th: 'สารระเหย (Volatile Compounds)', en: 'Volatile Compounds' },
@@ -1853,6 +2455,8 @@
             'deep.env.default': { th: 'สภาพแวดล้อมขณะเก็บข้อมูล', en: 'Environmental conditions during data collection' },
             'deep.drilldown.title': { th: '📅 รายละเอียดวันที่ {0}', en: '📅 Details for {0}' },
             'deep.drilldown.close': { th: '✕ ปิด', en: '✕ Close' },
+            'deep.info.chart.title': { th: 'อ่านกราฟ Net Daily Average อย่างไร?', en: 'How to read Net Daily Average charts?' },
+            'deep.info.chart.body': { th: '📊 กราฟแสดงค่าเฉลี่ยรายวัน หลังหักค่าแวดล้อม (Ambient)\n\n━━ เตาดั้งเดิม ━━\n• เส้นประสีเทา = ค่าเฉลี่ยรายวัน (Mean)\n• แถบสีเทาจาง = ช่วงค่า ต่ำสุด-สูงสุด (Min–Max)\n\n━━ เตาชีวมวล ━━\n• เส้นทึบสีเขียว = ค่าเฉลี่ยรายวัน (Mean)\n• แถบสีเขียวจาง = ช่วงค่า ต่ำสุด-สูงสุด (Min–Max)\n\n📐 วิธีคำนวณ\n1. แต่ละ session เฉลี่ย 10 นาทีแรก = ค่าแวดล้อม (Ambient)\n2. Net = ค่าที่วัดได้ − Ambient (ค่าติดลบ = 0)\n3. ใช้เฉพาะ readings ช่วงหุงต้ม (ไม่รวม Ambient)\n4. คำนวณ Mean, Min, Max แยกตามชนิดเตา ต่อวัน\n\n🔍 คลิกจุดบนกราฟ → ดูรายละเอียดเป็นรายชั่วโมง', en: '📊 Charts show daily averages after subtracting ambient (background) values\n\n━━ Traditional Stove ━━\n• Gray dashed line = Daily Mean\n• Gray band = Min–Max range\n\n━━ Biomass Stove ━━\n• Green solid line = Daily Mean\n• Green band = Min–Max range\n\n📐 Calculation Method\n1. Average first 10 min of each session = Ambient baseline\n2. Net = measured value − Ambient (negative → 0)\n3. Only cooking-phase readings used (Ambient excluded)\n4. Mean, Min, Max computed per stove type per day\n\n🔍 Click a point → see hourly breakdown' },
             'deep.info.pm25.title': { th: 'PM2.5 คืออะไร?', en: 'What is PM2.5?' },
             'deep.info.pm25.body': { th: 'ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³', en: 'Fine particles smaller than 2.5 microns — can reach deep into lungs. Key indicator of biomass combustion pollution.\n\nWHO Standards:\n• IT-1: 35 µg/m³ (24hr avg)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³' },
             'deep.info.co.title': { th: 'CO คืออะไร?', en: 'What is CO?' },
@@ -1871,6 +2475,13 @@
             'map.deep.nodata': { th: 'ไม่มีข้อมูล', en: 'No data' },
             'map.deep.nosensor': { th: 'ไม่มีเซนเซอร์', en: 'No sensor' },
             'map.sessions': { th: 'จำนวน session', en: 'Sessions' },
+            // Guide tab
+            'tab.guide': { th: '📖 คู่มือ', en: '📖 Guide' },
+            'guide.title': { th: '📖 คู่มือการใช้งานระบบ', en: '📖 System User Guide' },
+            'guide.subtitle': { th: 'สำหรับแอดมินและผู้ดูแลโครงการ — ใช้อ้างอิงและสอนอาสาสมัคร', en: 'For admins and project supervisors — reference & volunteer training' },
+            'guide.print': { th: '🖨 พิมพ์', en: '🖨 Print' },
+            'guide.expand': { th: 'เปิดทั้งหมด', en: 'Expand All' },
+            'guide.collapse': { th: 'ปิดทั้งหมด', en: 'Collapse All' },
         };
 
         function t(key, ...args) {
@@ -1924,7 +2535,7 @@
                 .replace(/อาสากดจุดเตา/g, 'Volunteer started stove')
                 .replace(/อาสากด Ambient/g, 'Volunteer pressed Ambient')
                 .replace(/อาสากด Baseline/g, 'Volunteer pressed Ambient')
-                .replace(/ระบบตัด Ambient อัตโนมัติ/g, 'System auto-cut Ambient')
+                .replace(/ระบบตัด Ambient อัตโนมัติ/g, 'System auto-cut Ambient').replace(/ระบบดำเนินการอัตโนมัติ/g, 'Auto-processed by system')
                 .replace(/ระบบตัด Baseline อัตโนมัติ/g, 'System auto-cut Ambient')
                 .replace(/ระบบตัด Ambient/g, 'System cut Ambient')
                 .replace(/ระบบตัด Baseline/g, 'System cut Ambient')
@@ -1933,6 +2544,13 @@
                 .replace(/กำลังเก็บข้อมูล/g, 'Collecting data')
                 .replace(/เก็บข้อมูลเสร็จ/g, 'Collection complete')
                 .replace(/หยุดเก็บข้อมูล/g, 'Collection stopped')
+                .replace(/ครบ แต่/g, 'Complete but')
+                .replace(/ครบเวลา\s*(\d+)\s*นาที/g, 'Time limit $1 min')
+                .replace(/Tuya Cloud ขัดข้อง\s*(\d+)\s*ครั้ง/g, 'Tuya Cloud errors $1x')
+                .replace(/ปัญหาจากระบบ Cloud/g, 'Cloud system issue')
+                .replace(/readings ไม่ถึง/g, 'readings below')
+                .replace(/กลับมา/g, 'back at')
+                .replace(/กรณีไม่มีการตอบสนองจากผู้ใช้/g, 'no user response detected')
                 .replace(/(\d{2}:\d{2})\s*น\./g, '$1');
         }
 
@@ -2033,6 +2651,7 @@
 
         let DEVICE_NAMES = {};
         let HOUSE_NAMES = {};
+        let SUBJECT_NAMES = {}; // subject_id → full_name (fallback when HOUSE_NAMES misses)
         let DEVICE_HOUSE = {}; // tuya_device_id → subject_id mapping for house filter
 
         // ==================== AQI Helper ====================
@@ -2236,6 +2855,7 @@
                 pm25_value: { avg: 'adjusted_avg_pm25', fallbackAvg: 'avg_pm25', min: 'min_pm25', max: 'max_pm25' },
                 pm10_value: { avg: 'avg_pm10' },
                 co2_value:  { avg: 'adjusted_avg_co2', fallbackAvg: 'avg_co2' },
+                co_value:   { avg: 'avg_co' },
                 temperature: { avg: 'adjusted_avg_temperature', fallbackAvg: 'avg_temperature' },
                 humidity:   { avg: 'adjusted_avg_humidity', fallbackAvg: 'avg_humidity' },
             };
@@ -2262,7 +2882,7 @@
                 });
             });
             // Merge recent raw data into dailyAgg for fields not in daily_summaries (co, hcho, tvoc, aqi)
-            const rawFields = ['co_value', 'tvoc_value', 'hcho_value', 'aqi'];
+            const rawFields = ['tvoc_value', 'hcho_value', 'aqi'];
             (allData || []).forEach(d => {
                 if (!d.recorded_at || !d.stove_type) return;
                 const day = d.recorded_at.slice(0, 10);
@@ -3080,6 +3700,22 @@
             if (tab === 'admins') loadAdminsList();
         }
 
+        // Guide accordion functions
+        function toggleGuideSection(header) {
+            header.classList.toggle('open');
+            header.nextElementSibling.classList.toggle('open');
+        }
+        function toggleAllGuideSections(open) {
+            document.querySelectorAll('#admin-guide .guide-header').forEach(h => {
+                if (open) { h.classList.add('open'); h.nextElementSibling.classList.add('open'); }
+                else { h.classList.remove('open'); h.nextElementSibling.classList.remove('open'); }
+            });
+        }
+        function printGuide() {
+            toggleAllGuideSections(true);
+            setTimeout(() => window.print(), 200);
+        }
+
         // Sub-tabs within "ข้อมูล" tab
         function switchDataSubTab(sub) {
             document.getElementById('data-sub-sensor').classList.remove('tab-active');
@@ -3221,7 +3857,7 @@
                 const selectCols = 'id,tuya_device_id,house_id,session_id,stove_type,status,data_source,recorded_at,pm25_value,pm10_value,co2_value,co_value,temperature,humidity,hcho_value,tvoc_value,aqi,volunteer_id';
 
                 // Fetch daily_summaries + recent raw data + metadata in parallel
-                const [sumRes, rawRes, devRes, volRes, projRes, spRes, sessRes] = await Promise.all([
+                const [sumRes, rawRes, devRes, volRes, projRes, spRes, sessRes, subNameRes] = await Promise.all([
                     supabaseClient.from('daily_summaries').select('*').order('summary_date', { ascending: false }),
                     supabaseClient.from('pollution_logs').select(selectCols).gte('recorded_at', recentCutoff).order('recorded_at', { ascending: false }).limit(5000),
                     supabaseClient.from('devices').select('tuya_device_id, subject_id, subjects(full_name)'),
@@ -3229,6 +3865,7 @@
                     supabaseClient.from('projects').select('*').eq('status', 'active'),
                     supabaseClient.from('subject_projects').select('*'),
                     supabaseClient.from('sessions').select('id, baseline_avg_pm25, baseline_avg_co2, baseline_avg_temperature, baseline_avg_humidity, baseline_ended_at').not('baseline_avg_pm25', 'is', null),
+                    supabaseClient.from('subjects').select('id, full_name'),
                 ]);
 
                 // Daily summaries (for charts + big numbers)
@@ -3243,6 +3880,7 @@
                 dataLoaded = true;
 
                 // Metadata
+                if (subNameRes.data) subNameRes.data.forEach(s => { if (s.id && s.full_name) SUBJECT_NAMES[s.id] = s.full_name; });
                 if (devRes.data) devRes.data.forEach(d => {
                     if (d.tuya_device_id && d.subjects?.full_name) HOUSE_NAMES[d.tuya_device_id] = d.subjects.full_name;
                     if (d.tuya_device_id && d.subject_id) DEVICE_HOUSE[d.tuya_device_id] = d.subject_id;
@@ -3266,8 +3904,8 @@
 
                 if (currentView === 'basic') {
                     updateBasicView();
-                    // Preload full data in background while user reviews Basic
-                    if (!fullDataLoaded) loadFullData(true);
+                    // Preload full data in background, then refresh stat cards (CO/HCHO/TVOC need raw data)
+                    if (!fullDataLoaded) loadFullData(true).then(() => { if (currentView === 'basic') updateBasicView(); });
                 } else if (currentView === 'deep') {
                     if (!fullDataLoaded) { await loadFullData(); }
                     updateDeepView();
@@ -3687,12 +4325,13 @@
                 const activeDevices = (devices || []).filter(d => d.is_active);
 
                 // If no active devices registered, show cards from summaries
-                const devList = activeDevices.length > 0 ? activeDevices : (summaries || []).map(s => ({
+                // Filter out orphan MOCK-ES-XX entries
+                const devList = (activeDevices.length > 0 ? activeDevices : (summaries || []).map(s => ({
                     tuya_device_id: s.device_id,
                     name: DEVICE_NAMES[s.device_id] || s.device_id,
                     subjects: null,
                     is_active: true,
-                }));
+                }))).filter(d => !d.tuya_device_id?.startsWith('MOCK-'));
 
                 let housesWithData = 0;
                 for (const dev of devList) {
@@ -3702,26 +4341,46 @@
                     const completed = summary?.sessions_completed || 0;
                     const incomplete = summary?.sessions_incomplete || 0;
                     const houseName = dev.subjects?.full_name || DEVICE_NAMES[devId] || HOUSE_NAMES[devId] || dev.name;
+                    // Online = last reading within 10 min (not just "has readings today")
+                    const latestMs = devLogs.length > 0 ? Math.max(...devLogs.map(d => new Date(d.recorded_at).getTime())) : 0;
+                    const isOnline = latestMs > 0 && (Date.now() - latestMs) < 10 * 60000;
+                    const hasData = devLogs.length > 0;
 
-                    let bg, nameClass, statusHtml;
+                    let emoji, bg, nameClass, statusText, barPct, barColor;
                     if (completed >= 2) {
                         housesWithData++;
-                        bg = 'bg-emerald-50'; nameClass = 'text-emerald-600';
-                        statusHtml = '✅ ' + (devLogs.length || (completed * 26)) + ' readings';
-                    } else if (completed > 0 || incomplete > 0) {
+                        emoji = '✅'; bg = 'bg-emerald-50'; nameClass = 'text-emerald-600';
+                        statusText = t('session.card.collecting', devLogs.length || (completed * 26));
+                        barPct = 100; barColor = 'bg-emerald-500';
+                    } else if (isOnline) {
                         housesWithData++;
-                        bg = 'bg-amber-50'; nameClass = 'text-amber-600';
-                        statusHtml = '⚠️ ' + completed + '/2';
-                    } else if (devLogs.length > 0) {
+                        emoji = '📡'; bg = 'bg-blue-50'; nameClass = 'text-blue-600';
+                        statusText = t('session.card.collecting', devLogs.length);
+                        barPct = completed >= 1 ? 50 : 10;
+                        barColor = 'bg-blue-500';
+                    } else if (completed > 0 || incomplete > 0 || hasData) {
                         housesWithData++;
-                        bg = 'bg-blue-50'; nameClass = 'text-blue-600';
-                        statusHtml = '<span class="pulse-dot collecting"></span> ' + devLogs.length + ' readings';
+                        emoji = '⏸️'; bg = 'bg-amber-50'; nameClass = 'text-amber-600';
+                        statusText = completed > 0 ? t('session.card.done.partial', completed) : t('session.card.offline.data', devLogs.length);
+                        barPct = completed > 0 ? completed * 50 : 10;
+                        barColor = 'bg-amber-500';
                     } else {
-                        bg = 'bg-slate-50'; nameClass = 'text-slate-400';
-                        statusHtml = '<span class="pulse-dot"></span> ' + t('sync.waiting');
+                        emoji = '💤'; bg = 'bg-slate-50'; nameClass = 'text-slate-400';
+                        statusText = t('session.card.waiting');
+                        barPct = 0; barColor = 'bg-slate-300';
                     }
 
-                    rows.push(`<div class="${bg} rounded-lg p-2 text-center"><span class="font-bold ${nameClass}">${houseName}</span><br>${statusHtml}</div>`);
+                    rows.push(`<div class="${bg} rounded-lg p-2.5 text-center">
+                        <div class="font-bold text-xs ${nameClass} truncate">${houseName}</div>
+                        <div class="flex items-center justify-center gap-1 mt-1">
+                            <span class="text-sm">${emoji}</span>
+                            <span class="text-xs font-semibold ${nameClass}">${completed}/2</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1.5">
+                            <div class="${barColor} h-1.5 rounded-full transition-all" style="width:${barPct}%"></div>
+                        </div>
+                        <div class="text-[10px] text-slate-400 mt-1">${statusText}</div>
+                    </div>`);
                 }
 
                 breakdownEl.innerHTML = rows.length > 0 ? rows.join('') : '<p class="text-center text-slate-400 text-sm py-2">' + t('session.no.today') + '</p>';
@@ -3761,7 +4420,7 @@
             const recent = getFilteredData().slice(0, 5);
             feed.innerHTML = recent.map(d => {
                 const sensorName = getDeviceName(d);
-                const houseName = HOUSE_NAMES[d.tuya_device_id] || t('activity.no.house');
+                const houseName = HOUSE_NAMES[d.tuya_device_id] || SUBJECT_NAMES[d.house_id] || t('activity.no.house');
                 const timeAgo = getTimeAgo(d.recorded_at);
                 const pm25Color = (d.pm25_value || 0) < 25 ? 'text-emerald-500' : (d.pm25_value || 0) < 50 ? 'text-amber-500' : 'text-red-500';
                 return '<div class="p-3 bg-white/50 rounded-xl">' +
@@ -3879,7 +4538,7 @@
             updateResearchStats(_rawFiltered, _netFiltered);
             updateStackedBar(_rawFiltered, _netFiltered);
             updateComparisonTable(_rawFiltered, _netFiltered);
-            updateSensorCharts();
+            updateSensorCharts(_netFiltered);
             loadSessionsTab();
             loadDailySummaries();
 
@@ -4105,6 +4764,7 @@
                 { label: 'PM10 (µg/m³)', field: 'pm10_value', dec: 1, color: 'text-orange-600' },
                 { label: 'CO2 (ppm)', field: 'co2_value', dec: 0, color: 'text-emerald-600' },
                 { label: 'CO (ppm)', field: 'co_value', dec: 1, color: 'text-amber-600' },
+                { label: 'HCHO (mg/m³)', field: 'hcho_value', dec: 3, color: 'text-pink-600' },
                 { label: 'TVOC (mg/m³)', field: 'tvoc_value', dec: 3, color: 'text-purple-600' },
             ];
 
@@ -4174,14 +4834,32 @@
         let hiddenHouses = new Set();
         let drilldownCharts = {};
 
-        function updateSensorCharts() {
-            let days = Object.keys(dailyAgg).sort();
+        function updateSensorCharts(netData) {
+            // Build daily aggregation from net (baseline-subtracted, cooking-only) data
+            // so that mean and band are consistent
+            const chartAgg = {};
+            (netData || []).forEach(d => {
+                if (!d.recorded_at || !d.stove_type) return;
+                const day = d.recorded_at.slice(0, 10);
+                const st = (d.stove_type === 'old' || d.stove_type === 'traditional') ? 'old' : 'eco';
+                if (!chartAgg[day]) chartAgg[day] = {};
+                if (!chartAgg[day][st]) {
+                    chartAgg[day][st] = {};
+                    AGG_FIELDS.forEach(f => { chartAgg[day][st][f] = { sum: 0, count: 0, min: Infinity, max: -Infinity }; });
+                }
+                const bucket = chartAgg[day][st];
+                AGG_FIELDS.forEach(f => {
+                    const v = d[f];
+                    if (v != null) { bucket[f].sum += v; bucket[f].count++; if (v < bucket[f].min) bucket[f].min = v; if (v > bucket[f].max) bucket[f].max = v; }
+                });
+            });
+            let days = Object.keys(chartAgg).sort();
 
             // Per-stove cutoffs for daily charts
             let oldCutoff = null, ecoCutoff = null;
             if (activeQuickRange > 0) {
                 let oldMax = null, ecoMax = null;
-                days.forEach(d => { if (dailyAgg[d]?.old) oldMax = d; if (dailyAgg[d]?.eco) ecoMax = d; });
+                days.forEach(d => { if (chartAgg[d]?.old) oldMax = d; if (chartAgg[d]?.eco) ecoMax = d; });
                 if (oldMax) oldCutoff = new Date(new Date(oldMax).getTime() - (activeQuickRange - 1) * 86400000).toISOString().slice(0, 10);
                 if (ecoMax) ecoCutoff = new Date(new Date(ecoMax).getTime() - (activeQuickRange - 1) * 86400000).toISOString().slice(0, 10);
             } else if (activeQuickRange < 0 && (deepDateStart || deepDateEnd)) {
@@ -4215,8 +4893,8 @@
                 const oldBandUp = [], oldBandLo = [], ecoBandUp = [], ecoBandLo = [];
                 days.forEach(day => {
                     const dateMs = new Date(day + 'T12:00:00').getTime();
-                    const ob = dailyAgg[day]?.old?.[cfg.field];
-                    const eb = dailyAgg[day]?.eco?.[cfg.field];
+                    const ob = chartAgg[day]?.old?.[cfg.field];
+                    const eb = chartAgg[day]?.eco?.[cfg.field];
                     if (ob && ob.count && (!oldCutoff || day >= oldCutoff)) {
                         oldPoints.push({ x: dateMs, y: +(ob.sum / ob.count).toFixed(2) });
                         oldBandUp.push({ x: dateMs, y: ob.max }); oldBandLo.push({ x: dateMs, y: ob.min });
@@ -4227,12 +4905,12 @@
                     }
                 });
                 // Old stove — gray dashed (baseline reference)
-                datasets.push({ label: t('chart.old') + ' (max)', data: oldBandUp, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: '+1' });
-                datasets.push({ label: t('chart.old') + ' (min)', data: oldBandLo, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: false });
-                datasets.push({ label: t('chart.old'), data: oldPoints, borderColor: '#9ca3af', backgroundColor: '#9ca3af20', borderWidth: 1.5, borderDash: [6, 3], pointRadius: 0, pointHoverRadius: 5, tension: 0.3, fill: false });
+                datasets.push({ label: t('chart.old') + ' (max)', data: oldBandUp, borderColor: 'rgba(156,163,175,0.3)', backgroundColor: 'rgba(156,163,175,0.15)', borderWidth: 1, pointRadius: 0, tension: 0.3, fill: '+1' });
+                datasets.push({ label: t('chart.old') + ' (min)', data: oldBandLo, borderColor: 'rgba(156,163,175,0.3)', backgroundColor: 'rgba(156,163,175,0.15)', borderWidth: 1, pointRadius: 0, tension: 0.3, fill: false });
+                datasets.push({ label: t('chart.old'), data: oldPoints, borderColor: '#6b7280', backgroundColor: '#6b728020', borderWidth: 2, borderDash: [6, 3], pointRadius: 0, pointHoverRadius: 5, tension: 0.3, fill: false });
                 // Eco stove — green bold hero
-                datasets.push({ label: t('compare.eco') + ' (max)', data: ecoBandUp, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: '+1' });
-                datasets.push({ label: t('compare.eco') + ' (min)', data: ecoBandLo, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.10)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: false });
+                datasets.push({ label: t('compare.eco') + ' (max)', data: ecoBandUp, borderColor: 'rgba(16,185,129,0.3)', backgroundColor: 'rgba(16,185,129,0.15)', borderWidth: 1, pointRadius: 0, tension: 0.3, fill: '+1' });
+                datasets.push({ label: t('compare.eco') + ' (min)', data: ecoBandLo, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.15)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: false });
                 datasets.push({ label: t('compare.eco'), data: ecoPoints, borderColor: '#10b981', backgroundColor: '#10b98130', borderWidth: 3, pointRadius: 0, pointHoverRadius: 7, tension: 0.3, fill: false });
 
                 sensorCharts[cfg.id] = new Chart(canvas, {
@@ -4427,6 +5105,7 @@
             };
             const statusIcons = { 'baseline': '🔵', 'collecting': '🟡', 'complete': '✅', 'incomplete': '⚠️', 'cancelled': '❌' };
             const statusThai = { 'baseline': t('status.baseline'), 'collecting': t('status.collecting'), 'complete': t('status.complete'), 'incomplete': t('status.incomplete'), 'cancelled': t('status.cancelled') };
+            const statusTips = { 'baseline': t('status.tip.baseline'), 'collecting': t('status.tip.collecting'), 'complete': t('status.tip.complete'), 'incomplete': t('status.tip.incomplete'), 'cancelled': t('status.tip.cancelled') };
 
             const tbody = document.getElementById('sessions-table-body');
             if (!tbody) return;
@@ -4481,7 +5160,7 @@
                 // Ambient transition badge
                 let blBadge = '';
                 if (s.baseline_transition === 'auto') {
-                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ (อาสาไม่ได้กด)' : 'Auto ambient (volunteer did not press)') + '">AUTO</span>';
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response') + '">AUTO</span>';
                 } else if (s.baseline_transition === 'manual') {
                     blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Ambient เอง' : 'Volunteer pressed ambient') + '">MANUAL</span>';
                 }
@@ -4494,23 +5173,26 @@
                     shortNote = shortNote.replace(/\s*GPS:[0-9.,\-]+/g, '');
                     // Remove technical metadata (tuya_api_errors:N etc.)
                     shortNote = shortNote.replace(/\s*tuya_api_errors:\d+/g, '');
-                    // Format ISO timestamps to readable time
-                    shortNote = shortNote.replace(/\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}):\d{2}\.\d+Z/g, '$1 น.');
+                    // Format ISO timestamps (UTC) to Thai time (+7h)
+                    shortNote = shortNote.replace(/\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2}):\d{2}\.\d+Z/g, (_, hh, mm) => {
+                        const thaiH = (parseInt(hh) + 7) % 24;
+                        return String(thaiH).padStart(2, '0') + ':' + mm + ' น.';
+                    });
+                    // Deep Insights: hide technical notes (Tuya errors, offline gaps, time limits)
+                    // Keep only volunteer action notes (e.g. "อาสากดเริ่มจุดเตา")
+                    shortNote = shortNote.replace(/ครบ แต่[^]*$/g, '').replace(/ครบเวลา[^]*$/g, '');
+                    shortNote = shortNote.replace(/⚠️\s*เซนเซอร์ออฟไลน์[^]*/g, '');
                     shortNote = shortNote.trim();
                     if (!shortNote) shortNote = null;
                     if (shortNote) {
-                        const isTuyaError = shortNote.includes('Tuya');
-                        const isOffline = shortNote.includes('ออฟไลน์');
-                        const noteColor = isTuyaError ? 'text-red-500' : isOffline ? 'text-amber-500' : 'text-slate-400';
-                        const noteIcon = isTuyaError ? '🔴' : isOffline ? '📡' : 'ℹ️';
-                        notesHtml = '<div class="text-[10px] ' + noteColor + ' mt-0.5">' + noteIcon + ' ' + translateNote(shortNote) + '</div>';
+                        notesHtml = '<div class="text-[10px] text-slate-400 mt-0.5">ℹ️ ' + translateNote(shortNote) + '</div>';
                     }
                 }
 
-                rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + houseName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\')">' +
+                rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + houseName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\',\'' + (s.baseline_transition || '') + '\')">' +
                     '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
                     '<td class="p-3 max-w-[160px]"><span class="truncate block" title="' + houseName + '">' + houseName + sessLabel + '</span></td>' +
-                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold ' + colorClass + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold cursor-help ' + colorClass + '" title="' + (statusTips[s.session_status] || '') + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -4531,15 +5213,21 @@
             const tbody = document.getElementById('daily-summary-body');
             if (!tbody) return;
 
-            tbody.innerHTML = (data || []).map(d => {
+            // Filter to latest date only + exclude orphan MOCK device IDs
+            const latestDate = data && data.length ? data[0].summary_date : null;
+            const filtered = latestDate ? data.filter(d => d.summary_date === latestDate && !d.device_id?.startsWith('MOCK-')) : [];
+
+            tbody.innerHTML = filtered.map(d => {
                 const houseName = HOUSE_NAMES[d.device_id] || DEVICE_NAMES[d.device_id] || d.device_id;
                 const total = (d.sessions_completed || 0) + (d.sessions_incomplete || 0) + (d.sessions_cancelled || 0);
                 const completed = d.sessions_completed || 0;
-                const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : total > 0 ? 'bg-orange-100 text-orange-700' : 'bg-slate-100 text-slate-500';
-                const statusIcon = completed >= 2 ? '✅' : completed >= 1 ? '⚠️' : total > 0 ? '⚠️' : '⏸️';
-                const statusText = completed >= 2 ? t('daily.complete') : completed >= 1 ? completed + '/2' : total > 0 ? t('daily.incomplete') : t('daily.no.sensor');
+                const todayStr = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+                const isToday = d.summary_date === todayStr;
+                const statusColor = completed >= 2 ? 'bg-emerald-100 text-emerald-700' : completed >= 1 ? 'bg-yellow-100 text-yellow-700' : total > 0 ? 'bg-orange-100 text-orange-700' : isToday ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500';
+                const statusIcon = completed >= 2 ? '✅' : completed >= 1 ? '⚠️' : total > 0 ? '⚠️' : isToday ? '⏳' : '⏸️';
+                const statusText = completed >= 2 ? t('daily.complete') : completed >= 1 ? t('daily.partial', completed) : total > 0 ? t('daily.incomplete') : isToday ? t('daily.waiting') : t('daily.no.sensor');
                 return '<tr class="hover:bg-slate-50/50">' +
-                    '<td class="p-2">' + d.summary_date + '</td>' +
+                    '<td class="p-2">' + fmtDateDMY(d.summary_date + 'T00:00:00') + '</td>' +
                     '<td class="p-2 max-w-[160px]"><span class="truncate block" title="' + houseName + '">' + houseName + '</span></td>' +
                     '<td class="p-2 text-center font-bold">' + completed + '/' + total + '</td>' +
                     '<td class="p-2 text-center">' + (d.total_readings || 0) + '</td>' +
@@ -4691,7 +5379,7 @@
 
             if (info) {
                 if (dateFrom || dateTo) {
-                    info.textContent = t('actlog.showing', logs.length) + (dateFrom ? t('actlog.showing.from', dateFrom) : '') + (dateTo ? t('actlog.showing.to', dateTo) : '');
+                    info.textContent = t('actlog.showing', logs.length) + (dateFrom ? t('actlog.showing.from', fmtDateDMY(dateFrom + 'T00:00:00')) : '') + (dateTo ? t('actlog.showing.to', fmtDateDMY(dateTo + 'T00:00:00')) : '');
                 } else {
                     info.textContent = t('actlog.showing.latest');
                 }
@@ -4749,7 +5437,7 @@
 
             const html = chunk.map(d => {
                 const pm25Class = (d.pm25_value || 0) > 35 ? 'text-red-500 font-bold' : 'text-orange-500';
-                const houseName = HOUSE_NAMES[d.tuya_device_id] || d.house_name || t('house.unassigned');
+                const houseName = HOUSE_NAMES[d.tuya_device_id] || SUBJECT_NAMES[d.house_id] || d.house_name || t('house.unassigned');
                 return `<tr class="hover:bg-slate-50">
                     <td class="p-3 text-[13px] whitespace-nowrap">${fmtDateTimeDMY(d.recorded_at)}</td>
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
@@ -4950,14 +5638,19 @@
                 // Fetch session notes for each group (use session_id from logs)
                 const sessionNotes = {};
                 const sessionBaseline = {};
+                const sessionStatuses = {};
                 const uniqueSessionIds = [...new Set(sensorData.map(d => d.session_id).filter(Boolean))];
-                if (uniqueSessionIds.length > 0) {
+                // Also include manual data session IDs
+                const manualSessionIds = [...new Set((manualData || []).map(d => d.session_id).filter(Boolean))];
+                const allSessionIds = [...new Set([...uniqueSessionIds, ...manualSessionIds])];
+                if (allSessionIds.length > 0) {
                     const { data: sessRows } = await supabaseClient.from('sessions')
                         .select('id, notes, session_status, baseline_transition')
-                        .in('id', uniqueSessionIds);
+                        .in('id', allSessionIds);
                     (sessRows || []).forEach(sr => {
                         sessionNotes[sr.id] = sr.notes;
                         sessionBaseline[sr.id] = sr.baseline_transition;
+                        sessionStatuses[sr.id] = sr.session_status;
                     });
                 }
 
@@ -5046,6 +5739,10 @@
                         const timeRange = ms.logs.length === 1 ? startTime : startTime + '-' + endTime;
                         const idsStr = ms.ids.join(',');
                         const sparkHtml = tvocSparkline(tvocValues, tvocTimes);
+                        // Check if session is still active
+                        const msSessionId = ms.logs.find(l => l.session_id)?.session_id;
+                        const msSessStatus = msSessionId ? sessionStatuses[msSessionId] : null;
+                        const msStillActive = msSessStatus === 'baseline' || msSessStatus === 'collecting';
                         return `
                         <div class="card-styled p-3 rounded-2xl border-l-4 border-purple-400 flex flex-col gap-1.5">
                             <div class="flex items-center justify-between">
@@ -5053,7 +5750,10 @@
                                     <p class="font-bold text-navy text-sm leading-tight">🏠 ${houseName}</p>
                                     <p class="text-[11px] text-slate-400">${volunteerName ? '👤 ' + volunteerName + ' · ' : ''}${dateStr} · ${timeRange} น.</p>
                                 </div>
-                                <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px]">📝 ${ms.logs.length}</span>
+                                <div class="flex items-center gap-1.5">
+                                    ${msStillActive ? '<span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold text-[11px] animate-pulse">' + t('approval.status.collecting') + '</span>' : ''}
+                                    <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px]">📝 ${ms.logs.length}</span>
+                                </div>
                             </div>
                             <div class="flex gap-1.5 text-center">
                                 <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.min')}</div><div class="text-sm font-bold text-emerald-600">${minTvoc}</div></div>
@@ -5062,8 +5762,8 @@
                             </div>
                             ${sparkHtml ? '<div class="bg-slate-50 rounded-lg p-1.5">' + sparkHtml + '</div>' : ''}
                             <div class="flex gap-1.5">
-                                <button onclick="approveSession([${idsStr}])" class="flex-1 px-2 py-1.5 bg-emerald-100 text-emerald-700 hover:bg-emerald-200 rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
-                                <button onclick="rejectSession([${idsStr}])" class="px-2 py-1.5 bg-red-100 text-red-500 hover:bg-red-200 rounded-xl font-bold text-xs transition-all">✗</button>
+                                <button onclick="approveSession([${idsStr}])" ${msStillActive ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="flex-1 px-2 py-1.5 ${msStillActive ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
+                                <button onclick="rejectSession([${idsStr}])" ${msStillActive ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="px-2 py-1.5 ${msStillActive ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
                         </div>`;
                     }).join('');
@@ -5099,16 +5799,17 @@
                         const peakPMTime = peakPMLog ? fmtTime(peakPMLog.recorded_at) : '';
                         const peakCO2Time = peakCO2Log ? fmtTime(peakCO2Log.recorded_at) : '';
 
-                        // Session status
+                        // Get session ID from first log
+                        const logSessionId = firstLog ? firstLog.session_id : null;
+
+                        // Session status — use actual DB status instead of time heuristic
                         const lastTime = lastLog ? new Date(lastLog.recorded_at) : null;
                         const minutesAgo = lastTime ? Math.round((Date.now() - lastTime.getTime()) / 60000) : 999;
-                        const isStillCollecting = minutesAgo < 10;
-                        const isComplete = s.logs.length >= 24 && !isStillCollecting;
-
-                        // Get session notes from DB (match by session_id of first log)
-                        const logSessionId = firstLog ? firstLog.session_id : null;
+                        const sessStatus = logSessionId ? sessionStatuses[logSessionId] : null;
+                        const isStillCollecting = sessStatus === 'baseline' || sessStatus === 'collecting';
+                        const isComplete = sessStatus === 'complete' || (s.logs.length >= 24 && !isStillCollecting);
                         const rawNote = logSessionId ? (sessionNotes[logSessionId] || '') : '';
-                        const sessNote = translateNote(rawNote.replace(/\s*tuya_api_errors:\d+/g, '').replace(/\s*GPS:[0-9.,\-]+/g, '').replace(/\d{4}-\d{2}-\d{2}T(\d{2}:\d{2}):\d{2}\.\d+Z/g, '$1').trim());
+                        const sessNote = translateNote(rawNote.replace(/\s*tuya_api_errors:\d+/g, '').replace(/\s*GPS:[0-9.,\-]+/g, '').replace(/\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2}):\d{2}\.\d+Z/g, (_, hh, mm) => { const th = (parseInt(hh) + 7) % 24; return String(th).padStart(2, '0') + ':' + mm; }).trim());
                         const isTuyaIssue = rawNote.includes('Tuya') || rawNote.includes('tuya_api');
                         const isOfflineIssue = rawNote.includes('ออฟไลน์');
 
@@ -5119,17 +5820,39 @@
                             blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200"><span class="text-amber-500 text-sm">⚡</span><span class="text-[11px] text-amber-700 font-medium">' + t('baseline.auto') + ' <span class="text-amber-500">' + t('baseline.auto.note') + '</span></span></div>';
                         } else if (blTrans === 'manual') {
                             blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200"><span class="text-emerald-500 text-sm">✋</span><span class="text-[11px] text-emerald-700 font-medium">' + t('baseline.manual') + '</span></div>';
+                        } else if (sessStatus === 'baseline') {
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 border border-blue-200"><span class="text-blue-500 text-sm animate-pulse">📊</span><span class="text-[11px] text-blue-700 font-medium">' + t('baseline.collecting') + '</span></div>';
                         } else {
                             blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200"><span class="text-slate-400 text-sm">—</span><span class="text-[11px] text-slate-500">' + t('baseline.none') + '</span></div>';
                         }
 
+                        // Data coverage: actual vs expected readings + gap detection
+                        // Lock expected to 27 (full 130-min session at 5-min intervals) for clarity
+                        const expectedLogs = 27;
+                        const actualLogs = s.logs.length;
+                        const coveragePct = Math.min(100, Math.round(actualLogs / expectedLogs * 100));
+                        const gaps = [];
+                        for (let gi = 1; gi < sortedLogs.length; gi++) {
+                            const gapMin = (new Date(sortedLogs[gi].recorded_at) - new Date(sortedLogs[gi-1].recorded_at)) / 60000;
+                            if (gapMin > 8) gaps.push(Math.round(gapMin));
+                        }
+                        const coverageColor = coveragePct >= 90 ? 'emerald' : coveragePct >= 70 ? 'amber' : 'red';
+                        let coverageHtml = '';
+                        if (actualLogs > 1 && !isStillCollecting) {
+                            coverageHtml = '<div class="flex items-center gap-2 text-[11px]">' +
+                                '<span class="text-slate-500 shrink-0">' + actualLogs + '/' + expectedLogs + ' ' + t('approval.coverage.readings') + '</span>' +
+                                '<div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-' + coverageColor + '-400 rounded-full" style="width:' + coveragePct + '%"></div></div>' +
+                                (gaps.length > 0 ? '<span class="text-amber-500 font-bold shrink-0">' + t('approval.coverage.gaps', gaps.length) + '</span>' : '<span class="text-emerald-500 shrink-0">✓</span>') +
+                                '</div>';
+                        }
+
                         let statusBadge, borderColor, statusNote;
                         if (isStillCollecting) {
-                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs animate-pulse">' + t('approval.status.collecting') + '</span>';
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs animate-pulse cursor-help" title="' + t('approval.tip.collecting') + '">' + t('approval.status.collecting') + '</span>';
                             borderColor = 'border-blue-400';
                             statusNote = '';
                         } else if (isComplete) {
-                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs">' + t('approval.status.complete') + '</span>';
+                            statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs cursor-help" title="' + t('approval.tip.complete') + '">' + t('approval.status.complete') + '</span>';
                             borderColor = 'border-emerald-400';
                             statusNote = isTuyaIssue ? '<div class="text-[11px] text-amber-500 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.complete.but') + sessNote + '</div>' : '';
                         } else {
@@ -5143,7 +5866,7 @@
                                 borderColor = 'border-amber-400';
                                 statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
                             } else {
-                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">' + t('approval.status.incomplete') + '</span>';
+                                statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs cursor-help" title="' + t('approval.tip.incomplete') + '">' + t('approval.status.incomplete') + '</span>';
                                 borderColor = 'border-amber-400';
                                 statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + t('approval.data.latest', timeEnd, agoText + t('time.ago')) + '</div>';
                             }
@@ -5159,6 +5882,7 @@
                                 <div class="flex-shrink-0">${statusBadge}</div>
                             </div>
                             ${statusNote}
+                            ${coverageHtml}
                             ${blInfoBar}
                             <div class="flex gap-1.5 text-center">
                                 <div class="flex-1 bg-orange-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.pm25.peak')}</div><div class="text-sm font-bold text-orange-600">${peakPM != null ? peakPM.toFixed(1) : '-'}</div></div>
@@ -5176,7 +5900,12 @@
 
                     container.innerHTML = manualCardsHtml + sensorCardsHtml;
                 }
+            } catch (e) {
+                console.error('Error loading approval data:', e);
+            }
 
+            // --- Management data (independent from approvals) ---
+            try {
                 const [devRes, volRes, subRes, projRes, spRes] = await Promise.all([
                     supabaseClient.from('devices').select('*, subjects(*)').order('name', { ascending: true }),
                     supabaseClient.from('volunteers').select('*').order('updated_at', { ascending: false }),
@@ -5202,7 +5931,7 @@
                 renderOverviewTable();
                 adminLoaded = true;
             } catch (e) {
-                console.error('Error loading admin data:', e);
+                console.error('Error loading management data:', e);
             } finally {
                 if (showSpinner) hideLoading();
             }
@@ -6625,9 +7354,14 @@
             const totalVolunteers = volunteers.length;
             const totalProjects = projects.length;
             const onlineSensors = devices.filter(d => sensorHealthMap[d.tuya_device_id]?.status === 'online').length;
+            // Count houses that have an online sensor
+            const onlineHouses = subjects.filter(s => {
+                const dev = devices.find(d => String(d.subject_id) === String(s.id));
+                return dev && sensorHealthMap[dev.tuya_device_id]?.status === 'online';
+            }).length;
 
             const cards = [
-                { icon: '🏠', label: t('overview.stat.houses'), value: totalHouses, color: 'emerald' },
+                { icon: '🏠', label: t('overview.stat.houses.online'), value: onlineHouses + '/' + totalHouses, sub: onlineHouses < totalHouses ? '⚠️ ' + (totalHouses - onlineHouses) + ' ' + t('overview.stat.houses.offline') : '', color: onlineHouses === totalHouses ? 'emerald' : 'amber' },
                 { icon: '📡', label: t('overview.stat.sensors'), value: assignedSensors + '/' + devices.length, sub: onlineSensors > 0 ? '🟢 ' + t('overview.stat.online') + ' ' + onlineSensors : '', color: 'blue' },
                 { icon: '👤', label: t('overview.stat.volunteers'), value: totalVolunteers, color: 'amber' },
                 { icon: '📋', label: t('overview.stat.projects'), value: totalProjects, color: 'purple' },
@@ -7589,29 +8323,45 @@
     <script>
         let _sessionChartInstance = null;
 
-        async function showSessionChart(sessionId, deviceName, startedAt) {
+        async function showSessionChart(sessionId, deviceName, startedAt, baselineTransition) {
             // Show modal
             const modal = document.getElementById('session-chart-modal');
             modal.style.display = 'flex';
             document.getElementById('session-modal-title').textContent = '📊 ' + deviceName;
-            document.getElementById('session-modal-sub').textContent = fmtDateTimeDMY(startedAt);
+            // Subtitle with baseline transition badge + explanation
+            let subHtml = fmtDateTimeDMY(startedAt);
+            if (baselineTransition === 'auto') {
+                subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600 shrink-0">AUTO</span><span class="text-[11px] text-amber-600">' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response detected') + '</span></div>';
+            } else if (baselineTransition === 'manual') {
+                subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600 shrink-0">MANUAL</span><span class="text-[11px] text-emerald-600">' + (currentLang === 'th' ? 'อาสากดปุ่ม "เริ่มจุดเตา" เอง — ข้อมูล Ambient ถูกแยกเรียบร้อย' : 'Volunteer pressed "Start Stove" — Ambient data properly separated') + '</span></div>';
+            }
+            document.getElementById('session-modal-sub').innerHTML = subHtml;
             document.getElementById('session-modal-stats').innerHTML = '';
             document.getElementById('session-chart-loading').style.display = 'flex';
 
             // Destroy old chart
             if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
 
-            // Fetch logs for this session
+            // Fetch logs for this session (exclude manual entries — they only have TVOC/CO, no PM2.5/CO2)
             const { data: logs, error } = await supabaseClient
                 .from('pollution_logs')
                 .select('recorded_at, pm25_value, co2_value, temperature, humidity')
                 .eq('session_id', sessionId)
+                .neq('data_source', 'manual')
                 .order('recorded_at', { ascending: true });
 
             if (error || !logs || logs.length === 0) {
                 document.getElementById('session-chart-loading').textContent = '⚠️ ไม่มีข้อมูล readings ใน session นี้';
                 return;
             }
+
+            // Dedup: filter out logs < 3 min apart (keep first of each cluster)
+            const dedupLogs = [logs[0]];
+            for (let i = 1; i < logs.length; i++) {
+                const gap = (new Date(logs[i].recorded_at) - new Date(dedupLogs[dedupLogs.length - 1].recorded_at)) / 60000;
+                if (gap >= 3) dedupLogs.push(logs[i]);
+            }
+            const chartLogs = dedupLogs;
 
             document.getElementById('session-chart-loading').style.display = 'none';
 
@@ -7625,8 +8375,8 @@
             ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[11px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
             document.getElementById('session-modal-stats').innerHTML = statsHtml;
 
-            // Render chart
-            const labels = logs.map(l => new Date(l.recorded_at));
+            // Render chart (using deduped data)
+            const labels = chartLogs.map(l => new Date(l.recorded_at));
             const ctx = document.getElementById('session-detail-chart').getContext('2d');
             _sessionChartInstance = new Chart(ctx, {
                 type: 'line',
@@ -7635,7 +8385,7 @@
                     datasets: [
                         {
                             label: 'PM2.5 (µg/m³)',
-                            data: logs.map(l => l.pm25_value),
+                            data: chartLogs.map(l => l.pm25_value),
                             borderColor: '#f97316',
                             backgroundColor: 'rgba(249,115,22,0.1)',
                             fill: true,
@@ -7645,7 +8395,7 @@
                         },
                         {
                             label: 'CO2 (ppm)',
-                            data: logs.map(l => l.co2_value),
+                            data: chartLogs.map(l => l.co2_value),
                             borderColor: '#3b82f6',
                             backgroundColor: 'rgba(59,130,246,0.05)',
                             fill: false,
@@ -7661,8 +8411,8 @@
                     plugins: { legend: { position: 'top' } },
                     scales: {
                         x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
-                        y: { position: 'left', suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
+                        y: { position: 'left', suggestedMin: 0, suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y2: { position: 'right', suggestedMin: 400, suggestedMax: 800, title: { display: true, text: 'CO2' }, grid: { display: false } }
                     }
                 },
                 plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],
@@ -7683,7 +8433,13 @@
 
             if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
 
-            const sortedLogs = [...logs].sort((a, b) => a.recorded_at < b.recorded_at ? -1 : 1);
+            const rawSorted = [...logs].sort((a, b) => a.recorded_at < b.recorded_at ? -1 : 1);
+            // Dedup: filter out logs < 3 min apart
+            const sortedLogs = [rawSorted[0]];
+            for (let i = 1; i < rawSorted.length; i++) {
+                const gap = (new Date(rawSorted[i].recorded_at) - new Date(sortedLogs[sortedLogs.length - 1].recorded_at)) / 60000;
+                if (gap >= 3) sortedLogs.push(rawSorted[i]);
+            }
             const pm25s = sortedLogs.map(l => l.pm25_value).filter(v => v != null);
             const co2s = sortedLogs.map(l => l.co2_value).filter(v => v != null);
             const peakPM = pm25s.length ? Math.max(...pm25s) : null;
@@ -7734,8 +8490,8 @@
                     plugins: { legend: { position: 'top' } },
                     scales: {
                         x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
-                        y: { position: 'left', suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        y2: { position: 'right', title: { display: true, text: 'CO2' }, grid: { display: false } }
+                        y: { position: 'left', suggestedMin: 0, suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        y2: { position: 'right', suggestedMin: 400, suggestedMax: 800, title: { display: true, text: 'CO2' }, grid: { display: false } }
                     }
                 },
                 plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],

@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * { font-family: 'Chakra Petch', sans-serif; }
-        .info-btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid currentColor; color: inherit; font-size: 10px; font-weight: 600; font-style: italic; line-height: 1; vertical-align: middle; opacity: 0.35; transition: opacity 0.15s; margin-left: 2px; }
+        .info-btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: inherit; vertical-align: middle; opacity: 0.35; transition: opacity 0.15s; margin-left: 2px; }
         .info-btn:hover { opacity: 0.7; }
         .info-popup { position: fixed; z-index: 9999; max-width: 320px; background: white; border-radius: 1rem; box-shadow: 0 8px 30px rgba(0,0,0,0.18); padding: 16px 20px; font-size: 13px; line-height: 1.6; color: #334155; border: 1px solid #e2e8f0; animation: popIn 0.15s ease-out; }
         .info-popup h5 { font-weight: 700; font-size: 13px; margin-bottom: 6px; color: #1e293b; }
@@ -19,7 +19,8 @@
         .info-popup .close-pop:hover { color: #475569; }
         @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .info-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9998; }
-        .card-styled { background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .card-styled { background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); border: none; box-shadow: 0 10px 30px -10px rgba(15,23,42,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease; overflow: hidden; position: relative; }
+        .card-styled:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -15px rgba(15,23,42,0.12); }
         .nav-active { color: white; font-weight: 700; border-bottom: 3px solid #fbbf24; padding-bottom: 4px; }
         .methodology-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 1rem; }
         .collapsible-body { display: none; }
@@ -27,6 +28,14 @@
         #map, #map-deep { height: 350px; border-radius: 1.5rem; }
         .scenario-bar { position: sticky; top: 80px; z-index: 40; background: #fef3c7; border-bottom: 2px solid #f59e0b; padding: 8px 16px; display: none; }
         .scenario-bar.active { display: flex; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes countdown-pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+        .countdown-ring { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #64748b; animation: countdown-pulse 2s ease-in-out infinite; }
+        .countdown-ring .ring-icon { width: 20px; height: 20px; border: 2.5px solid #e2e8f0; border-top-color: #10b981; border-radius: 50%; animation: spin 3s linear infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+        .pulse-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; animation: pulse-dot 2s ease-in-out infinite; }
+        .pulse-dot.collecting { background: #3b82f6; animation-duration: 1.2s; }
+        .pulse-dot.baseline { background: #f59e0b; animation-duration: 1s; }
     </style>
 </head>
 <body class="bg-gradient-to-b from-slate-50 to-slate-100 text-gray-800 min-h-screen">
@@ -101,7 +110,7 @@
                             </div>
                         </div>
                     </div>
-                    <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ')">i</span> วิธีวัด · ข้อมูล 60 วัน · 10 ครัวเรือน</p>
+                    <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · ข้อมูล 60 วัน · 10 ครัวเรือน</p>
                 </div>
             </div>
         </div>
@@ -123,7 +132,7 @@
                     <p class="text-3xl font-bold text-white mt-2">85.7 <span class="text-lg text-slate-300">µg/m³</span></p>
                     <p class="text-[10px] text-slate-300 mt-1">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Baseline)</p>
                 </div>
-                <div class="flex justify-center gap-6 mt-4 text-slate-300 text-xs"><span>📡 5 ครัวเรือน</span><span>📊 2,450 readings</span></div>
+                <p class="text-slate-300/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,'วิธีวัด','เก็บค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออก เพื่อสร้างฐานข้อมูลอ้างอิงสำหรับเปรียบเทียบกับเตาชีวมวลในระยะถัดไป')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · ข้อมูล 30 วัน · 10 ครัวเรือน</p>
             </div>
         </div>
 
@@ -137,7 +146,7 @@
                 <div class="max-w-md mx-auto mt-4 bg-white/15 backdrop-blur rounded-xl p-3">
                     <p class="text-amber-100 text-[11px] text-left">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
                 </div>
-                <div class="flex justify-center gap-6 mt-4 text-amber-100 text-xs"><span>📡 10 ครัวเรือน</span><span>📊 4,800 readings</span></div>
+                <p class="text-amber-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(253,230,138,0.7)" onclick="showInfo(this,'วิธีวัด','เปรียบเทียบค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออกแล้ว เหลือเฉพาะมลพิษที่เกิดจากเตาจริงๆ — ผลเบื้องต้นพบว่าเตาชีวมวลยังไม่ลดมลพิษตามเป้า')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · ข้อมูล 60 วัน · 10 ครัวเรือน</p>
             </div>
         </div>
 
@@ -150,23 +159,23 @@
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
-                        <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')">i</span></p>
+                        <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,'PM2.5 คืออะไร?','ฝุ่นละอองขนาดเล็กกว่า 2.5 ไมครอน — เข้าสู่ปอดส่วนลึกได้ เป็นตัวชี้วัดหลักของมลพิษจากการเผาไหม้ชีวมวล\n\nค่ามาตรฐาน WHO:\n• IT-1: 35 µg/m³ (เฉลี่ย 24 ชม.)\n• IT-2: 25 µg/m³\n• Guideline: 15 µg/m³')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                         <div class="text-3xl font-bold text-emerald-600">↓ 62%</div>
                         <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-emerald-600">32.4</b> · เตาเก่า <span class="text-gray-400">85.7</span> µg/m³</p>
                         <div class="mt-2"><span class="text-[9px] px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 font-medium">WHO IT-2</span></div>
                     </div>
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
-                        <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,'CO2 คืออะไร?','คาร์บอนไดออกไซด์ — ก๊าซที่เกิดจากการเผาไหม้สมบูรณ์ ใช้เป็นตัวชี้วัดปริมาณการเผาไหม้โดยรวม\n\nอากาศปกติ: ~400 ppm\nขณะหุงต้ม: 800–3,000 ppm\n\nยิ่ง CO2 สูง = เผาไหม้มาก')">i</span></p>
+                        <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,'CO2 คืออะไร?','คาร์บอนไดออกไซด์ — ก๊าซที่เกิดจากการเผาไหม้สมบูรณ์ ใช้เป็นตัวชี้วัดปริมาณการเผาไหม้โดยรวม\n\nอากาศปกติ: ~400 ppm\nขณะหุงต้ม: 800–3,000 ppm\n\nยิ่ง CO2 สูง = เผาไหม้มาก')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                         <div class="text-3xl font-bold text-emerald-600">↓ 48%</div>
                         <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-emerald-600">520</b> · เตาเก่า <span class="text-gray-400">1,002</span> ppm</p>
                     </div>
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
-                        <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ (Carbon Monoxide) — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nอันตราย: สูดดมมากทำให้เวียนศีรษะ หมดสติ ถึงเสียชีวิต\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')">i</span></p>
+                        <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,'CO คืออะไร?','คาร์บอนมอนอกไซด์ (Carbon Monoxide) — ก๊าซพิษจากการเผาไหม้ไม่สมบูรณ์ ไม่มีสี ไม่มีกลิ่น\n\nอันตราย: สูดดมมากทำให้เวียนศีรษะ หมดสติ ถึงเสียชีวิต\n\nค่าที่ปลอดภัย: ≤ 9 ppm (เฉลี่ย 8 ชม., WHO)')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                         <div class="text-3xl font-bold text-emerald-600">↓ 61%</div>
                         <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-emerald-600">9.8</b> · เตาเก่า <span class="text-gray-400">25.3</span> ppm</p>
                     </div>
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
-                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')">i</span></p>
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                         <div class="flex justify-center gap-4 mt-2">
                             <div><span class="text-3xl font-bold text-gray-800">34.2</span><span class="text-gray-400">°C</span></div>
                             <span class="text-gray-300 text-xl">/</span>
@@ -187,8 +196,14 @@
                     <tbody>
                         <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 01</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">28.3</td><td class="text-right">480</td><td class="text-right text-gray-400">14:32</td></tr>
                         <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 02</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">35.1</td><td class="text-right">552</td><td class="text-right text-gray-400">14:28</td></tr>
+                        <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 03</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">31.7</td><td class="text-right">510</td><td class="text-right text-gray-400">14:26</td></tr>
+                        <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 04</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">33.8</td><td class="text-right">538</td><td class="text-right text-gray-400">14:20</td></tr>
+                        <tr class="bg-emerald-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 05</td><td class="text-center"><span class="text-emerald-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-emerald-600">29.5</td><td class="text-right">495</td><td class="text-right text-gray-400">14:18</td></tr>
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 06</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">82.4</td><td class="text-right text-gray-500">980</td><td class="text-right text-gray-400">14:30</td></tr>
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 07</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">91.2</td><td class="text-right text-gray-500">1,043</td><td class="text-right text-gray-400">14:25</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 08</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">78.6</td><td class="text-right text-gray-500">945</td><td class="text-right text-gray-400">14:22</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 09</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">86.9</td><td class="text-right text-gray-500">1,008</td><td class="text-right text-gray-400">14:15</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 10</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">88.3</td><td class="text-right text-gray-500">1,022</td><td class="text-right text-gray-400">14:10</td></tr>
                     </tbody>
                 </table></div>
             </div>
@@ -219,7 +234,7 @@
                         <p class="text-[11px] text-gray-500 mt-1">ppm · เตาดั้งเดิม</p>
                     </div>
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
-                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')">i</span></p>
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                         <div class="flex justify-center gap-4 mt-2">
                             <div><span class="text-3xl font-bold text-gray-800">34.2</span><span class="text-gray-400">°C</span></div>
                             <span class="text-gray-300 text-xl">/</span>
@@ -242,6 +257,12 @@
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 02</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">79.3</td><td class="text-right text-gray-500">965</td><td class="text-right text-gray-400">14:28</td></tr>
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 03</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">92.4</td><td class="text-right text-gray-500">1,055</td><td class="text-right text-gray-400">14:30</td></tr>
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 04</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">83.0</td><td class="text-right text-gray-500">988</td><td class="text-right text-gray-400">14:25</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 05</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">85.7</td><td class="text-right text-gray-500">998</td><td class="text-right text-gray-400">14:22</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 06</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">90.5</td><td class="text-right text-gray-500">1,035</td><td class="text-right text-gray-400">14:18</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 07</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">87.2</td><td class="text-right text-gray-500">1,018</td><td class="text-right text-gray-400">14:15</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 08</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">76.8</td><td class="text-right text-gray-500">940</td><td class="text-right text-gray-400">14:12</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 09</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">94.1</td><td class="text-right text-gray-500">1,062</td><td class="text-right text-gray-400">14:08</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 10</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">81.4</td><td class="text-right text-gray-500">975</td><td class="text-right text-gray-400">14:05</td></tr>
                     </tbody>
                 </table></div>
             </div>
@@ -272,7 +293,7 @@
                         <p class="text-[11px] text-gray-500 mt-1">เตาใหม่ <b class="text-red-600">26.8</b> · เตาเก่า <span class="text-gray-400">25.3</span> ppm</p>
                     </div>
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
-                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')">i</span></p>
+                        <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น <span class="info-btn" onclick="showInfo(this,'ทำไมต้องวัด?','อุณหภูมิและความชื้นส่งผลต่อความเข้มข้นของมลพิษในอากาศ ใช้เป็นตัวแปรควบคุมในการวิเคราะห์')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                         <div class="flex justify-center gap-4 mt-2">
                             <div><span class="text-3xl font-bold text-gray-800">34.2</span><span class="text-gray-400">°C</span></div>
                             <span class="text-gray-300 text-xl">/</span>
@@ -293,8 +314,14 @@
                     <tbody>
                         <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 01</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">95.2</td><td class="text-right text-red-600">1,068</td><td class="text-right text-gray-400">14:32</td></tr>
                         <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 02</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">89.8</td><td class="text-right text-red-600">1,040</td><td class="text-right text-gray-400">14:28</td></tr>
+                        <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 03</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">92.1</td><td class="text-right text-red-600">1,052</td><td class="text-right text-gray-400">14:26</td></tr>
+                        <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 04</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">87.6</td><td class="text-right text-red-600">1,025</td><td class="text-right text-gray-400">14:20</td></tr>
+                        <tr class="bg-red-50/50 border-b border-gray-100"><td class="py-2 font-medium">บ้านแม่แจ่ม 05</td><td class="text-center"><span class="text-red-600 font-bold text-[10px]">✨ ใหม่</span></td><td class="text-right font-bold text-red-600">91.4</td><td class="text-right text-red-600">1,048</td><td class="text-right text-gray-400">14:18</td></tr>
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 06</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">82.4</td><td class="text-right text-gray-500">980</td><td class="text-right text-gray-400">14:30</td></tr>
                         <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 07</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">91.2</td><td class="text-right text-gray-500">1,043</td><td class="text-right text-gray-400">14:25</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 08</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">78.6</td><td class="text-right text-gray-500">945</td><td class="text-right text-gray-400">14:22</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 09</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">86.9</td><td class="text-right text-gray-500">1,008</td><td class="text-right text-gray-400">14:15</td></tr>
+                        <tr class="border-b border-gray-100"><td class="py-2 font-medium text-gray-500">บ้านแม่แจ่ม 10</td><td class="text-center"><span class="text-gray-400 text-[10px]">🪵 เก่า</span></td><td class="text-right text-gray-500">88.3</td><td class="text-right text-gray-500">1,022</td><td class="text-right text-gray-400">14:10</td></tr>
                     </tbody>
                 </table></div>
             </div>
@@ -305,17 +332,30 @@
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-3">
                     <div class="text-3xl">⏳</div>
-                    <div><h4 class="font-bold text-lg text-navy">เก็บข้อมูลวันนี้</h4><p class="text-slate-400 text-xs">วันนี้เก็บได้ 3 / 10 ครัวเรือน</p></div>
+                    <div><h4 class="font-bold text-lg text-navy">เก็บข้อมูลวันนี้</h4><p class="text-slate-400 text-xs">วันนี้เก็บได้ 4 / 10 ครัวเรือน</p></div>
                 </div>
-                <span class="font-bold text-2xl text-navy">30%</span>
+                <span class="font-bold text-2xl text-navy">40%</span>
             </div>
-            <div class="w-full bg-slate-200 rounded-full h-2.5"><div class="h-2.5 rounded-full bg-amber-500" style="width:30%"></div></div>
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-4 text-[11px]">
+            <div class="w-full bg-slate-200 rounded-full h-2.5"><div class="h-2.5 rounded-full bg-amber-500" style="width:40%"></div></div>
+            <!-- Countdown + Last Check (from real dashboard) -->
+            <div class="flex items-center justify-between text-xs mt-3 mb-3 px-1">
+                <div class="countdown-ring">
+                    <div class="ring-icon"></div>
+                    <span>ตรวจสอบทุก 5 นาที</span>
+                </div>
+                <span class="text-slate-400 text-[11px]">อัปเดตล่าสุด: 11:42</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-2 text-[11px]">
                 <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 01</span><br>✅ 24 readings</div>
                 <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 02</span><br>✅ 22 readings</div>
+                <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 03</span><br>✅ 20 readings</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 04</span><br><span class="pulse-dot"></span> รอข้อมูล</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 05</span><br><span class="pulse-dot"></span> รอข้อมูล</div>
                 <div class="bg-emerald-50 rounded-lg p-2 text-center"><span class="font-bold text-emerald-600">บ้าน 06</span><br>✅ 18 readings</div>
-                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 03</span><br>⏳ รอข้อมูล</div>
-                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 04</span><br>⏳ รอข้อมูล</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 07</span><br><span class="pulse-dot"></span> รอข้อมูล</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 08</span><br><span class="pulse-dot"></span> รอข้อมูล</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 09</span><br><span class="pulse-dot"></span> รอข้อมูล</div>
+                <div class="bg-slate-50 rounded-lg p-2 text-center"><span class="font-bold text-slate-400">บ้าน 10</span><br><span class="pulse-dot"></span> รอข้อมูล</div>
             </div>
         </div>
 
@@ -463,7 +503,7 @@
             </div>
             <!-- COMPARISON TABLE -->
             <div class="card-styled p-6 rounded-[2.5rem]">
-                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')">i</span></h4>
+                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
                 <div class="overflow-x-auto"><table class="w-full text-[11px]">
                     <thead>
                         <tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50" colspan="2">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 bg-emerald-50" colspan="2">ค่าสุทธิ (Net)</th><th class="text-center py-2 bg-green-50">ลดลง</th></tr>
@@ -683,7 +723,7 @@
             </div>
             <!-- COMPARISON TABLE — negative reduction -->
             <div class="card-styled p-6 rounded-[2.5rem]">
-                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')">i</span></h4>
+                <h4 class="font-bold text-sm text-gray-800 mb-3">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net) <span class="info-btn" onclick="showInfo(this,'อ่านตารางนี้อย่างไร?','• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
                 <div class="overflow-x-auto"><table class="w-full text-[11px]">
                     <thead>
                         <tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">สารมลพิษ</th><th class="text-center py-2 bg-slate-50" colspan="2">ค่าดิบ (Gross)</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 bg-red-50" colspan="2">ค่าสุทธิ (Net)</th><th class="text-center py-2 bg-red-50">เปลี่ยนแปลง</th></tr>
@@ -957,6 +997,55 @@
         const avgOldGross = allOldGrossPm.reduce((a, b) => a + b, 0) / allOldGrossPm.length;
         const avgEcoGross = allEcoGrossPm.reduce((a, b) => a + b, 0) / allEcoGrossPm.length;
 
+        // ===== Baseline Reference Thresholds (from real dashboard) =====
+        const THRESHOLDS = {
+            pm25: [
+                { value: 25, label: 'PCD 25', color: '#f59e0b' },
+                { value: 37.5, label: 'PCD 37.5', color: '#ef4444' }
+            ],
+            co2: [
+                { value: 1000, label: 'IAQ 1000', color: '#ef4444' }
+            ],
+            hcho: [
+                { value: 0.1, label: 'WHO 0.1', color: '#ef4444' }
+            ],
+            tvoc: [
+                { value: 0.3, label: 'WHO 0.3', color: '#f59e0b' },
+                { value: 0.5, label: 'WHO 0.5', color: '#ef4444' }
+            ]
+        };
+        function thresholdLinesPlugin(thresholds) {
+            return {
+                id: 'thresholdLines',
+                afterDraw(chart) {
+                    const { ctx, chartArea, scales } = chart;
+                    if (!chartArea || !scales || !scales.y) return;
+                    const { left, right, top, bottom } = chartArea;
+                    if (!right || !bottom) return;
+                    const yScale = scales.y;
+                    thresholds.forEach(t => {
+                        const yPos = yScale.getPixelForValue(t.value);
+                        if (yPos < top || yPos > bottom) return;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.setLineDash([6, 4]);
+                        ctx.strokeStyle = t.color;
+                        ctx.lineWidth = 1.5;
+                        ctx.globalAlpha = 0.7;
+                        ctx.moveTo(left, yPos);
+                        ctx.lineTo(right, yPos);
+                        ctx.stroke();
+                        ctx.fillStyle = t.color;
+                        ctx.font = '10px Chakra Petch, sans-serif';
+                        ctx.textAlign = 'right';
+                        ctx.globalAlpha = 0.9;
+                        ctx.fillText(t.label, right - 4, yPos - 4);
+                        ctx.restore();
+                    });
+                }
+            };
+        }
+
         // Chart options (reusable)
         const co = {
             responsive: true, maintainAspectRatio: false,
@@ -968,9 +1057,9 @@
         // NORMAL: BASIC CHARTS
         // ============================================================
         function initBasicCharts() {
-            [['basicPm25Chart', D.oldPm.avg, D.ecoPm.avg, 'µg/m³ (net)'],
-             ['basicCo2Chart', D.oldCo2.avg, D.ecoCo2.avg, 'ppm (net)']].forEach(([id, old, eco, unit]) => {
-                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+            [['basicPm25Chart', D.oldPm.avg, D.ecoPm.avg, 'µg/m³ (net)', THRESHOLDS.pm25],
+             ['basicCo2Chart', D.oldCo2.avg, D.ecoCo2.avg, 'ppm (net)', THRESHOLDS.co2]].forEach(([id, old, eco, unit, thr]) => {
+                new Chart(document.getElementById(id), { type: 'line', plugins: thr ? [thresholdLinesPlugin(thr)] : [], data: { labels: days60, datasets: [
                     { label: '🪵 เตาดั้งเดิม', data: old, borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: true, tension: 0.3, spanGaps: false },
                     { label: '✨ เตาชีวมวล', data: eco, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.12)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3, spanGaps: false }
                 ] }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
@@ -981,13 +1070,13 @@
         // NORMAL: DEEP CHARTS (with min-max band)
         // ============================================================
         function initDeepCharts() {
-            [['deepPm25Chart', D.oldPm, D.ecoPm, 'µg/m³ (net)'],
-             ['deepPm10Chart', D.oldPm10, D.ecoPm10, 'µg/m³ (net)'],
-             ['deepCo2Chart', D.oldCo2, D.ecoCo2, 'ppm (net)'],
-             ['deepCoChart', D.oldCo, D.ecoCo, 'ppm (net)'],
-             ['deepHchoChart', D.oldHcho, D.ecoHcho, 'mg/m³ (net)'],
-             ['deepTvocChart', D.oldTvoc, D.ecoTvoc, 'mg/m³ (net)']].forEach(([id, old, eco, unit]) => {
-                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+            [['deepPm25Chart', D.oldPm, D.ecoPm, 'µg/m³ (net)', THRESHOLDS.pm25],
+             ['deepPm10Chart', D.oldPm10, D.ecoPm10, 'µg/m³ (net)', null],
+             ['deepCo2Chart', D.oldCo2, D.ecoCo2, 'ppm (net)', THRESHOLDS.co2],
+             ['deepCoChart', D.oldCo, D.ecoCo, 'ppm (net)', null],
+             ['deepHchoChart', D.oldHcho, D.ecoHcho, 'mg/m³ (net)', THRESHOLDS.hcho],
+             ['deepTvocChart', D.oldTvoc, D.ecoTvoc, 'mg/m³ (net)', THRESHOLDS.tvoc]].forEach(([id, old, eco, unit, thr]) => {
+                new Chart(document.getElementById(id), { type: 'line', plugins: thr ? [thresholdLinesPlugin(thr)] : [], data: { labels: days60, datasets: [
                     { label: 'เตาดั้งเดิม (range)', data: old.max, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '+1', pointRadius: 0, spanGaps: false },
                     { label: 'เตาดั้งเดิม (mean)', data: old.avg, borderColor: '#9ca3af', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: false, tension: 0.3, spanGaps: false },
                     { label: 'เตาดั้งเดิม (min)', data: old.min, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '-1', pointRadius: 0, spanGaps: false },
@@ -1005,9 +1094,9 @@
             const labels30 = days60.slice(0, 30);
             const oldPm30 = D.oldPm.avg.slice(0, 30);
             const oldCo230 = D.oldCo2.avg.slice(0, 30);
-            [['noEcoBPm25', oldPm30, 'µg/m³ (net)'],
-             ['noEcoBCo2', oldCo230, 'ppm (net)']].forEach(([id, data, unit]) => {
-                new Chart(document.getElementById(id), { type: 'line', data: { labels: labels30, datasets: [
+            [['noEcoBPm25', oldPm30, 'µg/m³ (net)', THRESHOLDS.pm25],
+             ['noEcoBCo2', oldCo230, 'ppm (net)', THRESHOLDS.co2]].forEach(([id, data, unit, thr]) => {
+                new Chart(document.getElementById(id), { type: 'line', plugins: thr ? [thresholdLinesPlugin(thr)] : [], data: { labels: labels30, datasets: [
                     { label: '🪵 เตาดั้งเดิม', data: data, borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.12)', borderWidth: 2, borderDash: [5, 3], pointRadius: 0, fill: true, tension: 0.3 }
                 ] }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
             });
@@ -1018,16 +1107,16 @@
         // ============================================================
         function initNoEcoDeepCharts() {
             const labels30 = days60.slice(0, 30);
-            [['noEcoDPm25', D.oldPm, 'µg/m³ (net)'],
-             ['noEcoDPm10', D.oldPm10, 'µg/m³ (net)'],
-             ['noEcoDCo2', D.oldCo2, 'ppm (net)'],
-             ['noEcoDCo', D.oldCo, 'ppm (net)'],
-             ['noEcoDHcho', D.oldHcho, 'mg/m³ (net)'],
-             ['noEcoDTvoc', D.oldTvoc, 'mg/m³ (net)']].forEach(([id, old, unit]) => {
+            [['noEcoDPm25', D.oldPm, 'µg/m³ (net)', THRESHOLDS.pm25],
+             ['noEcoDPm10', D.oldPm10, 'µg/m³ (net)', null],
+             ['noEcoDCo2', D.oldCo2, 'ppm (net)', THRESHOLDS.co2],
+             ['noEcoDCo', D.oldCo, 'ppm (net)', null],
+             ['noEcoDHcho', D.oldHcho, 'mg/m³ (net)', THRESHOLDS.hcho],
+             ['noEcoDTvoc', D.oldTvoc, 'mg/m³ (net)', THRESHOLDS.tvoc]].forEach(([id, old, unit, thr]) => {
                 const max30 = old.max.slice(0, 30);
                 const avg30 = old.avg.slice(0, 30);
                 const min30 = old.min.slice(0, 30);
-                new Chart(document.getElementById(id), { type: 'line', data: { labels: labels30, datasets: [
+                new Chart(document.getElementById(id), { type: 'line', plugins: thr ? [thresholdLinesPlugin(thr)] : [], data: { labels: labels30, datasets: [
                     { label: 'เตาดั้งเดิม (range)', data: max30, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '+1', pointRadius: 0 },
                     { label: 'เตาดั้งเดิม (mean)', data: avg30, borderColor: '#9ca3af', borderWidth: 2, borderDash: [5, 3], pointRadius: 0, fill: false, tension: 0.3 },
                     { label: 'เตาดั้งเดิม (min)', data: min30, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '-1', pointRadius: 0 },
@@ -1052,9 +1141,9 @@
                 return +(baseVal * (1.05 + _r(-0.03, 0.03))).toFixed(2);
             });
 
-            [['failBPm25', D.oldPm.avg, ecoFailPm, 'µg/m³ (net)'],
-             ['failBCo2', D.oldCo2.avg, ecoFailCo2, 'ppm (net)']].forEach(([id, old, eco, unit]) => {
-                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+            [['failBPm25', D.oldPm.avg, ecoFailPm, 'µg/m³ (net)', THRESHOLDS.pm25],
+             ['failBCo2', D.oldCo2.avg, ecoFailCo2, 'ppm (net)', THRESHOLDS.co2]].forEach(([id, old, eco, unit, thr]) => {
+                new Chart(document.getElementById(id), { type: 'line', plugins: thr ? [thresholdLinesPlugin(thr)] : [], data: { labels: days60, datasets: [
                     { label: '🪵 เตาดั้งเดิม', data: old, borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,0.08)', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: true, tension: 0.3, spanGaps: false },
                     { label: '✨ เตาชีวมวล ⚠️', data: eco, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.10)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3, spanGaps: false }
                 ] }, options: { ...co, scales: { ...co.scales, y: { ...co.scales.y, title: { display: true, text: unit, font: { size: 10 } } } } } });
@@ -1081,13 +1170,13 @@
             const fCo2 = failGen(baseCo2, 1.05, 0.03), fCO = failGen(baseCO, 1.10, 0.05);
             const fHcho = failGen(baseHcho, 1.12, 0.06), fTvoc = failGen(baseTvoc, 1.10, 0.05);
 
-            [['failDPm25', D.oldPm, fPm, 'µg/m³ (net)'],
-             ['failDPm10', D.oldPm10, fPm10, 'µg/m³ (net)'],
-             ['failDCo2', D.oldCo2, fCo2, 'ppm (net)'],
-             ['failDCo', D.oldCo, fCO, 'ppm (net)'],
-             ['failDHcho', D.oldHcho, fHcho, 'mg/m³ (net)'],
-             ['failDTvoc', D.oldTvoc, fTvoc, 'mg/m³ (net)']].forEach(([id, old, eco, unit]) => {
-                new Chart(document.getElementById(id), { type: 'line', data: { labels: days60, datasets: [
+            [['failDPm25', D.oldPm, fPm, 'µg/m³ (net)', THRESHOLDS.pm25],
+             ['failDPm10', D.oldPm10, fPm10, 'µg/m³ (net)', null],
+             ['failDCo2', D.oldCo2, fCo2, 'ppm (net)', THRESHOLDS.co2],
+             ['failDCo', D.oldCo, fCO, 'ppm (net)', null],
+             ['failDHcho', D.oldHcho, fHcho, 'mg/m³ (net)', THRESHOLDS.hcho],
+             ['failDTvoc', D.oldTvoc, fTvoc, 'mg/m³ (net)', THRESHOLDS.tvoc]].forEach(([id, old, eco, unit, thr]) => {
+                new Chart(document.getElementById(id), { type: 'line', plugins: thr ? [thresholdLinesPlugin(thr)] : [], data: { labels: days60, datasets: [
                     { label: 'เตาดั้งเดิม (range)', data: old.max, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '+1', pointRadius: 0, spanGaps: false },
                     { label: 'เตาดั้งเดิม (mean)', data: old.avg, borderColor: '#9ca3af', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: false, tension: 0.3, spanGaps: false },
                     { label: 'เตาดั้งเดิม (min)', data: old.min, borderColor: 'transparent', backgroundColor: 'rgba(156,163,175,0.12)', fill: '-1', pointRadius: 0, spanGaps: false },
