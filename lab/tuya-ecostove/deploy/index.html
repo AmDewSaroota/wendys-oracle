@@ -230,6 +230,14 @@
             padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; display: inline-block;
         }
         .guide-mock .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .guide-mock-table { width:100%; border-collapse:collapse; font-size:12px; }
+        .guide-mock-table th { background:#f1f5f9; padding:8px 10px; text-align:left; font-size:11px; font-weight:700; color:#475569; border-bottom:2px solid #e2e8f0; }
+        .guide-mock-table td { padding:8px 10px; border-bottom:1px solid #f1f5f9; color:#334155; }
+        .guide-mock-input { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:8px 14px; font-size:12px; color:#94a3b8; margin-bottom:8px; }
+        .guide-mock-select { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:8px 14px; font-size:12px; color:#475569; margin-bottom:8px; }
+        .guide-mock-btn-primary { background:#064e3b; color:white; text-align:center; padding:10px; border-radius:14px; font-weight:700; font-size:13px; }
+        .guide-mock-modal { background:white; border-radius:1.25rem; border:1px solid #e2e8f0; box-shadow:0 25px 50px -12px rgba(0,0,0,0.15); padding:24px; margin-top:12px; max-width:360px; margin-left:auto; margin-right:auto; }
+        .guide-mock-btn-link { font-size:11px; font-weight:600; cursor:default; }
         @media print {
             nav, .scenario-bar, #view-basic, #view-deep,
             .guide-controls, footer, #modal-overlay,
@@ -1229,6 +1237,63 @@
                             <span class="px-3 py-1.5 rounded-lg bg-orange-100 text-orange-700 font-bold">📅 ช่วงเก็บข้อมูล</span>
                         </div>
                         <p class="text-[12px] text-slate-500">ต้องกรอกเรียงลำดับ เพราะข้อมูลเชื่อมกัน (บ้านต้องมีโครงการ+อาสาก่อน ฯลฯ)</p>
+
+                        <!-- Flow diagrams from Flow Map -->
+                        <p class="font-bold text-navy mt-4 mb-1">ขั้นตอนโดยสรุป:</p>
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-2 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: สมัครใหม่</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-slate-100 text-slate-700">เปิดหน้า Admin</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">กด "สมัคร"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-200 text-blue-900">กรอก Email + PIN + Invite Code</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-100 text-amber-800" style="border:2px solid #fbbf24;">⚠️ บันทึก Recovery Code</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-2 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: Login</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-slate-100 text-slate-700">เปิดหน้า Admin</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">กรอก Email + PIN</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-100 text-green-800">✅ เข้าสู่ระบบ</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ลืม PIN</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-red-100 text-red-700">ลืม PIN</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">กด "ลืม PIN"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-200 text-blue-900">กรอก Email + Recovery Code</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-300 text-blue-900">ตั้ง PIN ใหม่</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
+                            </div>
+                        </div>
+
+                        <!-- Login mockup -->
+                        <p class="font-bold text-navy mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock-modal">
+                            <div class="text-center mb-4">
+                                <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">🔐</div>
+                                <p class="text-lg font-bold text-[#0f172a]">Admin Login</p>
+                            </div>
+                            <div class="guide-mock-input">อีเมล</div>
+                            <div class="guide-mock-input">● ● ● ●</div>
+                            <div class="guide-mock-btn-primary">เข้าสู่ระบบ</div>
+                            <div class="flex justify-between mt-3 text-[11px]">
+                                <span class="text-slate-400">ลืม PIN?</span>
+                                <span class="text-[#064e3b] font-bold">ลงทะเบียน</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1301,6 +1366,48 @@
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> สร้างโครงการก่อนเพิ่มบ้าน เพราะตอนเพิ่มบ้านต้องเลือกโครงการที่สังกัด
                         </div>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-emerald-100 text-emerald-800">Tab "โครงการ"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-emerald-200 text-emerald-900">กด "+ เพิ่มโครงการ"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-emerald-300 text-emerald-900">กรอกชื่อ + รายละเอียด</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab active">โครงการ</span>
+                                <span class="guide-mock-tab">อาสา</span>
+                                <span class="guide-mock-tab">บ้าน</span>
+                                <span class="guide-mock-tab">อุปกรณ์</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <div class="flex justify-between items-center mb-3">
+                                    <p class="font-bold text-[#0f172a] text-[15px]">📁 โครงการ</p>
+                                    <div class="guide-mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มโครงการ</div>
+                                </div>
+                                <table class="guide-mock-table">
+                                    <thead><tr><th>ชื่อโครงการ</th><th>รายละเอียด</th><th style="text-align:center;">🏠 บ้าน</th><th>จัดการ</th></tr></thead>
+                                    <tbody>
+                                        <tr><td class="font-bold">เตาชีวมวลแม่ออน</td><td class="text-slate-500">โครงการวิจัยเตาชีวมวล อ.แม่ออน</td><td class="font-bold text-indigo-600" style="text-align:center;">10</td><td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1333,6 +1440,50 @@
 
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> สร้างอาสาก่อนเพิ่มบ้าน เพราะตอนเพิ่มบ้านต้องเลือกอาสาประจำบ้าน
+                        </div>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-purple-100 text-purple-800">Tab "อาสา"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-purple-200 text-purple-900">กด "+ เพิ่มอาสา"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-purple-300 text-purple-900">กรอกชื่อ + เบอร์โทร</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">โครงการ</span>
+                                <span class="guide-mock-tab active">อาสา</span>
+                                <span class="guide-mock-tab">บ้าน</span>
+                                <span class="guide-mock-tab">อุปกรณ์</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <div class="flex justify-between items-center mb-3">
+                                    <p class="font-bold text-[#0f172a] text-[15px]">👤 รายชื่ออาสาสมัคร</p>
+                                    <div class="guide-mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มอาสา</div>
+                                </div>
+                                <div class="guide-mock-input" style="margin-bottom:12px;">🔍 ค้นหาอาสา...</div>
+                                <table class="guide-mock-table">
+                                    <thead><tr><th>ชื่อ-นามสกุล</th><th>เบอร์โทร</th><th>บ้านที่รับผิดชอบ</th><th>จัดการ</th></tr></thead>
+                                    <tbody>
+                                        <tr><td class="font-bold">นายสมชาย</td><td class="text-slate-500">081-xxx-xxxx</td><td class="text-slate-500">บ้านนายสมชาย</td><td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td></tr>
+                                        <tr><td class="font-bold">นางสมหญิง</td><td class="text-slate-500">089-xxx-xxxx</td><td class="text-slate-500">บ้านนางสมหญิง</td><td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1375,6 +1526,69 @@
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> ใช้ Google Maps หาพิกัด GPS ของบ้าน แล้ว copy มาวาง ระบบจะตรวจจับบ้านที่ใกล้ที่สุดเมื่ออาสาเปิดหน้าเก็บข้อมูล
                         </div>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-amber-100 text-amber-800">Tab "บ้าน"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-200 text-amber-900">กด "+ เพิ่มบ้าน"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-300 text-amber-900">กรอกชื่อ + ที่อยู่ + จังหวัด/อำเภอ/ตำบล</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">ใส่ GPS</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-purple-100 text-purple-800">☑ มีเซนเซอร์ → เลือกอาสา</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">โครงการ</span>
+                                <span class="guide-mock-tab">อาสา</span>
+                                <span class="guide-mock-tab active">บ้าน</span>
+                                <span class="guide-mock-tab">อุปกรณ์</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <div class="flex justify-between items-center mb-3">
+                                    <p class="font-bold text-[#0f172a] text-[15px]">🏠 บ้านกลุ่มตัวอย่าง <span class="text-slate-400 font-normal text-[13px]">(3)</span></p>
+                                    <div class="guide-mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มบ้าน</div>
+                                </div>
+                                <div class="flex gap-2 mb-3 flex-wrap">
+                                    <div class="guide-mock-select" style="margin:0; width:130px;">โครงการ: ทั้งหมด ▾</div>
+                                    <div class="guide-mock-select" style="margin:0; width:130px;">อำเภอ: ทั้งหมด ▾</div>
+                                </div>
+                                <table class="guide-mock-table">
+                                    <thead><tr><th>บ้าน</th><th>อาสา</th><th>เซนเซอร์</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="font-bold text-[13px]">บ้าน A</span><br><span class="text-[10px] text-slate-400">อ.เมือง จ.เชียงใหม่</span></td>
+                                            <td class="text-[12px] text-slate-500">นายก. กกก.</td>
+                                            <td><span style="font-size:11px; padding:4px 8px; border-radius:8px; background:#f0fdfa; border:1px solid #99f6e4; color:#0d9488;">📡 BS 001</span></td>
+                                            <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857; font-size:10px;">ใช้งาน</span></td>
+                                            <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="font-bold text-[13px]">บ้าน B</span><br><span class="text-[10px] text-slate-400">อ.สันทราย จ.เชียงใหม่</span></td>
+                                            <td class="text-[12px] text-slate-400">ยังไม่กำหนด</td>
+                                            <td><span style="font-size:11px; padding:4px 8px;">ไม่มีเซนเซอร์</span></td>
+                                            <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857; font-size:10px;">ใช้งาน</span></td>
+                                            <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1406,6 +1620,82 @@
 
                         <div class="guide-important">
                             <b>⚠️ สำคัญ:</b> เซนเซอร์ 1 ตัวผูกได้กับ 1 บ้านเท่านั้น ถ้าต้องการย้าย ให้ปลดจากบ้านเดิมก่อน แล้วผูกกับบ้านใหม่
+                        </div>
+
+                        <!-- Flow diagrams -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-2 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow A: ลงทะเบียนเซนเซอร์ (จาก Tuya Cloud)</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-teal-100 text-teal-800">Tab "อุปกรณ์"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">กด "🔍 ค้นหาจาก Tuya Cloud"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-teal-200 text-teal-900">เห็นรายการเซนเซอร์</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-100 text-amber-800">กด "+ ลงทะเบียน"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-200 text-amber-900">ตั้งชื่อ (เช่น BS 001)</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ สำเร็จ</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow B: ผูกเซนเซอร์กับบ้าน</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-teal-100 text-teal-800">Tab "อุปกรณ์"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-teal-200 text-teal-900">กด "+ ผูกเซนเซอร์กับบ้าน"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-teal-300 text-teal-900">เลือกเซนเซอร์จาก Dropdown</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-100 text-amber-800">เลือกบ้าน</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ สำเร็จ</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">โครงการ</span>
+                                <span class="guide-mock-tab">อาสา</span>
+                                <span class="guide-mock-tab">บ้าน</span>
+                                <span class="guide-mock-tab active">อุปกรณ์</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <div class="flex justify-between items-center mb-3">
+                                    <p class="font-bold text-[#0f172a] text-[15px]">📡 จัดการอุปกรณ์</p>
+                                    <div class="flex gap-2">
+                                        <div class="guide-mock-btn-sm bg-blue-500 text-white">🔍 ค้นหาจาก Tuya Cloud</div>
+                                        <div class="guide-mock-btn-sm bg-[#064e3b] text-white">+ ผูกเซนเซอร์กับบ้าน</div>
+                                    </div>
+                                </div>
+                                <table class="guide-mock-table">
+                                    <thead><tr><th>ชื่อเครื่อง</th><th>บ้าน</th><th style="text-align:center;">ออนไลน์</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="font-bold">BS 001</span> <span class="text-[10px] text-slate-400">...e0hf0e</span></td>
+                                            <td class="text-slate-500">บ้าน A</td>
+                                            <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857;">🟢 Online</span></td>
+                                            <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857;">ใช้งาน</span></td>
+                                            <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="font-bold">BS 002</span> <span class="text-[10px] text-slate-400">...7ekytn</span></td>
+                                            <td class="text-slate-500">บ้าน B</td>
+                                            <td style="text-align:center;"><span class="badge" style="background:#f1f5f9; color:#94a3b8;">⚪ Offline</span></td>
+                                            <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857;">ใช้งาน</span></td>
+                                            <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1461,6 +1751,71 @@
                         <div class="guide-tip">
                             <b>💡 สังเกตง่าย:</b> ถ้ามีบ้านที่ยังไม่มีช่วงเก็บข้อมูล ระบบจะแสดงกล่องเตือนสีแดงด้านบนของส่วนนี้ บอกว่าบ้านไหนยังไม่ได้ตั้งค่า
                         </div>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ตั้งค่าหลายบ้านพร้อมกัน</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-indigo-100 text-indigo-800">Tab "กำหนดการ"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-indigo-200 text-indigo-900">"ช่วงเก็บข้อมูลแต่ละบ้าน"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">☑ เลือกบ้านจาก Checkbox</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-red-200 text-red-900">กด "📅 ตั้งค่าที่เลือก"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-100 text-amber-800">เลือกประเภทเตา + วันที่</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">บ้าน</span>
+                                <span class="guide-mock-tab">อุปกรณ์</span>
+                                <span class="guide-mock-tab active">กำหนดการ</span>
+                                <span class="guide-mock-tab">📖 คู่มือ</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <p class="font-bold text-[#0f172a] text-[15px] mb-1">ช่วงเก็บข้อมูลแต่ละบ้าน</p>
+                                <p class="text-slate-400 text-[11px] mb-3">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด</p>
+                                <div class="flex gap-2 mb-3 items-center">
+                                    <div class="guide-mock-btn-sm bg-[#064e3b] text-white">📅 ตั้งค่าที่เลือก</div>
+                                    <div class="guide-mock-btn-sm bg-blue-50 text-blue-600">✏️ แก้ไขที่เลือก</div>
+                                    <div class="guide-mock-btn-sm bg-red-50 text-red-500">🗑️ ลบที่เลือก</div>
+                                </div>
+                                <table class="guide-mock-table" style="min-width:400px;">
+                                    <thead><tr>
+                                        <th style="width:36px;">☑</th>
+                                        <th>บ้าน</th>
+                                        <th><span style="padding:2px 8px; border-radius:4px; background:#fff7ed; color:#c2410c; font-size:10px; font-weight:700;">เตาดั้งเดิม</span></th>
+                                        <th><span style="padding:2px 8px; border-radius:4px; background:#ecfdf5; color:#047857; font-size:10px; font-weight:700;">เตาชีวมวล</span></th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>☑</td>
+                                            <td class="font-bold text-[13px]">บ้าน A</td>
+                                            <td class="text-slate-600 text-[12px]">01/04/2569 → 30/06/2569</td>
+                                            <td class="text-emerald-700 font-bold text-[12px]">01/07/2569 → 30/09/2569</td>
+                                        </tr>
+                                        <tr>
+                                            <td>☐</td>
+                                            <td class="font-bold text-[13px] text-slate-400">บ้าน C</td>
+                                            <td class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</td>
+                                            <td class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1493,6 +1848,82 @@
 
                         <div class="guide-tip">
                             <b>💡 ปฏิทิน:</b> ดูภาพรวมรายเดือนได้ที่ปฏิทิน — สีเขียว = วันเก็บ, สีเทา = วันหยุดประจำ, สีฟ้า = วันหยุดพิเศษ
+                        </div>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-indigo-100 text-indigo-800">Tab "กำหนดการ"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-indigo-200 text-indigo-900">"ตารางเก็บข้อมูล"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">ตั้ง Quiet Hours</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-purple-100 text-purple-800">เลือกวันเก็บ</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-100 text-amber-800">เพิ่มวันหยุด</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">อุปกรณ์</span>
+                                <span class="guide-mock-tab active">กำหนดการ</span>
+                                <span class="guide-mock-tab">📖 คู่มือ</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <!-- API Quota bar -->
+                                <div style="background:rgba(255,255,255,0.7); border-radius:16px; padding:10px 14px; border:1px solid #e2e8f0; margin-bottom:10px;">
+                                    <div class="flex justify-between items-center" style="margin-bottom:4px;">
+                                        <span class="text-[11px] font-bold text-slate-600">Tuya API Usage (เดือนนี้)</span>
+                                        <span class="text-[11px] font-bold text-emerald-700">3,240 / 24,000</span>
+                                    </div>
+                                    <div style="width:100%; height:6px; background:#e2e8f0; border-radius:99px; overflow:hidden;">
+                                        <div style="width:13.5%; height:100%; background:#34d399; border-radius:99px;"></div>
+                                    </div>
+                                </div>
+
+                                <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:16px; border-bottom:4px solid #fb923c;">
+                                    <p class="font-bold text-[#0f172a]" style="font-size:14px;">ตารางเก็บข้อมูล</p>
+                                    <!-- Quiet Hours -->
+                                    <p class="text-[12px] font-bold text-slate-700 mb-2 mt-3">เวลาพักประจำวัน (Quiet Hours)</p>
+                                    <div class="flex items-center gap-3 mb-3 text-[11px]">
+                                        <div style="width:32px; height:18px; background:#34d399; border-radius:99px; position:relative;"><div style="width:14px; height:14px; background:white; border-radius:50%; position:absolute; top:2px; right:2px;"></div></div>
+                                        <span class="text-slate-600">ไม่เรียก API ช่วง</span>
+                                        <span class="font-bold text-[#0f172a] bg-slate-100 px-2 py-1 rounded">00:00</span>
+                                        <span class="text-slate-400">ถึง</span>
+                                        <span class="font-bold text-[#0f172a] bg-slate-100 px-2 py-1 rounded">06:00</span>
+                                    </div>
+                                    <!-- Active Days -->
+                                    <p class="text-[12px] font-bold text-slate-700 mb-2">วันเก็บข้อมูลประจำสัปดาห์</p>
+                                    <div class="flex gap-2 flex-wrap mb-3">
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:#059669; color:white;">จ</span>
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:#059669; color:white;">อ</span>
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:#059669; color:white;">พ</span>
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:#059669; color:white;">พฤ</span>
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:#059669; color:white;">ศ</span>
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:white; color:#94a3b8; border:1px solid #cbd5e1;">ส</span>
+                                        <span style="padding:4px 10px; border-radius:99px; font-size:11px; font-weight:600; background:white; color:#94a3b8; border:1px solid #cbd5e1;">อา</span>
+                                    </div>
+                                    <!-- Holidays -->
+                                    <p class="text-[12px] font-bold text-slate-700 mb-2">วันหยุดพิเศษ</p>
+                                    <div class="flex gap-2 flex-wrap mb-3">
+                                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-1 rounded-lg font-bold border border-blue-200">13 เม.ย. สงกรานต์ ✕</span>
+                                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-1 rounded-lg font-bold border border-blue-200">14 เม.ย. สงกรานต์ ✕</span>
+                                    </div>
+                                    <div class="guide-mock-btn-sm bg-[#064e3b] text-white" style="display:inline-block;">บันทึก</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1672,6 +2103,66 @@
 
                         <div class="guide-tip">
                             <b>💡 ประวัติกิจกรรม:</b> ทุกการกระทำ (login, อนุมัติ, แก้ไข, เลื่อนขั้น, ลบแอดมิน) จะถูกบันทึกไว้ในแท็บ "ประวัติ" อัตโนมัติ
+                        </div>
+
+                        <!-- Ability grid -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">สิ่งที่ Super Admin ทำได้</p>
+                            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;">
+                                <div style="background:#fff1f2; border-radius:12px; padding:10px; text-align:center; border:1px solid #fecdd3;"><p style="font-size:16px; margin-bottom:2px;">⬆️</p><p class="text-[11px] font-bold" style="color:#9f1239;">เลื่อนตำแหน่ง</p><p class="text-[10px]" style="color:#f43f5e;">Admin → Super</p></div>
+                                <div style="background:#fff7ed; border-radius:12px; padding:10px; text-align:center; border:1px solid #fed7aa;"><p style="font-size:16px; margin-bottom:2px;">⬇️</p><p class="text-[11px] font-bold" style="color:#9a3412;">ลดตำแหน่ง</p><p class="text-[10px]" style="color:#f97316;">Super → Admin</p></div>
+                                <div style="background:#fef2f2; border-radius:12px; padding:10px; text-align:center; border:1px solid #fecaca;"><p style="font-size:16px; margin-bottom:2px;">🗑️</p><p class="text-[11px] font-bold" style="color:#991b1b;">ลบแอดมิน</p><p class="text-[10px]" style="color:#ef4444;">ลบออกจากระบบ</p></div>
+                                <div style="background:#eff6ff; border-radius:12px; padding:10px; text-align:center; border:1px solid #bfdbfe;"><p style="font-size:16px; margin-bottom:2px;">🔑</p><p class="text-[11px] font-bold" style="color:#1e40af;">Reset PIN</p><p class="text-[10px]" style="color:#3b82f6;">ตั้ง PIN ใหม่ให้</p></div>
+                            </div>
+                        </div>
+
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">ข้อมูล</span>
+                                <span class="guide-mock-tab">ประวัติ</span>
+                                <span class="guide-mock-tab active">แอดมิน</span>
+                                <span class="guide-mock-tab">📖 คู่มือ</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <p class="font-bold text-[#0f172a] text-[15px] mb-3">จัดการแอดมิน</p>
+                                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                                    <!-- Card 1: Super Admin -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border-bottom:3px solid #fb923c;">
+                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin A</p>
+                                        <p class="text-[10px] text-slate-500 mt-1">admin_a@email.com</p>
+                                        <span class="badge" style="background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; margin-top:6px; display:inline-block;">Super Admin</span>
+                                    </div>
+                                    <!-- Card 2: Admin -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border-bottom:3px solid #fb923c;">
+                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin B</p>
+                                        <p class="text-[10px] text-slate-500 mt-1">admin_b@email.com</p>
+                                        <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; margin-top:6px; display:inline-block;">Admin</span>
+                                        <div class="flex gap-1 mt-2 flex-wrap">
+                                            <span class="guide-mock-btn-link text-amber-600" style="font-size:10px;">เลื่อน</span>
+                                            <span class="guide-mock-btn-link text-emerald-600" style="font-size:10px;">Reset PIN</span>
+                                            <span class="guide-mock-btn-link text-red-500" style="font-size:10px;">ลบ</span>
+                                        </div>
+                                    </div>
+                                    <!-- Card 3: Admin -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border-bottom:3px solid #fb923c;">
+                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin C</p>
+                                        <p class="text-[10px] text-slate-500 mt-1">admin_c@email.com</p>
+                                        <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; margin-top:6px; display:inline-block;">Admin</span>
+                                        <div class="flex gap-1 mt-2 flex-wrap">
+                                            <span class="guide-mock-btn-link text-amber-600" style="font-size:10px;">เลื่อน</span>
+                                            <span class="guide-mock-btn-link text-emerald-600" style="font-size:10px;">Reset PIN</span>
+                                            <span class="guide-mock-btn-link text-red-500" style="font-size:10px;">ลบ</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

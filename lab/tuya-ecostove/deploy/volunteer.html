@@ -837,8 +837,29 @@ async function pollStatus() {
           const timeStr = hrs > 0 ? hrs + ' ชม. ' + mins + ' นาที' : mins + ' นาที';
           const nextAvail = new Date(new Date(lastSession[0].ended_at).getTime() + COOLDOWN_MINUTES * 60000);
           const nextTimeStr = nextAvail.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-          setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เปิดได้อีกครั้ง ' + nextTimeStr + ' น.',
-            'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เหลืออีก ~' + timeStr);
+
+          // Check if cooldown ends during quiet hours → show "done for today"
+          let inQuiet = false;
+          try {
+            const { data: qc } = await sb.from('sync_config').select('quiet_hours_enabled,quiet_hours_start,quiet_hours_end').limit(1).single();
+            if (qc && qc.quiet_hours_enabled) {
+              const nextH = nextAvail.getHours();
+              const nextM = nextAvail.getMinutes();
+              const nextHHMM = String(nextH).padStart(2,'0') + ':' + String(nextM).padStart(2,'0');
+              const qs = qc.quiet_hours_start || '00:00';
+              const qe = qc.quiet_hours_end || '06:00';
+              if (qs <= qe) { inQuiet = nextHHMM >= qs && nextHHMM < qe; }
+              else { inQuiet = nextHHMM >= qs || nextHHMM < qe; } // wrap midnight
+            }
+          } catch (_) {}
+
+          if (inQuiet) {
+            setSensorUI('cooldown', '🌙', 'อยู่ในช่วงหยุดเก็บข้อมูล (' + qs + '–' + qe + ')',
+              'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เก็บรอบถัดไปได้พรุ่งนี้ค่ะ');
+          } else {
+            setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เปิดได้อีกครั้ง ' + nextTimeStr + ' น.',
+              'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เหลืออีก ~' + timeStr);
+          }
           hideAllActions();
           return;
         }
@@ -868,8 +889,28 @@ async function pollStatus() {
                 hideAllActions(); return;
               }
               if (ping.reason === 'cooldown') {
-                setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เหลืออีก ~' + ping.minutesLeft + ' นาที',
-                  'เซนเซอร์ออนไลน์ แต่อยู่ช่วงพัก');
+                // Check if cooldown ends during quiet hours
+                let pingInQuiet = false;
+                try {
+                  const { data: qc2 } = await sb.from('sync_config').select('quiet_hours_enabled,quiet_hours_start,quiet_hours_end').limit(1).single();
+                  if (qc2 && qc2.quiet_hours_enabled && ping.minutesLeft) {
+                    const cdEnd = new Date(Date.now() + ping.minutesLeft * 60000);
+                    const cdH = String(cdEnd.getHours()).padStart(2,'0');
+                    const cdM = String(cdEnd.getMinutes()).padStart(2,'0');
+                    const cdHHMM = cdH + ':' + cdM;
+                    const qs2 = qc2.quiet_hours_start || '00:00';
+                    const qe2 = qc2.quiet_hours_end || '06:00';
+                    if (qs2 <= qe2) { pingInQuiet = cdHHMM >= qs2 && cdHHMM < qe2; }
+                    else { pingInQuiet = cdHHMM >= qs2 || cdHHMM < qe2; }
+                  }
+                } catch (_) {}
+                if (pingInQuiet) {
+                  setSensorUI('cooldown', '🌙', 'อยู่ในช่วงหยุดเก็บข้อมูล (' + qs2 + '–' + qe2 + ')',
+                    'เซนเซอร์ออนไลน์ — เก็บรอบถัดไปได้พรุ่งนี้ค่ะ');
+                } else {
+                  setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เหลืออีก ~' + ping.minutesLeft + ' นาที',
+                    'เซนเซอร์ออนไลน์ แต่อยู่ช่วงพัก');
+                }
                 hideAllActions(); return;
               }
             }
