@@ -1117,6 +1117,68 @@
                 <!-- ==================== PART A: ระบบแอดมิน ==================== -->
                 <div class="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm inline-block">ส่วนที่ 1: ระบบแอดมิน</div>
 
+                <!-- A0: เริ่มต้นใช้งาน -->
+                <div class="guide-section bg-white/60 border border-blue-300 shadow-sm ring-2 ring-blue-200">
+                    <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
+                        <span>🚀 เริ่มต้นใช้งาน (สมัคร + Login + PIN)</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="font-bold text-navy mb-2">สมัครแอดมินใหม่:</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">1</div>
+                            <div>กดปุ่ม <b>"สมัครสมาชิก"</b> ที่หน้า login</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">2</div>
+                            <div>กรอก <b>อีเมล</b> ที่ใช้ประจำ + ตั้ง <b>PIN ส่วนตัว</b> (อย่างน้อย 4 ตัว) + ใส่ <b>รหัสเชิญ</b> ที่ได้รับจากผู้ดูแล</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-blue-600">3</div>
+                            <div>กด <b>"สมัคร"</b> → ระบบจะแสดง <b>Recovery Code</b> — <b>ต้องจดเก็บไว้ทันที</b> แสดงครั้งเดียว!</div>
+                        </div>
+
+                        <div class="guide-danger">
+                            <b>🚨 จดจำ PIN + Recovery Code!</b> ระบบไม่เก็บ PIN จริง (เก็บเฉพาะรหัสที่เข้ารหัสแล้ว) ถ้าลืม PIN ต้องใช้ Recovery Code กู้คืน
+                        </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">เข้าสู่ระบบ:</p>
+                        <p class="mb-3">กดปุ่ม <b>"จัดการระบบ"</b> → กรอก <b>อีเมล + PIN ส่วนตัว</b> → กดเข้าสู่ระบบ</p>
+
+                        <p class="font-bold text-navy mb-2">ลืม PIN:</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">1</div>
+                            <div>กดปุ่ม <b>"ลืม PIN?"</b> ที่หน้า login</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">2</div>
+                            <div>กรอก <b>อีเมล + Recovery Code</b> ที่จดไว้ + ตั้ง <b>PIN ใหม่</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">3</div>
+                            <div>กด <b>"รีเซ็ต"</b> → login ด้วย PIN ใหม่ → <b>สร้าง Recovery Code ใหม่ทันที</b></div>
+                        </div>
+
+                        <div class="guide-danger">
+                            <b>🚨 Recovery Code ใช้ได้ครั้งเดียว!</b> ใช้ reset PIN แล้ว code จะถูกลบทันที ต้อง login แล้วกดปุ่ม <b>"Recovery"</b> เพื่อสร้าง code ใหม่ ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset ให้
+                        </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">ลำดับการตั้งค่าเริ่มต้น:</p>
+                        <div class="flex flex-wrap items-center gap-2 mb-2 text-[12px]">
+                            <span class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-bold">📁 โครงการ</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 font-bold">👤 อาสาสมัคร</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 font-bold">🏠 บ้าน</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-bold">📡 เซนเซอร์</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-orange-100 text-orange-700 font-bold">📅 ช่วงเก็บข้อมูล</span>
+                        </div>
+                        <p class="text-[12px] text-slate-500">ต้องกรอกเรียงลำดับ เพราะข้อมูลเชื่อมกัน (บ้านต้องมีโครงการ+อาสาก่อน ฯลฯ)</p>
+                    </div>
+                </div>
+
                 <!-- A1: ภาพรวมระบบ -->
                 <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
                     <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
@@ -1153,6 +1215,58 @@
                             <li><b>ข้อมูลเชิงลึก</b> — วิเคราะห์ session, เปรียบเทียบ eco vs old, กราฟ</li>
                             <li><b>จัดการระบบ (แอดมิน)</b> — ตั้งค่าบ้าน อุปกรณ์ ช่วงเก็บข้อมูล อนุมัติ</li>
                         </ul>
+                    </div>
+                </div>
+
+                <!-- A1.5: จัดการโครงการ -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>📁 จัดการโครงการ</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">แท็บ <b>"โครงการ"</b> ใช้สร้างโครงการวิจัย เพื่อจัดกลุ่มบ้านและข้อมูล</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-purple-600">1</div>
+                            <div>กดปุ่ม <b>"+ เพิ่มโครงการ"</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-purple-600">2</div>
+                            <div>กรอก <b>ชื่อโครงการ</b> (เช่น "วิจัยมลพิษเตาชีวมวล ปี 2569") + รายละเอียด (ไม่บังคับ)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-purple-600">3</div>
+                            <div>กด <b>"บันทึก"</b> — โครงการจะปรากฏในรายการให้เลือกตอนเพิ่มบ้าน</div>
+                        </div>
+                        <div class="guide-tip">
+                            <b>💡 เคล็ดลับ:</b> สร้างโครงการก่อนเพิ่มบ้าน เพราะตอนเพิ่มบ้านต้องเลือกโครงการที่สังกัด
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A1.7: จัดการอาสาสมัคร -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>👤 จัดการอาสาสมัคร</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">แท็บ <b>"อาสา"</b> ใช้เพิ่มข้อมูลอาสาสมัครที่ช่วยเก็บข้อมูลภาคสนาม</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">1</div>
+                            <div>กดปุ่ม <b>"+ เพิ่มอาสา"</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">2</div>
+                            <div>กรอก <b>ชื่อ-นามสกุล</b> + <b>เบอร์โทร</b> (ไม่บังคับ)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">3</div>
+                            <div>กด <b>"บันทึก"</b> — อาสาจะปรากฏในรายการให้เลือกตอนเพิ่มบ้าน</div>
+                        </div>
+                        <div class="guide-tip">
+                            <b>💡 เคล็ดลับ:</b> สร้างอาสาก่อนเพิ่มบ้าน เพราะตอนเพิ่มบ้านต้องเลือกอาสาประจำบ้าน
+                        </div>
                     </div>
                 </div>
 
@@ -1199,7 +1313,7 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">2</div>
-                            <div><b>ลงทะเบียน</b> — ตั้งชื่อเซนเซอร์ตามรูปแบบ <b>ES-01</b> ถึง <b>ES-10</b><br><span class="text-slate-500">ES = EcoStove, ตัวเลขไม่ผูกกับบ้าน — ย้ายเครื่องได้</span></div>
+                            <div><b>ลงทะเบียน</b> — ตั้งชื่อเซนเซอร์ตามรูปแบบ <b>BS 001</b> ถึง <b>BS 012</b><br><span class="text-slate-500">BS = Biomass Stove, ตัวเลขไม่ผูกกับบ้าน — ย้ายเครื่องได้</span></div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">3</div>
@@ -1317,8 +1431,17 @@
                             <div><b>เปลี่ยน PIN:</b> กดปุ่ม "🔑 PIN" ที่มุมบนขวา</div>
                         </div>
 
+                        <p class="font-bold text-navy mt-4 mb-2">👑 Super Admin (สิทธิ์พิเศษ):</p>
+                        <p class="mb-3 text-[12px] text-slate-500">แท็บ "จัดการแอดมิน" จะปรากฏเฉพาะ Super Admin เท่านั้น</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>เลื่อนขั้น / ลดขั้น</b> — เปลี่ยน Admin ⇄ Super Admin (ต้องมี Super Admin อย่างน้อย 1 คนเสมอ)</li>
+                            <li><b>ลบแอดมิน</b> — ลบผู้ใช้ออกจากระบบ</li>
+                            <li><b>เปลี่ยนรหัสเชิญ (Invite Code)</b> — กดปุ่ม "Invite Code" ที่มุมบนขวา</li>
+                            <li><b>Reset PIN ให้คนอื่น</b> — กรณีแอดมินลืม PIN และไม่มี Recovery Code</li>
+                        </ul>
+
                         <div class="guide-tip">
-                            <b>💡 ประวัติกิจกรรม:</b> ทุกการกระทำ (login, อนุมัติ, แก้ไข) จะถูกบันทึกไว้ในแท็บ "ประวัติ" อัตโนมัติ
+                            <b>💡 ประวัติกิจกรรม:</b> ทุกการกระทำ (login, อนุมัติ, แก้ไข, เลื่อนขั้น, ลบแอดมิน) จะถูกบันทึกไว้ในแท็บ "ประวัติ" อัตโนมัติ
                         </div>
                     </div>
                 </div>
