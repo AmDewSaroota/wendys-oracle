@@ -268,7 +268,7 @@
       </div>
       <div class="danger-box">
         <p class="font-bold text-red-800">🚨 Recovery Code ใช้ได้ครั้งเดียว!</p>
-        <p class="text-red-700 mt-1">หลัง reset PIN แล้ว code จะถูกลบ → ต้องไปสร้างใหม่ที่ "เปลี่ยน PIN" เอง</p>
+        <p class="text-red-700 mt-1">หลัง reset PIN แล้ว code จะถูกลบ → ต้อง login แล้วกดปุ่ม "Recovery" เพื่อสร้าง code ใหม่</p>
       </div>
     </div>
 
@@ -278,9 +278,9 @@
         <div class="mock-modal-close">✕</div>
         <div class="text-center mb-6">
           <div class="w-16 h-16 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white shadow-2xl">🔐</div>
-          <h3 class="text-xl font-bold text-[#0f172a]">เข้าสู่ระบบ</h3>
+          <h3 class="text-xl font-bold text-[#0f172a]">Admin Login</h3>
         </div>
-        <div class="mock-input email">📧 อีเมลของคุณ</div>
+        <div class="mock-input email">อีเมล</div>
         <div class="relative mb-3">
           <div class="mock-input pin" style="margin:0;">● ● ● ●</div>
           <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">🔒</span>
@@ -288,7 +288,7 @@
         <div class="mock-btn-primary">เข้าสู่ระบบ</div>
         <div class="flex justify-between mt-4 text-[11px]">
           <span class="text-slate-400 cursor-default">ลืม PIN?</span>
-          <span class="text-[#064e3b] font-bold cursor-default">สมัครแอดมินใหม่</span>
+          <span class="text-[#064e3b] font-bold cursor-default">ลงทะเบียน</span>
         </div>
       </div>
     </div>
@@ -299,13 +299,13 @@
         <div class="mock-modal-close">✕</div>
         <div class="text-center mb-6">
           <div class="w-16 h-16 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white shadow-2xl">📝</div>
-          <h3 class="text-xl font-bold text-[#0f172a]">สมัครแอดมิน</h3>
+          <h3 class="text-xl font-bold text-[#0f172a]">สมัครสมาชิก</h3>
         </div>
-        <div class="mock-input email">📧 อีเมลของคุณ</div>
-        <div class="mock-input">👤 ชื่อที่แสดง</div>
-        <div class="mock-input pin" style="letter-spacing:0.3em; font-size:14px;">ตั้ง PIN (4+ ตัวอักษร)</div>
-        <div class="mock-input" style="background:#fffbeb; border-color:#fde68a;">🎫 Invite Code</div>
-        <div class="mock-btn-primary mt-2">สมัคร</div>
+        <div class="mock-input email">อีเมล</div>
+        <div class="mock-input">ชื่อ-นามสกุล</div>
+        <div class="mock-input pin" style="letter-spacing:0.3em; font-size:14px;">ตั้งรหัส PIN</div>
+        <div class="mock-input" style="background:#fffbeb; border-color:#fde68a;">รหัสเชิญ</div>
+        <div class="mock-btn-primary mt-2">สมัครสมาชิก</div>
       </div>
     </div>
 
@@ -369,9 +369,9 @@
           <div class="mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มโครงการ</div>
         </div>
         <table class="mock-table">
-          <thead><tr><th>#</th><th>ชื่อโครงการ</th><th>รายละเอียด</th><th>บ้าน</th><th>จัดการ</th></tr></thead>
+          <thead><tr><th>ชื่อโครงการ</th><th>รายละเอียด</th><th style="text-align:center;">🏠 บ้าน</th><th>จัดการ</th></tr></thead>
           <tbody>
-            <tr><td class="text-slate-400">1</td><td class="font-bold">เตาชีวมวลแม่ออน</td><td class="text-slate-500">โครงการวิจัยเตาชีวมวล อ.แม่ออน</td><td>10 หลัง</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+            <tr><td class="font-bold">เตาชีวมวลแม่ออน</td><td class="text-slate-500">โครงการวิจัยเตาชีวมวล อ.แม่ออน</td><td class="font-bold text-indigo-600" style="text-align:center;">10</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -381,7 +381,7 @@
     <div class="mock-modal-overlay mt-3">
       <div class="mock-modal-content">
         <div class="mock-modal-close">✕</div>
-        <h3 class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มโครงการใหม่</h3>
+        <h3 class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มโครงการ</h3>
         <div class="mock-input">ชื่อโครงการ เช่น "เตาชีวมวลแม่ออน"</div>
         <div class="mock-input" style="height:56px;">รายละเอียด (ไม่บังคับ)</div>
         <div class="mock-btn-primary mt-2">บันทึก</div>
@@ -426,36 +426,17 @@
       </div>
       <div class="mock-body">
         <div class="flex justify-between items-center mb-3">
-          <p class="font-bold text-[#0f172a] text-[15px]">👤 อาสาสมัคร</p>
+          <p class="font-bold text-[#0f172a] text-[15px]">👤 รายชื่ออาสาสมัคร</p>
           <div class="mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มอาสา</div>
         </div>
-        <div class="mock-input" style="margin-bottom:12px;">🔍 ค้นหาชื่อ / เบอร์โทร...</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Card 1 -->
-          <div class="mock-card">
-            <div class="flex items-center justify-between mb-2">
-              <p class="font-bold text-[#0f172a] text-[15px]">นายสมชาย</p>
-              <div class="flex gap-1">
-                <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
-                <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
-              </div>
-            </div>
-            <p class="text-[12px] text-slate-500">📞 081-xxx-xxxx</p>
-            <p class="text-[12px] text-emerald-500">กำลังเก็บข้อมูล</p>
-          </div>
-          <!-- Card 2 -->
-          <div class="mock-card">
-            <div class="flex items-center justify-between mb-2">
-              <p class="font-bold text-[#0f172a] text-[15px]">นางสมหญิง</p>
-              <div class="flex gap-1">
-                <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
-                <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
-              </div>
-            </div>
-            <p class="text-[12px] text-slate-500">📞 089-xxx-xxxx</p>
-            <p class="text-[12px] text-emerald-500">กำลังเก็บข้อมูล</p>
-          </div>
-        </div>
+        <div class="mock-input" style="margin-bottom:12px;">🔍 ค้นหาอาสา...</div>
+        <table class="mock-table">
+          <thead><tr><th>ชื่อ-นามสกุล</th><th>เบอร์โทร</th><th>บ้านที่รับผิดชอบ</th><th>จัดการ</th></tr></thead>
+          <tbody>
+            <tr><td class="font-bold">นายสมชาย</td><td class="text-slate-500">081-xxx-xxxx</td><td class="text-slate-500">บ้านนายสมชาย</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+            <tr><td class="font-bold">นางสมหญิง</td><td class="text-slate-500">089-xxx-xxxx</td><td class="text-slate-500">บ้านนางสมหญิง</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -466,7 +447,7 @@
       <div class="w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center text-xl font-bold">4</div>
       <div>
         <h2 class="text-xl font-bold text-amber-800">เพิ่มบ้านตัวอย่าง</h2>
-        <p class="text-amber-600 text-[13px]">เพิ่มบ้าน + ผูกอาสา + ผูกโครงการ + ใส่ GPS</p>
+        <p class="text-amber-600 text-[13px]">เพิ่มบ้าน + กำหนดที่อยู่ + ผูกโครงการ + ใส่ GPS + ผูกเซนเซอร์</p>
       </div>
     </div>
 
@@ -477,11 +458,11 @@
         <span class="flow-arrow">→</span>
         <span class="flow-node bg-amber-200 text-amber-900">กด "+ เพิ่มบ้าน"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-amber-300 text-amber-900">กรอกข้อมูล + GPS</span>
+        <span class="flow-node bg-amber-300 text-amber-900">กรอกชื่อ + ที่อยู่ + จังหวัด/อำเภอ/ตำบล</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-purple-100 text-purple-800">เลือกอาสา</span>
+        <span class="flow-node bg-blue-100 text-blue-800">ใส่ GPS</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-emerald-100 text-emerald-800">เลือกโครงการ</span>
+        <span class="flow-node bg-purple-100 text-purple-800">☑ มีเซนเซอร์ → เลือกอาสา + การเชื่อมต่อ</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
       </div>
@@ -492,19 +473,116 @@
       <p class="text-emerald-700 mt-1">ระบบใช้ GPS ตรวจจับบ้านอัตโนมัติเมื่ออาสาเปิดหน้าเก็บข้อมูล — วิธีหา: Google Maps → กดค้างที่ตำแหน่ง → คัดลอกตัวเลข</p>
     </div>
 
+    <!-- Mockup: Houses list table -->
+    <div class="mock mt-3">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">โครงการ</span>
+        <span class="mock-tab">อาสา</span>
+        <span class="mock-tab active">บ้าน</span>
+        <span class="mock-tab">อุปกรณ์</span>
+        <span class="mock-tab">อนุมัติ (0)</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">🏠 บ้านกลุ่มตัวอย่าง <span class="text-slate-400 font-normal text-[13px]">(3)</span></p>
+          <div class="mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มบ้าน</div>
+        </div>
+        <!-- Filter bar -->
+        <div class="flex gap-2 mb-3 flex-wrap">
+          <div class="mock-select" style="margin:0; width:130px;">โครงการ: ทั้งหมด ▾</div>
+          <div class="mock-select" style="margin:0; width:130px;">อำเภอ: ทั้งหมด ▾</div>
+          <div class="mock-select" style="margin:0; width:140px;">เซนเซอร์: ทั้งหมด ▾</div>
+          <div class="mock-input" style="margin:0; flex:1;">🔍 ค้นหาบ้าน...</div>
+        </div>
+        <table class="mock-table">
+          <thead><tr><th>บ้าน</th><th>อาสา</th><th>เซนเซอร์</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="font-bold text-[13px]">บ้าน A</span><br>
+                <span class="text-[10px] text-slate-400">อ.เมือง จ.เชียงใหม่</span>
+              </td>
+              <td class="text-[12px] text-slate-500">นายก. กกก.</td>
+              <td><div class="mock-select" style="margin:0; font-size:11px; padding:4px 8px; border-color:#99f6e4; background:#f0fdfa;">📡 BS 001 ▾</div></td>
+              <td style="text-align:center;">
+                <span class="badge badge-online" style="font-size:10px;">ใช้งาน</span>
+                <span class="badge" style="background:#f0fdfa; color:#0d9488; font-size:10px;">📡 มีเซนเซอร์</span>
+              </td>
+              <td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-orange-500">ปิด</span> <span class="mock-btn-link text-red-400">ลบ</span></td>
+            </tr>
+            <tr>
+              <td>
+                <span class="font-bold text-[13px]">บ้าน B</span><br>
+                <span class="text-[10px] text-slate-400">อ.สันทราย จ.เชียงใหม่</span>
+              </td>
+              <td class="text-[12px] text-slate-400">ยังไม่กำหนด</td>
+              <td><div class="mock-select" style="margin:0; font-size:11px; padding:4px 8px;">ไม่มีเซนเซอร์ ▾</div></td>
+              <td style="text-align:center;">
+                <span class="badge badge-online" style="font-size:10px;">ใช้งาน</span>
+                <span class="badge" style="background:#f1f5f9; color:#94a3b8; font-size:10px;">🏠 เตาอย่างเดียว</span>
+              </td>
+              <td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mockup: Add house modal -->
     <div class="mock-modal-overlay mt-3">
       <div class="mock-modal-content">
         <div class="mock-modal-close">✕</div>
-        <h3 class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มบ้านตัวอย่าง</h3>
-        <div class="mock-input">🏠 ชื่อบ้าน เช่น "บ้านนายสมชาย"</div>
-        <div class="mock-input">📍 ที่อยู่</div>
+        <h3 class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มบ้านกลุ่มตัวอย่าง</h3>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">ชื่อบ้าน</p>
+        <div class="mock-input">เช่น "บ้าน A"</div>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">โครงการ</p>
+        <div class="mock-select">เลือกโครงการ ▾</div>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">ที่อยู่</p>
+        <div class="mock-input">ที่อยู่</div>
+        <!-- Province / District / Subdistrict cascading -->
         <div class="flex gap-2">
-          <div class="mock-input" style="flex:1;">Latitude เช่น 18.7945</div>
-          <div class="mock-input" style="flex:1;">Longitude เช่น 99.0125</div>
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">จังหวัด</p>
+            <div class="mock-select">เชียงใหม่ ▾</div>
+          </div>
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">อำเภอ</p>
+            <div class="mock-select">เลือกอำเภอ ▾</div>
+          </div>
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">ตำบล</p>
+            <div class="mock-select">เลือกตำบล ▾</div>
+          </div>
         </div>
-        <div class="mock-select">👤 เลือกอาสาสมัคร ▾</div>
-        <div class="mock-select">📁 เลือกโครงการ ▾</div>
-        <div class="mock-btn-primary mt-2">บันทึก</div>
+        <!-- GPS -->
+        <div class="flex gap-2 mt-1">
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">Latitude</p>
+            <div class="mock-input">เช่น 18.805</div>
+          </div>
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">Longitude</p>
+            <div class="mock-input">เช่น 98.921</div>
+          </div>
+        </div>
+        <!-- Has Sensor checkbox -->
+        <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" disabled checked style="accent-color:#059669; width:16px; height:16px;">
+          <span class="text-[13px] font-bold text-[#0f172a]">☑ มีเซนเซอร์</span>
+        </div>
+        <!-- Conditional fields (shown when checkbox checked) -->
+        <div style="margin-top:6px; padding:10px; background:#f0fdf4; border-radius:12px; border:1px dashed #86efac;">
+          <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกอาสาสมัคร</p>
+          <div class="mock-select">เลือกอาสา ▾</div>
+          <p class="text-[12px] font-bold text-[#0f172a] mb-1">การเชื่อมต่อ</p>
+          <div class="mock-select">Hotspot ▾</div>
+        </div>
+        <div class="mock-btn-primary mt-3">บันทึก</div>
       </div>
     </div>
   </div>
@@ -515,20 +593,35 @@
       <div class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center text-xl font-bold">5</div>
       <div>
         <h2 class="text-xl font-bold text-teal-800">ลงทะเบียนเซนเซอร์ + ผูกบ้าน</h2>
-        <p class="text-teal-600 text-[13px]">ดึงเซนเซอร์จาก Tuya Cloud → ตั้งชื่อ → ผูกบ้าน</p>
+        <p class="text-teal-600 text-[13px]">ดึงเซนเซอร์จาก Tuya Cloud → ลงทะเบียน → ผูกบ้าน</p>
       </div>
     </div>
 
     <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
-      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow A: ลงทะเบียนเซนเซอร์ (จาก Tuya Cloud)</p>
       <div class="flow-step">
         <span class="flow-node bg-teal-100 text-teal-800">Tab "อุปกรณ์"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-teal-200 text-teal-900">กด "ค้นหาจาก Tuya"</span>
+        <span class="flow-node bg-blue-100 text-blue-800">กด "🔍 ค้นหาจาก Tuya Cloud"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-teal-300 text-teal-900">เลือกเซนเซอร์</span>
+        <span class="flow-node bg-teal-200 text-teal-900">เห็นรายการเซนเซอร์</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-teal-400 text-white">ตั้งชื่อ BS XXX</span>
+        <span class="flow-node bg-amber-100 text-amber-800">กด "+ ลงทะเบียน"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-200 text-amber-900">ตั้งชื่อ (เช่น BS 001)</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ ลงทะเบียนสำเร็จ</span>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow B: ผูกเซนเซอร์กับบ้าน</p>
+      <div class="flow-step">
+        <span class="flow-node bg-teal-100 text-teal-800">Tab "อุปกรณ์"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-teal-200 text-teal-900">กด "+ ผูกเซนเซอร์กับบ้าน"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-teal-300 text-teal-900">เลือกเซนเซอร์จาก Dropdown</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node bg-amber-100 text-amber-800">เลือกบ้าน</span>
         <span class="flow-arrow">→</span>
@@ -540,7 +633,8 @@
       <p class="font-bold text-amber-800">⚠️ 1 เซนเซอร์ = 1 บ้านเท่านั้น — ถ้าจะย้ายต้อง "ถอดออก" จากบ้านเดิมก่อน</p>
     </div>
 
-    <div class="mock">
+    <!-- Mockup: Devices tab full view -->
+    <div class="mock mt-3">
       <div class="mock-nav">
         <div class="mock-nav-logo">🌿</div>
         <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
@@ -555,68 +649,139 @@
       </div>
       <div class="mock-body">
         <div class="flex justify-between items-center mb-3">
-          <p class="font-bold text-[#0f172a] text-[15px]">📡 อุปกรณ์</p>
+          <p class="font-bold text-[#0f172a] text-[15px]">📡 จัดการอุปกรณ์</p>
           <div class="flex gap-2">
-            <div class="mock-btn-sm bg-teal-600 text-white">🔍 ค้นหาจาก Tuya</div>
-            <div class="mock-btn-sm bg-[#064e3b] text-white">+ ลงทะเบียน</div>
+            <div class="mock-btn-sm bg-blue-500 text-white">🔍 ค้นหาจาก Tuya Cloud</div>
+            <div class="mock-btn-sm bg-[#064e3b] text-white">+ ผูกเซนเซอร์กับบ้าน</div>
           </div>
         </div>
         <div class="flex gap-2 mb-3">
-          <div class="mock-input" style="margin:0; flex:1;">🔍 ค้นหาชื่อ / Device ID...</div>
           <div class="mock-select" style="margin:0; width:140px;">ทั้งหมด ▾</div>
+          <div class="mock-input" style="margin:0; flex:1;">🔍 ค้นหาอุปกรณ์...</div>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <!-- Device Card 1: Online -->
-          <div class="mock-card">
-            <div class="flex items-start gap-3 mb-2">
-              <span class="text-2xl">📡</span>
-              <div class="flex-1">
-                <p class="font-bold text-[#0f172a]">BS 001</p>
-                <p class="text-[11px] text-slate-400">MT13W <span class="font-mono opacity-60">...e0hf0e</span></p>
+        <!-- Devices table -->
+        <table class="mock-table">
+          <thead><tr><th>ชื่อเครื่อง</th><th>บ้าน</th><th style="text-align:center;">ออนไลน์</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="font-bold">BS 001</span> <span class="text-[10px] text-slate-400 font-mono">...e0hf0e</span></td>
+              <td class="text-slate-500">บ้าน A</td>
+              <td style="text-align:center;"><span class="badge badge-online">🟢 Online</span></td>
+              <td style="text-align:center;"><span class="badge badge-online">ใช้งาน</span></td>
+              <td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-orange-500">ปิด</span> <span class="mock-btn-link text-red-400">ลบ</span></td>
+            </tr>
+            <tr>
+              <td><span class="font-bold">BS 002</span> <span class="text-[10px] text-slate-400 font-mono">...7ekytn</span></td>
+              <td class="text-slate-500">บ้าน B</td>
+              <td style="text-align:center;"><span class="badge badge-offline">⚪ Offline</span></td>
+              <td style="text-align:center;"><span class="badge badge-online">ใช้งาน</span></td>
+              <td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-orange-500">ปิด</span> <span class="mock-btn-link text-red-400">ลบ</span></td>
+            </tr>
+            <tr>
+              <td><span class="font-bold text-slate-400">BS 003</span> <span class="text-[10px] text-slate-300 font-mono">...a1b2c3</span></td>
+              <td class="text-slate-300">ยังไม่ผูกบ้าน</td>
+              <td style="text-align:center;"><span class="badge" style="background:#f1f5f9; color:#94a3b8;">⚪ Offline</span></td>
+              <td style="text-align:center;"><span class="badge" style="background:#fef2f2; color:#dc2626;">ปิดใช้งาน</span></td>
+              <td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-emerald-500">เปิด</span> <span class="mock-btn-link text-red-400">ลบ</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Tuya Cloud Discovery Panel -->
+        <div style="margin-top:16px; padding:12px; background:#f8fafc; border-radius:16px; border:1px solid #e2e8f0;">
+          <p class="font-bold text-[#0f172a] text-[13px] mb-3">🔍 เซนเซอร์จาก Tuya Cloud</p>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+            <!-- Registered sensor -->
+            <div style="background:white; padding:12px; border-radius:14px; border:1px solid #a7f3d0; background:#f0fdf4; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">📡</span>
+              <div style="flex:1; min-width:0;">
+                <p class="font-bold text-[12px] text-[#0f172a]">MT13W-001</p>
+                <p class="text-[10px] text-slate-400 font-mono" style="overflow:hidden; text-overflow:ellipsis;">a3d01864...e0hf0e</p>
+                <p class="text-[10px] text-emerald-500">ออนไลน์</p>
               </div>
+              <span style="font-size:10px; padding:4px 10px; border-radius:12px; background:#ecfdf5; color:#059669;">ลงทะเบียนแล้ว</span>
             </div>
-            <p class="text-[12px] text-slate-500 mb-1">🏠 บ้านนายสมชาย</p>
-            <p class="text-[12px] text-emerald-500 mb-3">● ออนไลน์</p>
-            <div class="flex gap-1 flex-wrap">
-              <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
-              <span class="mock-btn-sm bg-red-50 text-red-500 text-[10px] py-1 px-2">ปิดเครื่อง</span>
-              <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
-            </div>
-          </div>
-          <!-- Device Card 2: Offline -->
-          <div class="mock-card">
-            <div class="flex items-start gap-3 mb-2">
-              <span class="text-2xl">📡</span>
-              <div class="flex-1">
-                <p class="font-bold text-[#0f172a]">BS 002</p>
-                <p class="text-[11px] text-slate-400">MT13W <span class="font-mono opacity-60">...7ekytn</span></p>
+            <!-- Unregistered sensor -->
+            <div style="background:white; padding:12px; border-radius:14px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">📡</span>
+              <div style="flex:1; min-width:0;">
+                <p class="font-bold text-[12px] text-[#0f172a]">MT13W-004</p>
+                <p class="text-[10px] text-slate-400 font-mono" style="overflow:hidden; text-overflow:ellipsis;">b4c92f...x7y8z9</p>
+                <p class="text-[10px] text-emerald-500">ออนไลน์</p>
               </div>
+              <div class="mock-btn-sm bg-amber-500 text-white" style="font-size:10px; padding:4px 10px;">+ ลงทะเบียน</div>
             </div>
-            <p class="text-[12px] text-slate-500 mb-1">🏠 บ้านนางสมหญิง</p>
-            <p class="text-[12px] text-red-500 mb-3">● ออฟไลน์</p>
-            <div class="flex gap-1 flex-wrap">
-              <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
-              <span class="mock-btn-sm bg-emerald-50 text-emerald-500 text-[10px] py-1 px-2">เปิดเครื่อง</span>
-              <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
-            </div>
-          </div>
-          <!-- Device Card 3: Unassigned -->
-          <div class="mock-card" style="border-bottom-color:#94a3b8;">
-            <div class="flex items-start gap-3 mb-2">
-              <span class="text-2xl opacity-40">📡</span>
-              <div class="flex-1">
-                <p class="font-bold text-slate-400">BS 003</p>
-                <p class="text-[11px] text-slate-300">MT13W <span class="font-mono opacity-60">...a1b2c3</span></p>
+            <!-- Offline sensor -->
+            <div style="background:white; padding:12px; border-radius:14px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">📴</span>
+              <div style="flex:1; min-width:0;">
+                <p class="font-bold text-[12px] text-[#0f172a]">MT13W-005</p>
+                <p class="text-[10px] text-slate-400 font-mono" style="overflow:hidden; text-overflow:ellipsis;">c5d03e...p1q2r3</p>
+                <p class="text-[10px] text-slate-400">ออฟไลน์</p>
               </div>
-            </div>
-            <p class="text-[12px] text-slate-400 mb-1">🏠 ยังไม่ได้ผูกบ้าน</p>
-            <p class="text-[12px] text-slate-400 mb-3">— ไม่ได้ใช้งาน</p>
-            <div class="flex gap-1 flex-wrap">
-              <span class="mock-btn-sm bg-[#064e3b] text-white text-[10px] py-1 px-2 font-bold">ผูกบ้าน</span>
-              <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
+              <div class="mock-btn-sm bg-amber-500 text-white" style="font-size:10px; padding:4px 10px;">+ ลงทะเบียน</div>
             </div>
           </div>
         </div>
+
+        <!-- Registered Sensors Card Grid -->
+        <div style="margin-top:16px;">
+          <p class="font-bold text-[#0f172a] text-[13px] mb-3">📡 เซนเซอร์ที่ลงทะเบียน</p>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+            <div style="background:white; padding:12px; border-radius:14px; border:1px solid #f1f5f9; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">📡</span>
+              <div style="flex:1; min-width:0;">
+                <p class="font-bold text-[12px] text-[#0f172a]">BS 001</p>
+                <p class="text-[10px] text-slate-400 font-mono">a3d01864...e0hf0e</p>
+              </div>
+              <span style="font-size:10px; padding:4px 8px; border-radius:8px; background:#f1f5f9; color:#94a3b8; cursor:pointer;">ลบ</span>
+            </div>
+            <div style="background:white; padding:12px; border-radius:14px; border:1px solid #f1f5f9; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">📡</span>
+              <div style="flex:1; min-width:0;">
+                <p class="font-bold text-[12px] text-[#0f172a]">BS 002</p>
+                <p class="text-[10px] text-slate-400 font-mono">a3b9c2e4...7ekytn</p>
+              </div>
+              <span style="font-size:10px; padding:4px 8px; border-radius:8px; background:#f1f5f9; color:#94a3b8; cursor:pointer;">ลบ</span>
+            </div>
+            <div style="background:white; padding:12px; border-radius:14px; border:1px solid #f1f5f9; display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px;">📡</span>
+              <div style="flex:1; min-width:0;">
+                <p class="font-bold text-[12px] text-[#0f172a]">BS 003</p>
+                <p class="text-[10px] text-slate-400 font-mono">d7e82a...a1b2c3</p>
+              </div>
+              <span style="font-size:10px; padding:4px 8px; border-radius:8px; background:#f1f5f9; color:#94a3b8; cursor:pointer;">ลบ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mockup: ลงทะเบียนเซนเซอร์ modal -->
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <h3 class="text-lg font-bold text-[#0f172a] mb-1">ลงทะเบียนเซนเซอร์</h3>
+        <p class="text-slate-400 text-[12px] mb-4">เพิ่มเซนเซอร์ Tuya ลงในระบบ</p>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">Tuya Device ID</p>
+        <div class="mock-input" style="font-family:monospace;">a3d01864e463e3ede0hf0e</div>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">ชื่อเซนเซอร์</p>
+        <div class="mock-input">เช่น BS 001</div>
+        <div class="mock-btn-primary mt-3" style="background:#f59e0b;">บันทึก</div>
+      </div>
+    </div>
+
+    <!-- Mockup: ผูกเซนเซอร์กับบ้าน modal -->
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <h3 class="text-lg font-bold text-[#0f172a] mb-1">ผูกเซนเซอร์กับบ้าน</h3>
+        <p class="text-slate-400 text-[12px] mb-4">เลือกเซนเซอร์ที่ลงทะเบียนแล้ว และผูกกับบ้านตัวอย่าง</p>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกเซนเซอร์</p>
+        <div class="mock-select">BS 001 ▾</div>
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกบ้าน</p>
+        <div class="mock-select">เลือกบ้าน ▾</div>
+        <div class="mock-btn-primary mt-3">บันทึก</div>
       </div>
     </div>
   </div>
@@ -632,15 +797,17 @@
     </div>
 
     <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
-      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ตั้งทีเดียวหลายบ้าน (แนะนำ)</p>
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ตั้งค่าหลายบ้านพร้อมกัน</p>
       <div class="flow-step">
         <span class="flow-node bg-indigo-100 text-indigo-800">Tab "กำหนดการ"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-indigo-200 text-indigo-900">"ช่วงเก็บข้อมูล"</span>
+        <span class="flow-node bg-indigo-200 text-indigo-900">"ช่วงเก็บข้อมูลแต่ละบ้าน"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-red-200 text-red-900">กด "ตั้งค่าทีเดียว"</span>
+        <span class="flow-node bg-blue-100 text-blue-800">☑ เลือกบ้านจาก Checkbox</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-amber-100 text-amber-800">เลือก old/eco + วันที่</span>
+        <span class="flow-node bg-red-200 text-red-900">กด "📅 ตั้งค่าที่เลือก"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-100 text-amber-800">เลือกประเภทเตา + วันที่</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
       </div>
@@ -661,6 +828,7 @@
       </table>
     </div>
 
+    <!-- Mockup: กำหนดการ → ช่วงเก็บข้อมูลแต่ละบ้าน (สถานะเริ่มต้น — ยังไม่เลือก) -->
     <div class="mock mt-3">
       <div class="mock-nav">
         <div class="mock-nav-logo">🌿</div>
@@ -674,26 +842,92 @@
         <span class="mock-tab">📖 คู่มือ</span>
       </div>
       <div class="mock-body">
+        <p class="font-bold text-[#0f172a] text-[15px] mb-1">ช่วงเก็บข้อมูลแต่ละบ้าน</p>
+        <p class="text-slate-400 text-[11px] mb-4">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
         <!-- Sub-tabs -->
         <div class="flex gap-2 mb-4 border-b pb-3">
-          <span class="text-[11px] font-bold text-[#064e3b] border-b-2 border-[#064e3b] pb-1 px-2">📅 ช่วงเก็บข้อมูล</span>
-          <span class="text-[11px] font-bold text-slate-400 px-2">⏰ ตารางซิงค์</span>
+          <span class="text-[11px] font-bold text-slate-400 px-2">ตารางเก็บข้อมูล</span>
+          <span class="text-[11px] font-bold text-[#064e3b] border-b-2 border-[#064e3b] pb-1 px-2">ช่วงเก็บข้อมูลแต่ละบ้าน</span>
         </div>
-        <div class="flex justify-between items-center mb-3">
-          <p class="font-bold text-[#0f172a] text-[15px]">📅 ช่วงเก็บข้อมูล</p>
-          <div class="flex gap-2">
-            <div class="mock-btn-sm bg-red-500 text-white">ตั้งค่าทีเดียว</div>
-            <div class="mock-btn-sm bg-slate-200 text-slate-600">+ เพิ่มทีละรายการ</div>
-          </div>
+        <!-- Batch action buttons (DISABLED — ยังไม่เลือก checkbox) -->
+        <div class="flex gap-2 mb-3 items-center">
+          <div class="mock-btn-sm bg-[#064e3b] text-white opacity-40" style="cursor:not-allowed;">📅 ตั้งค่าที่เลือก</div>
+          <div class="mock-btn-sm bg-blue-50 text-blue-600 opacity-40" style="cursor:not-allowed;">✏️ แก้ไขที่เลือก</div>
+          <div class="mock-btn-sm bg-red-50 text-red-500 opacity-40" style="cursor:not-allowed;">🗑️ ลบที่เลือก</div>
         </div>
         <div class="overflow-x-auto">
           <table class="mock-table" style="min-width:550px;">
-            <thead><tr><th>บ้าน</th><th>ประเภทเตา</th><th>เริ่ม</th><th>สิ้นสุด</th><th>หมายเหตุ</th><th>จัดการ</th></tr></thead>
+            <thead><tr>
+              <th style="width:36px;"><input type="checkbox" disabled style="accent-color:#059669; width:14px; height:14px;"></th>
+              <th>บ้าน</th>
+              <th><span style="padding:2px 8px; border-radius:4px; background:#fff7ed; color:#c2410c; font-size:10px; font-weight:700;">เตาดั้งเดิม</span></th>
+              <th><span style="padding:2px 8px; border-radius:4px; background:#ecfdf5; color:#047857; font-size:10px; font-weight:700;">เตาชีวมวล</span></th>
+            </tr></thead>
             <tbody>
-              <tr><td class="font-bold">บ้านนายสมชาย</td><td><span class="badge badge-old">🪵 old</span></td><td>2026-03-30</td><td>2026-06-29</td><td class="text-slate-400 text-[11px]">ระยะที่ 1</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
-              <tr><td class="font-bold">บ้านนางสมหญิง</td><td><span class="badge badge-old">🪵 old</span></td><td>2026-03-30</td><td>2026-06-29</td><td class="text-slate-400 text-[11px]">ระยะที่ 1</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+              <tr>
+                <td><input type="checkbox" disabled style="accent-color:#059669; width:14px; height:14px;"></td>
+                <td class="font-bold text-[13px]"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#059669; margin-right:6px; animation:pulse 2s infinite;"></span>บ้าน A</td>
+                <td class="text-slate-600 text-[12px]">01/04/2569 → 30/06/2569</td>
+                <td class="text-emerald-700 font-bold text-[12px]">01/07/2569 → 30/09/2569</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" disabled style="accent-color:#059669; width:14px; height:14px;"></td>
+                <td class="font-bold text-[13px]"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#059669; margin-right:6px; animation:pulse 2s infinite;"></span>บ้าน B</td>
+                <td class="text-slate-600 text-[12px]">01/04/2569 → 30/06/2569</td>
+                <td class="text-emerald-700 font-bold text-[12px]">01/07/2569 → 30/09/2569</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" disabled style="accent-color:#059669; width:14px; height:14px;"></td>
+                <td class="font-bold text-[13px] text-slate-400"><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#cbd5e1; margin-right:6px;"></span>บ้าน C</td>
+                <td class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</td>
+                <td class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</td>
+              </tr>
             </tbody>
           </table>
+        </div>
+        <div class="tip-box mt-3">
+          <p class="text-emerald-700"><span class="font-bold">💡 วิธีใช้:</span> ☑ เลือกบ้านจาก checkbox → ปุ่มด้านบนจะเปิดใช้งาน → กดเพื่อตั้งค่า/แก้ไข/ลบ หลายบ้านพร้อมกัน</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mockup: Modal ตั้งค่าช่วงเก็บข้อมูล -->
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="width:56px; height:56px; background:#ecfdf5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">📅</div>
+          <h3 class="text-lg font-bold text-[#0f172a]">ตั้งค่าช่วงเก็บข้อมูล</h3>
+          <p class="text-slate-400 text-[12px] mt-1">2 บ้านที่เลือก: บ้าน A, บ้าน B</p>
+        </div>
+        <!-- Stove type radio -->
+        <p class="text-[12px] font-bold text-[#0f172a] mb-2">ประเภทเตา</p>
+        <div class="flex gap-3 mb-3">
+          <div style="flex:1; padding:10px; border-radius:14px; border:2px solid #fb923c; background:#fff7ed; text-align:center;">
+            <span class="font-bold text-[13px]" style="color:#c2410c;">เตาดั้งเดิม</span>
+          </div>
+          <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; background:white; text-align:center;">
+            <span class="font-bold text-[13px] text-slate-500">เตาชีวมวล</span>
+          </div>
+        </div>
+        <!-- Date range -->
+        <div class="flex gap-2">
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">วันเริ่มต้น</p>
+            <div class="mock-input" style="font-size:12px;">2026-04-01</div>
+          </div>
+          <div style="flex:1;">
+            <p class="text-[12px] font-bold text-[#0f172a] mb-1">วันสิ้นสุด</p>
+            <div class="mock-input" style="font-size:12px;">2026-06-30</div>
+          </div>
+        </div>
+        <!-- Notes -->
+        <p class="text-[12px] font-bold text-[#0f172a] mb-1 mt-2">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></p>
+        <div class="mock-input" style="font-size:12px;">เช่น เริ่มเฟสเตาชีวมวล</div>
+        <!-- Buttons -->
+        <div class="flex gap-3 mt-4">
+          <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; text-align:center; font-weight:700; color:#64748b; font-size:13px;">ยกเลิก</div>
+          <div style="flex:1; padding:10px; border-radius:14px; background:#059669; text-align:center; font-weight:700; color:white; font-size:13px;">ตั้งค่า</div>
         </div>
       </div>
     </div>
@@ -714,7 +948,7 @@
       <div class="flow-step">
         <span class="flow-node bg-indigo-100 text-indigo-800">Tab "กำหนดการ"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-indigo-200 text-indigo-900">"ตารางซิงค์"</span>
+        <span class="flow-node bg-indigo-200 text-indigo-900">"ตารางเก็บข้อมูล"</span>
         <span class="flow-arrow">→</span>
         <span class="flow-node bg-blue-100 text-blue-800">ตั้ง Quiet Hours</span>
         <span class="flow-arrow">→</span>
@@ -737,53 +971,114 @@
       </div>
       <div class="mock-tabs">
         <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">อุปกรณ์</span>
         <span class="mock-tab active">กำหนดการ</span>
+        <span class="mock-tab">ประวัติ</span>
         <span class="mock-tab">📖 คู่มือ</span>
       </div>
       <div class="mock-body">
-        <div class="flex gap-2 mb-4 border-b pb-3">
-          <span class="text-[11px] font-bold text-slate-400 px-2">📅 ช่วงเก็บข้อมูล</span>
-          <span class="text-[11px] font-bold text-[#064e3b] border-b-2 border-[#064e3b] pb-1 px-2">⏰ ตารางซิงค์</span>
+
+        <!-- API Quota bar -->
+        <div style="background:rgba(255,255,255,0.7); border-radius:16px; padding:12px 16px; border:1px solid #e2e8f0; margin-bottom:12px;">
+          <div class="flex justify-between items-center" style="margin-bottom:6px;">
+            <span class="text-[11px] font-bold text-slate-600">Tuya API Usage (เดือนนี้)</span>
+            <span class="text-[11px] font-bold text-emerald-700">3,240 / 24,000</span>
+          </div>
+          <div style="width:100%; height:8px; background:#e2e8f0; border-radius:99px; overflow:hidden;">
+            <div style="width:13.5%; height:100%; background:#34d399; border-radius:99px;"></div>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">ปกติ — เหลือ 20,760 calls</p>
         </div>
 
-        <div class="space-y-4">
-          <!-- Quiet Hours -->
-          <div class="bg-white rounded-2xl p-4 border" style="border-bottom:4px solid #fb923c;">
-            <p class="font-bold text-[#0f172a] text-[13px] mb-3">🌙 Quiet Hours (หยุดซิงค์)</p>
-            <div class="flex items-center gap-3">
-              <div class="mock-input text-center" style="width:100px; margin:0; font-weight:700; color:#0f172a;">00:00</div>
-              <span class="text-slate-400 font-bold text-sm">ถึง</span>
-              <div class="mock-input text-center" style="width:100px; margin:0; font-weight:700; color:#0f172a;">06:00</div>
-              <div class="mock-btn-sm bg-[#064e3b] text-white">บันทึก</div>
+        <!-- Sub-tabs -->
+        <div class="flex gap-2 mb-4" style="background:rgba(255,255,255,0.5); padding:5px; border-radius:16px; border:1px solid #e2e8f0; width:fit-content;">
+          <span style="padding:6px 14px; border-radius:12px; font-size:11px; font-weight:700; background:#064e3b; color:white;">ตารางเก็บข้อมูล</span>
+          <span style="padding:6px 14px; border-radius:12px; font-size:11px; font-weight:700; color:#64748b;">ช่วงเก็บข้อมูลแต่ละบ้าน</span>
+        </div>
+
+        <!-- Main card -->
+        <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:20px; border-bottom:4px solid #fb923c; box-shadow:0 10px 30px -10px rgba(15,23,42,0.08);">
+          <p class="font-bold text-[#0f172a]" style="font-size:15px;">ตารางเก็บข้อมูล</p>
+          <p class="text-[10px] text-slate-400 mb-4">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
+
+          <!-- A: Quiet Hours -->
+          <p class="text-[12px] font-bold text-slate-700 mb-2">เวลาพักประจำวัน (Quiet Hours)</p>
+          <div class="flex items-center gap-3 mb-4">
+            <!-- Toggle switch -->
+            <div style="width:36px; height:20px; background:#34d399; border-radius:99px; position:relative;">
+              <div style="width:16px; height:16px; background:white; border-radius:50%; position:absolute; top:2px; right:2px; box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div>
             </div>
+            <span class="text-[11px] text-slate-600">ไม่เรียก API ช่วง</span>
+            <div class="mock-input text-center" style="width:80px; margin:0; font-weight:700; color:#0f172a; padding:6px; font-size:13px;">00:00</div>
+            <span class="text-slate-400 text-[11px]">ถึง</span>
+            <div class="mock-input text-center" style="width:80px; margin:0; font-weight:700; color:#0f172a; padding:6px; font-size:13px;">06:00</div>
           </div>
 
-          <!-- Active Days -->
-          <div class="bg-white rounded-2xl p-4 border" style="border-bottom:4px solid #fb923c;">
-            <p class="font-bold text-[#0f172a] text-[13px] mb-3">📆 วันที่เก็บข้อมูล</p>
-            <div class="flex gap-2 flex-wrap">
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">จ</span>
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">อ</span>
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">พ</span>
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">พฤ</span>
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">ศ</span>
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-slate-100 text-slate-400">ส</span>
-              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-slate-100 text-slate-400">อา</span>
-            </div>
+          <!-- B: Active Days -->
+          <p class="text-[12px] font-bold text-slate-700 mb-2">วันเก็บข้อมูลประจำสัปดาห์</p>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:#059669; color:white; border:1px solid #059669;">จ</span>
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:#059669; color:white; border:1px solid #059669;">อ</span>
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:#059669; color:white; border:1px solid #059669;">พ</span>
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:#059669; color:white; border:1px solid #059669;">พฤ</span>
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:#059669; color:white; border:1px solid #059669;">ศ</span>
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:white; color:#94a3b8; border:1px solid #cbd5e1;">ส</span>
+            <span style="padding:5px 12px; border-radius:99px; font-size:12px; font-weight:600; background:white; color:#94a3b8; border:1px solid #cbd5e1;">อา</span>
           </div>
 
-          <!-- Holidays -->
-          <div class="bg-white rounded-2xl p-4 border" style="border-bottom:4px solid #fb923c;">
-            <p class="font-bold text-[#0f172a] text-[13px] mb-3">🎌 วันหยุดพิเศษ</p>
+          <!-- C: Calendar -->
+          <div class="flex justify-between items-center mb-2">
+            <p class="text-[12px] font-bold text-slate-700">ปฏิทินเดือน</p>
             <div class="flex items-center gap-2">
-              <div class="mock-input" style="margin:0; flex:1;">เลือกวันที่</div>
-              <div class="mock-btn-sm bg-indigo-600 text-white">เพิ่ม</div>
-            </div>
-            <div class="flex gap-2 mt-2 flex-wrap">
-              <span class="text-[11px] bg-blue-50 text-blue-700 px-3 py-1 rounded-lg font-bold border border-blue-200">13-15 เม.ย. สงกรานต์ ✕</span>
+              <span class="text-slate-400 text-[11px] cursor-default">←</span>
+              <span class="text-[11px] font-medium text-slate-700">มีนาคม 2569</span>
+              <span class="text-slate-400 text-[11px] cursor-default">→</span>
             </div>
           </div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:10px; margin-bottom:3px;">
+            <span class="text-slate-400 font-medium">จ</span><span class="text-slate-400 font-medium">อ</span><span class="text-slate-400 font-medium">พ</span><span class="text-slate-400 font-medium">พฤ</span><span class="text-slate-400 font-medium">ศ</span><span class="text-red-300 font-medium">ส</span><span class="text-red-300 font-medium">อา</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:10px; margin-bottom:6px;">
+            <span></span><span></span><span></span><span></span><span></span><span style="background:#e2e8f0; border-radius:6px; padding:4px 0; color:#94a3b8;">1</span><span style="background:#e2e8f0; border-radius:6px; padding:4px 0; color:#94a3b8;">2</span>
+            <span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">3</span><span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">4</span><span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">5</span><span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">6</span><span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">7</span><span style="background:#e2e8f0; border-radius:6px; padding:4px 0; color:#94a3b8;">8</span><span style="background:#e2e8f0; border-radius:6px; padding:4px 0; color:#94a3b8;">9</span>
+            <span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">10</span><span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">11</span><span style="background:#34d399; border-radius:6px; padding:4px 0; color:white; font-weight:700;">12</span><span style="background:#3b82f6; border-radius:6px; padding:4px 0; color:white; font-weight:700;">13</span><span style="background:#3b82f6; border-radius:6px; padding:4px 0; color:white; font-weight:700;">14</span><span style="background:#e2e8f0; border-radius:6px; padding:4px 0; color:#94a3b8;">15</span><span style="background:#e2e8f0; border-radius:6px; padding:4px 0; color:#94a3b8;">16</span>
+          </div>
+          <div class="flex gap-4 text-[10px] text-slate-400 mb-4">
+            <span class="flex items-center gap-1"><span style="width:10px; height:10px; border-radius:3px; background:#34d399; display:inline-block;"></span> เก็บ</span>
+            <span class="flex items-center gap-1"><span style="width:10px; height:10px; border-radius:3px; background:#e2e8f0; display:inline-block;"></span> หยุดประจำ</span>
+            <span class="flex items-center gap-1"><span style="width:10px; height:10px; border-radius:3px; background:#3b82f6; display:inline-block;"></span> วันหยุดพิเศษ</span>
+          </div>
+
+          <!-- D: Holidays -->
+          <p class="text-[12px] font-bold text-slate-700 mb-2">วันหยุดพิเศษ</p>
+          <div class="flex items-end gap-2 mb-2">
+            <div>
+              <p class="text-[10px] text-slate-500 mb-1">วันที่</p>
+              <div class="mock-input" style="margin:0; width:120px; padding:5px 10px;">2569-04-13</div>
+            </div>
+            <div>
+              <p class="text-[10px] text-slate-500 mb-1">เหตุผล</p>
+              <div class="mock-input" style="margin:0; width:120px; padding:5px 10px;">สงกรานต์</div>
+            </div>
+            <div class="mock-btn-sm bg-blue-600 text-white" style="margin-bottom:2px;">เพิ่ม</div>
+          </div>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-1 rounded-lg font-bold border border-blue-200">13 เม.ย. สงกรานต์ ✕</span>
+            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-1 rounded-lg font-bold border border-blue-200">14 เม.ย. สงกรานต์ ✕</span>
+          </div>
+
+          <!-- E: Quota Summary -->
+          <div style="background:#f8fafc; border-radius:12px; padding:12px; margin-bottom:12px;">
+            <p class="text-[12px] font-bold text-slate-700 mb-1">สรุป Quota เดือนนี้</p>
+            <p class="text-[11px] text-slate-600">เก็บข้อมูล <b>20 วัน</b> / หยุดประจำ 9 วัน / วันหยุด 2 วัน</p>
+            <p class="text-[11px] text-slate-600">Projected: ~<b>14,900 calls</b> (62% of 24,000)</p>
+            <p class="text-[10px] text-slate-400">Device info 4,320 + Status 10,400 (10 ตัว × 52) + Token ~9 ต่อวัน</p>
+          </div>
+
+          <!-- Save button -->
+          <div class="mock-btn-sm bg-[#064e3b] text-white" style="display:inline-block;">บันทึก</div>
         </div>
+
       </div>
     </div>
   </div>
@@ -801,13 +1096,13 @@
     <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
       <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
       <div class="flow-step">
-        <span class="flow-node bg-green-100 text-green-800">Tab "อนุมัติ"</span>
+        <span class="flow-node bg-green-100 text-green-800">Tab "รออนุมัติ (N)"</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-green-200 text-green-900">ดู session รอตรวจ</span>
+        <span class="flow-node bg-green-200 text-green-900">ดูการ์ด session</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-blue-100 text-blue-800">กดดูรายละเอียด</span>
+        <span class="flow-node bg-yellow-100 text-yellow-800">ตรวจสถานะ + จำนวนข้อมูล + baseline</span>
         <span class="flow-arrow">→</span>
-        <span class="flow-node bg-yellow-100 text-yellow-800">ตรวจ baseline + จำนวนข้อมูล</span>
+        <span class="flow-node bg-emerald-100 text-emerald-800">อนุมัติ / ปฏิเสธ</span>
       </div>
       <div class="flex gap-3 mt-3">
         <div class="flex-1 bg-green-100 border-2 border-green-300 rounded-xl p-3 text-center">
@@ -815,10 +1110,14 @@
           <p class="text-green-600 text-[11px] mt-1">ข้อมูลแสดงใน Dashboard</p>
         </div>
         <div class="flex-1 bg-red-100 border-2 border-red-300 rounded-xl p-3 text-center">
-          <p class="text-red-700 font-bold text-[13px]">❌ ปฏิเสธ</p>
+          <p class="text-red-700 font-bold text-[13px]">✗ ปฏิเสธ</p>
           <p class="text-red-600 text-[11px] mt-1">ข้อมูลจะไม่ถูกนำไปใช้</p>
         </div>
       </div>
+    </div>
+
+    <div class="tip-box">
+      <p class="font-bold text-emerald-800">💡 ตัวเลขในแท็บ "รออนุมัติ (2)" = จำนวน <b>session</b> ไม่ใช่จำนวน record — การ์ดมี 2 แบบ: เซนเซอร์ (ขอบส้ม/เขียว/ฟ้า) และ กรอกมือ TVOC/CO (ขอบม่วง)</p>
     </div>
 
     <div class="mock mt-3">
@@ -829,48 +1128,86 @@
       <div class="mock-tabs">
         <span class="mock-tab">ภาพรวม</span>
         <span class="mock-tab">อุปกรณ์</span>
-        <span class="mock-tab active">อนุมัติ (3)</span>
+        <span class="mock-tab active">รออนุมัติ (2)</span>
         <span class="mock-tab">ข้อมูล</span>
         <span class="mock-tab">กำหนดการ</span>
       </div>
       <div class="mock-body">
         <div class="flex justify-between items-center mb-3">
-          <p class="font-bold text-[#0f172a] text-[15px]">✅ อนุมัติข้อมูล <span class="badge" style="background:#fef2f2; color:#dc2626; border:1px solid #fca5a5;">3 รอตรวจ</span></p>
-          <div class="mock-btn-sm bg-emerald-600 text-white">อนุมัติทั้งหมด</div>
+          <div>
+            <p class="font-bold text-[#0f172a] text-[15px]">รออนุมัติข้อมูล</p>
+            <p class="text-[11px] text-slate-400">Sensor 25 records (1 sessions) + Manual 3 records (1 sessions)</p>
+          </div>
+          <div class="flex gap-2">
+            <div class="mock-btn-sm bg-red-100 text-red-600" style="border:1px solid #fca5a5;">✕ ไม่อนุมัติทั้งหมด</div>
+            <div class="mock-btn-sm bg-emerald-600 text-white">✓ อนุมัติทั้งหมด</div>
+          </div>
         </div>
-        <div class="overflow-x-auto">
-          <table class="mock-table" style="min-width:600px;">
-            <thead><tr><th>บ้าน</th><th>วันที่</th><th>เวลา</th><th>ข้อมูล</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
-            <tbody>
-              <tr>
-                <td class="font-bold">บ้านนายสมชาย</td><td>24 มี.ค. 69</td><td>08:15 - 10:25</td>
-                <td><span class="text-[11px] font-bold">25/27</span> <span class="text-[10px] text-slate-400">จุด</span></td>
-                <td><span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a;">รอตรวจ</span></td>
-                <td>
-                  <span class="mock-btn-link text-emerald-600 font-bold">อนุมัติ</span>
-                  <span class="mock-btn-link text-red-400 ml-1">ปฏิเสธ</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="font-bold">บ้านนางสมหญิง</td><td>24 มี.ค. 69</td><td>07:50 - 10:00</td>
-                <td><span class="text-[11px] font-bold">27/27</span> <span class="text-[10px] text-slate-400">จุด</span></td>
-                <td><span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a;">รอตรวจ</span></td>
-                <td>
-                  <span class="mock-btn-link text-emerald-600 font-bold">อนุมัติ</span>
-                  <span class="mock-btn-link text-red-400 ml-1">ปฏิเสธ</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="font-bold">บ้านลุงทอง</td><td>23 มี.ค. 69</td><td>17:20 - 19:30</td>
-                <td><span class="text-[11px] font-bold text-amber-600">18/27</span> <span class="text-[10px] text-slate-400">จุด</span></td>
-                <td><span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a;">รอตรวจ</span></td>
-                <td>
-                  <span class="mock-btn-link text-emerald-600 font-bold">อนุมัติ</span>
-                  <span class="mock-btn-link text-red-400 ml-1">ปฏิเสธ</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <!-- Cards grid (2 columns) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+
+          <!-- Card 1: Sensor session (emerald = complete) -->
+          <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:12px; border-left:4px solid #34d399; display:flex; flex-direction:column; gap:6px;">
+            <div class="flex justify-between items-start">
+              <div style="min-width:0; flex:1;">
+                <p class="font-bold text-[#0f172a] text-[13px]" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🏠 บ้านตัวอย่าง A</p>
+                <p class="text-[10px] text-slate-400">📡 BS 001 · 08:15–10:25 · 25 logs</p>
+              </div>
+              <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; white-space:nowrap;">เสร็จสมบูรณ์</span>
+            </div>
+            <!-- Data coverage bar -->
+            <div class="flex items-center gap-2 text-[10px]">
+              <span class="text-slate-500">25/27 readings</span>
+              <div style="flex:1; height:5px; background:#f1f5f9; border-radius:99px; overflow:hidden;"><div style="width:93%; height:100%; background:#34d399; border-radius:99px;"></div></div>
+              <span class="text-emerald-500">✓</span>
+            </div>
+            <!-- Baseline info -->
+            <div class="flex items-center gap-1.5" style="padding:4px 8px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
+              <span class="text-emerald-500 text-[11px]">✋</span>
+              <span class="text-[10px] text-emerald-700 font-medium">Baseline ด้วยมือ (Manual)</span>
+            </div>
+            <!-- Stats: 4 columns -->
+            <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:4px; text-align:center;">
+              <div style="background:#fff7ed; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Peak PM2.5</div><div class="text-[12px] font-bold text-orange-600">85.3</div></div>
+              <div style="background:rgba(255,247,237,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg PM2.5</div><div class="text-[12px] font-bold text-orange-400">42.1</div></div>
+              <div style="background:#eff6ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Peak CO₂</div><div class="text-[12px] font-bold text-blue-600">1850</div></div>
+              <div style="background:rgba(239,246,255,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg CO₂</div><div class="text-[12px] font-bold text-blue-400">920</div></div>
+            </div>
+            <!-- Action buttons -->
+            <div class="flex gap-1.5">
+              <div class="mock-btn-sm bg-slate-100 text-slate-600" style="border-radius:12px;">📊</div>
+              <div class="mock-btn-sm bg-emerald-100 text-emerald-700" style="flex:1; text-align:center; border-radius:12px;">อนุมัติ</div>
+              <div class="mock-btn-sm bg-red-100 text-red-500" style="border-radius:12px;">✗</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Manual TVOC session (purple border) -->
+          <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:12px; border-left:4px solid #c084fc; display:flex; flex-direction:column; gap:6px;">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-bold text-[#0f172a] text-[13px]">🏠 บ้านตัวอย่าง A</p>
+                <p class="text-[10px] text-slate-400">👤 สมชาย · 24 มี.ค. 69 · 08:20–10:20 น.</p>
+              </div>
+              <span class="badge" style="background:#f3e8ff; color:#7c3aed;">📝 3</span>
+            </div>
+            <!-- Stats: 3 columns (min/avg/max) -->
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4px; text-align:center;">
+              <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Min</div><div class="text-[12px] font-bold text-emerald-600">0.120</div></div>
+              <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg</div><div class="text-[12px] font-bold text-purple-700">0.350</div></div>
+              <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Max</div><div class="text-[12px] font-bold text-red-500">0.580</div></div>
+            </div>
+            <!-- Sparkline placeholder -->
+            <div style="background:#f8fafc; border-radius:8px; padding:6px; height:40px; display:flex; align-items:center; justify-content:center;">
+              <svg viewBox="0 0 200 30" style="width:100%; height:30px;"><polyline points="10,25 50,20 100,8 150,15 190,5" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/><circle cx="190" cy="5" r="3" fill="#ef4444"/><circle cx="10" cy="25" r="3" fill="#22c55e"/></svg>
+            </div>
+            <!-- Action buttons -->
+            <div class="flex gap-1.5">
+              <div class="mock-btn-sm bg-emerald-100 text-emerald-700" style="flex:1; text-align:center; border-radius:12px;">อนุมัติ</div>
+              <div class="mock-btn-sm bg-red-100 text-red-500" style="border-radius:12px;">✗</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -907,48 +1244,63 @@
       </div>
       <div class="mock-tabs">
         <span class="mock-tab">ภาพรวม</span>
-        <span class="mock-tab">อุปกรณ์</span>
+        <span class="mock-tab">ข้อมูล</span>
         <span class="mock-tab">ประวัติ</span>
         <span class="mock-tab active">แอดมิน</span>
         <span class="mock-tab">📖 คู่มือ</span>
       </div>
       <div class="mock-body">
-        <div class="flex justify-between items-center mb-3">
-          <p class="font-bold text-[#0f172a] text-[15px]">👥 จัดการแอดมิน</p>
-          <div class="mock-btn-sm bg-slate-100 text-slate-600 border border-slate-200">🎫 Invite Code: <span class="font-mono">ecostove2026</span></div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="mock-table" style="min-width:550px;">
-            <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>ตำแหน่ง</th><th>จัดการ</th></tr></thead>
-            <tbody>
-              <tr>
-                <td class="font-bold">DewS</td>
-                <td class="text-slate-500">dews.cnx@gmail.com</td>
-                <td><span class="badge badge-super">⭐ Super Admin</span></td>
-                <td class="text-slate-300 text-[11px]">— (ตัวเอง)</td>
-              </tr>
-              <tr>
-                <td class="font-bold">อ.แก้ว</td>
-                <td class="text-slate-500">kaew@cmru.ac.th</td>
-                <td><span class="badge badge-admin">Admin</span></td>
-                <td>
-                  <span class="mock-btn-link text-rose-500">เลื่อน</span>
-                  <span class="mock-btn-link text-blue-500 ml-1">Reset PIN</span>
-                  <span class="mock-btn-link text-red-400 ml-1">ลบ</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="font-bold">ผู้ช่วย A</td>
-                <td class="text-slate-500">assistant@cmru.ac.th</td>
-                <td><span class="badge badge-admin">Admin</span></td>
-                <td>
-                  <span class="mock-btn-link text-rose-500">เลื่อน</span>
-                  <span class="mock-btn-link text-blue-500 ml-1">Reset PIN</span>
-                  <span class="mock-btn-link text-red-400 ml-1">ลบ</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <p class="font-bold text-[#0f172a] text-[15px] mb-3">จัดการแอดมิน</p>
+
+        <!-- Admin cards grid (3 columns) -->
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+
+          <!-- Card 1: Super Admin (ตัวเอง) -->
+          <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:16px; border-bottom:4px solid #fb923c; box-shadow:0 10px 30px -10px rgba(15,23,42,0.08);">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-bold text-[#0f172a]" style="font-size:15px;">Admin A</p>
+                <p class="text-[11px] text-slate-500 mt-1">admin_a@email.com</p>
+                <span class="badge badge-super" style="margin-top:6px; display:inline-block;">Super Admin</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-3">ลงทะเบียน 15 มี.ค. 69</p>
+          </div>
+
+          <!-- Card 2: Admin (จัดการได้) -->
+          <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:16px; border-bottom:4px solid #fb923c; box-shadow:0 10px 30px -10px rgba(15,23,42,0.08);">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-bold text-[#0f172a]" style="font-size:15px;">Admin B</p>
+                <p class="text-[11px] text-slate-500 mt-1">admin_b@email.com</p>
+                <span class="badge badge-admin" style="margin-top:6px; display:inline-block;">Admin</span>
+              </div>
+              <div style="display:flex; gap:3px; flex-wrap:wrap; justify-content:flex-end;">
+                <span class="mock-btn-link text-amber-600" style="padding:3px 6px; border-radius:6px;">เลื่อน</span>
+                <span class="mock-btn-link text-emerald-600" style="padding:3px 6px; border-radius:6px;">Reset PIN</span>
+                <span class="mock-btn-link text-red-500" style="padding:3px 6px; border-radius:6px;">ลบ</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-3">ลงทะเบียน 18 มี.ค. 69</p>
+          </div>
+
+          <!-- Card 3: Admin -->
+          <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:16px; border-bottom:4px solid #fb923c; box-shadow:0 10px 30px -10px rgba(15,23,42,0.08);">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-bold text-[#0f172a]" style="font-size:15px;">Admin C</p>
+                <p class="text-[11px] text-slate-500 mt-1">admin_c@email.com</p>
+                <span class="badge badge-admin" style="margin-top:6px; display:inline-block;">Admin</span>
+              </div>
+              <div style="display:flex; gap:3px; flex-wrap:wrap; justify-content:flex-end;">
+                <span class="mock-btn-link text-amber-600" style="padding:3px 6px; border-radius:6px;">เลื่อน</span>
+                <span class="mock-btn-link text-emerald-600" style="padding:3px 6px; border-radius:6px;">Reset PIN</span>
+                <span class="mock-btn-link text-red-500" style="padding:3px 6px; border-radius:6px;">ลบ</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-3">ลงทะเบียน 20 มี.ค. 69</p>
+          </div>
+
         </div>
       </div>
     </div>

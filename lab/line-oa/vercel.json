@@ -2,12 +2,12 @@
   "version": 2,
   "crons": [
     {
-      "path": "/api/cron/morning",
-      "schedule": "0 5 * * *"
+      "path": "/api/cron/evening",
+      "schedule": "0 0 * * *"
     },
     {
-      "path": "/api/cron/evening",
-      "schedule": "0 13 * * *"
+      "path": "/api/cron/morning",
+      "schedule": "0 5 * * *"
     }
   ]
 }

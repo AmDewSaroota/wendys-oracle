@@ -1,7 +1,8 @@
 const https = require('https');
 
 const CHANNEL_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
-const PUSH_SECRET = process.env.PUSH_SECRET || 'ecostove-dev-2026';
+const PUSH_SECRET = process.env.PUSH_SECRET;
+if (!PUSH_SECRET) throw new Error('PUSH_SECRET env var is required');
 
 function linePost(path, body) {
   return new Promise((resolve, reject) => {
@@ -41,7 +42,7 @@ function getBody(req) {
 // Dashboard calls this to send notifications
 //
 // POST /api/push
-// Headers: { "x-push-secret": "ecostove-dev-2026" }
+// Headers: { "x-push-secret": "<PUSH_SECRET env var>" }
 // Body:
 //   Broadcast to all followers:
 //     { "type": "broadcast", "message": "..." }

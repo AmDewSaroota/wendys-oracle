@@ -52,20 +52,20 @@ function lineBroadcast(text) {
   });
 }
 
-// Cron: noon Thai (12:00 = 05:00 UTC) — สรุปการเก็บข้อมูลช่วงเช้า
+// Cron: noon Thai (12:00 = 05:00 UTC) — สรุป session เช้าวันนี้
 module.exports = async function handler(req, res) {
   const thaiNow = new Date(Date.now() + 7 * 3600000);
   const today = new Date().toISOString().split('T')[0];
   const dateStr = new Date().toLocaleDateString('th-TH', {
     timeZone: 'Asia/Bangkok',
-    day: 'numeric', month: 'long',
+    day: 'numeric', month: 'short',
   });
 
-  // Check rest day from sync_config
+  // Check rest day
   const configs = await supabaseGet('/rest/v1/sync_config?select=active_days&limit=1');
   if (configs && configs.length > 0 && configs[0].active_days) {
-    const jsDay = thaiNow.getUTCDay(); // 0=Sun
-    const isoDay = jsDay === 0 ? 7 : jsDay; // 7=อา
+    const jsDay = thaiNow.getUTCDay();
+    const isoDay = jsDay === 0 ? 7 : jsDay;
     const activeDays = configs[0].active_days.split(',').map(d => parseInt(d.trim(), 10));
     if (!activeDays.includes(isoDay)) {
       const dayNames = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
@@ -75,7 +75,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Load active devices with house names from DB
+  // Load active devices with house names
   const devices = await supabaseGet(
     `/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id,subjects(full_name)`
   );
@@ -86,13 +86,19 @@ module.exports = async function handler(req, res) {
   // Query sessions for today
   const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
   const sessions = await supabaseGet(
-    `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,avg_pm25,started_at,ended_at,notes`
+    `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,started_at,ended_at,notes`
   );
 
-  // Categorize devices
-  const stats = { complete: 0, collecting: 0, incomplete: [], noData: [] };
+  // Build per-device status lines (Format C)
+  const lines = [];
 
-  for (const dev of devices) {
+  const sorted = devices.slice().sort((a, b) => {
+    const na = a.subjects?.full_name || '';
+    const nb = b.subjects?.full_name || '';
+    return na.localeCompare(nb, 'th');
+  });
+
+  for (const dev of sorted) {
     const name = dev.subjects?.full_name || dev.tuya_device_id.slice(-6);
     const devSessions = (sessions || []).filter(s => s.device_id === dev.tuya_device_id);
     const completed = devSessions.filter(s => s.session_status === 'complete');
@@ -100,45 +106,24 @@ module.exports = async function handler(req, res) {
     const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
 
     if (completed.length > 0) {
-      stats.complete++;
+      lines.push(`✅ ${name}`);
     } else if (collecting.length > 0) {
-      stats.collecting++;
+      lines.push(`🔄 ${name}`);
     } else if (incomplete.length > 0) {
-      const s = incomplete[0];
-      const notes = s.notes || '';
-      const isTuya = notes.includes('Tuya') || notes.includes('tuya_api');
-      const isOffline = notes.includes('ออฟไลน์');
-      const cause = isTuya ? ' [Tuya ขัดข้อง]' : isOffline ? ' [ออฟไลน์]' : '';
-      stats.incomplete.push({ name, readings: s.readings_count || 0, cause });
+      let cause = '';
+      const tuyaIssue = incomplete.some(s => (s.notes || '').includes('Tuya') || (s.notes || '').includes('tuya_api'));
+      const offlineIssue = incomplete.some(s => (s.notes || '').includes('ออฟไลน์'));
+      if (tuyaIssue) cause = ' [Tuya]';
+      else if (offlineIssue) cause = ' [ออฟไลน์]';
+      lines.push(`⚠️ ${name}${cause}`);
     } else {
-      stats.noData.push(name);
+      lines.push(`❌ ${name}`);
     }
   }
 
-  // Build compact summary
-  const lines = [`สรุปเก็บข้อมูลเช้า (${dateStr})`, ''];
-  const parts = [];
-  if (stats.complete > 0) parts.push(`✅ สำเร็จ ${stats.complete}`);
-  if (stats.collecting > 0) parts.push(`🔄 กำลังเก็บ ${stats.collecting}`);
-  if (stats.incomplete.length > 0) parts.push(`⚠️ ไม่ครบ ${stats.incomplete.length}`);
-  if (stats.noData.length > 0) parts.push(`❌ ไม่มีข้อมูล ${stats.noData.length}`);
-  lines.push(parts.join(' · '));
-  lines.push(`รวม ${stats.complete + stats.collecting}/${devices.length} บ้าน`);
+  const header = `📊 เช้า ${dateStr} (${devices.length} บ้าน)`;
+  const msg = [header, '', ...lines].join('\n');
 
-  if (stats.incomplete.length > 0) {
-    lines.push('', `⚠️ เก็บไม่ครบ (${stats.incomplete.length}):`);
-    stats.incomplete.forEach(h => lines.push(`- ${h.name} (${h.readings} รายการ)${h.cause}`));
-  }
-  if (stats.noData.length > 0) {
-    lines.push('', `❌ ไม่มีข้อมูล (${stats.noData.length}):`);
-    lines.push(stats.noData.join(', '));
-  }
-
-  if (stats.complete + stats.collecting === devices.length) {
-    lines.push('', 'ทุกบ้านเก็บข้อมูลเรียบร้อยค่ะ');
-  }
-
-  const collected = stats.complete + stats.collecting;
-  const result = await lineBroadcast(lines.join('\n'));
-  return res.status(200).json({ ok: true, devices: devices.length, collected, sessions: (sessions || []).length, result });
+  const result = await lineBroadcast(msg);
+  return res.status(200).json({ ok: true, devices: devices.length, sessions: (sessions || []).length, result });
 };

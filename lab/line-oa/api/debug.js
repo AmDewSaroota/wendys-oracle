@@ -1,6 +1,12 @@
 const https = require('https');
 
 module.exports = async function handler(req, res) {
+  // Auth check — same secret as push endpoint
+  const secret = req.headers['x-push-secret'] || req.query.secret;
+  if (!process.env.PUSH_SECRET || secret !== process.env.PUSH_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
   // Check if token exists on Vercel

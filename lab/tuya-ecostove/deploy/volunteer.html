@@ -765,28 +765,48 @@ document.addEventListener('visibilitychange', () => {
 
 async function pollStatus() {
   if (!selectedHouse) return;
+  try {
 
   // 1. Find device for this house
-  const { data: devices } = await sb.from('devices')
+  const { data: devices, error: devErr } = await sb.from('devices')
     .select('id, tuya_device_id, name')
     .eq('subject_id', selectedHouse.id)
     .limit(1);
 
-  if (!devices || devices.length === 0) {
-    setSensorUI('no-device', '❌', 'ไม่พบเซนเซอร์', 'บ้านนี้ยังไม่ได้ลงทะเบียนเซนเซอร์ในระบบ');
+  if (devErr || !devices) {
+    setSensorUI('conn-error', '📶', 'การเชื่อมต่อขัดข้อง', 'กำลังลองใหม่อัตโนมัติ...');
+    return;
+  }
+  if (devices.length === 0) {
+    if (currentDevice) {
+      // เคยเจอ device แล้ว แต่ query กลับว่าง → connection issue ไม่ใช่ "ไม่พบ"
+      setSensorUI('conn-error', '📶', 'การเชื่อมต่อขัดข้อง', 'กำลังลองใหม่อัตโนมัติ...');
+    } else {
+      setSensorUI('no-device', '❌', 'ไม่พบเซนเซอร์', 'บ้านนี้ยังไม่ได้ลงทะเบียนเซนเซอร์ในระบบ');
+    }
     return;
   }
   currentDevice = devices[0];
 
   // 2. Check for active session on this device
-  const { data: sessions } = await sb.from('sessions')
+  const { data: sessions, error: sessErr } = await sb.from('sessions')
     .select('*')
     .eq('device_id', currentDevice.tuya_device_id)
     .in('session_status', ['baseline', 'collecting'])
     .order('started_at', { ascending: false })
     .limit(1);
 
-  if (!sessions || sessions.length === 0) {
+  if (sessErr || !sessions) {
+    // Network error during session check — keep previous state if available
+    if (activeSession) {
+      setSensorUI('conn-error', '📶', 'การเชื่อมต่อขัดข้อง — ข้อมูลอาจไม่อัปเดต', 'กำลังลองใหม่อัตโนมัติ...');
+    } else {
+      setSensorUI('conn-error', '📶', 'การเชื่อมต่อขัดข้อง', 'กำลังลองใหม่อัตโนมัติ...');
+    }
+    return;
+  }
+
+  if (sessions.length === 0) {
     // Check if daily limit reached (2 completed sessions today)
     const today = new Date().toISOString().split('T')[0];
     const { data: todaySessions } = await sb.from('sessions')
@@ -934,6 +954,12 @@ async function pollStatus() {
       document.getElementById('tvoc-question').classList.remove('hidden');
     }
     showEndButton();
+  }
+
+  } catch (err) {
+    // Unhandled error (network crash, etc.) — show connection issue, don't mislead
+    console.error('pollStatus error:', err);
+    setSensorUI('conn-error', '📶', 'การเชื่อมต่อขัดข้อง', 'กำลังลองใหม่อัตโนมัติ...');
   }
 }
 

@@ -198,6 +198,38 @@
         }
         .guide-param-card .param-val { font-size: 24px; font-weight: 700; color: #064e3b; }
         .guide-param-card .param-label { font-size: 12px; color: #64748b; margin-top: 2px; }
+        /* Flow diagram + Mockup (from flowmap) */
+        .guide-flow-step { display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
+        .guide-flow-node { padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; margin: 3px 0; }
+        .guide-flow-arrow { font-size: 16px; color: #94a3b8; margin: 0 3px; font-weight: 700; }
+        .guide-mock {
+            background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px -10px rgba(15,23,42,0.08); overflow: hidden; margin-top: 12px;
+        }
+        .guide-mock-nav {
+            background: #064e3b; padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+        }
+        .guide-mock-nav-logo {
+            width: 32px; height: 32px; border-radius: 8px; background: white;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+        }
+        .guide-mock-nav-title { color: white; font-weight: 700; font-size: 13px; }
+        .guide-mock-tabs {
+            display: flex; gap: 4px; padding: 10px 16px; flex-wrap: wrap;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #e2e8f0;
+        }
+        .guide-mock-tab {
+            padding: 5px 12px; border-radius: 10px; font-size: 11px; font-weight: 700;
+            color: #64748b; background: transparent;
+        }
+        .guide-mock-tab.active {
+            background: #064e3b; color: white; box-shadow: 0 4px 8px rgba(6,78,59,0.2);
+        }
+        .guide-mock-body { padding: 16px; }
+        .guide-mock-btn-sm {
+            padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; display: inline-block;
+        }
+        .guide-mock .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
         @media print {
             nav, .scenario-bar, #view-basic, #view-deep,
             .guide-controls, footer, #modal-overlay,
@@ -741,7 +773,7 @@
                     <h3 class="text-2xl font-bold text-navy" data-i18n="project.manage">จัดการโครงการ</h3>
                     <button onclick="showAddProjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="project.add">+ เพิ่มโครงการ</button>
                 </div>
-                <div id="projects-list" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                <div id="projects-list"></div>
             </div>
 
             <!-- Tab 1: อาสาสมัคร -->
@@ -753,7 +785,7 @@
                         <button onclick="showAddVolunteerModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="vol.add">+ เพิ่มอาสา</button>
                     </div>
                 </div>
-                <div id="volunteers-list" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
+                <div id="volunteers-list"></div>
             </div>
 
             <!-- Tab 2: บ้านกลุ่มตัวอย่าง -->
@@ -776,7 +808,7 @@
                         <button onclick="showAddSubjectModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="sub.add">+ เพิ่มบ้าน</button>
                     </div>
                 </div>
-                <div id="subjects-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+                <div id="subjects-list"></div>
             </div>
 
             <!-- Tab 3: อุปกรณ์ -->
@@ -798,7 +830,7 @@
                         <button onclick="showAddDeviceModal()" class="bg-[#064e3b] text-white px-8 py-3 rounded-2xl font-bold shadow-lg hover:bg-[#043327] transition-all" data-i18n="dev.add">+ ผูกเซนเซอร์กับบ้าน</button>
                     </div>
                 </div>
-                <div id="devices-list" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"></div>
+                <div id="devices-list"></div>
                 <div id="tuya-discover-container" class="hidden mt-4 pt-6 border-t border-slate-200">
                     <h4 class="text-lg font-bold text-navy mb-4" data-i18n="dev.tuya.title">🔍 เซนเซอร์จาก Tuya Cloud</h4>
                     <div id="tuya-discover-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -823,7 +855,14 @@
                     <p id="api-quota-warning" class="text-xs text-slate-400 mt-1"></p>
                 </div>
 
-                <!-- Sync Schedule Config -->
+                <!-- Schedule Sub-tabs -->
+                <div class="flex gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-200 shadow-inner w-fit">
+                    <button onclick="switchScheduleSubTab('schedule')" id="sched-sub-schedule" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active" data-i18n="sched.tab.schedule">ตารางเก็บข้อมูล</button>
+                    <button onclick="switchScheduleSubTab('periods')" id="sched-sub-periods" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="sched.tab.periods">ช่วงเก็บข้อมูลแต่ละบ้าน</button>
+                </div>
+
+                <!-- Sub-tab 1: ตารางเก็บข้อมูล -->
+                <div id="sched-sub-schedule-content">
                 <div class="card-styled p-6 rounded-2xl max-w-2xl">
                     <h4 class="text-lg font-bold text-navy mb-1" data-i18n="sched.title">ตารางเก็บข้อมูล</h4>
                     <p class="text-slate-400 text-xs mb-5" data-i18n="sched.subtitle">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
@@ -907,17 +946,22 @@
                     <span id="quiet-hours-status" class="ml-3 text-xs text-slate-400"></span>
                 </div>
 
-                <!-- Section F: ช่วงเก็บข้อมูล (Collection Periods) -->
+                </div> <!-- /sched-sub-schedule-content -->
+
+                <!-- Sub-tab 2: ช่วงเก็บข้อมูลแต่ละบ้าน -->
+                <div id="sched-sub-periods-content" class="hidden">
                 <div class="card-styled p-6 rounded-2xl max-w-3xl">
                     <h4 class="text-lg font-bold text-navy mb-1" data-i18n="sched.periods">ช่วงเก็บข้อมูลแต่ละบ้าน</h4>
                     <p class="text-slate-400 text-xs mb-5" data-i18n="sched.periods.sub">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
-                    <div id="periods-list" class="space-y-3 mb-5"></div>
-                    <div class="flex flex-wrap gap-3">
-                        <button onclick="showBatchPeriodModal()" class="bg-[#064e3b] text-white px-6 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all" data-i18n="sched.batch">ตั้งค่าหลายบ้าน</button>
-                        <button onclick="showAddPeriodModal()" class="bg-slate-100 text-slate-600 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-slate-200 transition-all" data-i18n="sched.add.single">+ เพิ่มรายบ้าน</button>
-                        <button onclick="showBatchDeletePeriodModal()" class="bg-red-50 text-red-500 px-6 py-2 rounded-2xl font-bold text-sm hover:bg-red-100 transition-all" data-i18n="sched.batch.delete">ลบหลายบ้าน</button>
+                    <div id="periods-list" class="mb-5"></div>
+                    <div class="flex flex-wrap gap-3 items-center">
+                        <button id="periods-batch-setup-btn" onclick="showBatchPeriodModal()" class="bg-[#064e3b] text-white px-5 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all opacity-40 cursor-not-allowed" disabled>📅 ตั้งค่าที่เลือก</button>
+                        <button id="periods-batch-edit-btn" onclick="showBatchEditPeriodModal()" class="bg-blue-50 text-blue-600 px-5 py-2 rounded-2xl font-bold text-sm transition-all opacity-40 cursor-not-allowed" disabled>✏️ แก้ไขที่เลือก</button>
+                        <button id="periods-batch-delete-btn" onclick="batchDeleteSelectedPeriods()" class="bg-red-50 text-red-500 px-5 py-2 rounded-2xl font-bold text-sm transition-all opacity-40 cursor-not-allowed" disabled>🗑️ ลบที่เลือก</button>
+                        <span class="text-[12px] text-slate-400" id="periods-selected-count"></span>
                     </div>
                 </div>
+                </div> <!-- /sched-sub-periods-content -->
             </div>
 
             <!-- Tab 4: รออนุมัติ (Session-based) -->
@@ -966,7 +1010,6 @@
                                     <th class="p-3 text-center text-orange-500">PM2.5</th>
                                     <th class="p-3 text-center text-orange-400">PM10</th>
                                     <th class="p-3 text-center text-slate-500">CO2</th>
-                                    <th class="p-3 text-center text-rose-500">CO</th>
                                     <th class="p-3 text-center text-blue-500">AQI</th>
                                     <th class="p-3 text-center text-red-400">°C</th>
                                     <th class="p-3 text-center text-cyan-500">%RH</th>
@@ -1137,7 +1180,7 @@
                         <p class="font-bold text-navy mb-2">สมัครแอดมินใหม่:</p>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">1</div>
-                            <div>กดปุ่ม <b>"สมัครสมาชิก"</b> ที่หน้า login</div>
+                            <div>กดปุ่ม <b>"ลงทะเบียน"</b> ที่หน้า login</div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">2</div>
@@ -1145,7 +1188,7 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">3</div>
-                            <div>กด <b>"สมัคร"</b> → ระบบจะแสดง <b>Recovery Code</b> — <b>ต้องจดเก็บไว้ทันที</b> แสดงครั้งเดียว!</div>
+                            <div>กด <b>"สมัครสมาชิก"</b> → ระบบจะแสดง <b>Recovery Code</b> — <b>ต้องจดเก็บไว้ทันที</b> แสดงครั้งเดียว!</div>
                         </div>
 
                         <div class="guide-danger">
@@ -1166,7 +1209,7 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-red-500">3</div>
-                            <div>กด <b>"รีเซ็ต"</b> → login ด้วย PIN ใหม่ → <b>สร้าง Recovery Code ใหม่ทันที</b></div>
+                            <div>กด <b>"ตั้ง PIN ใหม่"</b> → login ด้วย PIN ใหม่ → <b>สร้าง Recovery Code ใหม่ทันที</b></div>
                         </div>
 
                         <div class="guide-danger">
@@ -1250,9 +1293,9 @@
                         </div>
                         <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
                         <ul class="space-y-1.5 ml-4 list-disc mb-3">
-                            <li><b>แก้ไข</b> — กดที่การ์ดโครงการ → แก้ชื่อ/รายละเอียด → กด "บันทึก"</li>
-                            <li><b>ลบ</b> — กดปุ่มลบ → ยืนยัน (ลบได้เฉพาะโครงการที่ไม่มีบ้านผูกอยู่)</li>
-                            <li><b>ดูผลรวม</b> — แต่ละโครงการแสดงจำนวนบ้าน + เซสชันที่เก็บได้</li>
+                            <li><b>แก้ไข</b> — กดปุ่ม "แก้ไข" ในตาราง → แก้ชื่อ/รายละเอียด → กด "บันทึก"</li>
+                            <li><b>ลบ</b> — กดปุ่ม "ลบ" ในตาราง → ยืนยัน (ลบได้เฉพาะโครงการที่ไม่มีบ้านผูกอยู่)</li>
+                            <li><b>ดูจำนวนบ้าน</b> — คอลัมน์ 🏠 บ้าน แสดงจำนวนบ้านที่ผูกกับโครงการ</li>
                         </ul>
 
                         <div class="guide-tip">
@@ -1283,8 +1326,8 @@
                         </div>
                         <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
                         <ul class="space-y-1.5 ml-4 list-disc mb-3">
-                            <li><b>แก้ไข</b> — กดที่การ์ดอาสา → แก้ชื่อ/เบอร์โทร → กด "บันทึก"</li>
-                            <li><b>ลบ</b> — กดปุ่มลบ → ยืนยัน</li>
+                            <li><b>แก้ไข</b> — กดปุ่ม "แก้ไข" ในตาราง → แก้ชื่อ/เบอร์โทร → กด "บันทึก"</li>
+                            <li><b>ลบ</b> — กดปุ่ม "ลบ" ในตาราง → ยืนยัน</li>
                             <li><b>ค้นหา</b> — พิมพ์ชื่อในช่องค้นหาด้านบน</li>
                         </ul>
 
@@ -1318,11 +1361,16 @@
 
                         <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
                         <ul class="space-y-1.5 ml-4 list-disc mb-3">
-                            <li><b>แก้ไขบ้าน</b> — กดที่การ์ดบ้าน → แก้ข้อมูล → กด "บันทึก"</li>
-                            <li><b>ลบบ้าน</b> — กดปุ่มลบสีแดง → ยืนยัน (ข้อมูล session ที่เชื่อมกับบ้านจะถูกลบด้วย)</li>
+                            <li><b>แก้ไข</b> — กดปุ่ม "แก้ไข" → แก้ข้อมูลบ้าน (ชื่อ, ที่อยู่, อาสา, โครงการ) → กด "บันทึก"</li>
+                            <li><b>ปิดใช้งาน</b> — กดปุ่ม "ปิด" → บ้านจะเปลี่ยนสถานะเป็น "ปิดใช้งาน" หมายความว่าบ้านนี้ยังอยู่ในระบบแต่หยุดเก็บข้อมูลชั่วคราว (เช่น อาสาไม่สะดวก หรือเซนเซอร์เสีย) กดอีกครั้งเพื่อเปิดใช้งานกลับมา</li>
+                            <li><b>ลบบ้าน</b> — กดปุ่ม "ลบ" สีแดง → ยืนยัน (ข้อมูล session ที่เชื่อมกับบ้านจะถูกลบด้วย — ใช้เมื่อบ้านออกจากโครงการถาวร)</li>
                             <li><b>กรองบ้าน</b> — ใช้ dropdown "โครงการ", "อำเภอ", "สถานะเซนเซอร์" เพื่อกรองรายการ</li>
                             <li><b>ค้นหา</b> — พิมพ์ชื่อบ้านในช่องค้นหา</li>
                         </ul>
+
+                        <div class="guide-important">
+                            <b>⚠️ "ปิด" กับ "ลบ" ต่างกัน:</b> "ปิด" = หยุดชั่วคราว (เปิดกลับได้), "ลบ" = ออกจากโครงการถาวร (ข้อมูลหาย)
+                        </div>
 
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> ใช้ Google Maps หาพิกัด GPS ของบ้าน แล้ว copy มาวาง ระบบจะตรวจจับบ้านที่ใกล้ที่สุดเมื่ออาสาเปิดหน้าเก็บข้อมูล
@@ -1341,23 +1389,19 @@
 
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">1</div>
-                            <div><b>ค้นหาเซนเซอร์</b> — กดปุ่ม "🔍 ค้นหาอุปกรณ์จาก Tuya" เพื่อดึงรายชื่อจาก Tuya Cloud</div>
+                            <div><b>ผูกเซนเซอร์กับบ้าน</b> — กดปุ่ม <b>"+ ผูกเซนเซอร์กับบ้าน"</b> → เลือกเซนเซอร์จาก dropdown → เลือกบ้าน → กด "บันทึก"<br><span class="text-slate-500">ชื่อเซนเซอร์ (BS 001-012) จะตั้งให้อัตโนมัติ</span></div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">2</div>
-                            <div><b>ลงทะเบียน</b> — ตั้งชื่อเซนเซอร์ตามรูปแบบ <b>BS 001</b> ถึง <b>BS 012</b><br><span class="text-slate-500">BS = Biomass Stove, ตัวเลขไม่ผูกกับบ้าน — ย้ายเครื่องได้</span></div>
-                        </div>
-                        <div class="guide-step">
-                            <div class="guide-step-num bg-blue-600">3</div>
-                            <div><b>ผูกกับบ้าน</b> — เลือกบ้านที่จะติดตั้งเซนเซอร์ตัวนี้</div>
+                            <div><b>ค้นหาจาก Tuya</b> (ไม่บังคับ) — กดปุ่ม "🔍 ค้นหาจาก Tuya Cloud" เพื่อดูเซนเซอร์ทั้งหมดจาก Tuya Cloud</div>
                         </div>
 
                         <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
                         <ul class="space-y-1.5 ml-4 list-disc mb-3">
-                            <li><b>ดูสถานะ</b> — จุดเขียว = ออนไลน์, จุดแดง = ออฟไลน์ (อัปเดตทุก 5 นาทีตาม sync)</li>
-                            <li><b>เปลี่ยนบ้าน</b> — กดแก้ไข → เลือกบ้านใหม่จาก dropdown</li>
-                            <li><b>ปลดจากบ้าน</b> — กดแก้ไข → เลือก "ไม่ผูกกับบ้าน"</li>
-                            <li><b>ลบเซนเซอร์</b> — กดปุ่มลบ (ลบเฉพาะการลงทะเบียน ไม่ลบตัวเครื่องจริง)</li>
+                            <li><b>ดูสถานะในตาราง</b> — คอลัมน์ "ออนไลน์" แสดง 🟢 Online / ⚪ Offline + คอลัมน์ "สถานะ" แสดงใช้งาน/ปิดใช้งาน</li>
+                            <li><b>เปลี่ยนบ้าน</b> — กด "แก้ไข" ในตาราง → เลือกบ้านใหม่จาก dropdown</li>
+                            <li><b>ปิด/เปิดเครื่อง</b> — กด "ปิด" เพื่อปิดใช้งานชั่วคราว หรือ "เปิด" เพื่อเปิดกลับ</li>
+                            <li><b>ลบเซนเซอร์</b> — กด "ลบ" ในตาราง (ลบเฉพาะการลงทะเบียน ไม่ลบตัวเครื่องจริง)</li>
                         </ul>
 
                         <div class="guide-important">
@@ -1389,20 +1433,26 @@
                         <p class="font-bold text-navy mb-2">วิธีตั้งค่า:</p>
                         <div class="guide-step">
                             <div class="guide-step-num bg-amber-500">1</div>
-                            <div>ไปที่แท็บ <b>"กำหนดการ"</b> → เลื่อนลงมาที่ส่วน <b>"ช่วงเก็บข้อมูลแต่ละบ้าน"</b></div>
+                            <div>ไปที่แท็บ <b>"กำหนดการ"</b> → กดแท็บย่อย <b>"ช่วงเก็บข้อมูลแต่ละบ้าน"</b></div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-amber-500">2</div>
-                            <div>กด <b>"+ เพิ่มช่วงเก็บข้อมูล"</b> หรือ <b>"ตั้งค่าหลายบ้านพร้อมกัน"</b></div>
+                            <div>☑ <b>เลือกบ้านจาก Checkbox</b> ในตาราง (เลือกได้หลายบ้าน หรือกด ☑ ด้านบนเพื่อเลือกทั้งหมด)</div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-amber-500">3</div>
-                            <div>เลือก <b>บ้าน</b> → เลือก <b>ประเภทเตา</b> (เตาชีวมวล หรือ เตาดั้งเดิม) → กำหนด <b>วันเริ่ม-วันสิ้นสุด</b></div>
+                            <div>กดปุ่ม <b>"📅 ตั้งค่าที่เลือก"</b> → เลือก <b>ประเภทเตา</b> (เตาชีวมวล หรือ เตาดั้งเดิม) → กำหนด <b>วันเริ่ม-วันสิ้นสุด</b></div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-amber-500">4</div>
-                            <div>กด <b>"บันทึก"</b> — ระบบจะเริ่มใช้ประเภทเตานี้กับข้อมูลใหม่ทันที</div>
+                            <div>กด <b>"บันทึก"</b> — ระบบจะตั้งค่าให้ทุกบ้านที่เลือกไว้ทันที</div>
                         </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">การจัดการ:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>แก้ไขวันที่</b> — เลือกบ้าน → กด <b>"✏️ แก้ไขที่เลือก"</b> → เปลี่ยนวันที่ได้ (เว้นว่าง = ไม่เปลี่ยน)</li>
+                            <li><b>ลบช่วงเก็บข้อมูล</b> — เลือกบ้าน → กด <b>"🗑️ ลบที่เลือก"</b> → ยืนยัน</li>
+                        </ul>
 
                         <div class="guide-important">
                             <b>⚠️ ตรวจสอบบ่อยๆ:</b> ถ้าเปลี่ยนเฟส (เช่น จากเก็บข้อมูลเตาดั้งเดิม → เตาชีวมวล) ต้องมาเพิ่มช่วงใหม่ที่นี่ ช่วงเก่าที่หมดอายุจะไม่ถูกใช้แล้ว
@@ -1421,7 +1471,7 @@
                         <span class="guide-arrow">▼</span>
                     </div>
                     <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
-                        <p class="mb-3">แท็บ <b>"กำหนดการ"</b> ควบคุมว่าระบบจะดึงข้อมูลจากเซนเซอร์เมื่อไหร่</p>
+                        <p class="mb-3">แท็บ <b>"กำหนดการ"</b> → แท็บย่อย <b>"ตารางเก็บข้อมูล"</b> — ควบคุมว่าระบบจะดึงข้อมูลจากเซนเซอร์เมื่อไหร่</p>
 
                         <p class="font-bold text-navy mb-2">ตั้งค่าได้ 3 อย่าง:</p>
                         <ul class="space-y-2 ml-4 list-disc mb-3">
@@ -1447,40 +1497,160 @@
                     </div>
                 </div>
 
-                <!-- A6: อนุมัติ + Multi-Admin -->
-                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
-                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
-                        <span>✅ อนุมัติข้อมูล + จัดการแอดมิน</span>
+                <!-- A6: อนุมัติข้อมูล (enhanced with Flow Map) -->
+                <div class="guide-section bg-white/60 border border-green-300 shadow-sm ring-2 ring-green-200">
+                    <div class="guide-header bg-green-50" onclick="toggleGuideSection(this)">
+                        <span>✅ อนุมัติข้อมูล</span>
                         <span class="guide-arrow">▼</span>
                     </div>
                     <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
-                        <p class="font-bold text-navy mb-2">การอนุมัติข้อมูล:</p>
-                        <p class="mb-3">แท็บ <b>"อนุมัติ"</b> แสดงเซสชันที่รอตรวจสอบ แต่ละเซสชันจะแสดง:</p>
+                        <p class="mb-3">ตรวจสอบ session ที่เก็บมา แล้วอนุมัติหรือปฏิเสธ</p>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-green-100 text-green-800">Tab "รออนุมัติ (N)"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">ดูการ์ด session</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-yellow-100 text-yellow-800">ตรวจสถานะ + จำนวนข้อมูล + baseline</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-emerald-100 text-emerald-800">อนุมัติ / ปฏิเสธ</span>
+                            </div>
+                            <div class="flex gap-3 mt-3">
+                                <div class="flex-1 bg-green-100 border-2 border-green-300 rounded-xl p-3 text-center">
+                                    <p class="text-green-700 font-bold text-[13px]">✅ อนุมัติ</p>
+                                    <p class="text-green-600 text-[11px] mt-1">ข้อมูลแสดงใน Dashboard</p>
+                                </div>
+                                <div class="flex-1 bg-red-100 border-2 border-red-300 rounded-xl p-3 text-center">
+                                    <p class="text-red-700 font-bold text-[13px]">✗ ปฏิเสธ</p>
+                                    <p class="text-red-600 text-[11px] mt-1">ข้อมูลจะไม่ถูกนำไปใช้</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ ตัวเลขในแท็บ "รออนุมัติ (2)"</b> = จำนวน <b>session</b> ไม่ใช่จำนวน record — การ์ดมี 2 แบบ: เซนเซอร์ (ขอบส้ม/เขียว/ฟ้า) และ กรอกมือ TVOC/CO (ขอบม่วง)
+                        </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">แต่ละการ์ด session จะแสดง:</p>
                         <ul class="space-y-1 ml-4 list-disc mb-3">
                             <li>ชื่อบ้าน + ชื่อเซนเซอร์ + ช่วงเวลา</li>
                             <li>จำนวนค่าที่เก็บได้ เทียบกับที่คาดหวัง (เช่น 25/27 ค่า)</li>
                             <li>ค่า Baseline — ข้อมูลอากาศก่อนจุดเตา</li>
-                            <li>ค่าเฉลี่ย PM2.5, CO2</li>
-                            <li>สถานะ: ✅ เก็บครบ / ⚠️ ไม่ครบ</li>
+                            <li>ค่าเฉลี่ย PM2.5, CO₂</li>
+                            <li>สถานะ: เสร็จสมบูรณ์ / ไม่ครบ</li>
                         </ul>
-                        <p class="mb-3">กด <b>"✓ อนุมัติ"</b> เพื่อยืนยัน หรือ <b>"✕"</b> เพื่อปฏิเสธ</p>
 
                         <p class="font-bold text-navy mb-2">การใช้งาน:</p>
                         <ul class="space-y-1.5 ml-4 list-disc mb-3">
-                            <li><b>อนุมัติทีละรายการ</b> — กดปุ่ม "✓" บนการ์ดแต่ละ session</li>
-                            <li><b>อนุมัติทั้งหมด</b> — กดปุ่ม "✓ อนุมัติทั้งหมด" ด้านบน (อนุมัติทุก session ที่แสดง)</li>
+                            <li><b>อนุมัติทีละรายการ</b> — กดปุ่ม "อนุมัติ" บนการ์ดแต่ละ session</li>
+                            <li><b>อนุมัติทั้งหมด</b> — กดปุ่ม "✓ อนุมัติทั้งหมด" ด้านบน</li>
                             <li><b>ปฏิเสธ</b> — กดปุ่ม "✕" → ข้อมูล session นั้นจะไม่ถูกนำไปคำนวณใน Dashboard</li>
-                            <li><b>ตรวจสอบก่อนอนุมัติ</b> — ดูจำนวนค่าที่เก็บได้ (เช่น 25/27) ถ้าน้อยเกินอาจปฏิเสธ</li>
+                            <li><b>ดูกราฟ</b> — กดปุ่ม "📊" เพื่อดูข้อมูลเซสชันแบบกราฟก่อนตัดสินใจ</li>
                         </ul>
 
-                        <div class="guide-tip mb-4">
-                            <b>💡 เคล็ดลับ:</b> ตัวเลขในแท็บ "รออนุมัติ (5)" แสดงจำนวน session ที่รอดู ตรวจสอบเป็นประจำ อย่าปล่อยค้างนาน
+                        <!-- Mockup -->
+                        <p class="font-bold text-navy mt-4 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">อุปกรณ์</span>
+                                <span class="guide-mock-tab active">รออนุมัติ (2)</span>
+                                <span class="guide-mock-tab">ข้อมูล</span>
+                                <span class="guide-mock-tab">กำหนดการ</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <div class="flex justify-between items-center mb-3">
+                                    <div>
+                                        <p class="font-bold text-[#0f172a] text-[15px]">รออนุมัติข้อมูล</p>
+                                        <p class="text-[11px] text-slate-400">Sensor 25 records (1 sessions) + Manual 3 records (1 sessions)</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <div class="guide-mock-btn-sm bg-red-100 text-red-600" style="border:1px solid #fca5a5;">✕ ไม่อนุมัติทั้งหมด</div>
+                                        <div class="guide-mock-btn-sm bg-emerald-600 text-white">✓ อนุมัติทั้งหมด</div>
+                                    </div>
+                                </div>
+                                <!-- Cards grid (2 columns) -->
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                    <!-- Card 1: Sensor session -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:12px; border-left:4px solid #34d399; display:flex; flex-direction:column; gap:6px;">
+                                        <div class="flex justify-between items-start">
+                                            <div style="min-width:0; flex:1;">
+                                                <p class="font-bold text-[#0f172a] text-[13px]" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🏠 บ้านตัวอย่าง A</p>
+                                                <p class="text-[10px] text-slate-400">📡 BS 001 · 08:15–10:25 · 25 logs</p>
+                                            </div>
+                                            <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; white-space:nowrap;">เสร็จสมบูรณ์</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-[10px]">
+                                            <span class="text-slate-500">25/27 readings</span>
+                                            <div style="flex:1; height:5px; background:#f1f5f9; border-radius:99px; overflow:hidden;"><div style="width:93%; height:100%; background:#34d399; border-radius:99px;"></div></div>
+                                            <span class="text-emerald-500">✓</span>
+                                        </div>
+                                        <div class="flex items-center gap-1.5" style="padding:4px 8px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
+                                            <span class="text-emerald-500 text-[11px]">✋</span>
+                                            <span class="text-[10px] text-emerald-700 font-medium">Baseline ด้วยมือ (Manual)</span>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:4px; text-align:center;">
+                                            <div style="background:#fff7ed; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Peak PM2.5</div><div class="text-[12px] font-bold text-orange-600">85.3</div></div>
+                                            <div style="background:rgba(255,247,237,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg PM2.5</div><div class="text-[12px] font-bold text-orange-400">42.1</div></div>
+                                            <div style="background:#eff6ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Peak CO₂</div><div class="text-[12px] font-bold text-blue-600">1850</div></div>
+                                            <div style="background:rgba(239,246,255,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg CO₂</div><div class="text-[12px] font-bold text-blue-400">920</div></div>
+                                        </div>
+                                        <div class="flex gap-1.5">
+                                            <div class="guide-mock-btn-sm bg-slate-100 text-slate-600" style="border-radius:12px;">📊</div>
+                                            <div class="guide-mock-btn-sm bg-emerald-100 text-emerald-700" style="flex:1; text-align:center; border-radius:12px;">อนุมัติ</div>
+                                            <div class="guide-mock-btn-sm bg-red-100 text-red-500" style="border-radius:12px;">✗</div>
+                                        </div>
+                                    </div>
+                                    <!-- Card 2: Manual TVOC session (purple) -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:16px; padding:12px; border-left:4px solid #c084fc; display:flex; flex-direction:column; gap:6px;">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-bold text-[#0f172a] text-[13px]">🏠 บ้านตัวอย่าง A</p>
+                                                <p class="text-[10px] text-slate-400">👤 สมชาย · 24 มี.ค. 69 · 08:20–10:20 น.</p>
+                                            </div>
+                                            <span class="badge" style="background:#f3e8ff; color:#7c3aed;">📝 3</span>
+                                        </div>
+                                        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4px; text-align:center;">
+                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Min</div><div class="text-[12px] font-bold text-emerald-600">0.120</div></div>
+                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg</div><div class="text-[12px] font-bold text-purple-700">0.350</div></div>
+                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Max</div><div class="text-[12px] font-bold text-red-500">0.580</div></div>
+                                        </div>
+                                        <div style="background:#f8fafc; border-radius:8px; padding:6px; height:40px; display:flex; align-items:center; justify-content:center;">
+                                            <svg viewBox="0 0 200 30" style="width:100%; height:30px;"><polyline points="10,25 50,20 100,8 150,15 190,5" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/><circle cx="190" cy="5" r="3" fill="#ef4444"/><circle cx="10" cy="25" r="3" fill="#22c55e"/></svg>
+                                        </div>
+                                        <div class="flex gap-1.5">
+                                            <div class="guide-mock-btn-sm bg-emerald-100 text-emerald-700" style="flex:1; text-align:center; border-radius:12px;">อนุมัติ</div>
+                                            <div class="guide-mock-btn-sm bg-red-100 text-red-500" style="border-radius:12px;">✗</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
+                        <div class="guide-tip mt-3">
+                            <b>💡 เคล็ดลับ:</b> ตรวจสอบแท็บ "รออนุมัติ" เป็นประจำ อย่าปล่อยค้างนาน — ข้อมูลที่ยังไม่อนุมัติจะไม่ถูกแสดงใน Dashboard
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A7: จัดการแอดมิน (Multi-Admin) -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>👑 จัดการแอดมิน (Multi-Admin)</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
                         <p class="font-bold text-navy mb-2">ระบบ Multi-Admin:</p>
                         <div class="guide-step">
                             <div class="guide-step-num bg-slate-600">1</div>
-                            <div><b>ลงทะเบียนแอดมินใหม่:</b> กดปุ่ม "สมัครแอดมินใหม่" กรอก Email + ตั้ง PIN ส่วนตัว + ใส่รหัสเชิญ<br><span class="text-slate-500">รหัสเชิญ: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">ecostove2026</code></span></div>
+                            <div><b>ลงทะเบียนแอดมินใหม่:</b> กดปุ่ม <b>"ลงทะเบียน"</b> ที่หน้า login → กรอก Email + ตั้ง PIN ส่วนตัว + ใส่รหัสเชิญ<br><span class="text-slate-500">รหัสเชิญ: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-xs">ecostove2026</code></span></div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-slate-600">2</div>
@@ -2217,6 +2387,7 @@
             'vol.add.title': { th: 'เพิ่มอาสาสมัคร', en: 'Add Volunteer' },
             'vol.name': { th: 'ชื่อ-นามสกุล', en: 'Full Name' },
             'vol.phone': { th: 'เบอร์โทร', en: 'Phone' },
+            'vol.house': { th: 'บ้านที่รับผิดชอบ', en: 'Assigned House' },
             'vol.no.data': { th: 'ยังไม่มีอาสาสมัคร', en: 'No volunteers yet' },
             'vol.active': { th: '● ใช้งาน', en: '● Active' },
             'vol.deleted': { th: 'ลบอาสาสมัครแล้ว', en: 'Volunteer deleted' },
@@ -2243,6 +2414,8 @@
             'project.add': { th: '+ เพิ่มโครงการ', en: '+ Add Project' },
             'project.add.title': { th: 'เพิ่มโครงการ', en: 'Add Project' },
             'project.edit': { th: 'แก้ไขโครงการ', en: 'Edit Project' },
+            'project.name': { th: 'ชื่อโครงการ', en: 'Project' },
+            'project.desc': { th: 'รายละเอียด', en: 'Description' },
             'project.name.ph': { th: 'ชื่อโครงการ', en: 'Project Name' },
             'project.desc.ph': { th: 'รายละเอียด (ไม่บังคับ)', en: 'Description (optional)' },
             'project.no.data': { th: 'ยังไม่มีโครงการ', en: 'No projects yet' },
@@ -2252,10 +2425,12 @@
             'project.deleted': { th: 'ลบโครงการแล้ว', en: 'Project deleted' },
             'project.delete.error': { th: 'ลบไม่ได้', en: 'Cannot delete' },
             'sub.select.vol': { th: '-- เลือกอาสาสมัคร --', en: '-- Select Volunteer --' },
+            'sub.house': { th: 'บ้าน', en: 'House' },
+            'sub.status': { th: 'สถานะ', en: 'Status' },
             'sub.no.data': { th: 'ยังไม่มีกลุ่มตัวอย่าง', en: 'No subject houses yet' },
             'sub.active': { th: '● ใช้งาน', en: '● Active' },
             'sub.inactive': { th: '○ ปิดใช้งาน', en: '○ Inactive' },
-            'sub.volunteer': { th: 'อาสา: ', en: 'Volunteer: ' },
+            'sub.volunteer': { th: 'อาสา', en: 'Volunteer' },
             'sub.unassigned': { th: 'ไม่ระบุ', en: 'Unassigned' },
             'sub.deleted': { th: 'ลบบ้านแล้ว', en: 'House deleted' },
             'sub.added': { th: 'เพิ่มบ้านสำเร็จ', en: 'House added' },
@@ -2287,7 +2462,8 @@
             'filter.sensor.unlinked': { th: 'ยังไม่ผูก', en: 'Unlinked' },
             'dev.name': { th: 'ชื่อเครื่อง', en: 'Device Name' },
             'dev.name.ph': { th: 'ตั้งชื่อ (เช่น บ้านดอยสุเทพ-1)', en: 'Name (e.g. House-1)' },
-            'dev.house': { th: 'ติดตั้งที่บ้าน', en: 'Install at House' },
+            'dev.house': { th: 'บ้าน', en: 'House' },
+            'dev.house.modal': { th: 'ติดตั้งที่บ้าน', en: 'Install at House' },
             'dev.select.house': { th: '-- เลือกบ้าน --', en: '-- Select House --' },
             'dev.no.data': { th: 'ยังไม่มีเครื่องวัด', en: 'No devices yet' },
             'dev.house.label': { th: 'บ้าน: ', en: 'House: ' },
@@ -2523,10 +2699,11 @@
             'house.unassigned': { th: 'ไม่ระบุบ้าน', en: 'Unassigned house' },
             // Overview stats
             'overview.stat.houses': { th: 'บ้านทั้งหมด', en: 'Total Houses' },
-            'overview.stat.houses.online': { th: 'บ้านออนไลน์', en: 'Houses Online' },
-            'overview.stat.houses.offline': { th: 'บ้านออฟไลน์', en: 'offline' },
-            'overview.stat.sensors': { th: 'เซนเซอร์จับคู่แล้ว', en: 'Paired Sensors' },
-            'overview.stat.online': { th: 'ออนไลน์', en: 'Online' },
+            'overview.stat.houses.in.project': { th: 'บ้านในโครงการ', en: 'Houses in Project' },
+            'overview.stat.houses.with.sensor': { th: 'มีเซนเซอร์', en: 'with sensor' },
+            'overview.stat.houses.stove.only': { th: 'มีแค่เตา', en: 'stove only' },
+            'overview.stat.sensors': { th: 'เซนเซอร์', en: 'Sensors' },
+            'overview.stat.sensors.online': { th: 'ออนไลน์', en: 'online' },
             'overview.stat.volunteers': { th: 'อาสาสมัคร', en: 'Volunteers' },
             'overview.stat.projects': { th: 'โครงการ', en: 'Projects' },
             'overview.no.results': { th: 'ไม่พบผลลัพธ์', en: 'No results found' },
@@ -2572,6 +2749,9 @@
             'actlog.showing.latest': { th: 'แสดง 50 รายการล่าสุด', en: 'Showing latest 50 records' },
             // Schedule - collection periods
             'sched.periods.count': { th: '{0} ช่วง', en: '{0} periods' },
+            'sched.tab.schedule': { th: 'ตารางเก็บข้อมูล', en: 'Collection Schedule' },
+            'sched.tab.periods': { th: 'ช่วงเก็บข้อมูลแต่ละบ้าน', en: 'Per-House Periods' },
+            'sched.actions': { th: 'จัดการ', en: 'Actions' },
             'sched.stove.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
             'sched.stove.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
             'sched.edit': { th: 'แก้ไข', en: 'Edit' },
@@ -2596,6 +2776,7 @@
             'period.select.house.warn': { th: 'กรุณาเลือกบ้าน', en: 'Please select a house' },
             'period.select.stove.warn': { th: 'กรุณาเลือกประเภทเตา', en: 'Please select stove type' },
             'period.select.start.warn': { th: 'กรุณาระบุวันเริ่มต้น', en: 'Please set start date' },
+            'period.end.required': { th: 'กรุณากรอกวันสิ้นสุด', en: 'End date is required' },
             'period.end.before.start': { th: 'วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น', en: 'End date must not be before start date' },
             'period.overlap': { th: 'ช่วงเวลาซ้อนกับช่วงที่มีอยู่แล้ว', en: 'Period overlaps with existing' },
             // Sensor chart info
@@ -2625,8 +2806,6 @@
             'quota.rest': { th: 'หยุดประจำ', en: 'regular off' },
             'quota.holiday': { th: 'วันหยุดพิเศษ', en: 'holidays' },
             'quota.of': { th: 'ของ', en: 'of' },
-            'quota.saved': { th: 'ประหยัดไป', en: 'Saved' },
-            'quota.saved.from': { th: 'จากวันหยุด+เวลาพัก', en: 'from holidays + quiet hours' },
             'quota.warn': { th: 'โควต้าอาจเกิน 80% — ลองเพิ่มวันหยุดหรือขยายเวลาพัก', en: 'Quota may exceed 80% — try adding holidays or extending quiet hours' },
             // Activity log action translations
             'action.login': { th: 'เข้าสู่ระบบ', en: 'Logged in' },
@@ -4027,6 +4206,23 @@
             partLabels.forEach(l => { l.style.display = 'none'; });
             countEl.textContent = matched + ' ผลลัพธ์';
             countEl.classList.remove('hidden');
+        }
+
+        // Sub-tabs within "กำหนดการ" tab
+        function switchScheduleSubTab(sub) {
+            document.getElementById('sched-sub-schedule').classList.remove('tab-active');
+            document.getElementById('sched-sub-schedule').classList.add('text-slate-500');
+            document.getElementById('sched-sub-periods').classList.remove('tab-active');
+            document.getElementById('sched-sub-periods').classList.add('text-slate-500');
+
+            const activeBtn = document.getElementById(`sched-sub-${sub}`);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('text-slate-500');
+
+            document.getElementById('sched-sub-schedule-content').classList.toggle('hidden', sub !== 'schedule');
+            document.getElementById('sched-sub-periods-content').classList.toggle('hidden', sub !== 'periods');
+
+            if (sub === 'periods') renderPeriodsList();
         }
 
         // Sub-tabs within "ข้อมูล" tab
@@ -5711,7 +5907,7 @@
             });
 
             if (_dataFiltered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-slate-400">' + t('data.no.data') + '</td></tr>';
                 document.getElementById('data-load-more-wrap').classList.add('hidden');
                 return;
             }
@@ -5736,7 +5932,6 @@
                     <td class="p-3 text-center ${pm25Class}">${d.pm25_value ?? '-'}</td>
                     <td class="p-3 text-center text-orange-400">${d.pm10_value ?? '-'}</td>
                     <td class="p-3 text-center text-slate-600">${d.co2_value ?? '-'}</td>
-                    <td class="p-3 text-center text-rose-500">${d.co_value ?? '-'}</td>
                     <td class="p-3 text-center text-blue-500">${d.aqi ?? '-'}</td>
                     <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
                     <td class="p-3 text-center text-cyan-500">${d.humidity ?? '-'}</td>
@@ -5921,8 +6116,6 @@
                 const sensorData = (data || []).filter(d => d.data_source !== 'manual');
                 const manualData = (data || []).filter(d => d.data_source === 'manual');
 
-                document.getElementById('count-pending').textContent = data?.length || 0;
-
                 // Lookup house names for manual records
                 let manualHouseMap = {};
                 if (manualData.length > 0) {
@@ -6014,6 +6207,9 @@
                     manualSessions.push(cur);
                 }
                 manualSessions.sort((a, b) => new Date(b.logs[0].recorded_at) - new Date(a.logs[0].recorded_at));
+
+                // Badge count = number of sessions (not individual records)
+                document.getElementById('count-pending').textContent = sessions.length + manualSessions.length;
 
                 if (!hasAny) {
                     container.innerHTML = '<div class="col-span-2 text-center py-12 text-slate-400 text-lg">' + t('approval.no.data') + '</div>';
@@ -6404,24 +6600,45 @@
                 || (d.tuya_device_id || '').toLowerCase().includes(q)
                 || (d.subjects?.full_name || '').toLowerCase().includes(q)
             );
-            list.innerHTML = filtered.map(d => `
-                <div class="card-styled p-4 sm:p-6 rounded-2xl">
-                    <div class="flex items-start gap-3 mb-3">
-                        <span class="text-2xl sm:text-3xl">📡</span>
-                        <div class="flex-1 min-w-0">
-                            <p class="font-bold text-navy truncate">${esc(DEVICE_NAMES[d.tuya_device_id] || d.name)}</p>
-                            <p class="text-[11px] sm:text-[12px] text-slate-400 truncate">${esc(d.name)} <span class="font-mono opacity-60">${esc(d.tuya_device_id?.slice(-8))}</span></p>
-                        </div>
-                    </div>
-                    <p class="text-[13px] text-slate-500 mb-1">${t('dev.house.label')}${esc(d.subjects?.full_name) || t('dev.unassigned')}</p>
-                    <p class="text-[13px] ${d.is_active ? 'text-emerald-500' : 'text-red-500'} mb-3">${d.is_active ? t('dev.active') : t('dev.inactive')}</p>
-                    <div class="flex gap-2 flex-wrap">
-                        <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                        <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${d.is_active ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${d.is_active ? t('dev.off') : t('dev.on')}</button>
-                        <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(DEVICE_NAMES[d.tuya_device_id] || d.name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
-                    </div>
-                </div>
-            `).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('dev.no.data')) + '</p>';
+            if (filtered.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 text-center py-4">' + (q ? t('overview.no.results') : t('dev.no.data')) + '</p>';
+                return;
+            }
+            const rows = filtered.map(d => {
+                const displayName = DEVICE_NAMES[d.tuya_device_id] || d.name;
+                const health = sensorHealthMap[d.tuya_device_id];
+                const isOnline = health?.status === 'online';
+                return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                    <td class="px-4 py-3">
+                        <span class="text-[13px] font-bold text-navy">${esc(displayName)}</span>
+                        <span class="text-[11px] text-slate-400 font-mono ml-2">${esc(d.tuya_device_id?.slice(-8))}</span>
+                    </td>
+                    <td class="px-4 py-3 text-[12px] text-slate-500">${esc(d.subjects?.full_name) || '<span class="text-slate-300">' + t('dev.unassigned') + '</span>'}</td>
+                    <td class="px-4 py-3 text-center">
+                        <span class="text-[11px] px-2 py-0.5 rounded-full font-bold ${isOnline ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}">${isOnline ? '🟢 Online' : '⚪ Offline'}</span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <span class="text-[11px] px-2 py-0.5 rounded-full font-bold ${d.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}">${d.is_active ? t('dev.active') : t('dev.inactive')}</span>
+                    </td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[11px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
+                        <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[11px] ${d.is_active ? 'text-orange-500 hover:text-orange-600' : 'text-emerald-500 hover:text-emerald-600'} hover:underline mr-2">${d.is_active ? t('dev.off') : t('dev.on')}</button>
+                        <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(displayName)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                    </td>
+                </tr>`;
+            }).join('');
+            list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead><tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.name')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.house')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">${t('overview.stat.sensors.online')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">${t('sub.status')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
         }
 
         async function toggleDevice(id, active) {
@@ -6665,15 +6882,31 @@
                 quietMins = (eh * 60 + em) - (sh * 60 + sm);
                 if (quietMins <= 0) quietMins += 1440;
             }
-            const callsPerActiveDay = Math.round((1440 - quietMins) / 5); // 1 call per 5 min (batch)
+
+            // === Accurate API call estimation (matches sync.js) ===
+            // Sync runs every 5 min during active (non-quiet) hours
+            const syncCyclesPerDay = Math.round((1440 - quietMins) / 5);
+            const numActiveSensors = devices.filter(d => d.is_active).length;
+
+            // 1) Device info: 1 API call per sync cycle (Smart Home API, all devices at once)
+            const deviceInfoPerDay = syncCyclesPerDay;
+            // 2) Status calls: 1 call per online sensor per collecting cycle
+            //    Max: 2 sessions × 130 min ÷ 5 min = 52 collecting cycles/device/day
+            const maxCollectingCycles = 2 * Math.floor(130 / 5); // 52
+            const statusPerDay = numActiveSensors * maxCollectingCycles;
+            // 3) Token refresh: ~1 call per 2 hours of active time
+            const tokenPerDay = Math.ceil((1440 - quietMins) / 120);
+
+            const callsPerActiveDay = deviceInfoPerDay + statusPerDay + tokenPerDay;
             const projected = activeDayCount * callsPerActiveDay;
-            const saved = (restDayCount + holidayCount) * 288 + activeDayCount * Math.round(quietMins / 5); // 288 = full day calls
             const pct = Math.round(projected / 24000 * 100);
 
+            const sensorLabel = currentLang === 'th' ? 'ตัว' : 'sensors';
+            const dayLabel = currentLang === 'th' ? 'ต่อวัน' : '/day';
             el.innerHTML = `
                 <p>${t('quota.collect')} <strong>${activeDayCount} ${t('quota.days')}</strong> / ${t('quota.rest')} ${restDayCount} ${t('quota.days')} / ${t('quota.holiday')} ${holidayCount} ${t('quota.days')}</p>
                 <p>Projected: ~<strong>${projected.toLocaleString()} calls</strong> (${pct}% ${t('quota.of')} 24,000)</p>
-                <p class="text-xs text-slate-400">${t('quota.saved')} ~${saved.toLocaleString()} calls ${t('quota.saved.from')}</p>
+                <p class="text-xs text-slate-400">Device info ${deviceInfoPerDay.toLocaleString()} + Status ${statusPerDay.toLocaleString()} (${numActiveSensors} ${sensorLabel} × ${maxCollectingCycles}) + Token ~${tokenPerDay} ${dayLabel}</p>
             `;
 
             if (warnEl) {
@@ -6742,68 +6975,127 @@
                 grouped[p.subject_id].push(p);
             }
 
-            // Sort periods within each house by starts_at
+            // Sort periods within each house by starts_at desc (latest first)
             for (const sid of Object.keys(grouped)) {
-                grouped[sid].sort((a, b) => a.starts_at.localeCompare(b.starts_at));
+                grouped[sid].sort((a, b) => b.starts_at.localeCompare(a.starts_at));
             }
 
-            // Houses with sensors but no period
-            const configuredIds = new Set(Object.keys(grouped).map(Number));
+            // Only show houses that have sensors (no sensor = no data to collect)
             const housesWithSensors = getHousesWithSensors();
-            const unconfigured = housesWithSensors.filter(s => !configuredIds.has(s.id));
+            const sensorHouseIds = new Set(housesWithSensors.map(s => s.id));
+            const allHouseIds = [...sensorHouseIds];
+            allHouseIds.sort((a, b) => {
+                const na = subjectMap[a] || '', nb = subjectMap[b] || '';
+                return na.localeCompare(nb, 'th');
+            });
+
+            let rows = '';
+            for (const sid of allHouseIds) {
+                const houseName = subjectMap[sid] || t('sched.house.fallback') + sid;
+                const periods = grouped[sid] || [];
+                const oldPeriod = periods.find(p => p.stove_type === 'old' && p.starts_at <= today && (!p.ends_at || p.ends_at >= today))
+                    || periods.find(p => p.stove_type === 'old');
+                const ecoPeriod = periods.find(p => p.stove_type === 'eco' && p.starts_at <= today && (!p.ends_at || p.ends_at >= today))
+                    || periods.find(p => p.stove_type === 'eco');
+
+                const hasAny = oldPeriod || ecoPeriod;
+
+                rows += '<tr class="border-b border-slate-100 hover:bg-slate-50/50">';
+
+                // Checkbox cell
+                rows += '<td class="px-3 py-3 w-10"><input type="checkbox" value="' + sid + '" class="periods-row-cb w-4 h-4 accent-emerald-600 cursor-pointer" onchange="updatePeriodsSelection()"></td>';
+
+                // House name cell
+                rows += '<td class="px-3 py-3 text-[13px] font-bold text-navy whitespace-nowrap">'
+                    + '<div class="flex items-center gap-2">'
+                    + (hasAny ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block' + (ecoPeriod && ecoPeriod.starts_at <= today && (!ecoPeriod.ends_at || ecoPeriod.ends_at >= today) ? ' animate-pulse' : '') + '"></span>' : '<span class="w-2 h-2 rounded-full bg-slate-300 inline-block"></span>')
+                    + esc(houseName)
+                    + '</div></td>';
+
+                // Old stove cell
+                rows += '<td class="px-3 py-3 text-[12px] text-slate-600">';
+                if (oldPeriod) {
+                    const isPast = oldPeriod.ends_at && oldPeriod.ends_at < today;
+                    const isActive = oldPeriod.starts_at <= today && (!oldPeriod.ends_at || oldPeriod.ends_at >= today);
+                    rows += '<div class="' + (isPast ? 'opacity-50' : '') + (isActive ? ' font-medium' : '') + '">'
+                        + formatLocaleDate(oldPeriod.starts_at) + ' → ' + (oldPeriod.ends_at ? formatLocaleDate(oldPeriod.ends_at) : t('sched.current'))
+                        + '</div>';
+                } else {
+                    rows += '<span class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</span>';
+                }
+                rows += '</td>';
+
+                // Eco stove cell
+                rows += '<td class="px-3 py-3 text-[12px]">';
+                if (ecoPeriod) {
+                    const isPast = ecoPeriod.ends_at && ecoPeriod.ends_at < today;
+                    rows += '<div class="' + (isPast ? 'opacity-50 text-slate-600' : 'text-emerald-700 font-bold') + '">'
+                        + formatLocaleDate(ecoPeriod.starts_at) + ' → ' + (ecoPeriod.ends_at ? formatLocaleDate(ecoPeriod.ends_at) : t('sched.current'))
+                        + '</div>';
+                } else {
+                    rows += '<span class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</span>';
+                }
+                rows += '</td>';
+
+                rows += '</tr>';
+            }
 
             let html = '';
-
-            // Configured houses — one card per house
-            for (const [sid, periods] of Object.entries(grouped)) {
-                const houseName = subjectMap[Number(sid)] || t('sched.house.fallback') + sid;
-                const hasActive = periods.some(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
-
-                html += '<div class="bg-white rounded-2xl border ' + (hasActive ? 'border-emerald-300 shadow-sm' : 'border-slate-200') + ' overflow-hidden">';
-                // House header
-                html += '<div class="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-100">'
-                    + '<div class="flex items-center gap-2">'
-                    + (hasActive ? '<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>' : '')
-                    + '<span class="font-bold text-navy text-[13px]">' + esc(houseName) + '</span>'
-                    + '</div>'
-                    + '<span class="text-[11px] text-slate-400">' + t('sched.periods.count', periods.length) + '</span>'
-                    + '</div>';
-                // Period rows
-                for (const p of periods) {
-                    const isActive = p.starts_at <= today && (!p.ends_at || p.ends_at >= today);
-                    const isPast = p.ends_at && p.ends_at < today;
-                    const isOld = p.stove_type === 'old';
-                    const badge = isOld
-                        ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 text-orange-700">' + t('sched.stove.old') + '</span>'
-                        : '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">' + t('sched.stove.eco') + '</span>';
-                    const dateRange = formatLocaleDate(p.starts_at) + ' → ' + (p.ends_at ? formatLocaleDate(p.ends_at) : t('sched.current'));
-
-                    html += '<div class="flex items-center justify-between px-4 py-2 ' + (isPast ? 'opacity-50' : '') + ' ' + (isActive ? 'bg-emerald-50/50' : '') + '">'
-                        + '<div class="flex items-center gap-2">'
-                        + badge
-                        + '<span class="text-[11px] text-slate-500">' + dateRange + (p.notes ? ' · ' + esc(p.notes) : '') + '</span>'
-                        + '</div>'
-                        + '<div class="flex items-center gap-2">'
-                        + '<button onclick="showEditPeriodModal(' + p.id + ')" class="text-[11px] text-blue-500 hover:underline">' + t('sched.edit') + '</button>'
-                        + '<button onclick="deletePeriod(' + p.id + ',\'' + esc(houseName) + '\')" class="text-[11px] text-red-400 hover:text-red-600">' + t('sched.delete') + '</button>'
-                        + '</div></div>';
-                }
-                html += '</div>';
+            if (rows) {
+                html = '<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">'
+                    + '<table class="w-full text-left">'
+                    + '<thead><tr class="bg-slate-50 border-b border-slate-200">'
+                    + '<th class="px-3 py-3 w-10"><input type="checkbox" id="periods-select-all" class="w-4 h-4 accent-emerald-600 cursor-pointer" onchange="toggleAllPeriodsCb(this.checked)"></th>'
+                    + '<th class="px-3 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">บ้าน</th>'
+                    + '<th class="px-3 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider"><span class="px-2 py-0.5 rounded bg-orange-100 text-orange-700">' + t('sched.stove.old') + '</span></th>'
+                    + '<th class="px-3 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">' + t('sched.stove.eco') + '</span></th>'
+                    + '</tr></thead>'
+                    + '<tbody>' + rows + '</tbody>'
+                    + '</table></div>';
+            } else {
+                html = '<p class="text-slate-400 text-center py-4">' + t('sched.no.houses') + '</p>';
             }
 
-            // Unconfigured houses
-            if (unconfigured.length > 0) {
-                html += '<div class="mt-4 p-3 bg-amber-50 rounded-2xl border border-amber-200">'
-                    + '<p class="text-sm font-bold text-amber-700 mb-2">' + t('sched.no.periods') + '</p>'
-                    + '<div class="flex flex-wrap gap-2">';
-                for (const s of unconfigured) {
-                    html += '<span class="px-3 py-1 bg-white rounded-xl text-xs text-slate-600 border">' + esc(s.full_name || t('sched.house.fallback') + s.id) + '</span>';
-                }
-                html += '</div></div>';
-            }
-
-            if (!html) html = '<p class="text-slate-400 text-center py-4">' + t('sched.no.houses') + '</p>';
             container.innerHTML = html;
+            updatePeriodsSelection();
+        }
+
+        function toggleAllPeriodsCb(checked) {
+            document.querySelectorAll('.periods-row-cb').forEach(cb => cb.checked = checked);
+            updatePeriodsSelection();
+        }
+
+        function updatePeriodsSelection() {
+            const cbs = document.querySelectorAll('.periods-row-cb');
+            const checked = document.querySelectorAll('.periods-row-cb:checked');
+            const count = checked.length;
+
+            // Update select-all checkbox
+            const selectAll = document.getElementById('periods-select-all');
+            if (selectAll) {
+                selectAll.checked = cbs.length > 0 && count === cbs.length;
+                selectAll.indeterminate = count > 0 && count < cbs.length;
+            }
+
+            // Update batch buttons
+            const editBtn = document.getElementById('periods-batch-edit-btn');
+            const setupBtn = document.getElementById('periods-batch-setup-btn');
+            const deleteBtn = document.getElementById('periods-batch-delete-btn');
+            const countEl = document.getElementById('periods-selected-count');
+
+            const enabled = count > 0;
+            [editBtn, setupBtn, deleteBtn].forEach(btn => {
+                if (!btn) return;
+                btn.disabled = !enabled;
+                btn.classList.toggle('opacity-40', !enabled);
+                btn.classList.toggle('cursor-not-allowed', !enabled);
+                btn.classList.toggle('hover:shadow-md', enabled);
+            });
+            if (countEl) countEl.textContent = enabled ? 'เลือกแล้ว ' + count + ' บ้าน' : '';
+        }
+
+        function getSelectedHouseIds() {
+            return [...document.querySelectorAll('.periods-row-cb:checked')].map(cb => Number(cb.value));
         }
 
         function formatThaiDate(dateStr) {
@@ -6859,8 +7151,8 @@
                             <input type="date" id="period-start" value="${prefill ? prefill.starts_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                         <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.end.date')} <span class="text-slate-400 font-normal">${t('period.end.opt')}</span></label>
-                            <input type="date" id="period-end" value="${prefill && prefill.ends_at ? prefill.ends_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.end.date')}</label>
+                            <input type="date" id="period-end" value="${prefill && prefill.ends_at ? prefill.ends_at : ''}" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500" required>
                         </div>
                     </div>
                     <div>
@@ -6892,7 +7184,8 @@
             if (!subjectId) { showToast(t('period.select.house.warn'), 'warning'); return; }
             if (!stoveType) { showToast(t('period.select.stove.warn'), 'warning'); return; }
             if (!startsAt) { showToast(t('period.select.start.warn'), 'warning'); return; }
-            if (endsAt && endsAt < startsAt) { showToast(t('period.end.before.start'), 'warning'); return; }
+            if (!endsAt) { showToast(t('period.end.required'), 'warning'); return; }
+            if (endsAt < startsAt) { showToast(t('period.end.before.start'), 'warning'); return; }
 
             // Overlap check — auto-close ongoing periods, block real overlaps
             const ongoingToClose = []; // periods with ends_at = null ที่จะปิดอัตโนมัติ
@@ -6971,37 +7264,21 @@
             return { label: (latest.stove_type === 'old' ? 'เตาดั้งเดิม' : 'เตาชีวมวล') + ' (จบแล้ว)', active: false, stove: latest.stove_type, ends: latest.ends_at };
         }
 
-        function showBatchPeriodModal() {
-            const eligible = getHousesWithSensors();
-            if (!eligible.length) { showToast('ยังไม่มีบ้านที่ผูกเซนเซอร์', 'warning'); return; }
+        // ==================== Batch Actions (using table checkboxes) ====================
 
-            const checkboxes = eligible.map(s => {
-                const name = esc(s.full_name || 'บ้าน #' + s.id);
-                const status = getHousePeriodStatus(s.id);
-                const badge = status
-                    ? (status.active
-                        ? '<span class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold ' + (status.stove === 'old' ? 'bg-orange-100 text-orange-600' : 'bg-emerald-100 text-emerald-600') + '">' + status.label + '</span>'
-                        : '<span class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-400">' + status.label + '</span>')
-                    : '<span class="ml-auto px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-500">ยังไม่กำหนด</span>';
-                return '<label class="flex items-center gap-2 p-2 rounded-xl hover:bg-slate-50 cursor-pointer">'
-                    + '<input type="checkbox" value="' + s.id + '" class="batch-house-cb w-4 h-4 accent-emerald-600" checked>'
-                    + '<span class="text-sm text-navy">' + name + '</span>' + badge + '</label>';
-            }).join('');
+        function showBatchPeriodModal() {
+            const selectedIds = getSelectedHouseIds();
+            if (!selectedIds.length) { showToast('กรุณาเลือกบ้านจากตารางก่อน', 'warning'); return; }
+
+            const nameList = selectedIds.map(id => subjects.find(s => s.id === id)?.full_name || 'บ้าน #' + id);
 
             showModal(`
                 <div class="text-center mb-5">
-                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏠</div>
-                    <h3 class="text-xl font-bold text-navy">${currentLang === 'th' ? 'ตั้งค่าหลายบ้านพร้อมกัน' : 'Batch Setup'}</h3>
-                    <p class="text-sm text-slate-400 mt-1">${currentLang === 'th' ? 'เลือกบ้าน แล้วกำหนดเตาและช่วงเวลาเดียวกัน' : 'Select houses, then set stove type and period'}</p>
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">📅</div>
+                    <h3 class="text-xl font-bold text-navy">ตั้งค่าช่วงเก็บข้อมูล</h3>
+                    <p class="text-sm text-slate-400 mt-1">${selectedIds.length} บ้านที่เลือก: ${nameList.join(', ')}</p>
                 </div>
                 <div class="space-y-4 mb-6">
-                    <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="text-[13px] font-bold text-navy">${currentLang === 'th' ? 'เลือกบ้าน' : 'Select Houses'}</label>
-                            <button onclick="(function(){var s=!document.querySelectorAll('.batch-house-cb:checked').length;document.querySelectorAll('.batch-house-cb').forEach(function(c){c.checked=s})})()" class="text-xs text-blue-500 hover:underline">${currentLang === 'th' ? 'เลือก/ยกเลิกทั้งหมด' : 'Select/Deselect All'}</button>
-                        </div>
-                        <div class="max-h-[180px] overflow-y-auto border rounded-2xl p-2 bg-slate-50 custom-scrollbar">${checkboxes}</div>
-                    </div>
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-2">ประเภทเตา</label>
                         <div class="flex gap-3">
@@ -7025,8 +7302,8 @@
                             <input type="date" id="batch-start" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
                         </div>
                         <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.end.date')} <span class="text-slate-400 font-normal">${t('period.end.opt')}</span></label>
-                            <input type="date" id="batch-end" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                            <label class="text-[13px] font-bold text-navy block mb-1">${t('period.end.date')}</label>
+                            <input type="date" id="batch-end" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-emerald-500" required>
                         </div>
                     </div>
                     <div>
@@ -7036,26 +7313,25 @@
                 </div>
                 <div class="flex gap-3">
                     <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">${t('common.cancel')}</button>
-                    <button id="batch-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">${currentLang === 'th' ? 'ตั้งค่า' : 'Apply'}</button>
+                    <button id="batch-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-emerald-600 hover:bg-emerald-700">ตั้งค่า</button>
                 </div>
             `);
-            document.getElementById('batch-save-btn').onclick = saveBatchPeriods;
+            document.getElementById('batch-save-btn').onclick = () => saveBatchPeriods(selectedIds);
         }
 
-        async function saveBatchPeriods() {
-            const selectedIds = [...document.querySelectorAll('.batch-house-cb:checked')].map(c => Number(c.value));
+        async function saveBatchPeriods(selectedIds) {
             const stoveType = document.querySelector('input[name="batch-stove"]:checked')?.value;
             const startsAt = document.getElementById('batch-start')?.value;
             const endsAt = document.getElementById('batch-end')?.value || null;
             const notes = (document.getElementById('batch-notes')?.value || '').trim() || null;
 
-            if (!selectedIds.length) { showToast(t('period.select.house.warn'), 'warning'); return; }
             if (!stoveType) { showToast(t('period.select.stove.warn'), 'warning'); return; }
             if (!startsAt) { showToast(t('period.select.start.warn'), 'warning'); return; }
-            if (endsAt && endsAt < startsAt) { showToast(t('period.end.before.start'), 'warning'); return; }
+            if (!endsAt) { showToast(t('period.end.required'), 'warning'); return; }
+            if (endsAt < startsAt) { showToast(t('period.end.before.start'), 'warning'); return; }
 
-            // Check overlaps — auto-close ongoing, block real overlaps
-            const newEnd = endsAt || '9999-12-31';
+            // Check overlaps
+            const newEnd = endsAt;
             const ongoingToClose = [];
             const realOverlapHouses = [];
             for (const sid of selectedIds) {
@@ -7082,12 +7358,10 @@
             btn.disabled = true; btn.textContent = t('period.saving');
 
             try {
-                // Auto-close ongoing periods
                 const dayBefore = new Date(new Date(startsAt).getTime() - 86400000).toISOString().slice(0, 10);
                 for (const p of ongoingToClose) {
                     await supabaseClient.from('collection_periods').update({ ends_at: dayBefore }).eq('id', p.id);
                 }
-
                 const rows = selectedIds.map(sid => ({
                     subject_id: sid, stove_type: stoveType, starts_at: startsAt, ends_at: endsAt, notes, created_by: currentAdminEmail || null,
                 }));
@@ -7103,57 +7377,118 @@
             }
         }
 
-        function showBatchDeletePeriodModal() {
-            if (!collectionPeriods.length) { showToast('ยังไม่มีช่วงเก็บข้อมูล', 'warning'); return; }
+        function showBatchEditPeriodModal() {
+            const selectedIds = getSelectedHouseIds();
+            if (!selectedIds.length) { showToast('กรุณาเลือกบ้านจากตารางก่อน', 'warning'); return; }
 
-            const subjectMap = {};
-            for (const s of subjects) subjectMap[s.id] = s.full_name || 'บ้าน #' + s.id;
-
-            const checkboxes = collectionPeriods.map(p => {
-                const name = esc(subjectMap[Number(p.subject_id)] || 'บ้าน #' + p.subject_id);
-                const stoveBadge = p.stove_type === 'old'
-                    ? '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-orange-100 text-orange-600">เตาดั้งเดิม</span>'
-                    : '<span class="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-emerald-100 text-emerald-600">เตาชีวมวล</span>';
-                const dateRange = formatThaiDate(p.starts_at) + ' → ' + (p.ends_at ? formatThaiDate(p.ends_at) : 'ปัจจุบัน');
-                return '<label class="flex items-center gap-2 p-2 rounded-xl hover:bg-red-50 cursor-pointer">'
-                    + '<input type="checkbox" value="' + p.id + '" class="batch-del-cb w-4 h-4 accent-red-500">'
-                    + '<div class="flex-1 min-w-0"><span class="text-sm text-navy">' + name + '</span>'
-                    + '<span class="text-[11px] text-slate-400 ml-2">' + dateRange + '</span></div>'
-                    + stoveBadge + '</label>';
-            }).join('');
+            const nameList = selectedIds.map(id => subjects.find(s => s.id === id)?.full_name || 'บ้าน #' + id);
 
             showModal(`
                 <div class="text-center mb-5">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🗑️</div>
-                    <h3 class="text-xl font-bold text-navy">ลบช่วงเก็บข้อมูล</h3>
-                    <p class="text-sm text-slate-400 mt-1">เลือกรายการที่ต้องการลบ</p>
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">✏️</div>
+                    <h3 class="text-xl font-bold text-navy">แก้ไขช่วงเก็บข้อมูล</h3>
+                    <p class="text-sm text-slate-400 mt-1">${selectedIds.length} บ้านที่เลือก: ${nameList.join(', ')}</p>
                 </div>
-                <div class="mb-5">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-[13px] font-bold text-navy">เลือกรายการ</span>
-                        <button onclick="(function(){var s=!document.querySelectorAll('.batch-del-cb:checked').length;document.querySelectorAll('.batch-del-cb').forEach(function(c){c.checked=s})})()" class="text-xs text-blue-500 hover:underline">เลือก/ยกเลิกทั้งหมด</button>
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="text-[13px] font-bold text-navy block mb-2">แก้ไขช่วงของเตาประเภท</label>
+                        <div class="flex gap-3">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="batch-edit-stove" value="old" class="sr-only peer" checked>
+                                <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-orange-100 peer-checked:border-orange-400 peer-checked:text-orange-700 bg-white text-slate-500">
+                                    <span class="font-bold text-sm">${t('period.stove.old')}</span>
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="batch-edit-stove" value="eco" class="sr-only peer">
+                                <div class="p-3 rounded-2xl border text-center transition-all peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-700 bg-white text-slate-500">
+                                    <span class="font-bold text-sm">${t('period.stove.eco')}</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                    <div class="max-h-[250px] overflow-y-auto border rounded-2xl p-2 bg-slate-50 custom-scrollbar">${checkboxes}</div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">วันเริ่มต้นใหม่ <span class="text-slate-400 font-normal">(เว้นว่าง = ไม่เปลี่ยน)</span></label>
+                            <input type="date" id="batch-edit-start" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-blue-300">
+                        </div>
+                        <div>
+                            <label class="text-[13px] font-bold text-navy block mb-1">วันสิ้นสุดใหม่ <span class="text-slate-400 font-normal">(เว้นว่าง = ไม่เปลี่ยน)</span></label>
+                            <input type="date" id="batch-edit-end" class="w-full p-3 rounded-2xl border bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-blue-300">
+                        </div>
+                    </div>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">ยกเลิก</button>
-                    <button id="batch-del-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-red-600 hover:bg-red-700">ลบที่เลือก</button>
+                    <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border border-slate-200 text-slate-500 font-bold hover:bg-slate-50 transition-all">${t('common.cancel')}</button>
+                    <button id="batch-edit-save-btn" class="flex-1 py-3 rounded-2xl text-white font-bold shadow-lg transition-all bg-blue-600 hover:bg-blue-700">บันทึก</button>
                 </div>
             `);
-            document.getElementById('batch-del-btn').onclick = async () => {
-                const ids = [...document.querySelectorAll('.batch-del-cb:checked')].map(c => Number(c.value));
-                if (!ids.length) { showToast('กรุณาเลือกอย่างน้อย 1 รายการ', 'warning'); return; }
-                const btn = document.getElementById('batch-del-btn');
-                btn.disabled = true; btn.textContent = 'กำลังลบ...';
+            document.getElementById('batch-edit-save-btn').onclick = () => saveBatchEditPeriods(selectedIds);
+        }
+
+        async function saveBatchEditPeriods(selectedIds) {
+            const stoveFilter = document.querySelector('input[name="batch-edit-stove"]:checked')?.value;
+            const newStart = document.getElementById('batch-edit-start')?.value || null;
+            const newEnd = document.getElementById('batch-edit-end')?.value || null;
+
+            if (!newStart && !newEnd) { showToast('กรุณาระบุวันที่ที่ต้องการเปลี่ยน', 'warning'); return; }
+            if (newStart && newEnd && newEnd < newStart) { showToast(t('period.end.before.start'), 'warning'); return; }
+
+            // Find period IDs to update
+            const today = getThaiToday();
+            const periodsToUpdate = collectionPeriods.filter(p => {
+                if (!selectedIds.includes(p.subject_id)) return false;
+                if (stoveFilter !== 'both' && p.stove_type !== stoveFilter) return false;
+                // Only update active/future periods (not past)
+                if (p.ends_at && p.ends_at < today) return false;
+                return true;
+            });
+
+            if (!periodsToUpdate.length) {
+                showToast('ไม่พบช่วงเก็บข้อมูลที่ตรงเงื่อนไข', 'warning');
+                return;
+            }
+
+            const btn = document.getElementById('batch-edit-save-btn');
+            btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
+
+            try {
+                const updateData = {};
+                if (newStart) updateData.starts_at = newStart;
+                if (newEnd) updateData.ends_at = newEnd;
+
+                const ids = periodsToUpdate.map(p => p.id);
+                const { error } = await supabaseClient.from('collection_periods').update(updateData).in('id', ids);
+                if (error) throw error;
+                closeModal();
+                showToast('แก้ไข ' + ids.length + ' ช่วงเก็บข้อมูลสำเร็จ', 'success');
+                logActivity('แก้ไขช่วงเก็บข้อมูล', ids.length + ' รายการจาก ' + selectedIds.length + ' บ้าน');
+                loadCollectionPeriods();
+            } catch (e) {
+                showToast('ไม่สามารถบันทึกได้: ' + e.message, 'error');
+                btn.disabled = false; btn.textContent = 'บันทึก';
+            }
+        }
+
+        function batchDeleteSelectedPeriods() {
+            const selectedIds = getSelectedHouseIds();
+            if (!selectedIds.length) { showToast('กรุณาเลือกบ้านจากตารางก่อน', 'warning'); return; }
+
+            const periodsToDelete = collectionPeriods.filter(p => selectedIds.includes(p.subject_id));
+            if (!periodsToDelete.length) { showToast('บ้านที่เลือกยังไม่มีช่วงเก็บข้อมูล', 'warning'); return; }
+
+            const nameList = selectedIds.map(id => subjects.find(s => s.id === id)?.full_name || 'บ้าน #' + id);
+
+            showConfirmModal('🗑️', 'ลบช่วงเก็บข้อมูล', 'ลบช่วงเก็บข้อมูลทั้งหมดของ ' + nameList.join(', ') + ' (' + periodsToDelete.length + ' รายการ)?', 'ลบ', 'red', async () => {
                 try {
+                    const ids = periodsToDelete.map(p => p.id);
                     const { error } = await supabaseClient.from('collection_periods').delete().in('id', ids);
                     if (error) throw error;
-                    closeModal();
                     showToast('ลบ ' + ids.length + ' รายการสำเร็จ', 'success');
-                    logActivity('ลบช่วงเก็บข้อมูล', ids.length + ' รายการ');
+                    logActivity('ลบช่วงเก็บข้อมูล', ids.length + ' รายการจาก ' + selectedIds.length + ' บ้าน');
                     loadCollectionPeriods();
-                } catch (e) { showToast('ไม่สามารถลบได้: ' + e.message, 'error'); btn.disabled = false; btn.textContent = 'ลบที่เลือก'; }
-            };
+                } catch (e) { showToast('ไม่สามารถลบได้: ' + e.message, 'error'); }
+            });
         }
 
         function showRegisterSensorModal() {
@@ -7259,22 +7594,33 @@
         function renderProjectsList() {
             const list = document.getElementById('projects-list');
             if (!list) return;
-            list.innerHTML = projects.map(p => {
+            if (projects.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 text-center py-4">' + t('project.no.data') + '</p>';
+                return;
+            }
+            const rows = projects.map(p => {
                 const houseCount = subjectProjects.filter(sp => String(sp.project_id) === String(p.id)).length;
-                return `
-                <div class="card-styled p-6 rounded-2xl">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">📋 ${esc(p.name)}</p>
-                        <div class="flex gap-2">
-                            <button onclick="showEditProjectModal('${p.id}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="deleteProject('${escAttr(p.id)}', '${escAttr(p.name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
-                        </div>
-                    </div>
-                    <p class="text-[13px] text-slate-500">${esc(p.description) || '-'}</p>
-                    ${p.notes ? `<p class="text-[12px] text-slate-400 mt-1">📝 ${esc(p.notes)}</p>` : ''}
-                    <p class="text-[13px] text-indigo-500 font-bold mt-1">🏠 ${houseCount} ${t('overview.house')}</p>
-                </div>`;
-            }).join('') || '<p class="text-slate-400">' + t('project.no.data') + '</p>';
+                return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                    <td class="px-4 py-3 text-[13px] font-bold text-navy">${esc(p.name)}</td>
+                    <td class="px-4 py-3 text-[12px] text-slate-500">${esc(p.description) || '-'}</td>
+                    <td class="px-4 py-3 text-[13px] text-indigo-600 font-bold text-center">${houseCount}</td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <button onclick="showEditProjectModal('${p.id}')" class="text-[11px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
+                        <button onclick="deleteProject('${escAttr(p.id)}', '${escAttr(p.name)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                    </td>
+                </tr>`;
+            }).join('');
+            list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead><tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('project.name')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('project.desc')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">🏠 ${t('overview.house')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
         }
         function showAddProjectModal() {
             showModal(`
@@ -7330,19 +7676,42 @@
                 (v.full_name || '').toLowerCase().includes(q)
                 || (v.phone_contact || '').toLowerCase().includes(q)
             ) : volunteers;
-            list.innerHTML = filtered.map(v => `
-                <div class="card-styled p-6 rounded-2xl">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">${esc(v.full_name)}</p>
-                        <div class="flex gap-2">
-                            <button onclick="showEditVolunteerModal('${escAttr(v.id)}', '${escAttr(v.full_name)}', '${escAttr(v.phone_contact || '')}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            <button onclick="deleteVolunteer('${escAttr(v.id)}', '${escAttr(v.full_name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
-                        </div>
-                    </div>
-                    <p class="text-[13px] text-slate-500">📞 ${esc(v.phone_contact) || '-'}</p>
-                    <p class="text-[13px] text-emerald-500">${t('vol.active')}</p>
-                </div>
-            `).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('vol.no.data')) + '</p>';
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 text-center py-4">' + (q ? t('overview.no.results') : t('vol.no.data')) + '</p>';
+                return;
+            }
+
+            // Find which house each volunteer is assigned to
+            const volHouseMap = {};
+            for (const s of subjects) {
+                if (s.volunteer_id) volHouseMap[String(s.volunteer_id)] = s.full_name;
+            }
+
+            const rows = filtered.map(v => {
+                const houseName = volHouseMap[String(v.id)] || '-';
+                return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                    <td class="px-4 py-3 text-[13px] font-bold text-navy">${esc(v.full_name)}</td>
+                    <td class="px-4 py-3 text-[12px] text-slate-500">${esc(v.phone_contact) || '-'}</td>
+                    <td class="px-4 py-3 text-[12px] text-slate-500">${esc(houseName)}</td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <button onclick="showEditVolunteerModal('${escAttr(v.id)}', '${escAttr(v.full_name)}', '${escAttr(v.phone_contact || '')}')" class="text-[11px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
+                        <button onclick="deleteVolunteer('${escAttr(v.id)}', '${escAttr(v.full_name)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead><tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.name')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.phone')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.house')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
         }
 
         function showEditVolunteerModal(id, name, phone) {
@@ -7422,42 +7791,70 @@
             const countEl = document.getElementById('subjects-count');
             if (countEl) countEl.textContent = filteredSubjects.length;
 
-            list.innerHTML = filteredSubjects.map(s => {
-                const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
-                const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>' +
-                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + (DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) + '</option>' : '') +
-                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + (DEVICE_NAMES[d.tuya_device_id] || d.name) + '</option>').join('');
-                const projName = getSubjectProjectName(s.id);
-                const addrParts = [s.subdistrict ? 'ต.' + s.subdistrict : '', s.district ? 'อ.' + s.district : '', s.province ? 'จ.' + s.province : ''].filter(Boolean).join(' ');
-                const displayAddr = addrParts || s.address || '-';
+            if (filteredSubjects.length === 0) {
+                list.innerHTML = '<p class="text-slate-400 text-center py-4">' + (q ? t('overview.no.results') : t('sub.no.data')) + '</p>';
+                return;
+            }
 
-                return `
-                <div class="card-styled p-6 rounded-2xl">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-navy text-lg">🏠 ${esc(s.full_name)}</p>
-                        <div class="flex gap-2">
-                            <button onclick="showEditSubjectModal('${escAttr(s.id)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-blue-50 text-blue-600 transition-all">${t('dev.edit')}</button>
-                            ${s.has_sensor || assignedDevice ? `<button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold ${s.status === 'active' ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} transition-all">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>` : ''}
-                            <button onclick="deleteSubject('${escAttr(s.id)}', '${escAttr(s.full_name)}')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
-                        </div>
-                    </div>
-                    <p class="text-[13px] text-slate-500">${esc(displayAddr)}</p>
-                    ${s.address && addrParts ? `<p class="text-[12px] text-slate-400">${esc(s.address)}</p>` : ''}
-                    <p class="text-[13px] text-slate-400">${t('sub.volunteer')}${esc(s.volunteers?.full_name) || t('sub.unassigned')}</p>
-                    <div class="flex items-center gap-2 mt-2 flex-wrap">
-                        ${projName ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">📋 ${projName}</span>` : ''}
-                        <p class="text-[13px] ${s.status === 'active' ? 'text-emerald-500' : 'text-red-500'}">${s.status === 'active' ? t('sub.active') : t('sub.inactive')}</p>
-                        ${s.connectivity ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : ''}
-                        <button onclick="toggleSensor('${s.id}', ${!s.has_sensor})" class="text-[11px] px-2 py-0.5 rounded-lg font-bold cursor-pointer transition-all ${s.has_sensor ? 'bg-teal-50 text-teal-600' : 'bg-slate-100 text-slate-400'}">${s.has_sensor ? t('sub.has.sensor') : t('sub.stove.only')}</button>
-                    </div>
-                    <div class="mt-3 pt-3 border-t border-slate-100">
-                        <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.sensor')}</label>
-                        <select onchange="assignSensorToHouse('${s.id}', this.value, '${assignedDevice?.id || ''}')" class="w-full p-3 rounded-xl border text-[13px] font-medium bg-white custom-select ${assignedDevice ? 'border-teal-200 bg-teal-50/30' : ''}">
+            const rows = filteredSubjects.map(s => {
+                const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
+                const sensorName = assignedDevice ? (DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) : '';
+                const projName = getSubjectProjectName(s.id);
+                const addrParts = [s.district ? 'อ.' + s.district : '', s.province ? 'จ.' + s.province : ''].filter(Boolean).join(' ');
+                const volName = s.volunteers?.full_name || '';
+
+                // Status badge
+                const statusBadge = s.status === 'active'
+                    ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-emerald-50 text-emerald-600">' + t('sub.active') + '</span>'
+                    : '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-red-50 text-red-500">' + t('sub.inactive') + '</span>';
+
+                // Sensor badge
+                const sensorBadge = s.has_sensor
+                    ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-teal-50 text-teal-600">' + t('sub.has.sensor') + '</span>'
+                    : '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-slate-100 text-slate-400">' + t('sub.stove.only') + '</span>';
+
+                // Sensor select dropdown
+                const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>'
+                    + (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + esc(sensorName) + '</option>' : '')
+                    + unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + esc(DEVICE_NAMES[d.tuya_device_id] || d.name) + '</option>').join('');
+
+                return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
+                    <td class="px-4 py-3">
+                        <div class="font-bold text-navy text-[13px]">${esc(s.full_name)}</div>
+                        <div class="text-[11px] text-slate-400">${esc(addrParts)}</div>
+                    </td>
+                    <td class="px-4 py-3 text-[12px] text-slate-500">${esc(volName) || '<span class="text-slate-300">' + t('sub.unassigned') + '</span>'}</td>
+                    <td class="px-4 py-3">
+                        <select onchange="assignSensorToHouse('${s.id}', this.value, '${assignedDevice?.id || ''}')" class="p-1.5 rounded-lg border text-[12px] font-medium bg-white custom-select w-full min-w-[120px] ${assignedDevice ? 'border-teal-200 bg-teal-50/30' : ''}">
                             ${sensorOptions}
                         </select>
-                    </div>
-                </div>`;
-            }).join('') || '<p class="text-slate-400">' + (q ? t('overview.no.results') : t('sub.no.data')) + '</p>';
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-wrap gap-1">
+                            ${statusBadge}
+                            ${sensorBadge}
+                        </div>
+                    </td>
+                    <td class="px-4 py-3 text-right whitespace-nowrap">
+                        <button onclick="showEditSubjectModal('${escAttr(s.id)}')" class="text-[11px] text-blue-500 hover:underline mr-1">${t('dev.edit')}</button>
+                        ${s.has_sensor || assignedDevice ? `<button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[11px] mr-1 ${s.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-emerald-500 hover:text-emerald-700'}">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>` : ''}
+                        <button onclick="deleteSubject('${escAttr(s.id)}', '${escAttr(s.full_name)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
+                <table class="w-full text-left min-w-[700px]">
+                    <thead><tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.house')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.volunteer')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.sensor')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.status')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
         }
 
         function showEditSubjectModal(id) {
@@ -7649,19 +8046,16 @@
             if (!el) return;
 
             const totalHouses = subjects.length;
-            const assignedSensors = devices.filter(d => d.subject_id).length;
+            const housesWithSensors = subjects.filter(s => devices.some(d => String(d.subject_id) === String(s.id))).length;
+            const housesStoveOnly = totalHouses - housesWithSensors;
+            const totalSensors = devices.length;
+            const onlineSensors = devices.filter(d => sensorHealthMap[d.tuya_device_id]?.status === 'online').length;
             const totalVolunteers = volunteers.length;
             const totalProjects = projects.length;
-            const onlineSensors = devices.filter(d => sensorHealthMap[d.tuya_device_id]?.status === 'online').length;
-            // Count houses that have an online sensor
-            const onlineHouses = subjects.filter(s => {
-                const dev = devices.find(d => String(d.subject_id) === String(s.id));
-                return dev && sensorHealthMap[dev.tuya_device_id]?.status === 'online';
-            }).length;
 
             const cards = [
-                { icon: '🏠', label: t('overview.stat.houses.online'), value: onlineHouses + '/' + totalHouses, sub: onlineHouses < totalHouses ? '⚠️ ' + (totalHouses - onlineHouses) + ' ' + t('overview.stat.houses.offline') : '', color: onlineHouses === totalHouses ? 'emerald' : 'amber' },
-                { icon: '📡', label: t('overview.stat.sensors'), value: assignedSensors + '/' + devices.length, sub: onlineSensors > 0 ? '🟢 ' + t('overview.stat.online') + ' ' + onlineSensors : '', color: 'blue' },
+                { icon: '🏠', label: t('overview.stat.houses.in.project'), value: totalHouses, sub: '📡 ' + housesWithSensors + ' ' + t('overview.stat.houses.with.sensor') + ' · 🔥 ' + housesStoveOnly + ' ' + t('overview.stat.houses.stove.only'), color: 'amber' },
+                { icon: '📡', label: t('overview.stat.sensors'), value: totalSensors, sub: (onlineSensors > 0 ? '🟢' : '⚪') + ' ' + t('overview.stat.sensors.online') + ' ' + onlineSensors + '/' + totalSensors + ' ' + (currentLang === 'th' ? 'ตัว' : ''), color: 'blue' },
                 { icon: '👤', label: t('overview.stat.volunteers'), value: totalVolunteers, color: 'amber' },
                 { icon: '📋', label: t('overview.stat.projects'), value: totalProjects, color: 'purple' },
             ];
@@ -7892,17 +8286,13 @@
                 <div class="space-y-4">
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.select')}</label>
-                        <select id="new-device-sensor" onchange="document.getElementById('new-device-name').value = this.options[this.selectedIndex].text" class="w-full p-4 rounded-2xl border custom-select">
+                        <select id="new-device-sensor" class="w-full p-4 rounded-2xl border custom-select">
                             <option value="">${t('dev.select.ph')}</option>
                             ${sensorOptions || '<option value="" disabled>' + t('dev.no.available') + '</option>'}
                         </select>
                     </div>
                     <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.name')}</label>
-                        <input id="new-device-name" placeholder="${t('dev.name.ph')}" class="w-full p-4 rounded-2xl border">
-                    </div>
-                    <div>
-                        <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.house')}</label>
+                        <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.house.modal')}</label>
                         <select id="new-device-subject" class="w-full p-4 rounded-2xl border custom-select">
                             <option value="">${t('dev.select.house')}</option>
                             ${houseOptions}
@@ -7913,11 +8303,11 @@
             `);
         }
         async function addDevice() {
-            const tuyaId = document.getElementById('new-device-sensor').value;
-            const name = document.getElementById('new-device-name').value;
+            const sensorEl = document.getElementById('new-device-sensor');
+            const tuyaId = sensorEl.value;
+            const name = sensorEl.options[sensorEl.selectedIndex].text;
             const subjectId = document.getElementById('new-device-subject').value;
             if (!tuyaId) { showToast(t('dev.select.required'), 'warning'); return; }
-            if (!name) { showToast(t('dev.name.required'), 'warning'); return; }
             const { error } = await supabaseClient.from('devices').insert([{ name, tuya_device_id: tuyaId, subject_id: subjectId || null, is_active: true }]);
             if (!error) { closeModal(); logActivity(t('dev.add'), name); loadAdminData(); showToast(t('dev.added')); }
             else { showToast(t('common.error') + error.message, 'error'); }
@@ -8057,7 +8447,7 @@
             return data.map(d => ({
                 [t('export.date')]: d.recorded_at, [t('export.house')]: withSensor(d.house_name || HOUSE_NAMES[d.tuya_device_id] || '', d.tuya_device_id), [t('export.stove.type')]: d.stove_type,
                 'PM2.5': d.pm25_value, 'PM10': d.pm10_value,
-                'CO2': d.co2_value, 'CO': d.co_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
+                'CO2': d.co2_value, 'AQI': d.aqi, [t('export.temp')]: d.temperature, [t('export.humidity')]: d.humidity,
                 'HCHO': d.hcho_value, 'TVOC (mg/m³)': d.tvoc_value,
                 [t('export.source')]: d.data_source,
                 'Volunteer': d.volunteer_id ? (volunteerNameMap[d.volunteer_id] || d.volunteer_id) : '',

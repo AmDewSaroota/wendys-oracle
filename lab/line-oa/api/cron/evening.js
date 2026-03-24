@@ -54,27 +54,31 @@ function lineBroadcast(text) {
   });
 }
 
-// Cron: 8 PM Thai (20:00 = 13:00 UTC) — สรุปการเก็บข้อมูลทั้งวัน
+// Cron: 7 AM Thai (07:00 = 00:00 UTC) — สรุปประจำวันเมื่อวาน
 module.exports = async function handler(req, res) {
   const thaiNow = new Date(Date.now() + 7 * 3600000);
-  const today = new Date().toISOString().split('T')[0];
-  const dateStr = new Date().toLocaleDateString('th-TH', {
+
+  // Yesterday's date (Thai time)
+  const yesterday = new Date(thaiNow.getTime() - 86400000);
+  const yDate = yesterday.toISOString().split('T')[0];
+  const yDateEnd = new Date(new Date(yDate + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+  const dateStr = yesterday.toLocaleDateString('th-TH', {
     timeZone: 'Asia/Bangkok',
-    day: 'numeric', month: 'long',
+    day: 'numeric', month: 'short',
   });
 
-  // Check rest day from sync_config — skip notification entirely
+  // Check if yesterday was a rest day
   const configs = await supabaseGet('/rest/v1/sync_config?select=active_days&limit=1');
   if (configs && configs.length > 0 && configs[0].active_days) {
-    const jsDay = thaiNow.getUTCDay();
+    const jsDay = yesterday.getUTCDay();
     const isoDay = jsDay === 0 ? 7 : jsDay;
     const activeDays = configs[0].active_days.split(',').map(d => parseInt(d.trim(), 10));
     if (!activeDays.includes(isoDay)) {
-      return res.status(200).json({ ok: true, rest_day: true, skipped: 'rest day notification already sent in morning' });
+      return res.status(200).json({ ok: true, rest_day: true, skipped: 'yesterday was rest day' });
     }
   }
 
-  // Load active devices with house names from DB
+  // Load active devices with house names
   const devices = await supabaseGet(
     `/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id,subjects(full_name)`
   );
@@ -82,68 +86,53 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true, message: 'No active devices' });
   }
 
-  // Query all sessions for today
-  const tomorrow = new Date(new Date(today + 'T00:00:00Z').getTime() + 86400000).toISOString().split('T')[0];
+  // Query all sessions for yesterday
   const sessions = await supabaseGet(
-    `/rest/v1/sessions?and=(started_at.gte.${today}T00:00:00Z,started_at.lt.${tomorrow}T00:00:00Z)&select=id,device_id,session_status,readings_count,avg_pm25,started_at,ended_at,notes`
+    `/rest/v1/sessions?and=(started_at.gte.${yDate}T00:00:00Z,started_at.lt.${yDateEnd}T00:00:00Z)&select=id,device_id,session_status,readings_count,started_at,ended_at,notes`
   );
 
-  // Categorize devices
+  // Build per-device status lines (Format C)
   let totalReadings = 0;
-  const stats = { full: 0, partial: [], noData: [] };
+  let totalSessions = 0;
+  const lines = [];
 
-  for (const dev of devices) {
+  // Sort devices by house name
+  const sorted = devices.slice().sort((a, b) => {
+    const na = a.subjects?.full_name || '';
+    const nb = b.subjects?.full_name || '';
+    return na.localeCompare(nb, 'th');
+  });
+
+  for (const dev of sorted) {
     const name = dev.subjects?.full_name || dev.tuya_device_id.slice(-6);
     const devSessions = (sessions || []).filter(s => s.device_id === dev.tuya_device_id);
     const completed = devSessions.filter(s => s.session_status === 'complete');
     const incomplete = devSessions.filter(s => s.session_status === 'incomplete');
-    const collecting = devSessions.filter(s => s.session_status === 'collecting' || s.session_status === 'baseline');
-    const total = completed.length + incomplete.length + collecting.length;
+    const total = devSessions.length;
     const readings = devSessions.reduce((sum, s) => sum + (s.readings_count || 0), 0);
     totalReadings += readings;
+    totalSessions += total;
 
     if (completed.length >= MAX_SESSIONS) {
-      stats.full++;
+      lines.push(`✅ ${name}`);
     } else if (total > 0) {
-      const detail = [];
-      if (completed.length > 0) detail.push(`${completed.length} สำเร็จ`);
-      if (incomplete.length > 0) {
-        const tuyaCount = incomplete.filter(s => (s.notes || '').includes('Tuya') || (s.notes || '').includes('tuya_api')).length;
-        const offlineCount = incomplete.filter(s => (s.notes || '').includes('ออฟไลน์')).length;
-        let cause = '';
-        if (tuyaCount > 0) cause = ' [Tuya ขัดข้อง]';
-        else if (offlineCount > 0) cause = ' [ออฟไลน์]';
-        detail.push(`${incomplete.length} ไม่ครบ${cause}`);
-      }
-      if (collecting.length > 0) detail.push(`${collecting.length} กำลังเก็บ`);
-      stats.partial.push({ name, total, detail: detail.join(', ') });
+      // Determine cause from incomplete sessions
+      let cause = '';
+      const tuyaIssue = incomplete.some(s => (s.notes || '').includes('Tuya') || (s.notes || '').includes('tuya_api'));
+      const offlineIssue = incomplete.some(s => (s.notes || '').includes('ออฟไลน์'));
+      if (tuyaIssue) cause = ' [Tuya]';
+      else if (offlineIssue) cause = ' [ออฟไลน์]';
+      lines.push(`⚠️ ${name} (${completed.length}/${MAX_SESSIONS})${cause}`);
     } else {
-      stats.noData.push(name);
+      lines.push(`❌ ${name}`);
     }
   }
 
-  // Build compact summary
-  const lines = [`สรุปประจำวัน (${dateStr})`, ''];
-  const parts = [];
-  if (stats.full > 0) parts.push(`✅ ครบ ${stats.full}`);
-  if (stats.partial.length > 0) parts.push(`⚠️ ไม่ครบ ${stats.partial.length}`);
-  if (stats.noData.length > 0) parts.push(`❌ ไม่มีข้อมูล ${stats.noData.length}`);
-  lines.push(parts.join(' · '));
-  lines.push(`รวม ${totalReadings.toLocaleString()} รายการ จาก ${(sessions || []).length} session`);
+  // Compose message
+  const header = `📊 สรุป ${dateStr} (${devices.length} บ้าน)`;
+  const stats = `${totalReadings.toLocaleString()} รายการ · ${totalSessions} sessions`;
+  const msg = [header, stats, '', ...lines].join('\n');
 
-  if (stats.partial.length > 0) {
-    lines.push('', `⚠️ ไม่ครบ (${stats.partial.length}):`);
-    stats.partial.forEach(h => lines.push(`- ${h.name} — ${h.total}/${MAX_SESSIONS} session (${h.detail})`));
-  }
-  if (stats.noData.length > 0) {
-    lines.push('', `❌ ไม่มีข้อมูล (${stats.noData.length}):`);
-    lines.push(stats.noData.join(', '));
-  }
-
-  if (stats.full === devices.length) {
-    lines.push('', 'ทุกบ้านเก็บข้อมูลครบถ้วนค่ะ');
-  }
-
-  const result = await lineBroadcast(lines.join('\n'));
-  return res.status(200).json({ ok: true, devices: devices.length, fullHouses: stats.full, totalReadings, sessions: (sessions || []).length, result });
+  const result = await lineBroadcast(msg);
+  return res.status(200).json({ ok: true, date: yDate, devices: devices.length, totalReadings, totalSessions, result });
 };
