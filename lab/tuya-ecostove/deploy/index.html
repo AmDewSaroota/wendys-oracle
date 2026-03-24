@@ -200,13 +200,17 @@
         .guide-param-card .param-label { font-size: 12px; color: #64748b; margin-top: 2px; }
         @media print {
             nav, .scenario-bar, #view-basic, #view-deep,
-            .guide-controls, footer, #modal-overlay { display: none !important; }
+            .guide-controls, footer, #modal-overlay,
+            #guide-search, #guide-search-count { display: none !important; }
             #view-admin, #admin-guide { display: block !important; }
             #view-admin > *:not(.admin-tab-content),
             .admin-tab-content:not(#admin-guide) { display: none !important; }
             .guide-body { display: block !important; }
             .guide-section { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: 12px; }
-            body { background: white !important; font-size: 12px; }
+            body { background: white !important; font-size: 12px; padding: 0 !important; margin: 0 !important; }
+            main { padding: 8px !important; }
+            #admin-guide { gap: 8px !important; }
+            #admin-guide .relative { display: none !important; }
             .guide-header .guide-arrow { display: none; }
         }
     </style>
@@ -1109,14 +1113,14 @@
                     </div>
                     <div class="flex gap-2 guide-controls">
                         <button onclick="toggleAllGuideSections(true)" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all" data-i18n="guide.expand">เปิดทั้งหมด</button>
-                        <button onclick="toggleAllGuideSections(false)" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all" data-i18n="guide.collapse">ปิดทั้งหมด</button>
+                        <button onclick="toggleAllGuideSections(false)" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all" data-i18n="guide.collapse">พับทั้งหมด</button>
                         <button onclick="printGuide()" class="text-[12px] px-4 py-2 rounded-xl font-bold bg-[#064e3b] text-white hover:bg-[#043327] transition-all" data-i18n="guide.print">🖨 พิมพ์</button>
                     </div>
                 </div>
 
                 <!-- Search -->
                 <div class="relative">
-                    <input id="guide-search" type="text" oninput="searchGuide(this.value)" placeholder="🔍 ค้นหาในคู่มือ... เช่น PIN, อนุมัติ, เซนเซอร์, Hotspot" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 bg-white">
+                    <input id="guide-search" type="text" oninput="searchGuide(this.value)" placeholder="🔍 ค้นหาในคู่มือ... เช่น PIN, พิน, sensor, เซนเซอร์, volunteer, อาสา, Hotspot, อนุมัติ, บ้าน, โครงการ" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 bg-white">
                     <div id="guide-search-count" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 font-bold"></div>
                 </div>
 
@@ -1752,7 +1756,7 @@
                                 </tr>
                                 <tr>
                                     <td>Dashboard ขึ้น "ยังไม่มีข้อมูลเตาชีวมวล"</td>
-                                    <td>ไปที่ <b>กำหนดการ → ช่วงเก็บข้อมูล</b> ตั้งค่าประเภทเตา (eco) ให้บ้านนั้น + ตรวจว่า date range ครอบคลุมวันนี้</td>
+                                    <td><b>ปกติค่ะ ไม่ต้องแก้ไข</b> — โครงการแบ่งเป็น 2 ระยะ: <b>ระยะที่ 1</b> (3 เดือนแรก) เก็บข้อมูลเตาเก่า, <b>ระยะที่ 2</b> (3 เดือนหลัง) เก็บข้อมูลเตาชีวมวล ข้อความนี้จะหายไปเองเมื่อเข้าสู่ระยะที่ 2</td>
                                 </tr>
                                 <tr>
                                     <td>เซสชันไม่เริ่ม</td>
@@ -3981,10 +3985,35 @@
                 countEl.classList.add('hidden');
                 return;
             }
+            // synonym groups — พิมพ์คำไหนก็เจอทั้งกลุ่ม
+            const synonyms = [
+                ['pin', 'พิน', 'รหัส', 'password'],
+                ['sensor', 'เซนเซอร์', 'เซ็นเซอร์', 'เซนเซ่อ', 'อุปกรณ์'],
+                ['volunteer', 'อาสา', 'อาสาสมัคร'],
+                ['hotspot', 'ฮอตสปอต', 'wifi', 'ไวไฟ', 'เน็ต'],
+                ['house', 'บ้าน', 'ครัวเรือน'],
+                ['project', 'โครงการ'],
+                ['approve', 'อนุมัติ', 'ตรวจสอบ'],
+                ['session', 'เซสชัน', 'เซสชั่น'],
+                ['stove', 'เตา', 'ชีวมวล', 'biomass'],
+                ['admin', 'แอดมิน', 'ผู้ดูแล'],
+                ['recovery', 'กู้คืน', 'รีเซ็ต', 'reset'],
+                ['sync', 'ซิงค์', 'ซิงก์', 'เก็บข้อมูล'],
+                ['print', 'พิมพ์', 'ปริ้นท์', 'ปริ้น'],
+                ['login', 'ล็อกอิน', 'เข้าสู่ระบบ'],
+                ['register', 'สมัคร', 'ลงทะเบียน'],
+            ];
+            // expand query to include all synonyms
+            const terms = [q];
+            for (const group of synonyms) {
+                if (group.some(w => q.includes(w))) {
+                    for (const w of group) { if (!terms.includes(w)) terms.push(w); }
+                }
+            }
             let matched = 0;
             sections.forEach(s => {
                 const text = s.textContent.toLowerCase();
-                if (text.includes(q)) {
+                if (terms.some(t => text.includes(t))) {
                     s.style.display = '';
                     const h = s.querySelector('.guide-header');
                     const b = s.querySelector('.guide-body');

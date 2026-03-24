@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow Map — Biomass Stove Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Chakra Petch', sans-serif; background: #f0f7f4; }
+
+  /* Flow arrow steps */
+  .flow-step { display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
+  .flow-node { padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; margin: 3px 0; }
+  .flow-arrow { font-size: 16px; color: #94a3b8; margin: 0 3px; font-weight: 700; }
+
+  /* Realistic mockup frame */
+  .mock {
+    background: white;
+    border-radius: 1.25rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px -10px rgba(15,23,42,0.08);
+    overflow: hidden;
+    margin-top: 12px;
+  }
+  .mock-nav {
+    background: #064e3b;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mock-nav-logo {
+    width: 32px; height: 32px; border-radius: 8px; background: white;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+  .mock-nav-title { color: white; font-weight: 700; font-size: 13px; }
+  .mock-nav-subtitle { color: #c9a96e; font-size: 10px; }
+  .mock-tabs {
+    display: flex; gap: 4px; padding: 10px 16px; flex-wrap: wrap;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .mock-tab {
+    padding: 5px 12px; border-radius: 10px; font-size: 11px; font-weight: 700;
+    color: #64748b; background: transparent;
+  }
+  .mock-tab.active {
+    background: #064e3b; color: white;
+    box-shadow: 0 4px 8px rgba(6,78,59,0.2);
+  }
+  .mock-body { padding: 16px; }
+  .mock-card {
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 16px;
+    border-bottom: 4px solid #fb923c;
+    box-shadow: 0 10px 30px -10px rgba(15,23,42,0.08);
+  }
+
+  /* Form inputs matching real */
+  .mock-input {
+    width: 100%; padding: 12px 16px; border-radius: 16px;
+    border: 1px solid #e2e8f0; background: #f8fafc;
+    font-size: 12px; color: #94a3b8; margin-bottom: 8px;
+    font-family: 'Chakra Petch', sans-serif;
+  }
+  .mock-input.pin {
+    font-family: monospace; letter-spacing: 0.5em; text-align: center;
+    font-size: 18px; color: #0f172a;
+  }
+  .mock-input.email { text-align: center; font-size: 14px; }
+  .mock-select {
+    width: 100%; padding: 12px 16px; border-radius: 16px;
+    border: 1px solid #e2e8f0; background: #f8fafc;
+    font-size: 12px; color: #64748b; margin-bottom: 8px;
+    font-family: 'Chakra Petch', sans-serif;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+  }
+
+  /* Buttons matching real */
+  .mock-btn-primary {
+    width: 100%; padding: 14px; border-radius: 16px;
+    background: #064e3b; color: white; font-weight: 700;
+    font-size: 14px; text-align: center;
+    box-shadow: 0 10px 15px -3px rgba(6,78,59,0.2);
+  }
+  .mock-btn-sm {
+    padding: 6px 14px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; display: inline-block;
+  }
+  .mock-btn-link { font-size: 11px; font-weight: 700; cursor: default; }
+
+  /* Table matching real */
+  .mock-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .mock-table th {
+    background: #f1f5f9; padding: 8px 12px; text-align: left;
+    font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0;
+    font-size: 11px;
+  }
+  .mock-table td {
+    padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #334155;
+    vertical-align: middle;
+  }
+  .mock-table tr:hover td { background: #f8fafc; }
+
+  /* Badges matching real */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+  .badge-online { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .badge-offline { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+  .badge-pending { background: #f1f5f9; color: #475569; }
+  .badge-super { background: #fef3c7; color: #b45309; }
+  .badge-admin { background: #dbeafe; color: #1d4ed8; }
+  .badge-old { background: #ffedd5; color: #c2410c; }
+  .badge-eco { background: #dcfce7; color: #15803d; }
+
+  /* Modal overlay mockup */
+  .mock-modal-overlay {
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 12px;
+  }
+  .mock-modal-content {
+    background: white;
+    border-radius: 24px;
+    padding: 28px 24px;
+    max-width: 380px;
+    margin: 0 auto;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    position: relative;
+  }
+  .mock-modal-close {
+    position: absolute; top: 16px; right: 20px;
+    color: #94a3b8; font-size: 20px;
+  }
+
+  /* Section card */
+  .flow-card {
+    border-radius: 1.5rem; padding: 1.5rem; margin-bottom: 2rem; border-left: 6px solid;
+  }
+  .warning-box { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 1rem; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 12px; }
+  .tip-box { background: #ecfdf5; border: 2px solid #10b981; border-radius: 1rem; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 12px; }
+  .danger-box { background: #fef2f2; border: 2px solid #ef4444; border-radius: 1rem; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 12px; }
+
+  @media print {
+    body { font-size: 11px; background: white; }
+    .no-print { display: none !important; }
+    .flow-card { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; }
+    header { background: white !important; color: black !important; border-bottom: 2px solid #064e3b; }
+    header h1, header p { color: #064e3b !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen pb-12">
+
+<!-- Header -->
+<header class="bg-[#064e3b] text-white px-4 py-5 shadow-lg sticky top-0 z-50 no-print">
+  <div class="max-w-3xl mx-auto flex items-center gap-3">
+    <a href="/" class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/20 text-xl">←</a>
+    <div class="flex-1">
+      <h1 class="text-xl font-bold">🗺️ Flow Map — ขั้นตอนการใช้งาน</h1>
+      <p class="text-emerald-200 text-sm">แผนผังการทำงานแต่ละฟังก์ชัน พร้อมตัวอย่างหน้าจอ</p>
+    </div>
+    <button onclick="window.print()" class="px-4 py-2 bg-white/20 rounded-xl text-sm font-bold hover:bg-white/30">🖨 พิมพ์</button>
+  </div>
+</header>
+
+<!-- Print Header -->
+<div class="hidden print:block text-center py-4 border-b-2 border-emerald-800 mb-4">
+  <h1 class="text-2xl font-bold text-emerald-800">🗺️ Flow Map — ขั้นตอนการใช้งาน</h1>
+  <p class="text-gray-600">ระบบเฝ้าระวังคุณภาพอากาศ Biomass Stove</p>
+</div>
+
+<!-- TOC -->
+<nav class="max-w-3xl mx-auto px-4 pt-6 no-print">
+  <div class="bg-white rounded-2xl p-4 shadow-sm border mb-6">
+    <p class="font-bold text-[#0f172a] mb-3">📋 สารบัญ</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px]">
+      <a href="#flow1" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 py-1"><span class="w-6 h-6 rounded-full bg-blue-500 text-white text-[10px] flex items-center justify-center font-bold">1</span>สมัคร + Login + Recovery</a>
+      <a href="#flow2" class="flex items-center gap-2 text-emerald-600 hover:text-emerald-800 py-1"><span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-[10px] flex items-center justify-center font-bold">2</span>ตั้งค่าโครงการ</a>
+      <a href="#flow3" class="flex items-center gap-2 text-purple-600 hover:text-purple-800 py-1"><span class="w-6 h-6 rounded-full bg-purple-500 text-white text-[10px] flex items-center justify-center font-bold">3</span>เพิ่มอาสาสมัคร</a>
+      <a href="#flow4" class="flex items-center gap-2 text-amber-600 hover:text-amber-800 py-1"><span class="w-6 h-6 rounded-full bg-amber-500 text-white text-[10px] flex items-center justify-center font-bold">4</span>เพิ่มบ้านตัวอย่าง</a>
+      <a href="#flow5" class="flex items-center gap-2 text-teal-600 hover:text-teal-800 py-1"><span class="w-6 h-6 rounded-full bg-teal-500 text-white text-[10px] flex items-center justify-center font-bold">5</span>ลงทะเบียนเซนเซอร์</a>
+      <a href="#flow6" class="flex items-center gap-2 text-red-600 hover:text-red-800 py-1"><span class="w-6 h-6 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold">6</span>ตั้ง Collection Period</a>
+      <a href="#flow7" class="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 py-1"><span class="w-6 h-6 rounded-full bg-indigo-500 text-white text-[10px] flex items-center justify-center font-bold">7</span>ตั้งค่ากำหนดการซิงค์</a>
+      <a href="#flow8" class="flex items-center gap-2 text-green-600 hover:text-green-800 py-1"><span class="w-6 h-6 rounded-full bg-green-500 text-white text-[10px] flex items-center justify-center font-bold">8</span>อนุมัติข้อมูล</a>
+      <a href="#flow9" class="flex items-center gap-2 text-rose-600 hover:text-rose-800 py-1"><span class="w-6 h-6 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center font-bold">9</span>จัดการแอดมิน</a>
+    </div>
+  </div>
+
+  <!-- Setup order -->
+  <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 mb-6">
+    <p class="font-bold text-emerald-800 text-[13px] mb-2">🎯 ลำดับการตั้งค่าระบบ (ทำตามลำดับนี้)</p>
+    <div class="flow-step">
+      <span class="flow-node bg-blue-100 text-blue-800 border border-blue-300">1. สมัคร</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node bg-emerald-100 text-emerald-800 border border-emerald-300">2. โครงการ</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node bg-purple-100 text-purple-800 border border-purple-300">3. อาสา</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node bg-amber-100 text-amber-800 border border-amber-300">4. บ้าน</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node bg-teal-100 text-teal-800 border border-teal-300">5. เซนเซอร์</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node bg-red-100 text-red-800 border border-red-300">6. ช่วงเก็บข้อมูล</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-node bg-green-200 text-green-900 border border-green-400">✅ พร้อม</span>
+    </div>
+  </div>
+</nav>
+
+<main class="max-w-3xl mx-auto px-4">
+
+  <!-- ===== FLOW 1: สมัคร + Login + Recovery ===== -->
+  <div id="flow1" class="flow-card bg-blue-50 border-blue-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center text-xl font-bold">1</div>
+      <div>
+        <h2 class="text-xl font-bold text-blue-800">สมัคร + Login + Recovery</h2>
+        <p class="text-blue-600 text-[13px]">ขั้นตอนการเข้าสู่ระบบแอดมิน</p>
+      </div>
+    </div>
+
+    <!-- Sub-flows -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: สมัครใหม่</p>
+      <div class="flow-step">
+        <span class="flow-node bg-slate-100 text-slate-700">เปิดหน้า Admin</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-100 text-blue-800">กด "สมัคร"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-200 text-blue-900">กรอก Email + PIN + Invite Code</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-100 text-amber-800 border-2 border-amber-400">⚠️ บันทึก Recovery Code</span>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: Login</p>
+      <div class="flow-step">
+        <span class="flow-node bg-slate-100 text-slate-700">เปิดหน้า Admin</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-100 text-blue-800">กรอก Email + PIN</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-100 text-green-800">✅ เข้าสู่ระบบ</span>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ลืม PIN</p>
+      <div class="flow-step">
+        <span class="flow-node bg-red-100 text-red-700">ลืม PIN</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-100 text-blue-800">กด "ลืม PIN"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-200 text-blue-900">กรอก Email + Recovery Code</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-300 text-blue-900">ตั้ง PIN ใหม่</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
+      </div>
+      <div class="danger-box">
+        <p class="font-bold text-red-800">🚨 Recovery Code ใช้ได้ครั้งเดียว!</p>
+        <p class="text-red-700 mt-1">หลัง reset PIN แล้ว code จะถูกลบ → ต้องไปสร้างใหม่ที่ "เปลี่ยน PIN" เอง</p>
+      </div>
+    </div>
+
+    <!-- Mockup: Login modal -->
+    <div class="mock-modal-overlay">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white shadow-2xl">🔐</div>
+          <h3 class="text-xl font-bold text-[#0f172a]">เข้าสู่ระบบ</h3>
+        </div>
+        <div class="mock-input email">📧 อีเมลของคุณ</div>
+        <div class="relative mb-3">
+          <div class="mock-input pin" style="margin:0;">● ● ● ●</div>
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">🔒</span>
+        </div>
+        <div class="mock-btn-primary">เข้าสู่ระบบ</div>
+        <div class="flex justify-between mt-4 text-[11px]">
+          <span class="text-slate-400 cursor-default">ลืม PIN?</span>
+          <span class="text-[#064e3b] font-bold cursor-default">สมัครแอดมินใหม่</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mockup: Register modal -->
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-[#0f172a] rounded-full flex items-center justify-center mx-auto mb-4 text-2xl text-white shadow-2xl">📝</div>
+          <h3 class="text-xl font-bold text-[#0f172a]">สมัครแอดมิน</h3>
+        </div>
+        <div class="mock-input email">📧 อีเมลของคุณ</div>
+        <div class="mock-input">👤 ชื่อที่แสดง</div>
+        <div class="mock-input pin" style="letter-spacing:0.3em; font-size:14px;">ตั้ง PIN (4+ ตัวอักษร)</div>
+        <div class="mock-input" style="background:#fffbeb; border-color:#fde68a;">🎫 Invite Code</div>
+        <div class="mock-btn-primary mt-2">สมัคร</div>
+      </div>
+    </div>
+
+    <!-- Mockup: Recovery Code result -->
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content text-center">
+        <p class="text-4xl mb-3">✅</p>
+        <p class="text-lg font-bold text-[#0f172a] mb-2">สมัครสำเร็จ!</p>
+        <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 mb-3">
+          <p class="text-[10px] text-amber-600 font-bold mb-1 uppercase tracking-wider">Recovery Code (บันทึกไว้!)</p>
+          <p class="text-3xl font-bold text-amber-800 tracking-[0.2em] font-mono">ABCD-1234</p>
+        </div>
+        <p class="text-[11px] text-slate-400">ใช้สำหรับกู้คืน PIN กรณีลืม — เก็บไว้ที่ปลอดภัย</p>
+        <div class="mock-btn-primary mt-4">เข้าสู่ระบบ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 2: ตั้งค่าโครงการ ===== -->
+  <div id="flow2" class="flow-card bg-emerald-50 border-emerald-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl font-bold">2</div>
+      <div>
+        <h2 class="text-xl font-bold text-emerald-800">ตั้งค่าโครงการ</h2>
+        <p class="text-emerald-600 text-[13px]">ต้องทำเป็นอันดับแรก — บ้านทุกหลังจะผูกกับโครงการ</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <div class="flow-step">
+        <span class="flow-node bg-emerald-100 text-emerald-800">Tab "โครงการ"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-emerald-200 text-emerald-900">กด "+ เพิ่มโครงการ"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-emerald-300 text-emerald-900">กรอกชื่อ + รายละเอียด</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+      </div>
+    </div>
+
+    <!-- Mockup: Dashboard with project tab -->
+    <div class="mock">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div><div class="mock-nav-subtitle">พลังงานทางเลือกเพื่อยกระดับคุณภาพชีวิต</div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab active">โครงการ</span>
+        <span class="mock-tab">อาสา</span>
+        <span class="mock-tab">บ้าน</span>
+        <span class="mock-tab">อุปกรณ์</span>
+        <span class="mock-tab">อนุมัติ (0)</span>
+        <span class="mock-tab">กำหนดการ</span>
+        <span class="mock-tab">📖 คู่มือ</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">📁 โครงการ</p>
+          <div class="mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มโครงการ</div>
+        </div>
+        <table class="mock-table">
+          <thead><tr><th>#</th><th>ชื่อโครงการ</th><th>รายละเอียด</th><th>บ้าน</th><th>จัดการ</th></tr></thead>
+          <tbody>
+            <tr><td class="text-slate-400">1</td><td class="font-bold">เตาชีวมวลแม่ออน</td><td class="text-slate-500">โครงการวิจัยเตาชีวมวล อ.แม่ออน</td><td>10 หลัง</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mockup: Add form -->
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <h3 class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มโครงการใหม่</h3>
+        <div class="mock-input">ชื่อโครงการ เช่น "เตาชีวมวลแม่ออน"</div>
+        <div class="mock-input" style="height:56px;">รายละเอียด (ไม่บังคับ)</div>
+        <div class="mock-btn-primary mt-2">บันทึก</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 3: เพิ่มอาสาสมัคร ===== -->
+  <div id="flow3" class="flow-card bg-purple-50 border-purple-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-purple-500 text-white flex items-center justify-center text-xl font-bold">3</div>
+      <div>
+        <h2 class="text-xl font-bold text-purple-800">เพิ่มอาสาสมัคร</h2>
+        <p class="text-purple-600 text-[13px]">เพิ่มชื่ออาสาก่อน → จะได้ผูกกับบ้านในขั้นถัดไป</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <div class="flow-step">
+        <span class="flow-node bg-purple-100 text-purple-800">Tab "อาสา"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-purple-200 text-purple-900">กด "+ เพิ่มอาสา"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-purple-300 text-purple-900">กรอกชื่อ + เบอร์โทร</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+      </div>
+    </div>
+
+    <div class="mock">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">โครงการ</span>
+        <span class="mock-tab active">อาสา</span>
+        <span class="mock-tab">บ้าน</span>
+        <span class="mock-tab">อุปกรณ์</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">👤 อาสาสมัคร</p>
+          <div class="mock-btn-sm bg-[#064e3b] text-white">+ เพิ่มอาสา</div>
+        </div>
+        <div class="mock-input" style="margin-bottom:12px;">🔍 ค้นหาชื่อ / เบอร์โทร...</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Card 1 -->
+          <div class="mock-card">
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-bold text-[#0f172a] text-[15px]">นายสมชาย</p>
+              <div class="flex gap-1">
+                <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
+                <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
+              </div>
+            </div>
+            <p class="text-[12px] text-slate-500">📞 081-xxx-xxxx</p>
+            <p class="text-[12px] text-emerald-500">กำลังเก็บข้อมูล</p>
+          </div>
+          <!-- Card 2 -->
+          <div class="mock-card">
+            <div class="flex items-center justify-between mb-2">
+              <p class="font-bold text-[#0f172a] text-[15px]">นางสมหญิง</p>
+              <div class="flex gap-1">
+                <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
+                <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
+              </div>
+            </div>
+            <p class="text-[12px] text-slate-500">📞 089-xxx-xxxx</p>
+            <p class="text-[12px] text-emerald-500">กำลังเก็บข้อมูล</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 4: เพิ่มบ้านตัวอย่าง ===== -->
+  <div id="flow4" class="flow-card bg-amber-50 border-amber-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center text-xl font-bold">4</div>
+      <div>
+        <h2 class="text-xl font-bold text-amber-800">เพิ่มบ้านตัวอย่าง</h2>
+        <p class="text-amber-600 text-[13px]">เพิ่มบ้าน + ผูกอาสา + ผูกโครงการ + ใส่ GPS</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <div class="flow-step">
+        <span class="flow-node bg-amber-100 text-amber-800">Tab "บ้าน"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-200 text-amber-900">กด "+ เพิ่มบ้าน"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-300 text-amber-900">กรอกข้อมูล + GPS</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-purple-100 text-purple-800">เลือกอาสา</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-emerald-100 text-emerald-800">เลือกโครงการ</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p class="font-bold text-emerald-800">💡 พิกัด GPS สำคัญมาก!</p>
+      <p class="text-emerald-700 mt-1">ระบบใช้ GPS ตรวจจับบ้านอัตโนมัติเมื่ออาสาเปิดหน้าเก็บข้อมูล — วิธีหา: Google Maps → กดค้างที่ตำแหน่ง → คัดลอกตัวเลข</p>
+    </div>
+
+    <div class="mock-modal-overlay mt-3">
+      <div class="mock-modal-content">
+        <div class="mock-modal-close">✕</div>
+        <h3 class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มบ้านตัวอย่าง</h3>
+        <div class="mock-input">🏠 ชื่อบ้าน เช่น "บ้านนายสมชาย"</div>
+        <div class="mock-input">📍 ที่อยู่</div>
+        <div class="flex gap-2">
+          <div class="mock-input" style="flex:1;">Latitude เช่น 18.7945</div>
+          <div class="mock-input" style="flex:1;">Longitude เช่น 99.0125</div>
+        </div>
+        <div class="mock-select">👤 เลือกอาสาสมัคร ▾</div>
+        <div class="mock-select">📁 เลือกโครงการ ▾</div>
+        <div class="mock-btn-primary mt-2">บันทึก</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 5: ลงทะเบียนเซนเซอร์ ===== -->
+  <div id="flow5" class="flow-card bg-teal-50 border-teal-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-teal-500 text-white flex items-center justify-center text-xl font-bold">5</div>
+      <div>
+        <h2 class="text-xl font-bold text-teal-800">ลงทะเบียนเซนเซอร์ + ผูกบ้าน</h2>
+        <p class="text-teal-600 text-[13px]">ดึงเซนเซอร์จาก Tuya Cloud → ตั้งชื่อ → ผูกบ้าน</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <div class="flow-step">
+        <span class="flow-node bg-teal-100 text-teal-800">Tab "อุปกรณ์"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-teal-200 text-teal-900">กด "ค้นหาจาก Tuya"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-teal-300 text-teal-900">เลือกเซนเซอร์</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-teal-400 text-white">ตั้งชื่อ BS XXX</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-100 text-amber-800">เลือกบ้าน</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ สำเร็จ</span>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p class="font-bold text-amber-800">⚠️ 1 เซนเซอร์ = 1 บ้านเท่านั้น — ถ้าจะย้ายต้อง "ถอดออก" จากบ้านเดิมก่อน</p>
+    </div>
+
+    <div class="mock">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">โครงการ</span>
+        <span class="mock-tab">อาสา</span>
+        <span class="mock-tab">บ้าน</span>
+        <span class="mock-tab active">อุปกรณ์</span>
+        <span class="mock-tab">อนุมัติ (0)</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">📡 อุปกรณ์</p>
+          <div class="flex gap-2">
+            <div class="mock-btn-sm bg-teal-600 text-white">🔍 ค้นหาจาก Tuya</div>
+            <div class="mock-btn-sm bg-[#064e3b] text-white">+ ลงทะเบียน</div>
+          </div>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <div class="mock-input" style="margin:0; flex:1;">🔍 ค้นหาชื่อ / Device ID...</div>
+          <div class="mock-select" style="margin:0; width:140px;">ทั้งหมด ▾</div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Device Card 1: Online -->
+          <div class="mock-card">
+            <div class="flex items-start gap-3 mb-2">
+              <span class="text-2xl">📡</span>
+              <div class="flex-1">
+                <p class="font-bold text-[#0f172a]">BS 001</p>
+                <p class="text-[11px] text-slate-400">MT13W <span class="font-mono opacity-60">...e0hf0e</span></p>
+              </div>
+            </div>
+            <p class="text-[12px] text-slate-500 mb-1">🏠 บ้านนายสมชาย</p>
+            <p class="text-[12px] text-emerald-500 mb-3">● ออนไลน์</p>
+            <div class="flex gap-1 flex-wrap">
+              <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
+              <span class="mock-btn-sm bg-red-50 text-red-500 text-[10px] py-1 px-2">ปิดเครื่อง</span>
+              <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
+            </div>
+          </div>
+          <!-- Device Card 2: Offline -->
+          <div class="mock-card">
+            <div class="flex items-start gap-3 mb-2">
+              <span class="text-2xl">📡</span>
+              <div class="flex-1">
+                <p class="font-bold text-[#0f172a]">BS 002</p>
+                <p class="text-[11px] text-slate-400">MT13W <span class="font-mono opacity-60">...7ekytn</span></p>
+              </div>
+            </div>
+            <p class="text-[12px] text-slate-500 mb-1">🏠 บ้านนางสมหญิง</p>
+            <p class="text-[12px] text-red-500 mb-3">● ออฟไลน์</p>
+            <div class="flex gap-1 flex-wrap">
+              <span class="mock-btn-sm bg-blue-50 text-blue-600 text-[10px] py-1 px-2">แก้ไข</span>
+              <span class="mock-btn-sm bg-emerald-50 text-emerald-500 text-[10px] py-1 px-2">เปิดเครื่อง</span>
+              <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
+            </div>
+          </div>
+          <!-- Device Card 3: Unassigned -->
+          <div class="mock-card" style="border-bottom-color:#94a3b8;">
+            <div class="flex items-start gap-3 mb-2">
+              <span class="text-2xl opacity-40">📡</span>
+              <div class="flex-1">
+                <p class="font-bold text-slate-400">BS 003</p>
+                <p class="text-[11px] text-slate-300">MT13W <span class="font-mono opacity-60">...a1b2c3</span></p>
+              </div>
+            </div>
+            <p class="text-[12px] text-slate-400 mb-1">🏠 ยังไม่ได้ผูกบ้าน</p>
+            <p class="text-[12px] text-slate-400 mb-3">— ไม่ได้ใช้งาน</p>
+            <div class="flex gap-1 flex-wrap">
+              <span class="mock-btn-sm bg-[#064e3b] text-white text-[10px] py-1 px-2 font-bold">ผูกบ้าน</span>
+              <span class="mock-btn-sm bg-slate-100 text-slate-400 text-[10px] py-1 px-2">ลบ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 6: ตั้ง Collection Period ===== -->
+  <div id="flow6" class="flow-card bg-red-50 border-red-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center text-xl font-bold">6</div>
+      <div>
+        <h2 class="text-xl font-bold text-red-800">ตั้ง Collection Period</h2>
+        <p class="text-red-600 text-[13px]">กำหนดว่าแต่ละบ้านเก็บข้อมูลเตาอะไร ช่วงไหน — สำคัญมาก!</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ตั้งทีเดียวหลายบ้าน (แนะนำ)</p>
+      <div class="flow-step">
+        <span class="flow-node bg-indigo-100 text-indigo-800">Tab "กำหนดการ"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-indigo-200 text-indigo-900">"ช่วงเก็บข้อมูล"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-red-200 text-red-900">กด "ตั้งค่าทีเดียว"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-100 text-amber-800">เลือก old/eco + วันที่</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+      </div>
+    </div>
+
+    <div class="danger-box">
+      <p class="font-bold text-red-800">🚨 ถ้าไม่ตั้ง Collection Period → ระบบจะไม่รู้ว่าข้อมูลเป็นเตาเก่าหรือเตาใหม่ → Dashboard เปรียบเทียบไม่ได้</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mt-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-3 uppercase tracking-wider">ตัวอย่าง: แผนเก็บข้อมูล 6 เดือน</p>
+      <table class="mock-table">
+        <thead><tr><th>ระยะ</th><th>ประเภทเตา</th><th>ช่วงวันที่</th><th>วัตถุประสงค์</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-old">ระยะที่ 1</span></td><td>🪵 เตาเก่า (old)</td><td>เม.ย. — มิ.ย. 2569</td><td class="text-slate-500">เก็บค่า baseline จากเตาเดิม</td></tr>
+          <tr><td><span class="badge badge-eco">ระยะที่ 2</span></td><td>🌿 เตาชีวมวล (eco)</td><td>ก.ค. — ก.ย. 2569</td><td class="text-slate-500">เก็บค่าจากเตาใหม่ เปรียบเทียบ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mock mt-3">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">บ้าน</span>
+        <span class="mock-tab">อุปกรณ์</span>
+        <span class="mock-tab active">กำหนดการ</span>
+        <span class="mock-tab">📖 คู่มือ</span>
+      </div>
+      <div class="mock-body">
+        <!-- Sub-tabs -->
+        <div class="flex gap-2 mb-4 border-b pb-3">
+          <span class="text-[11px] font-bold text-[#064e3b] border-b-2 border-[#064e3b] pb-1 px-2">📅 ช่วงเก็บข้อมูล</span>
+          <span class="text-[11px] font-bold text-slate-400 px-2">⏰ ตารางซิงค์</span>
+        </div>
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">📅 ช่วงเก็บข้อมูล</p>
+          <div class="flex gap-2">
+            <div class="mock-btn-sm bg-red-500 text-white">ตั้งค่าทีเดียว</div>
+            <div class="mock-btn-sm bg-slate-200 text-slate-600">+ เพิ่มทีละรายการ</div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="mock-table" style="min-width:550px;">
+            <thead><tr><th>บ้าน</th><th>ประเภทเตา</th><th>เริ่ม</th><th>สิ้นสุด</th><th>หมายเหตุ</th><th>จัดการ</th></tr></thead>
+            <tbody>
+              <tr><td class="font-bold">บ้านนายสมชาย</td><td><span class="badge badge-old">🪵 old</span></td><td>2026-03-30</td><td>2026-06-29</td><td class="text-slate-400 text-[11px]">ระยะที่ 1</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+              <tr><td class="font-bold">บ้านนางสมหญิง</td><td><span class="badge badge-old">🪵 old</span></td><td>2026-03-30</td><td>2026-06-29</td><td class="text-slate-400 text-[11px]">ระยะที่ 1</td><td><span class="mock-btn-link text-blue-500">แก้ไข</span> <span class="mock-btn-link text-red-400">ลบ</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 7: ตั้งค่ากำหนดการซิงค์ ===== -->
+  <div id="flow7" class="flow-card bg-indigo-50 border-indigo-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xl font-bold">7</div>
+      <div>
+        <h2 class="text-xl font-bold text-indigo-800">ตั้งค่ากำหนดการซิงค์</h2>
+        <p class="text-indigo-600 text-[13px]">กำหนดช่วงเวลาเก็บข้อมูล / วันหยุด / Quiet Hours</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <div class="flow-step">
+        <span class="flow-node bg-indigo-100 text-indigo-800">Tab "กำหนดการ"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-indigo-200 text-indigo-900">"ตารางซิงค์"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-100 text-blue-800">ตั้ง Quiet Hours</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-purple-100 text-purple-800">เลือกวันเก็บ</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-amber-100 text-amber-800">เพิ่มวันหยุด</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p class="font-bold text-emerald-800">💡 Quiet Hours = ช่วงที่ระบบหยุดดึงข้อมูล เพื่อประหยัด API quota (24,000/เดือน)</p>
+    </div>
+
+    <div class="mock mt-3">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab active">กำหนดการ</span>
+        <span class="mock-tab">📖 คู่มือ</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex gap-2 mb-4 border-b pb-3">
+          <span class="text-[11px] font-bold text-slate-400 px-2">📅 ช่วงเก็บข้อมูล</span>
+          <span class="text-[11px] font-bold text-[#064e3b] border-b-2 border-[#064e3b] pb-1 px-2">⏰ ตารางซิงค์</span>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Quiet Hours -->
+          <div class="bg-white rounded-2xl p-4 border" style="border-bottom:4px solid #fb923c;">
+            <p class="font-bold text-[#0f172a] text-[13px] mb-3">🌙 Quiet Hours (หยุดซิงค์)</p>
+            <div class="flex items-center gap-3">
+              <div class="mock-input text-center" style="width:100px; margin:0; font-weight:700; color:#0f172a;">00:00</div>
+              <span class="text-slate-400 font-bold text-sm">ถึง</span>
+              <div class="mock-input text-center" style="width:100px; margin:0; font-weight:700; color:#0f172a;">06:00</div>
+              <div class="mock-btn-sm bg-[#064e3b] text-white">บันทึก</div>
+            </div>
+          </div>
+
+          <!-- Active Days -->
+          <div class="bg-white rounded-2xl p-4 border" style="border-bottom:4px solid #fb923c;">
+            <p class="font-bold text-[#0f172a] text-[13px] mb-3">📆 วันที่เก็บข้อมูล</p>
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">จ</span>
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">อ</span>
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">พ</span>
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">พฤ</span>
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-[#064e3b] text-white shadow">ศ</span>
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-slate-100 text-slate-400">ส</span>
+              <span class="px-3 py-2 rounded-xl text-[12px] font-bold bg-slate-100 text-slate-400">อา</span>
+            </div>
+          </div>
+
+          <!-- Holidays -->
+          <div class="bg-white rounded-2xl p-4 border" style="border-bottom:4px solid #fb923c;">
+            <p class="font-bold text-[#0f172a] text-[13px] mb-3">🎌 วันหยุดพิเศษ</p>
+            <div class="flex items-center gap-2">
+              <div class="mock-input" style="margin:0; flex:1;">เลือกวันที่</div>
+              <div class="mock-btn-sm bg-indigo-600 text-white">เพิ่ม</div>
+            </div>
+            <div class="flex gap-2 mt-2 flex-wrap">
+              <span class="text-[11px] bg-blue-50 text-blue-700 px-3 py-1 rounded-lg font-bold border border-blue-200">13-15 เม.ย. สงกรานต์ ✕</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 8: อนุมัติข้อมูล ===== -->
+  <div id="flow8" class="flow-card bg-green-50 border-green-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-green-500 text-white flex items-center justify-center text-xl font-bold">8</div>
+      <div>
+        <h2 class="text-xl font-bold text-green-800">อนุมัติข้อมูล</h2>
+        <p class="text-green-600 text-[13px]">ตรวจสอบ session ที่เก็บมา แล้วอนุมัติหรือปฏิเสธ</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow</p>
+      <div class="flow-step">
+        <span class="flow-node bg-green-100 text-green-800">Tab "อนุมัติ"</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-green-200 text-green-900">ดู session รอตรวจ</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-blue-100 text-blue-800">กดดูรายละเอียด</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-node bg-yellow-100 text-yellow-800">ตรวจ baseline + จำนวนข้อมูล</span>
+      </div>
+      <div class="flex gap-3 mt-3">
+        <div class="flex-1 bg-green-100 border-2 border-green-300 rounded-xl p-3 text-center">
+          <p class="text-green-700 font-bold text-[13px]">✅ อนุมัติ</p>
+          <p class="text-green-600 text-[11px] mt-1">ข้อมูลแสดงใน Dashboard</p>
+        </div>
+        <div class="flex-1 bg-red-100 border-2 border-red-300 rounded-xl p-3 text-center">
+          <p class="text-red-700 font-bold text-[13px]">❌ ปฏิเสธ</p>
+          <p class="text-red-600 text-[11px] mt-1">ข้อมูลจะไม่ถูกนำไปใช้</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mock mt-3">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">อุปกรณ์</span>
+        <span class="mock-tab active">อนุมัติ (3)</span>
+        <span class="mock-tab">ข้อมูล</span>
+        <span class="mock-tab">กำหนดการ</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">✅ อนุมัติข้อมูล <span class="badge" style="background:#fef2f2; color:#dc2626; border:1px solid #fca5a5;">3 รอตรวจ</span></p>
+          <div class="mock-btn-sm bg-emerald-600 text-white">อนุมัติทั้งหมด</div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="mock-table" style="min-width:600px;">
+            <thead><tr><th>บ้าน</th><th>วันที่</th><th>เวลา</th><th>ข้อมูล</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="font-bold">บ้านนายสมชาย</td><td>24 มี.ค. 69</td><td>08:15 - 10:25</td>
+                <td><span class="text-[11px] font-bold">25/27</span> <span class="text-[10px] text-slate-400">จุด</span></td>
+                <td><span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a;">รอตรวจ</span></td>
+                <td>
+                  <span class="mock-btn-link text-emerald-600 font-bold">อนุมัติ</span>
+                  <span class="mock-btn-link text-red-400 ml-1">ปฏิเสธ</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-bold">บ้านนางสมหญิง</td><td>24 มี.ค. 69</td><td>07:50 - 10:00</td>
+                <td><span class="text-[11px] font-bold">27/27</span> <span class="text-[10px] text-slate-400">จุด</span></td>
+                <td><span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a;">รอตรวจ</span></td>
+                <td>
+                  <span class="mock-btn-link text-emerald-600 font-bold">อนุมัติ</span>
+                  <span class="mock-btn-link text-red-400 ml-1">ปฏิเสธ</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-bold">บ้านลุงทอง</td><td>23 มี.ค. 69</td><td>17:20 - 19:30</td>
+                <td><span class="text-[11px] font-bold text-amber-600">18/27</span> <span class="text-[10px] text-slate-400">จุด</span></td>
+                <td><span class="badge" style="background:#fffbeb; color:#b45309; border:1px solid #fde68a;">รอตรวจ</span></td>
+                <td>
+                  <span class="mock-btn-link text-emerald-600 font-bold">อนุมัติ</span>
+                  <span class="mock-btn-link text-red-400 ml-1">ปฏิเสธ</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FLOW 9: จัดการแอดมิน ===== -->
+  <div id="flow9" class="flow-card bg-rose-50 border-rose-500">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full bg-rose-500 text-white flex items-center justify-center text-xl font-bold">9</div>
+      <div>
+        <h2 class="text-xl font-bold text-rose-800">จัดการแอดมิน (Super Admin)</h2>
+        <p class="text-rose-600 text-[13px]">เฉพาะ Super Admin — จัดการสิทธิ์ผู้ดูแลระบบ</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl p-4 shadow-sm mb-3">
+      <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">สิ่งที่ Super Admin ทำได้</p>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="bg-rose-50 rounded-xl p-3 text-center border border-rose-200"><p class="text-xl mb-1">⬆️</p><p class="text-[11px] font-bold text-rose-800">เลื่อนตำแหน่ง</p><p class="text-[10px] text-rose-500">Admin → Super</p></div>
+        <div class="bg-orange-50 rounded-xl p-3 text-center border border-orange-200"><p class="text-xl mb-1">⬇️</p><p class="text-[11px] font-bold text-orange-800">ลดตำแหน่ง</p><p class="text-[10px] text-orange-500">Super → Admin</p></div>
+        <div class="bg-red-50 rounded-xl p-3 text-center border border-red-200"><p class="text-xl mb-1">🗑️</p><p class="text-[11px] font-bold text-red-800">ลบแอดมิน</p><p class="text-[10px] text-red-500">ลบออกจากระบบ</p></div>
+        <div class="bg-blue-50 rounded-xl p-3 text-center border border-blue-200"><p class="text-xl mb-1">🔑</p><p class="text-[11px] font-bold text-blue-800">Reset PIN</p><p class="text-[10px] text-blue-500">ตั้ง PIN ใหม่ให้</p></div>
+      </div>
+    </div>
+
+    <div class="warning-box">
+      <p class="font-bold text-amber-800">⚠️ ต้องมี Super Admin อย่างน้อย 1 คนเสมอ — ระบบจะบล็อคถ้าจะลบ/ลดคนสุดท้าย</p>
+    </div>
+
+    <div class="mock mt-3">
+      <div class="mock-nav">
+        <div class="mock-nav-logo">🌿</div>
+        <div><div class="mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+      </div>
+      <div class="mock-tabs">
+        <span class="mock-tab">ภาพรวม</span>
+        <span class="mock-tab">อุปกรณ์</span>
+        <span class="mock-tab">ประวัติ</span>
+        <span class="mock-tab active">แอดมิน</span>
+        <span class="mock-tab">📖 คู่มือ</span>
+      </div>
+      <div class="mock-body">
+        <div class="flex justify-between items-center mb-3">
+          <p class="font-bold text-[#0f172a] text-[15px]">👥 จัดการแอดมิน</p>
+          <div class="mock-btn-sm bg-slate-100 text-slate-600 border border-slate-200">🎫 Invite Code: <span class="font-mono">ecostove2026</span></div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="mock-table" style="min-width:550px;">
+            <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>ตำแหน่ง</th><th>จัดการ</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="font-bold">DewS</td>
+                <td class="text-slate-500">dews.cnx@gmail.com</td>
+                <td><span class="badge badge-super">⭐ Super Admin</span></td>
+                <td class="text-slate-300 text-[11px]">— (ตัวเอง)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">อ.แก้ว</td>
+                <td class="text-slate-500">kaew@cmru.ac.th</td>
+                <td><span class="badge badge-admin">Admin</span></td>
+                <td>
+                  <span class="mock-btn-link text-rose-500">เลื่อน</span>
+                  <span class="mock-btn-link text-blue-500 ml-1">Reset PIN</span>
+                  <span class="mock-btn-link text-red-400 ml-1">ลบ</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="font-bold">ผู้ช่วย A</td>
+                <td class="text-slate-500">assistant@cmru.ac.th</td>
+                <td><span class="badge badge-admin">Admin</span></td>
+                <td>
+                  <span class="mock-btn-link text-rose-500">เลื่อน</span>
+                  <span class="mock-btn-link text-blue-500 ml-1">Reset PIN</span>
+                  <span class="mock-btn-link text-red-400 ml-1">ลบ</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="bg-white rounded-2xl p-5 mb-6 text-center shadow-sm border">
+    <p class="text-3xl mb-2">🗺️</p>
+    <p class="text-lg font-bold text-[#0f172a]">Flow Map ครบทุกฟังก์ชัน</p>
+    <p class="text-[13px] text-slate-500 mt-1">ดูคู่มือฉบับเต็มได้ที่ Dashboard → Tab "📖 คู่มือ"</p>
+  </div>
+
+</main>
+
+<a href="/" class="no-print fixed bottom-6 right-6 w-14 h-14 bg-[#064e3b] text-white rounded-full shadow-lg flex items-center justify-center text-2xl active:scale-95 transition-transform z-50">←</a>
+
+</body>
+</html>
