@@ -1114,6 +1114,12 @@
                     </div>
                 </div>
 
+                <!-- Search -->
+                <div class="relative">
+                    <input id="guide-search" type="text" oninput="searchGuide(this.value)" placeholder="🔍 ค้นหาในคู่มือ... เช่น PIN, อนุมัติ, เซนเซอร์, Hotspot" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 bg-white">
+                    <div id="guide-search-count" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 font-bold"></div>
+                </div>
+
                 <!-- ==================== PART A: ระบบแอดมิน ==================== -->
                 <div class="px-4 py-2 rounded-xl bg-emerald-100 text-emerald-800 font-bold text-sm inline-block">ส่วนที่ 1: ระบบแอดมิน</div>
 
@@ -1238,6 +1244,13 @@
                             <div class="guide-step-num bg-purple-600">3</div>
                             <div>กด <b>"บันทึก"</b> — โครงการจะปรากฏในรายการให้เลือกตอนเพิ่มบ้าน</div>
                         </div>
+                        <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>แก้ไข</b> — กดที่การ์ดโครงการ → แก้ชื่อ/รายละเอียด → กด "บันทึก"</li>
+                            <li><b>ลบ</b> — กดปุ่มลบ → ยืนยัน (ลบได้เฉพาะโครงการที่ไม่มีบ้านผูกอยู่)</li>
+                            <li><b>ดูผลรวม</b> — แต่ละโครงการแสดงจำนวนบ้าน + เซสชันที่เก็บได้</li>
+                        </ul>
+
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> สร้างโครงการก่อนเพิ่มบ้าน เพราะตอนเพิ่มบ้านต้องเลือกโครงการที่สังกัด
                         </div>
@@ -1264,6 +1277,13 @@
                             <div class="guide-step-num bg-emerald-600">3</div>
                             <div>กด <b>"บันทึก"</b> — อาสาจะปรากฏในรายการให้เลือกตอนเพิ่มบ้าน</div>
                         </div>
+                        <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>แก้ไข</b> — กดที่การ์ดอาสา → แก้ชื่อ/เบอร์โทร → กด "บันทึก"</li>
+                            <li><b>ลบ</b> — กดปุ่มลบ → ยืนยัน</li>
+                            <li><b>ค้นหา</b> — พิมพ์ชื่อในช่องค้นหาด้านบน</li>
+                        </ul>
+
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> สร้างอาสาก่อนเพิ่มบ้าน เพราะตอนเพิ่มบ้านต้องเลือกอาสาประจำบ้าน
                         </div>
@@ -1292,6 +1312,14 @@
                             <div><b>ผูกโครงการ</b> — เลือกโครงการวิจัยที่บ้านนี้สังกัด</div>
                         </div>
 
+                        <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>แก้ไขบ้าน</b> — กดที่การ์ดบ้าน → แก้ข้อมูล → กด "บันทึก"</li>
+                            <li><b>ลบบ้าน</b> — กดปุ่มลบสีแดง → ยืนยัน (ข้อมูล session ที่เชื่อมกับบ้านจะถูกลบด้วย)</li>
+                            <li><b>กรองบ้าน</b> — ใช้ dropdown "โครงการ", "อำเภอ", "สถานะเซนเซอร์" เพื่อกรองรายการ</li>
+                            <li><b>ค้นหา</b> — พิมพ์ชื่อบ้านในช่องค้นหา</li>
+                        </ul>
+
                         <div class="guide-tip">
                             <b>💡 เคล็ดลับ:</b> ใช้ Google Maps หาพิกัด GPS ของบ้าน แล้ว copy มาวาง ระบบจะตรวจจับบ้านที่ใกล้ที่สุดเมื่ออาสาเปิดหน้าเก็บข้อมูล
                         </div>
@@ -1319,6 +1347,14 @@
                             <div class="guide-step-num bg-blue-600">3</div>
                             <div><b>ผูกกับบ้าน</b> — เลือกบ้านที่จะติดตั้งเซนเซอร์ตัวนี้</div>
                         </div>
+
+                        <p class="font-bold text-navy mt-4 mb-2">การใช้งาน:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>ดูสถานะ</b> — จุดเขียว = ออนไลน์, จุดแดง = ออฟไลน์ (อัปเดตทุก 5 นาทีตาม sync)</li>
+                            <li><b>เปลี่ยนบ้าน</b> — กดแก้ไข → เลือกบ้านใหม่จาก dropdown</li>
+                            <li><b>ปลดจากบ้าน</b> — กดแก้ไข → เลือก "ไม่ผูกกับบ้าน"</li>
+                            <li><b>ลบเซนเซอร์</b> — กดปุ่มลบ (ลบเฉพาะการลงทะเบียน ไม่ลบตัวเครื่องจริง)</li>
+                        </ul>
 
                         <div class="guide-important">
                             <b>⚠️ สำคัญ:</b> เซนเซอร์ 1 ตัวผูกได้กับ 1 บ้านเท่านั้น ถ้าต้องการย้าย ให้ปลดจากบ้านเดิมก่อน แล้วผูกกับบ้านใหม่
@@ -1391,7 +1427,15 @@
                         </ul>
 
                         <p class="font-bold text-navy mb-2">API Quota:</p>
-                        <p>ระบบมีโควต้า <b>24,000 ครั้ง/เดือน</b> สำหรับเรียก Tuya Cloud ส่วน "สรุปโควต้า" จะแสดงว่าใช้ไปเท่าไหร่แล้ว และคาดว่าจะใช้เท่าไหร่ในเดือนนี้</p>
+                        <p class="mb-3">ระบบมีโควต้า <b>24,000 ครั้ง/เดือน</b> สำหรับเรียก Tuya Cloud ส่วน "สรุปโควต้า" จะแสดงว่าใช้ไปเท่าไหร่แล้ว และคาดว่าจะใช้เท่าไหร่ในเดือนนี้</p>
+
+                        <p class="font-bold text-navy mb-2">การใช้งาน:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>ตั้ง Quiet Hours</b> — เลือกเวลาเริ่ม-สิ้นสุด เช่น 00:00–06:00 → ระบบจะไม่ดึงข้อมูลในช่วงนี้</li>
+                            <li><b>เลือกวันเก็บ</b> — กดเปิด/ปิดแต่ละวันในสัปดาห์ (วันที่ปิดจะไม่มีการ sync)</li>
+                            <li><b>เพิ่มวันหยุดพิเศษ</b> — เลือกวันที่จากปฏิทิน → กด "เพิ่ม" (เช่น สงกรานต์)</li>
+                            <li><b>ลบวันหยุด</b> — กดปุ่ม ✕ ข้างวันหยุดที่ต้องการลบ</li>
+                        </ul>
 
                         <div class="guide-tip">
                             <b>💡 ปฏิทิน:</b> ดูภาพรวมรายเดือนได้ที่ปฏิทิน — สีเขียว = วันเก็บ, สีเทา = วันหยุดประจำ, สีฟ้า = วันหยุดพิเศษ
@@ -1415,7 +1459,19 @@
                             <li>ค่าเฉลี่ย PM2.5, CO2</li>
                             <li>สถานะ: ✅ เก็บครบ / ⚠️ ไม่ครบ</li>
                         </ul>
-                        <p class="mb-4">กด <b>"✓ อนุมัติ"</b> เพื่อยืนยัน หรือ <b>"✕"</b> เพื่อปฏิเสธ</p>
+                        <p class="mb-3">กด <b>"✓ อนุมัติ"</b> เพื่อยืนยัน หรือ <b>"✕"</b> เพื่อปฏิเสธ</p>
+
+                        <p class="font-bold text-navy mb-2">การใช้งาน:</p>
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+                            <li><b>อนุมัติทีละรายการ</b> — กดปุ่ม "✓" บนการ์ดแต่ละ session</li>
+                            <li><b>อนุมัติทั้งหมด</b> — กดปุ่ม "✓ อนุมัติทั้งหมด" ด้านบน (อนุมัติทุก session ที่แสดง)</li>
+                            <li><b>ปฏิเสธ</b> — กดปุ่ม "✕" → ข้อมูล session นั้นจะไม่ถูกนำไปคำนวณใน Dashboard</li>
+                            <li><b>ตรวจสอบก่อนอนุมัติ</b> — ดูจำนวนค่าที่เก็บได้ (เช่น 25/27) ถ้าน้อยเกินอาจปฏิเสธ</li>
+                        </ul>
+
+                        <div class="guide-tip mb-4">
+                            <b>💡 เคล็ดลับ:</b> ตัวเลขในแท็บ "รออนุมัติ (5)" แสดงจำนวน session ที่รอดู ตรวจสอบเป็นประจำ อย่าปล่อยค้างนาน
+                        </div>
 
                         <p class="font-bold text-navy mb-2">ระบบ Multi-Admin:</p>
                         <div class="guide-step">
@@ -3913,6 +3969,35 @@
         function printGuide() {
             toggleAllGuideSections(true);
             setTimeout(() => window.print(), 200);
+        }
+        function searchGuide(query) {
+            const q = query.trim().toLowerCase();
+            const sections = document.querySelectorAll('#admin-guide .guide-section');
+            const partLabels = document.querySelectorAll('#admin-guide > div:not(.guide-section):not(.relative):not([class*="flex"])');
+            const countEl = document.getElementById('guide-search-count');
+            if (!q) {
+                sections.forEach(s => { s.style.display = ''; });
+                partLabels.forEach(l => { l.style.display = ''; });
+                countEl.classList.add('hidden');
+                return;
+            }
+            let matched = 0;
+            sections.forEach(s => {
+                const text = s.textContent.toLowerCase();
+                if (text.includes(q)) {
+                    s.style.display = '';
+                    const h = s.querySelector('.guide-header');
+                    const b = s.querySelector('.guide-body');
+                    if (h && !h.classList.contains('open')) { h.classList.add('open'); }
+                    if (b && !b.classList.contains('open')) { b.classList.add('open'); }
+                    matched++;
+                } else {
+                    s.style.display = 'none';
+                }
+            });
+            partLabels.forEach(l => { l.style.display = 'none'; });
+            countEl.textContent = matched + ' ผลลัพธ์';
+            countEl.classList.remove('hidden');
         }
 
         // Sub-tabs within "ข้อมูล" tab
