@@ -1279,8 +1279,9 @@
                             </div>
                         </div>
 
-                        <!-- Login mockup -->
+                        <!-- Mockups: Login + Register + Recovery Code -->
                         <p class="font-bold text-navy mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <!-- Login modal -->
                         <div class="guide-mock-modal">
                             <div class="text-center mb-4">
                                 <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">🔐</div>
@@ -1293,6 +1294,32 @@
                                 <span class="text-slate-400">ลืม PIN?</span>
                                 <span class="text-[#064e3b] font-bold">ลงทะเบียน</span>
                             </div>
+                        </div>
+
+                        <!-- Register modal -->
+                        <div class="guide-mock-modal" style="margin-top:16px;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <div class="text-center mb-4">
+                                <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">📝</div>
+                                <p class="text-lg font-bold text-[#0f172a]">สมัครแอดมิน</p>
+                            </div>
+                            <div class="guide-mock-input">อีเมลของคุณ</div>
+                            <div class="guide-mock-input">ชื่อที่แสดง</div>
+                            <div class="guide-mock-input" style="letter-spacing:0.2em;">ตั้ง PIN (4+ ตัวอักษร)</div>
+                            <div class="guide-mock-input" style="background:#fffbeb; border-color:#fde68a;">Invite Code</div>
+                            <div class="guide-mock-btn-primary mt-2">สมัคร</div>
+                        </div>
+
+                        <!-- Recovery Code success -->
+                        <div class="guide-mock-modal text-center" style="margin-top:16px;">
+                            <p class="text-3xl mb-2">✅</p>
+                            <p class="text-lg font-bold text-[#0f172a] mb-2">สมัครสำเร็จ!</p>
+                            <div style="background:#fffbeb; border:2px solid #fcd34d; border-radius:16px; padding:12px; margin-bottom:10px;">
+                                <p class="text-[10px] text-amber-600 font-bold mb-1 uppercase tracking-wider">Recovery Code (บันทึกไว้!)</p>
+                                <p class="text-2xl font-bold text-amber-800 tracking-[0.15em]" style="font-family:monospace;">ABCD-1234</p>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mb-3">ใช้สำหรับกู้คืน PIN กรณีลืม — เก็บไว้ที่ปลอดภัย</p>
+                            <div class="guide-mock-btn-primary">เข้าสู่ระบบ</div>
                         </div>
                     </div>
                 </div>
@@ -1407,6 +1434,15 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+
+                        <!-- Add Project modal -->
+                        <div class="guide-mock-modal" style="margin-top:16px;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <p class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มโครงการ</p>
+                            <div class="guide-mock-input">ชื่อโครงการ เช่น "เตาชีวมวลแม่ออน"</div>
+                            <div class="guide-mock-input" style="height:56px;">รายละเอียด (ไม่บังคับ)</div>
+                            <div class="guide-mock-btn-primary mt-2">บันทึก</div>
                         </div>
                     </div>
                 </div>
@@ -1589,6 +1625,36 @@
                                 </table>
                             </div>
                         </div>
+                        <!-- Mockup: เพิ่มบ้าน modal -->
+                        <div class="guide-mock-modal" style="margin-top:16px; position:relative;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <p class="text-lg font-bold text-[#0f172a] mb-4">เพิ่มบ้านกลุ่มตัวอย่าง</p>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">ชื่อบ้าน</p>
+                            <div class="guide-mock-input">เช่น "บ้าน A"</div>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">โครงการ</p>
+                            <div class="guide-mock-select">เลือกโครงการ ▾</div>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">ที่อยู่</p>
+                            <div class="guide-mock-input">ที่อยู่</div>
+                            <div style="display:flex; gap:8px;">
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">จังหวัด</p><div class="guide-mock-select">เชียงใหม่ ▾</div></div>
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">อำเภอ</p><div class="guide-mock-select">เลือกอำเภอ ▾</div></div>
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">ตำบล</p><div class="guide-mock-select">เลือกตำบล ▾</div></div>
+                            </div>
+                            <div style="display:flex; gap:8px; margin-top:4px;">
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">Latitude</p><div class="guide-mock-input">เช่น 18.805</div></div>
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">Longitude</p><div class="guide-mock-input">เช่น 98.921</div></div>
+                            </div>
+                            <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+                                <span class="text-[13px] font-bold text-[#0f172a]">☑ มีเซนเซอร์</span>
+                            </div>
+                            <div style="margin-top:6px; padding:10px; background:#f0fdf4; border-radius:12px; border:1px dashed #86efac;">
+                                <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกอาสาสมัคร</p>
+                                <div class="guide-mock-select">เลือกอาสา ▾</div>
+                                <p class="text-[12px] font-bold text-[#0f172a] mb-1">การเชื่อมต่อ</p>
+                                <div class="guide-mock-select">Hotspot ▾</div>
+                            </div>
+                            <div class="guide-mock-btn-primary" style="margin-top:12px;">บันทึก</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1696,6 +1762,28 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                        <!-- Mockup: ลงทะเบียนเซนเซอร์ modal -->
+                        <div class="guide-mock-modal" style="margin-top:16px; position:relative;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <p class="text-lg font-bold text-[#0f172a] mb-1">ลงทะเบียนเซนเซอร์</p>
+                            <p class="text-slate-400 text-[12px] mb-4">เพิ่มเซนเซอร์ Tuya ลงในระบบ</p>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">Tuya Device ID</p>
+                            <div class="guide-mock-input" style="font-family:monospace;">a3d01864e463e3ede0hf0e</div>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">ชื่อเซนเซอร์</p>
+                            <div class="guide-mock-input">เช่น BS 001</div>
+                            <div class="guide-mock-btn-primary" style="margin-top:12px; background:#f59e0b;">บันทึก</div>
+                        </div>
+                        <!-- Mockup: ผูกเซนเซอร์กับบ้าน modal -->
+                        <div class="guide-mock-modal" style="margin-top:16px; position:relative;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <p class="text-lg font-bold text-[#0f172a] mb-1">ผูกเซนเซอร์กับบ้าน</p>
+                            <p class="text-slate-400 text-[12px] mb-4">เลือกเซนเซอร์ที่ลงทะเบียนแล้ว และผูกกับบ้านตัวอย่าง</p>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกเซนเซอร์</p>
+                            <div class="guide-mock-select">BS 001 ▾</div>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกบ้าน</p>
+                            <div class="guide-mock-select">เลือกบ้าน ▾</div>
+                            <div class="guide-mock-btn-primary" style="margin-top:12px;">บันทึก</div>
                         </div>
                     </div>
                 </div>
@@ -1814,6 +1902,34 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+                        <!-- Mockup: ตั้งค่าช่วงเก็บข้อมูล modal -->
+                        <div class="guide-mock-modal" style="margin-top:16px; position:relative;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <div style="text-align:center; margin-bottom:16px;">
+                                <div style="width:56px; height:56px; background:#ecfdf5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:24px;">📅</div>
+                                <p class="text-lg font-bold text-[#0f172a]">ตั้งค่าช่วงเก็บข้อมูล</p>
+                                <p class="text-slate-400 text-[12px]" style="margin-top:4px;">2 บ้านที่เลือก: บ้าน A, บ้าน B</p>
+                            </div>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-2">ประเภทเตา</p>
+                            <div style="display:flex; gap:12px; margin-bottom:12px;">
+                                <div style="flex:1; padding:10px; border-radius:14px; border:2px solid #fb923c; background:#fff7ed; text-align:center;">
+                                    <span class="font-bold text-[13px]" style="color:#c2410c;">เตาดั้งเดิม</span>
+                                </div>
+                                <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; background:white; text-align:center;">
+                                    <span class="font-bold text-[13px] text-slate-500">เตาชีวมวล</span>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">วันเริ่มต้น</p><div class="guide-mock-input" style="font-size:12px;">2026-04-01</div></div>
+                                <div style="flex:1;"><p class="text-[12px] font-bold text-[#0f172a] mb-1">วันสิ้นสุด</p><div class="guide-mock-input" style="font-size:12px;">2026-06-30</div></div>
+                            </div>
+                            <p class="text-[12px] font-bold text-[#0f172a] mb-1" style="margin-top:8px;">หมายเหตุ <span class="text-slate-400 font-normal">(ไม่บังคับ)</span></p>
+                            <div class="guide-mock-input" style="font-size:12px;">เช่น เริ่มเฟสเตาชีวมวล</div>
+                            <div style="display:flex; gap:12px; margin-top:16px;">
+                                <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; text-align:center; font-weight:700; color:#64748b; font-size:13px;">ยกเลิก</div>
+                                <div style="flex:1; padding:10px; border-radius:14px; background:#059669; text-align:center; font-weight:700; color:white; font-size:13px;">ตั้งค่า</div>
                             </div>
                         </div>
                     </div>

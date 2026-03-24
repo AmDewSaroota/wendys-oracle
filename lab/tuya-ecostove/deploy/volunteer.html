@@ -767,6 +767,26 @@ async function pollStatus() {
   if (!selectedHouse) return;
   try {
 
+  // 0. Quick quiet hours check — if current time is in quiet hours, show immediately
+  try {
+    const { data: qcNow } = await sb.from('sync_config').select('quiet_hours_enabled,quiet_hours_start,quiet_hours_end').limit(1).single();
+    if (qcNow && qcNow.quiet_hours_enabled) {
+      const nowD = new Date();
+      const nowHHMM = String(nowD.getHours()).padStart(2,'0') + ':' + String(nowD.getMinutes()).padStart(2,'0');
+      const qsNow = qcNow.quiet_hours_start || '00:00';
+      const qeNow = qcNow.quiet_hours_end || '06:00';
+      let inQuietNow = false;
+      if (qsNow <= qeNow) { inQuietNow = nowHHMM >= qsNow && nowHHMM < qeNow; }
+      else { inQuietNow = nowHHMM >= qsNow || nowHHMM < qeNow; }
+      if (inQuietNow) {
+        setSensorUI('cooldown', '🌙', 'อยู่ในช่วงหยุดเก็บข้อมูล (' + qsNow + '–' + qeNow + ')',
+          'เก็บรอบถัดไปได้พรุ่งนี้ค่ะ');
+        hideAllActions();
+        return;
+      }
+    }
+  } catch (_) {}
+
   // 1. Find device for this house
   const { data: devices, error: devErr } = await sb.from('devices')
     .select('id, tuya_device_id, name')
@@ -840,14 +860,15 @@ async function pollStatus() {
 
           // Check if cooldown ends during quiet hours → show "done for today"
           let inQuiet = false;
+          let qs = '00:00', qe = '06:00';
           try {
             const { data: qc } = await sb.from('sync_config').select('quiet_hours_enabled,quiet_hours_start,quiet_hours_end').limit(1).single();
             if (qc && qc.quiet_hours_enabled) {
               const nextH = nextAvail.getHours();
               const nextM = nextAvail.getMinutes();
               const nextHHMM = String(nextH).padStart(2,'0') + ':' + String(nextM).padStart(2,'0');
-              const qs = qc.quiet_hours_start || '00:00';
-              const qe = qc.quiet_hours_end || '06:00';
+              qs = qc.quiet_hours_start || '00:00';
+              qe = qc.quiet_hours_end || '06:00';
               if (qs <= qe) { inQuiet = nextHHMM >= qs && nextHHMM < qe; }
               else { inQuiet = nextHHMM >= qs || nextHHMM < qe; } // wrap midnight
             }
@@ -891,6 +912,7 @@ async function pollStatus() {
               if (ping.reason === 'cooldown') {
                 // Check if cooldown ends during quiet hours
                 let pingInQuiet = false;
+                let qs2 = '00:00', qe2 = '06:00';
                 try {
                   const { data: qc2 } = await sb.from('sync_config').select('quiet_hours_enabled,quiet_hours_start,quiet_hours_end').limit(1).single();
                   if (qc2 && qc2.quiet_hours_enabled && ping.minutesLeft) {
@@ -898,8 +920,8 @@ async function pollStatus() {
                     const cdH = String(cdEnd.getHours()).padStart(2,'0');
                     const cdM = String(cdEnd.getMinutes()).padStart(2,'0');
                     const cdHHMM = cdH + ':' + cdM;
-                    const qs2 = qc2.quiet_hours_start || '00:00';
-                    const qe2 = qc2.quiet_hours_end || '06:00';
+                    qs2 = qc2.quiet_hours_start || '00:00';
+                    qe2 = qc2.quiet_hours_end || '06:00';
                     if (qs2 <= qe2) { pingInQuiet = cdHHMM >= qs2 && cdHHMM < qe2; }
                     else { pingInQuiet = cdHHMM >= qs2 || cdHHMM < qe2; }
                   }
