@@ -25,29 +25,35 @@ function thaiDayEndUTC(thaiDate) {
   return new Date(new Date(thaiDate + 'T00:00:00+07:00').getTime() + 86400000).toISOString();
 }
 
+// D-M01: Safe max/min — avoids stack overflow with large arrays
+function safeMax(arr) { if (!arr.length) return null; let m = arr[0]; for (let i = 1; i < arr.length; i++) { if (arr[i] > m) m = arr[i]; } return m; }
+function safeMin(arr) { if (!arr.length) return null; let m = arr[0]; for (let i = 1; i < arr.length; i++) { if (arr[i] < m) m = arr[i]; } return m; }
+
 const TUYA_BASE_URL = 'https://openapi-sg.iotbing.com';
-// SESSION_GAP_MINUTES removed — sessions now close only on 130 min timer
-const SESSION_MAX_MINUTES = 130; // auto-close after 2h10m
-const SESSION_COOLDOWN_MINUTES = 300; // 5hr cooldown before next session
-const MAX_SESSIONS_PER_DAY = 2; // limit per device per day
-const MONTHLY_API_LIMIT = 24000; // 26,000 minus 2,000 buffer
-const BASELINE_MINUTES = 10; // baseline phase duration (~2 readings at 5min interval)
+// S-M3: Import constants from sync-logic.js (single source of truth)
+const {
+  SESSION_MAX_MINUTES,
+  SESSION_COOLDOWN_MINUTES,
+  MAX_SESSIONS_PER_DAY,
+  MONTHLY_API_LIMIT,
+  BASELINE_MINUTES,
+} = require('./sync-logic');
 
 // SENSORS loaded dynamically from Supabase (registered_sensors + devices)
 async function loadSensors(sbUrl, sbKey) {
-  // 1. Get all registered sensors (tuya_device_id, name)
-  const sensorsRes = await fetch(
-    sbUrl + '/rest/v1/registered_sensors?select=tuya_device_id,name',
-    { headers: sbHeaders(sbKey) }
-  );
+  // S-M6: Queries 1-3 in parallel (independent), then query 4 (needs deviceMap)
+  const [sensorsRes, devicesRes, spRes] = await Promise.all([
+    fetch(sbUrl + '/rest/v1/registered_sensors?select=tuya_device_id,name', { headers: sbHeaders(sbKey) }),
+    fetch(sbUrl + '/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id', { headers: sbHeaders(sbKey) }),
+    fetch(sbUrl + '/rest/v1/subject_projects?select=subject_id,project_id', { headers: sbHeaders(sbKey) }).catch(err => {
+      console.error('loadSensors: subject_projects error:', err.message);
+      return { ok: false };
+    }),
+  ]);
+
   if (!sensorsRes.ok) return [];
   const sensors = await sensorsRes.json();
 
-  // 2. Get active device-to-house assignments (tuya_device_id, subject_id)
-  const devicesRes = await fetch(
-    sbUrl + '/rest/v1/devices?is_active=eq.true&select=tuya_device_id,subject_id',
-    { headers: sbHeaders(sbKey) }
-  );
   const deviceMap = {};
   if (devicesRes.ok) {
     const devices = await devicesRes.json();
@@ -56,27 +62,16 @@ async function loadSensors(sbUrl, sbKey) {
     }
   }
 
-  // 3. Get subject-to-project mapping
   const projectMap = {};
-  try {
-    const spRes = await fetch(
-      sbUrl + '/rest/v1/subject_projects?select=subject_id,project_id',
-      { headers: sbHeaders(sbKey) }
-    );
-    if (spRes.ok) {
-      const spData = await spRes.json();
-      for (const sp of spData) {
-        projectMap[sp.subject_id] = sp.project_id;
-      }
-    } else {
-      console.error('loadSensors: subject_projects query failed, status=' + spRes.status);
+  if (spRes.ok) {
+    const spData = await spRes.json();
+    for (const sp of spData) {
+      projectMap[sp.subject_id] = sp.project_id;
     }
-  } catch (err) {
-    console.error('loadSensors: subject_projects error:', err.message);
   }
 
-  // 4. Get active collection periods per house (stove_type from period > sensor fallback)
-  const periodMap = {}; // subject_id → stove_type
+  // 4. Get active collection periods per house (needs deviceMap from query 2)
+  const periodMap = {};
   try {
     const today = getThaiDate();
     const subjectIds = [...new Set(Object.values(deviceMap).filter(Boolean))];
@@ -161,9 +156,19 @@ async function getTuyaToken(accessId, secret) {
 async function tuyaFetchWithRetry(url, headers, label) {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      const res = await fetch(url, { headers });
+      // S-M7: 8s timeout on Tuya fetch
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(url, { headers, signal: controller.signal });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.success) return { ok: true, data, attempts: attempt + 1 };
+      // S-H2: Clear token cache on auth failure so next retry gets fresh token
+      if (data.code === 1010 || data.code === 1004) {
+        _cachedToken = null;
+        _tokenExpiresAt = 0;
+        console.warn(label + ': token expired (code=' + data.code + '), cache cleared');
+      }
       if (attempt === 0) {
         console.warn(label + ': attempt 1 failed (code=' + data.code + '), retrying in 3s...');
         await new Promise(r => setTimeout(r, 3000));
@@ -172,7 +177,8 @@ async function tuyaFetchWithRetry(url, headers, label) {
       return { ok: false, data, attempts: 2 };
     } catch (err) {
       if (attempt === 0) {
-        console.warn(label + ': fetch error (' + err.message + '), retrying in 3s...');
+        const errMsg = err.name === 'AbortError' ? 'timeout' : err.message;
+        console.warn(label + ': fetch error (' + errMsg + '), retrying in 3s...');
         await new Promise(r => setTimeout(r, 3000));
         continue;
       }
@@ -224,16 +230,24 @@ async function getBatchDeviceInfo(accessId, secret, token, deviceIds, appUserUid
   return map;
 }
 
-// Smart Home API: individual /v1.0/devices/{id}/status calls in parallel
+// S-H1: Chunked status calls (3 at a time with 500ms delay to avoid Tuya throttling)
 async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
+  const CHUNK_SIZE = 3;
+  const CHUNK_DELAY_MS = 500;
+
   const fetchOne = async (deviceId) => {
     const timestamp = Date.now().toString();
     const path = '/v1.0/devices/' + deviceId + '/status';
     const sign = generateSign(accessId, secret, 'GET', path, timestamp, token);
     try {
+      // S-M7: 8s timeout on Tuya fetch
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
       const res = await fetch(TUYA_BASE_URL + path, {
         headers: { client_id: accessId, access_token: token, sign, t: timestamp, sign_method: 'HMAC-SHA256' },
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.success && data.result) {
         const readings = {};
@@ -244,14 +258,20 @@ async function getBatchDeviceStatus(accessId, secret, token, deviceIds) {
       }
       return { id: deviceId, error: data.msg || 'unknown' };
     } catch (err) {
-      return { id: deviceId, error: err.message };
+      return { id: deviceId, error: err.name === 'AbortError' ? 'timeout' : err.message };
     }
   };
 
-  const results = await Promise.all(deviceIds.map(id => fetchOne(id)));
   const map = { _attempts: deviceIds.length };
-  for (const r of results) {
-    if (r.readings) map[r.id] = r.readings;
+  for (let i = 0; i < deviceIds.length; i += CHUNK_SIZE) {
+    const chunk = deviceIds.slice(i, i + CHUNK_SIZE);
+    const results = await Promise.all(chunk.map(id => fetchOne(id)));
+    for (const r of results) {
+      if (r.readings) map[r.id] = r.readings;
+    }
+    if (i + CHUNK_SIZE < deviceIds.length) {
+      await new Promise(r => setTimeout(r, CHUNK_DELAY_MS));
+    }
   }
   return map;
 }
@@ -557,8 +577,8 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
       collection_ended_at: new Date().toISOString(),
       readings_count: postBaselineData.length,
       avg_pm25: avg(pm25s),
-      max_pm25: pm25s.length ? Math.max(...pm25s) : null,
-      min_pm25: pm25s.length ? Math.min(...pm25s) : null,
+      max_pm25: pm25s.length ? safeMax(pm25s) : null,
+      min_pm25: pm25s.length ? safeMin(pm25s) : null,
       avg_pm10: avg(pm10s),
       avg_co2: avg(co2s),
       avg_co: avg(cos),
@@ -640,8 +660,8 @@ async function upsertDailySummary(sbUrl, sbKey, deviceId, stoveType, projectId) 
       sessions_cancelled: cancelled.length,
       total_readings: totalReadings,
       avg_pm25: avgOf(validSessions, 'avg_pm25'),
-      max_pm25: pm25Maxes.length > 0 ? Math.max(...pm25Maxes) : null,
-      min_pm25: pm25Mins.length > 0 ? Math.min(...pm25Mins) : null,
+      max_pm25: pm25Maxes.length > 0 ? safeMax(pm25Maxes) : null,
+      min_pm25: pm25Mins.length > 0 ? safeMin(pm25Mins) : null,
       avg_pm10: avgOf(validSessions, 'avg_pm10'),
       avg_co2: avgOf(validSessions, 'avg_co2'),
       avg_co: avgOf(validSessions, 'avg_co'),

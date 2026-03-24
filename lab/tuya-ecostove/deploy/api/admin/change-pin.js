@@ -46,18 +46,23 @@ module.exports = async function handler(req, res) {
       msg = 'รีเซ็ต PIN สำเร็จ';
     }
 
+    // A-H4: Use return=representation to verify row was updated
     const headers = sbHeaders(sbKey);
     const updateRes = await fetch(
       sbUrl + '/rest/v1/admin_users?id=eq.' + targetId,
       {
         method: 'PATCH',
-        headers: { ...headers, 'Prefer': 'return=minimal' },
+        headers: { ...headers, 'Prefer': 'return=representation' },
         body: JSON.stringify({ pin_hash: hashPin(newPin) }),
       }
     );
 
     if (!updateRes.ok) {
       return res.status(500).json({ error: 'Failed to update PIN' });
+    }
+    const updated = await updateRes.json();
+    if (!updated.length) {
+      return res.status(404).json({ error: 'Admin not found' });
     }
 
     return res.status(200).json({ success: true, message: msg });

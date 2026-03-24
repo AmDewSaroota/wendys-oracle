@@ -1632,6 +1632,9 @@
         function escAttr(str) { return esc(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;'); }
         function getThaiToday() { return new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10); }
         function debounce(fn, ms) { let t; return function(...a) { clearTimeout(t); t = setTimeout(() => fn.apply(this, a), ms); }; }
+        // D-M01: Safe max/min — avoids stack overflow with large arrays
+        function safeMax(arr) { if (!arr.length) return null; let m = arr[0]; for (let i = 1; i < arr.length; i++) { if (arr[i] > m) m = arr[i]; } return m; }
+        function safeMin(arr) { if (!arr.length) return null; let m = arr[0]; for (let i = 1; i < arr.length; i++) { if (arr[i] < m) m = arr[i]; } return m; }
         const _debouncedOverview = debounce(() => renderOverviewTable(), 250);
         const _debouncedVolunteers = debounce(() => renderVolunteersList(), 250);
         const _debouncedSubjects = debounce(() => renderSubjectsList(), 250);
@@ -3909,7 +3912,7 @@
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">⚠️</div>
                     <h3 class="text-xl font-bold text-navy mb-2">${t('common.confirm.title')}</h3>
-                    <p class="text-slate-500">${message}</p>
+                    <p class="text-slate-500">${esc(message)}</p>
                 </div>
                 <div class="flex gap-3">
                     <button onclick="closeModal()" class="flex-1 py-3 rounded-2xl border-2 border-slate-200 font-bold text-slate-500 hover:bg-slate-50">${t('common.cancel')}</button>
@@ -4394,7 +4397,7 @@
                     const sensorLabel = DEVICE_NAMES[devId] || '';
                     const houseName = sensorLabel ? rawHouseName + ' (' + sensorLabel + ')' : rawHouseName;
                     // Online = last reading within 10 min (not just "has readings today")
-                    const latestMs = devLogs.length > 0 ? Math.max(...devLogs.map(d => new Date(d.recorded_at).getTime())) : 0;
+                    const latestMs = devLogs.length > 0 ? safeMax(devLogs.map(d => new Date(d.recorded_at).getTime())) : 0;
                     const isOnline = latestMs > 0 && (Date.now() - latestMs) < 10 * 60000;
                     const hasData = devLogs.length > 0;
 
@@ -5571,8 +5574,8 @@
             const values = tvocData.map(d => d.tvoc_value);
             const count = values.length;
             const avgVal = count > 0 ? (values.reduce((a,b) => a+b, 0) / count).toFixed(3) : '--';
-            const minVal = count > 0 ? Math.min(...values).toFixed(3) : '--';
-            const maxVal = count > 0 ? Math.max(...values).toFixed(3) : '--';
+            const minVal = count > 0 ? safeMin(values).toFixed(3) : '--';
+            const maxVal = count > 0 ? safeMax(values).toFixed(3) : '--';
 
             document.getElementById('tvoc-stat-count').textContent = count;
             document.getElementById('tvoc-stat-avg').innerHTML = avgVal + ' <span class="text-sm font-normal">mg/m³</span>';
@@ -5583,8 +5586,8 @@
             const coValues = tvocData.map(d => d.co_value).filter(v => v != null);
             const coCount = coValues.length;
             const coAvg = coCount > 0 ? (coValues.reduce((a,b) => a+b, 0) / coCount).toFixed(1) : '--';
-            const coMin = coCount > 0 ? Math.min(...coValues) : '--';
-            const coMax = coCount > 0 ? Math.max(...coValues) : '--';
+            const coMin = coCount > 0 ? safeMin(coValues) : '--';
+            const coMax = coCount > 0 ? safeMax(coValues) : '--';
             document.getElementById('co-stat-count').textContent = coCount;
             document.getElementById('co-stat-avg').innerHTML = coAvg + ' <span class="text-sm font-normal">ppm</span>';
             document.getElementById('co-stat-min').innerHTML = coMin + ' <span class="text-sm font-normal">ppm</span>';
@@ -5792,16 +5795,16 @@
                     function tvocSparkline(values, times) {
                         if (!values || values.length < 2) return '';
                         const w = 280, h = 60, pad = 4;
-                        const min = Math.min(...values);
-                        const max = Math.max(...values);
+                        const min = safeMin(values);
+                        const max = safeMax(values);
                         const range = max - min || 1;
                         const points = values.map((v, i) => {
                             const x = pad + (i / (values.length - 1)) * (w - pad * 2);
                             const y = pad + (1 - (v - min) / range) * (h - pad * 2);
                             return x + ',' + y;
                         });
-                        const maxIdx = values.indexOf(Math.max(...values));
-                        const minIdx = values.indexOf(Math.min(...values));
+                        const maxIdx = values.indexOf(max);
+                        const minIdx = values.indexOf(min);
                         const mx = pad + (maxIdx / (values.length - 1)) * (w - pad * 2);
                         const my = pad + (1 - (values[maxIdx] - min) / range) * (h - pad * 2);
                         const nx = pad + (minIdx / (values.length - 1)) * (w - pad * 2);
@@ -5819,8 +5822,8 @@
                         const tvocValues = ms.logs.map(d => d.tvoc_value).filter(v => v != null);
                         const tvocTimes = ms.logs.filter(d => d.tvoc_value != null).map(d => new Date(d.recorded_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
                         const avgTvoc = tvocValues.length > 0 ? (tvocValues.reduce((a,b) => a+b, 0) / tvocValues.length).toFixed(3) : '--';
-                        const maxTvoc = tvocValues.length > 0 ? Math.max(...tvocValues).toFixed(3) : '--';
-                        const minTvoc = tvocValues.length > 0 ? Math.min(...tvocValues).toFixed(3) : '--';
+                        const maxTvoc = tvocValues.length > 0 ? safeMax(tvocValues).toFixed(3) : '--';
+                        const minTvoc = tvocValues.length > 0 ? safeMin(tvocValues).toFixed(3) : '--';
                         const firstDt = new Date(ms.logs[0].recorded_at);
                         const lastDt = new Date(ms.logs[ms.logs.length - 1].recorded_at);
                         const dateStr = fmtDateDMY(firstDt);
@@ -5882,8 +5885,8 @@
                         const co2s = s.logs.map(l => l.co2_value).filter(v => v != null);
                         const avgPM = pm25s.length ? (pm25s.reduce((a, b) => a + b, 0) / pm25s.length).toFixed(1) : '-';
                         const avgCO2 = co2s.length ? Math.round(co2s.reduce((a, b) => a + b, 0) / co2s.length) : '-';
-                        const peakPM = pm25s.length ? Math.max(...pm25s) : null;
-                        const peakCO2 = co2s.length ? Math.max(...co2s) : null;
+                        const peakPM = pm25s.length ? safeMax(pm25s) : null;
+                        const peakCO2 = co2s.length ? safeMax(co2s) : null;
                         const peakPMLog = peakPM != null ? s.logs.find(l => l.pm25_value === peakPM) : null;
                         const peakCO2Log = peakCO2 != null ? s.logs.find(l => l.co2_value === peakCO2) : null;
                         const peakPMTime = peakPMLog ? fmtTime(peakPMLog.recorded_at) : '';
@@ -8424,9 +8427,9 @@
             const pm25s = logs.map(l => l.pm25_value).filter(v => v != null);
             const co2s = logs.map(l => l.co2_value).filter(v => v != null);
             const statsHtml = [
-                { label: 'PM2.5 สูงสุด', value: pm25s.length ? Math.max(...pm25s).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
+                { label: 'PM2.5 สูงสุด', value: pm25s.length ? safeMax(pm25s).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
                 { label: 'PM2.5 เฉลี่ย', value: pm25s.length ? (pm25s.reduce((a,b)=>a+b,0)/pm25s.length).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-400' },
-                { label: 'CO2 สูงสุด', value: co2s.length ? Math.max(...co2s) + ' ppm' : '-', color: 'text-blue-600' },
+                { label: 'CO2 สูงสุด', value: co2s.length ? safeMax(co2s) + ' ppm' : '-', color: 'text-blue-600' },
             ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[11px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
             document.getElementById('session-modal-stats').innerHTML = statsHtml;
 
@@ -8497,8 +8500,8 @@
             }
             const pm25s = sortedLogs.map(l => l.pm25_value).filter(v => v != null);
             const co2s = sortedLogs.map(l => l.co2_value).filter(v => v != null);
-            const peakPM = pm25s.length ? Math.max(...pm25s) : null;
-            const peakCO2 = co2s.length ? Math.max(...co2s) : null;
+            const peakPM = pm25s.length ? safeMax(pm25s) : null;
+            const peakCO2 = co2s.length ? safeMax(co2s) : null;
             const avgPM = pm25s.length ? (pm25s.reduce((a, b) => a + b, 0) / pm25s.length).toFixed(1) : '-';
             const avgCO2 = co2s.length ? Math.round(co2s.reduce((a, b) => a + b, 0) / co2s.length) : '-';
 

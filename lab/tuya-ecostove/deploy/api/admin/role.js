@@ -48,16 +48,21 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    // A-H4: Use return=representation to verify the row was actually updated
     const updateRes = await fetch(
       sbUrl + '/rest/v1/admin_users?id=eq.' + adminId,
       {
         method: 'PATCH',
-        headers: { ...headers, 'Prefer': 'return=minimal' },
+        headers: { ...headers, 'Prefer': 'return=representation' },
         body: JSON.stringify({ role: newRole }),
       }
     );
     if (!updateRes.ok) {
       return res.status(500).json({ error: 'Failed to update role' });
+    }
+    const updated = await updateRes.json();
+    if (!updated.length) {
+      return res.status(404).json({ error: 'Admin not found' });
     }
 
     return res.status(200).json({

@@ -713,13 +713,13 @@ async function startPolling() {
   pollGaveUp = false;
   await pollFn();
   pollCheckCount++;
-  updatePollCountdown(15);
+  updatePollCountdown(30);
   pollTimer = setInterval(async () => {
     if (pollGaveUp) return; // stop polling after give-up
     await pollFn();
     pollCheckCount++;
-    updatePollCountdown(15);
-  }, 15000); // every 15 seconds
+    updatePollCountdown(30);
+  }, 30000); // every 30 seconds (saves mobile data)
 }
 
 function updatePollCountdown(seconds) {
