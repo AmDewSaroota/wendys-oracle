@@ -2435,7 +2435,57 @@
 
                         <p class="font-bold text-navy mt-4 mb-2">👑 Super Admin (สิทธิ์พิเศษ):</p>
                         <p class="mb-3 text-[12px] text-slate-500">แท็บ "จัดการแอดมิน" จะปรากฏเฉพาะ Super Admin เท่านั้น</p>
-                        <ul class="space-y-1.5 ml-4 list-disc mb-3">
+
+                        <!-- Mockup หน้าจอหลัก — อยู่บนสุด -->
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock">
+                            <div class="guide-mock-nav">
+                                <div class="guide-mock-nav-logo">🌿</div>
+                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
+                            </div>
+                            <div class="guide-mock-tabs">
+                                <span class="guide-mock-tab">ภาพรวม</span>
+                                <span class="guide-mock-tab">ข้อมูล</span>
+                                <span class="guide-mock-tab">ประวัติ</span>
+                                <span class="guide-mock-tab active">แอดมิน</span>
+                                <span class="guide-mock-tab">📖 คู่มือ</span>
+                            </div>
+                            <div class="guide-mock-body">
+                                <p class="font-bold text-[#0f172a] text-[15px] mb-3">จัดการแอดมิน</p>
+                                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                                    <!-- Card 1: Super Admin (ตัวเอง — ไม่มีปุ่ม) -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border:1px solid #e2e8f0;">
+                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin A</p>
+                                        <p class="text-[10px] text-slate-500 mt-1">admin_a@email.com</p>
+                                        <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#fef3c7; color:#92400e;">Super Admin</span>
+                                    </div>
+                                    <!-- Card 2: Admin -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border:1px solid #e2e8f0;">
+                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin B</p>
+                                        <p class="text-[10px] text-slate-500 mt-1">admin_b@email.com</p>
+                                        <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
+                                        <div class="flex gap-2 mt-3 flex-wrap">
+                                            <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
+                                            <span style="font-size:10px; font-weight:700; color:#059669;">รีเซ็ต</span>
+                                            <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                                        </div>
+                                    </div>
+                                    <!-- Card 3: Admin -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border:1px solid #e2e8f0;">
+                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin C</p>
+                                        <p class="text-[10px] text-slate-500 mt-1">admin_c@email.com</p>
+                                        <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
+                                        <div class="flex gap-2 mt-3 flex-wrap">
+                                            <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
+                                            <span style="font-size:10px; font-weight:700; color:#059669;">รีเซ็ต</span>
+                                            <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-1.5 ml-4 list-disc mb-3 mt-4">
                             <li><b>เลื่อนขั้น / ลดขั้น</b> — เปลี่ยน Admin ⇄ Super Admin (ต้องมี Super Admin อย่างน้อย 1 คนเสมอ)</li>
                             <li><b>ลบแอดมิน</b> — ลบผู้ใช้ออกจากระบบ</li>
                         </ul>
@@ -2470,20 +2520,16 @@
                             <b>⚠️ สำคัญ:</b> หลัง reset แล้ว แอดมินคนนั้นจะ <b>ไม่มี Recovery Code</b> — ต้อง login ด้วย PIN ใหม่แล้วไปสร้าง Recovery Code เองที่ปุ่ม "Recovery" ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset อีกครั้ง
                         </div>
 
-                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — การ์ดแอดมิน (กดปุ่ม "รีเซ็ต"):</p>
-                        <div style="max-width:400px; margin-bottom:12px;">
-                            <div style="background:white; border-radius:16px; border:1px solid #e2e8f0; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="font-bold text-[16px] text-navy">สมชาย ใจดี</p>
-                                        <p class="text-[13px] text-slate-500 mt-1">somchai@email.com</p>
-                                        <span style="display:inline-block; margin-top:8px; font-size:11px; padding:4px 12px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
-                                    </div>
-                                    <div class="flex gap-1 flex-wrap justify-end">
-                                        <span style="font-size:11px; font-weight:700; color:#d97706; padding:4px 8px; border-radius:8px;">ปรับสิทธิ์</span>
-                                        <span style="position:relative; font-size:11px; font-weight:700; color:#059669; padding:4px 8px; border-radius:8px; background:#ecfdf5; border:2px solid #f59e0b;">รีเซ็ต<span style="position:absolute; left:50%; transform:translateX(-50%); top:-20px; font-size:18px;">👆</span></span>
-                                        <span style="font-size:11px; font-weight:700; color:#ef4444; padding:4px 8px; border-radius:8px;">ลบ</span>
-                                    </div>
+                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — กดปุ่ม "รีเซ็ต" บนการ์ด:</p>
+                        <div style="max-width:260px; margin-bottom:12px;">
+                            <div style="background:white; border-radius:14px; border:1px solid #e2e8f0; padding:14px;">
+                                <p class="font-bold text-[14px] text-navy">สมชาย ใจดี</p>
+                                <p class="text-[11px] text-slate-500 mt-1">somchai@email.com</p>
+                                <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
+                                <div class="flex gap-2 mt-3 flex-wrap">
+                                    <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
+                                    <span style="position:relative; font-size:10px; font-weight:700; color:#059669; padding:2px 6px; border-radius:6px; border:2px solid #f59e0b; background:#fffbeb;">รีเซ็ต<span style="position:absolute; left:50%; transform:translateX(-50%); top:-18px; font-size:16px;">👆</span></span>
+                                    <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
                                 </div>
                             </div>
                         </div>
@@ -2538,66 +2584,6 @@
                             <div class="flex gap-3 mt-3">
                                 <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; text-align:center; color:#64748b; font-weight:700; font-size:13px;">ยกเลิก</div>
                                 <div style="flex:1; padding:10px; border-radius:14px; background:#059669; color:white; text-align:center; font-weight:700; font-size:13px;">บันทึก</div>
-                            </div>
-                        </div>
-
-                        <!-- Ability grid -->
-                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
-                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">สิ่งที่ Super Admin ทำได้</p>
-                            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;">
-                                <div style="background:#fff1f2; border-radius:12px; padding:10px; text-align:center; border:1px solid #fecdd3;"><p style="font-size:16px; margin-bottom:2px;">⬆️</p><p class="text-[11px] font-bold" style="color:#9f1239;">เลื่อนตำแหน่ง</p><p class="text-[10px]" style="color:#f43f5e;">Admin → Super</p></div>
-                                <div style="background:#fff7ed; border-radius:12px; padding:10px; text-align:center; border:1px solid #fed7aa;"><p style="font-size:16px; margin-bottom:2px;">⬇️</p><p class="text-[11px] font-bold" style="color:#9a3412;">ลดตำแหน่ง</p><p class="text-[10px]" style="color:#f97316;">Super → Admin</p></div>
-                                <div style="background:#fef2f2; border-radius:12px; padding:10px; text-align:center; border:1px solid #fecaca;"><p style="font-size:16px; margin-bottom:2px;">🗑️</p><p class="text-[11px] font-bold" style="color:#991b1b;">ลบแอดมิน</p><p class="text-[10px]" style="color:#ef4444;">ลบออกจากระบบ</p></div>
-                                <div style="background:#eff6ff; border-radius:12px; padding:10px; text-align:center; border:1px solid #bfdbfe;"><p style="font-size:16px; margin-bottom:2px;">🔑</p><p class="text-[11px] font-bold" style="color:#1e40af;">Reset PIN</p><p class="text-[10px]" style="color:#3b82f6;">ตั้ง PIN ใหม่ให้</p></div>
-                            </div>
-                        </div>
-
-                        <!-- Mockup -->
-                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ:</p>
-                        <div class="guide-mock">
-                            <div class="guide-mock-nav">
-                                <div class="guide-mock-nav-logo">🌿</div>
-                                <div><div class="guide-mock-nav-title">Biomass Stove: <span style="color:#c9a96e;">Alternative Energy</span></div></div>
-                            </div>
-                            <div class="guide-mock-tabs">
-                                <span class="guide-mock-tab">ภาพรวม</span>
-                                <span class="guide-mock-tab">ข้อมูล</span>
-                                <span class="guide-mock-tab">ประวัติ</span>
-                                <span class="guide-mock-tab active">แอดมิน</span>
-                                <span class="guide-mock-tab">📖 คู่มือ</span>
-                            </div>
-                            <div class="guide-mock-body">
-                                <p class="font-bold text-[#0f172a] text-[15px] mb-3">จัดการแอดมิน</p>
-                                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
-                                    <!-- Card 1: Super Admin -->
-                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border-bottom:3px solid #fb923c;">
-                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin A</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">admin_a@email.com</p>
-                                        <span class="badge" style="background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; margin-top:6px; display:inline-block;">Super Admin</span>
-                                    </div>
-                                    <!-- Card 2: Admin -->
-                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border-bottom:3px solid #fb923c;">
-                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin B</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">admin_b@email.com</p>
-                                        <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; margin-top:6px; display:inline-block;">Admin</span>
-                                        <div class="flex gap-1 mt-2 flex-wrap">
-                                            <span class="guide-mock-btn-link text-amber-600" style="font-size:10px;">เลื่อน</span>
-                                            <span class="guide-mock-btn-link text-emerald-600" style="font-size:10px;">Reset PIN</span>
-                                            <span class="guide-mock-btn-link text-red-500" style="font-size:10px;">ลบ</span>
-                                        </div>
-                                    </div>
-                                    <!-- Card 3: Admin -->
-                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border-bottom:3px solid #fb923c;">
-                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin C</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">admin_c@email.com</p>
-                                        <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; margin-top:6px; display:inline-block;">Admin</span>
-                                        <div class="flex gap-1 mt-2 flex-wrap">
-                                            <span class="guide-mock-btn-link text-amber-600" style="font-size:10px;">เลื่อน</span>
-                                            <span class="guide-mock-btn-link text-emerald-600" style="font-size:10px;">Reset PIN</span>
-                                            <span class="guide-mock-btn-link text-red-500" style="font-size:10px;">ลบ</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
