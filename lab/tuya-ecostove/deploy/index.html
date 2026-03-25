@@ -1185,7 +1185,9 @@
                         <span class="guide-arrow">▼</span>
                     </div>
                     <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
-                        <p class="font-bold text-navy mb-2">สมัครแอดมินใหม่:</p>
+
+                        <!-- ═══ 1. สมัครแอดมินใหม่ ═══ -->
+                        <p class="font-bold text-navy mb-2">1. สมัครแอดมินใหม่</p>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">1</div>
                             <div>กดปุ่ม <b>"ลงทะเบียน"</b> ที่หน้า login</div>
@@ -1198,49 +1200,10 @@
                             <div class="guide-step-num bg-blue-600">3</div>
                             <div>กด <b>"สมัครสมาชิก"</b> → ระบบจะแสดง <b>Recovery Code</b> — <b>ต้องจดเก็บไว้ทันที</b> แสดงครั้งเดียว!</div>
                         </div>
-
                         <div class="guide-danger">
                             <b>🚨 จดจำ PIN + Recovery Code!</b> ระบบไม่เก็บ PIN จริง (เก็บเฉพาะรหัสที่เข้ารหัสแล้ว) ถ้าลืม PIN ต้องใช้ Recovery Code กู้คืน
                         </div>
-
-                        <p class="font-bold text-navy mt-4 mb-2">เข้าสู่ระบบ:</p>
-                        <p class="mb-3">กดปุ่ม <b>"จัดการระบบ"</b> → กรอก <b>อีเมล + PIN ส่วนตัว</b> → กดเข้าสู่ระบบ</p>
-
-                        <p class="font-bold text-navy mb-2">ลืม PIN:</p>
-                        <div class="guide-step">
-                            <div class="guide-step-num bg-red-500">1</div>
-                            <div>กดปุ่ม <b>"ลืม PIN?"</b> ที่หน้า login</div>
-                        </div>
-                        <div class="guide-step">
-                            <div class="guide-step-num bg-red-500">2</div>
-                            <div>กรอก <b>อีเมล + Recovery Code</b> ที่จดไว้ + ตั้ง <b>PIN ใหม่</b></div>
-                        </div>
-                        <div class="guide-step">
-                            <div class="guide-step-num bg-red-500">3</div>
-                            <div>กด <b>"ตั้ง PIN ใหม่"</b> → login ด้วย PIN ใหม่ → <b>สร้าง Recovery Code ใหม่ทันที</b></div>
-                        </div>
-
-                        <div class="guide-danger">
-                            <b>🚨 Recovery Code ใช้ได้ครั้งเดียว!</b> ใช้ reset PIN แล้ว code จะถูกลบทันที ต้อง login แล้วกดปุ่ม <b>"Recovery"</b> เพื่อสร้าง code ใหม่ ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset ให้
-                        </div>
-
-                        <p class="font-bold text-navy mt-4 mb-2">ลำดับการตั้งค่าเริ่มต้น:</p>
-                        <div class="flex flex-wrap items-center gap-2 mb-2 text-[12px]">
-                            <span class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-bold">📁 โครงการ</span>
-                            <span class="text-slate-400">→</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 font-bold">👤 อาสาสมัคร</span>
-                            <span class="text-slate-400">→</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 font-bold">🏠 บ้าน</span>
-                            <span class="text-slate-400">→</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-bold">📡 เซนเซอร์</span>
-                            <span class="text-slate-400">→</span>
-                            <span class="px-3 py-1.5 rounded-lg bg-orange-100 text-orange-700 font-bold">📅 ช่วงเก็บข้อมูล</span>
-                        </div>
-                        <p class="text-[12px] text-slate-500">ต้องกรอกเรียงลำดับ เพราะข้อมูลเชื่อมกัน (บ้านต้องมีโครงการ+อาสาก่อน ฯลฯ)</p>
-
-                        <!-- Flow diagrams from Flow Map -->
-                        <p class="font-bold text-navy mt-4 mb-1">ขั้นตอนโดยสรุป:</p>
-                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-2 border border-slate-100">
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-2 border border-slate-100">
                             <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: สมัครใหม่</p>
                             <div class="guide-flow-step">
                                 <span class="guide-flow-node bg-slate-100 text-slate-700">เปิดหน้า Admin</span>
@@ -1254,6 +1217,35 @@
                                 <span class="guide-flow-node bg-amber-100 text-amber-800" style="border:2px solid #fbbf24;">⚠️ บันทึก Recovery Code</span>
                             </div>
                         </div>
+                        <p class="text-[11px] font-bold text-slate-400 mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <div class="guide-mock-modal">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
+                            <div class="text-center mb-4">
+                                <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">📝</div>
+                                <p class="text-lg font-bold text-[#0f172a]">สมัครแอดมิน</p>
+                            </div>
+                            <div class="guide-mock-input">อีเมลของคุณ</div>
+                            <div class="guide-mock-input">ชื่อที่แสดง</div>
+                            <div class="guide-mock-input" style="letter-spacing:0.2em;">ตั้ง PIN (4+ ตัวอักษร)</div>
+                            <div class="guide-mock-input" style="background:#fffbeb; border-color:#fde68a;">Invite Code</div>
+                            <div class="guide-mock-btn-primary mt-2">สมัคร</div>
+                        </div>
+                        <div class="guide-mock-modal text-center" style="margin-top:16px;">
+                            <p class="text-3xl mb-2">✅</p>
+                            <p class="text-lg font-bold text-[#0f172a] mb-2">สมัครสำเร็จ!</p>
+                            <div style="background:#fffbeb; border:2px solid #fcd34d; border-radius:16px; padding:12px; margin-bottom:10px;">
+                                <p class="text-[10px] text-amber-600 font-bold mb-1 uppercase tracking-wider">Recovery Code (บันทึกไว้!)</p>
+                                <p class="text-2xl font-bold text-amber-800 tracking-[0.15em]" style="font-family:monospace;">ABCD-1234</p>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mb-3">ใช้สำหรับกู้คืน PIN กรณีลืม — เก็บไว้ที่ปลอดภัย</p>
+                            <div class="guide-mock-btn-primary">เข้าสู่ระบบ</div>
+                        </div>
+
+                        <hr class="my-5 border-slate-200">
+
+                        <!-- ═══ 2. เข้าสู่ระบบ ═══ -->
+                        <p class="font-bold text-navy mb-2">2. เข้าสู่ระบบ</p>
+                        <p class="mb-3">กดปุ่ม <b>"จัดการระบบ"</b> → กรอก <b>อีเมล + PIN ส่วนตัว</b> → กดเข้าสู่ระบบ</p>
                         <div class="bg-white rounded-2xl p-4 shadow-sm mb-2 border border-slate-100">
                             <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: Login</p>
                             <div class="guide-flow-step">
@@ -1264,24 +1256,7 @@
                                 <span class="guide-flow-node bg-green-100 text-green-800">✅ เข้าสู่ระบบ</span>
                             </div>
                         </div>
-                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-3 border border-slate-100">
-                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ลืม PIN</p>
-                            <div class="guide-flow-step">
-                                <span class="guide-flow-node bg-red-100 text-red-700">ลืม PIN</span>
-                                <span class="guide-flow-arrow">→</span>
-                                <span class="guide-flow-node bg-blue-100 text-blue-800">กด "ลืม PIN"</span>
-                                <span class="guide-flow-arrow">→</span>
-                                <span class="guide-flow-node bg-blue-200 text-blue-900">กรอก Email + Recovery Code</span>
-                                <span class="guide-flow-arrow">→</span>
-                                <span class="guide-flow-node bg-blue-300 text-blue-900">ตั้ง PIN ใหม่</span>
-                                <span class="guide-flow-arrow">→</span>
-                                <span class="guide-flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
-                            </div>
-                        </div>
-
-                        <!-- Mockups: Login + Register + Recovery Code -->
-                        <p class="font-bold text-navy mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
-                        <!-- Login modal -->
+                        <p class="text-[11px] font-bold text-slate-400 mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
                         <div class="guide-mock-modal">
                             <div class="text-center mb-4">
                                 <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">🔐</div>
@@ -1296,31 +1271,56 @@
                             </div>
                         </div>
 
-                        <!-- Register modal -->
-                        <div class="guide-mock-modal" style="margin-top:16px;">
-                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
-                            <div class="text-center mb-4">
-                                <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">📝</div>
-                                <p class="text-lg font-bold text-[#0f172a]">สมัครแอดมิน</p>
+                        <hr class="my-5 border-slate-200">
+
+                        <!-- ═══ 3. ลืม PIN ═══ -->
+                        <p class="font-bold text-navy mb-2">3. ลืม PIN</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">1</div>
+                            <div>กดปุ่ม <b>"ลืม PIN?"</b> ที่หน้า login</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">2</div>
+                            <div>กรอก <b>อีเมล + Recovery Code</b> ที่จดไว้ + ตั้ง <b>PIN ใหม่</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-red-500">3</div>
+                            <div>กด <b>"ตั้ง PIN ใหม่"</b> → login ด้วย PIN ใหม่ → <b>สร้าง Recovery Code ใหม่ทันที</b></div>
+                        </div>
+                        <div class="guide-danger">
+                            <b>🚨 Recovery Code ใช้ได้ครั้งเดียว!</b> ใช้ reset PIN แล้ว code จะถูกลบทันที ต้อง login แล้วกดปุ่ม <b>"Recovery"</b> เพื่อสร้าง code ใหม่ ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset ให้
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ลืม PIN</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-red-100 text-red-700">ลืม PIN</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-100 text-blue-800">กด "ลืม PIN"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-200 text-blue-900">กรอก Email + Recovery Code</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-blue-300 text-blue-900">ตั้ง PIN ใหม่</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
                             </div>
-                            <div class="guide-mock-input">อีเมลของคุณ</div>
-                            <div class="guide-mock-input">ชื่อที่แสดง</div>
-                            <div class="guide-mock-input" style="letter-spacing:0.2em;">ตั้ง PIN (4+ ตัวอักษร)</div>
-                            <div class="guide-mock-input" style="background:#fffbeb; border-color:#fde68a;">Invite Code</div>
-                            <div class="guide-mock-btn-primary mt-2">สมัคร</div>
                         </div>
 
-                        <!-- Recovery Code success -->
-                        <div class="guide-mock-modal text-center" style="margin-top:16px;">
-                            <p class="text-3xl mb-2">✅</p>
-                            <p class="text-lg font-bold text-[#0f172a] mb-2">สมัครสำเร็จ!</p>
-                            <div style="background:#fffbeb; border:2px solid #fcd34d; border-radius:16px; padding:12px; margin-bottom:10px;">
-                                <p class="text-[10px] text-amber-600 font-bold mb-1 uppercase tracking-wider">Recovery Code (บันทึกไว้!)</p>
-                                <p class="text-2xl font-bold text-amber-800 tracking-[0.15em]" style="font-family:monospace;">ABCD-1234</p>
-                            </div>
-                            <p class="text-[11px] text-slate-400 mb-3">ใช้สำหรับกู้คืน PIN กรณีลืม — เก็บไว้ที่ปลอดภัย</p>
-                            <div class="guide-mock-btn-primary">เข้าสู่ระบบ</div>
+                        <hr class="my-5 border-slate-200">
+
+                        <!-- ═══ ลำดับการตั้งค่าเริ่มต้น ═══ -->
+                        <p class="font-bold text-navy mb-2">ลำดับการตั้งค่าเริ่มต้น:</p>
+                        <div class="flex flex-wrap items-center gap-2 mb-2 text-[12px]">
+                            <span class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-bold">📁 โครงการ</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 font-bold">👤 อาสาสมัคร</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-700 font-bold">🏠 บ้าน</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-bold">📡 เซนเซอร์</span>
+                            <span class="text-slate-400">→</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-orange-100 text-orange-700 font-bold">📅 ช่วงเก็บข้อมูล</span>
                         </div>
+                        <p class="text-[12px] text-slate-500">ต้องกรอกเรียงลำดับ เพราะข้อมูลเชื่อมกัน (บ้านต้องมีโครงการ+อาสาก่อน ฯลฯ)</p>
                     </div>
                 </div>
 
@@ -1784,6 +1784,67 @@
                             <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกบ้าน</p>
                             <div class="guide-mock-select">เลือกบ้าน ▾</div>
                             <div class="guide-mock-btn-primary" style="margin-top:12px;">บันทึก</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- A3.5: สลับเซนเซอร์ระหว่างบ้าน -->
+                <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span>🔄 สลับเซนเซอร์ระหว่างบ้าน</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-[13px] text-slate-700 leading-relaxed">
+                        <p class="mb-3">เซนเซอร์ 1 ตัวผูกได้กับ 1 บ้านเท่านั้น ถ้าต้องการ <b>ย้ายเซนเซอร์ไปบ้านอื่น</b> ต้องปลดจากบ้านเดิมก่อน</p>
+
+                        <p class="font-bold text-navy mb-2">ขั้นตอน:</p>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-teal-600">1</div>
+                            <div>ไปที่แท็บ <b>"อุปกรณ์"</b> → หาเซนเซอร์ที่ต้องการย้าย → กด <b>"แก้ไข"</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-teal-600">2</div>
+                            <div>เปลี่ยน <b>"บ้าน"</b> จาก dropdown → เลือกบ้านใหม่ที่ต้องการ</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-teal-600">3</div>
+                            <div>กด <b>"บันทึก"</b> → เซนเซอร์จะย้ายไปบ้านใหม่ทันที</div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ ข้อควรระวัง:</b> หลังย้ายเซนเซอร์ ต้องตรวจสอบ <b>ช่วงเก็บข้อมูล (Collection Period)</b> ของบ้านใหม่ด้วย — ถ้ายังไม่ตั้งค่า ข้อมูลจะไม่มีประเภทเตา (eco/old)
+                        </div>
+
+                        <div class="guide-tip">
+                            <b>💡 กรณีสลับกัน 2 ตัว:</b> ถ้าต้องการสลับเซนเซอร์ระหว่าง 2 บ้าน (เช่น BS 001 อยู่บ้าน A → ย้ายไปบ้าน B, BS 002 อยู่บ้าน B → ย้ายไปบ้าน A) ให้ปลดตัวแรกออกก่อน (เลือก "ไม่ผูกบ้าน") แล้วค่อยย้ายตัวที่สอง จากนั้นกลับมาผูกตัวแรกกับบ้านใหม่
+                        </div>
+
+                        <!-- Flow diagram -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mt-3 mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: ย้ายเซนเซอร์</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-teal-100 text-teal-800">Tab "อุปกรณ์"</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-teal-200 text-teal-900">กด "แก้ไข" ที่เซนเซอร์</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-amber-100 text-amber-800">เลือกบ้านใหม่</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ บันทึก</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl p-4 shadow-sm mb-3 border border-slate-100">
+                            <p class="text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-wider">Flow: สลับ 2 ตัว</p>
+                            <div class="guide-flow-step">
+                                <span class="guide-flow-node bg-teal-100 text-teal-800">แก้ไข BS 001</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-red-100 text-red-700">ปลดออก (ไม่ผูกบ้าน)</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-teal-200 text-teal-900">แก้ไข BS 002 → ย้ายไปบ้าน A</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-teal-300 text-teal-900">แก้ไข BS 001 → ผูกบ้าน B</span>
+                                <span class="guide-flow-arrow">→</span>
+                                <span class="guide-flow-node bg-green-200 text-green-900">✅ สลับเสร็จ</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -9783,6 +9844,21 @@
             document.getElementById('session-chart-modal').style.display = 'none';
             if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
         }
+    </script>
+
+    <!-- Back to Top Button -->
+    <button id="btn-back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        style="display:none; position:fixed; bottom:24px; right:24px; z-index:200; width:48px; height:48px; border-radius:50%; border:none; background:#064e3b; color:white; font-size:20px; cursor:pointer; box-shadow:0 4px 15px rgba(6,78,59,0.3); transition:opacity 0.2s, transform 0.2s;"
+        onmouseenter="this.style.transform='scale(1.1)'" onmouseleave="this.style.transform='scale(1)'">
+        ↑
+    </button>
+    <script>
+    (function(){
+        const btn = document.getElementById('btn-back-to-top');
+        window.addEventListener('scroll', function(){
+            btn.style.display = window.scrollY > 400 ? 'block' : 'none';
+        }, {passive:true});
+    })();
     </script>
 </body>
 </html>
