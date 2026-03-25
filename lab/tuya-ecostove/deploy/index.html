@@ -2438,12 +2438,109 @@
                         <ul class="space-y-1.5 ml-4 list-disc mb-3">
                             <li><b>เลื่อนขั้น / ลดขั้น</b> — เปลี่ยน Admin ⇄ Super Admin (ต้องมี Super Admin อย่างน้อย 1 คนเสมอ)</li>
                             <li><b>ลบแอดมิน</b> — ลบผู้ใช้ออกจากระบบ</li>
-                            <li><b>เปลี่ยนรหัสเชิญ (Invite Code)</b> — กดปุ่ม "Invite Code" ที่มุมบนขวา</li>
-                            <li><b>Reset PIN ให้คนอื่น</b> — กรณีแอดมินลืม PIN และไม่มี Recovery Code</li>
+                            <li><b>เปลี่ยนรหัสเชิญ (Invite Code)</b> — ดูรายละเอียดด้านล่าง</li>
+                            <li><b>Reset PIN ให้คนอื่น</b> — ดูรายละเอียดด้านล่าง</li>
                         </ul>
 
                         <div class="guide-tip">
                             <b>💡 ประวัติกิจกรรม:</b> ทุกการกระทำ (login, อนุมัติ, แก้ไข, เลื่อนขั้น, ลบแอดมิน) จะถูกบันทึกไว้ในแท็บ "ประวัติ" อัตโนมัติ
+                        </div>
+
+                        <!-- ═══ เปลี่ยน Invite Code ═══ -->
+                        <hr class="my-4 border-slate-200">
+                        <p class="font-bold text-navy mb-2">🎟️ เปลี่ยน Invite Code</p>
+                        <p class="mb-3 text-[13px]">Invite Code คือรหัสที่ใช้ตอนสมัครเป็นแอดมินใหม่ ถ้าต้องการเปลี่ยน (เช่น รหัสหลุด หรือต้องการรหัสใหม่สำหรับคนใหม่):</p>
+
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">1</div>
+                            <div>กดปุ่ม <b>"Invite Code"</b> ที่มุมบนขวาของหน้า (เฉพาะ Super Admin เห็นปุ่มนี้)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">2</div>
+                            <div>ระบบจะแสดง <b>Invite Code ปัจจุบัน</b> → พิมพ์รหัสใหม่ในช่อง</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-emerald-600">3</div>
+                            <div>กด <b>"บันทึก"</b> → Invite Code เปลี่ยนทันที คนที่จะสมัครใหม่ต้องใช้รหัสนี้</div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ คนที่สมัครแล้วไม่ได้รับผลกระทบ</b> — เปลี่ยน Invite Code กระทบเฉพาะคนที่จะสมัครใหม่เท่านั้น แอดมินที่สมัครไปแล้วไม่ต้องทำอะไร
+                        </div>
+
+                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — เปลี่ยน Invite Code:</p>
+                        <div class="guide-mock-modal" style="max-width:320px;">
+                            <div class="text-center mb-4">
+                                <div style="width:56px; height:56px; background:#ecfdf5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:28px;">🎟️</div>
+                                <p class="text-lg font-bold text-navy">Invite Code</p>
+                                <p class="text-[11px] text-slate-400">รหัสสำหรับให้คนอื่นสมัครเป็น Admin</p>
+                            </div>
+                            <div class="text-center mb-3">
+                                <span class="text-[10px] text-slate-400">ปัจจุบัน</span>
+                                <div style="font-size:18px; font-family:monospace; font-weight:700; color:#059669; letter-spacing:0.2em; margin-top:4px;">ecostove2026</div>
+                            </div>
+                            <div style="border-top:1px solid #e2e8f0; margin:12px 0;"></div>
+                            <div class="guide-mock-input" style="text-align:center; letter-spacing:0.15em; font-family:monospace;">Invite Code ใหม่</div>
+                            <div class="flex gap-3 mt-3">
+                                <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; text-align:center; color:#64748b; font-weight:700; font-size:13px;">ยกเลิก</div>
+                                <div style="flex:1; padding:10px; border-radius:14px; background:#059669; color:white; text-align:center; font-weight:700; font-size:13px;">บันทึก</div>
+                            </div>
+                        </div>
+
+                        <!-- ═══ Reset PIN ให้คนอื่น ═══ -->
+                        <hr class="my-4 border-slate-200">
+                        <p class="font-bold text-navy mb-2">🔑 Reset PIN ให้คนอื่น</p>
+                        <p class="mb-3 text-[13px]">กรณีแอดมินคนอื่นลืม PIN และไม่มี Recovery Code (หรือ Recovery Code หาย) → Super Admin ตั้ง PIN ใหม่ให้ได้:</p>
+
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">1</div>
+                            <div>ไปที่แท็บ <b>"จัดการแอดมิน"</b> (เฉพาะ Super Admin เห็นแท็บนี้)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">2</div>
+                            <div>หาการ์ดของแอดมินที่ต้องการ → กดปุ่ม <b>"รีเซ็ต"</b> (สีเขียว)</div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">3</div>
+                            <div>กรอก <b>PIN ใหม่</b> (อย่างน้อย 4 ตัว) → กด <b>"รีเซ็ต PIN"</b></div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="guide-step-num bg-amber-500">4</div>
+                            <div>แจ้งแอดมินคนนั้นว่า PIN ใหม่คืออะไร → <b>ให้เขา login แล้วกดปุ่ม "Recovery" สร้าง Recovery Code ใหม่ทันที</b></div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ สำคัญ:</b> หลัง reset แล้ว แอดมินคนนั้นจะ <b>ไม่มี Recovery Code</b> — ต้อง login ด้วย PIN ใหม่แล้วไปสร้าง Recovery Code เองที่ปุ่ม "Recovery" ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset อีกครั้ง
+                        </div>
+
+                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — การ์ดแอดมิน (กดปุ่ม "รีเซ็ต"):</p>
+                        <div style="max-width:400px; margin-bottom:12px;">
+                            <div style="background:white; border-radius:16px; border:1px solid #e2e8f0; padding:20px; box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-[16px] text-navy">สมชาย ใจดี</p>
+                                        <p class="text-[13px] text-slate-500 mt-1">somchai@email.com</p>
+                                        <span style="display:inline-block; margin-top:8px; font-size:11px; padding:4px 12px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
+                                    </div>
+                                    <div class="flex gap-1 flex-wrap justify-end">
+                                        <span style="font-size:11px; font-weight:700; color:#d97706; padding:4px 8px; border-radius:8px;">ปรับสิทธิ์</span>
+                                        <span style="font-size:11px; font-weight:700; color:#059669; padding:6px 10px; border-radius:8px; background:#ecfdf5; border:2px solid #059669;">รีเซ็ต ← กดที่นี่</span>
+                                        <span style="font-size:11px; font-weight:700; color:#ef4444; padding:4px 8px; border-radius:8px;">ลบ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-400 mb-1">ตัวอย่างหน้าจอ — รีเซ็ต PIN:</p>
+                        <div class="guide-mock-modal" style="max-width:320px;">
+                            <div class="text-center mb-4">
+                                <div style="width:56px; height:56px; background:#fef3c7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:28px;">🔑</div>
+                                <p class="text-lg font-bold text-navy">รีเซ็ต PIN ให้ สมชาย ใจดี</p>
+                            </div>
+                            <div class="guide-mock-input" style="text-align:center; letter-spacing:0.3em; font-family:monospace; position:relative;">กรอกรหัส PIN ใหม่ <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px;">🔒</span></div>
+                            <div class="flex gap-3 mt-3">
+                                <div style="flex:1; padding:10px; border-radius:14px; border:1px solid #e2e8f0; text-align:center; color:#64748b; font-weight:700; font-size:13px;">ยกเลิก</div>
+                                <div style="flex:1; padding:10px; border-radius:14px; background:#d97706; color:white; text-align:center; font-weight:700; font-size:13px;">รีเซ็ต PIN</div>
+                            </div>
                         </div>
 
                         <!-- Ability grid -->
