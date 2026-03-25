@@ -1275,17 +1275,22 @@
                             </div>
                         </div>
                         <p class="text-[11px] font-bold text-slate-400 mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
-                        <div class="guide-mock-modal">
+                        <div class="guide-mock-modal" style="max-width:320px;">
+                            <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <div class="text-center mb-4">
-                                <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">🔐</div>
+                                <div style="width:48px; height:48px; background:#0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px;">🔒</div>
                                 <p class="text-lg font-bold text-[#0f172a]">Admin Login</p>
                             </div>
-                            <div class="guide-mock-input">อีเมล</div>
-                            <div class="guide-mock-input">● ● ● ●</div>
-                            <div class="guide-mock-btn-primary">เข้าสู่ระบบ</div>
-                            <div class="flex justify-between mt-3 text-[11px]">
-                                <span class="text-slate-400">ลืม PIN?</span>
-                                <span class="text-[#064e3b] font-bold">ลงทะเบียน</span>
+                            <div class="guide-mock-input" style="text-align:center;">อีเมล</div>
+                            <div class="guide-mock-input" style="text-align:center; letter-spacing:0.3em; position:relative;">P I N <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px;">🔒</span></div>
+                            <div class="guide-mock-btn-primary mt-2">เข้าสู่ระบบ</div>
+                            <p class="text-center text-[12px] mt-2" style="position:relative;">
+                                <span class="text-orange-400">ลืม PIN?</span>
+                                <span style="position:absolute; left:50%; transform:translateX(-40px); top:-6px; font-size:14px;">👆</span>
+                            </p>
+                            <div class="text-center mt-2" style="position:relative;">
+                                <p class="text-[12px] text-slate-500">ยังไม่มีบัญชี? <b class="text-emerald-600">ลงทะเบียน</b></p>
+                                <span style="position:absolute; left:50%; transform:translateX(30px); top:-6px; font-size:14px;">👆</span>
                             </div>
                         </div>
 
@@ -1322,19 +1327,21 @@
                                 <span class="guide-flow-node bg-green-100 text-green-800">✅ สำเร็จ</span>
                             </div>
                         </div>
-                        <!-- Mockup: ลืม PIN -->
+                        <!-- Mockup: ลืม PIN (รีเซ็ต PIN) -->
                         <p class="text-[11px] font-bold text-slate-400 mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
-                        <div class="guide-mock-modal">
+                        <div class="guide-mock-modal" style="max-width:320px;">
                             <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <div class="text-center mb-4">
-                                <div style="width:48px; height:48px; background:#dc2626; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:20px; color:white;">🔑</div>
-                                <p class="text-lg font-bold text-[#0f172a]">ลืม PIN</p>
-                                <p class="text-[11px] text-slate-400">กรอก Recovery Code เพื่อตั้ง PIN ใหม่</p>
+                                <div style="width:48px; height:48px; background:#fef3c7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:22px;">🔑</div>
+                                <p class="text-lg font-bold text-[#0f172a]">รีเซ็ต PIN</p>
+                                <p class="text-[11px] text-slate-400">ใช้ Recovery Code ที่ได้ตอนสมัคร</p>
                             </div>
-                            <div class="guide-mock-input">อีเมลที่ลงทะเบียนไว้</div>
-                            <div class="guide-mock-input" style="background:#fffbeb; border-color:#fde68a; letter-spacing:0.15em;">Recovery Code (เช่น ABCD-1234)</div>
-                            <div class="guide-mock-input" style="letter-spacing:0.2em;">PIN ใหม่ (4+ ตัวอักษร)</div>
-                            <div class="guide-mock-btn-primary" style="background:#dc2626; margin-top:8px;">ตั้ง PIN ใหม่</div>
+                            <div class="guide-mock-input" style="text-align:center;">Email ที่ลงทะเบียน</div>
+                            <div class="guide-mock-input" style="text-align:center; letter-spacing:0.1em;">RECOVERY CODE (เช่น ABCD-1234)</div>
+                            <div class="guide-mock-input" style="text-align:center; position:relative;">PIN ใหม่ (อย่างน้อย 4 ตัว) <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px;">🔒</span></div>
+                            <div class="guide-mock-input" style="text-align:center; position:relative;">ยืนยัน PIN ใหม่ <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px;">🔒</span></div>
+                            <div class="guide-mock-btn-primary" style="background:#f59e0b; margin-top:8px;">ตั้ง PIN ใหม่</div>
+                            <div style="margin-top:8px; border:1px solid #e2e8f0; border-radius:12px; padding:10px; text-align:center; color:#475569; font-size:13px;">กลับหน้า Login</div>
                         </div>
 
                     </div>
