@@ -8420,10 +8420,10 @@
                     ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-teal-50 text-teal-600">' + t('sub.has.sensor') + '</span>'
                     : '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-slate-100 text-slate-400">' + t('sub.stove.only') + '</span>';
 
-                // Sensor select dropdown
-                const sensorOptions = '<option value="">' + t('sub.no.sensor') + '</option>'
-                    + (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + esc(sensorName) + '</option>' : '')
-                    + unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + esc(DEVICE_NAMES[d.tuya_device_id] || d.name) + '</option>').join('');
+                // Sensor display (read-only — edit via แก้ไข button)
+                const sensorDisplaySub = assignedDevice
+                    ? '<span class="text-[12px] font-medium text-teal-700">📡 ' + esc(sensorName) + '</span>'
+                    : '<span class="text-[12px] text-slate-300">— ' + t('sub.no.sensor') + ' —</span>';
 
                 return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
                     <td class="px-4 py-3">
@@ -8431,11 +8431,7 @@
                         <div class="text-[11px] text-slate-400">${esc(addrParts)}</div>
                     </td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(volName) || '<span class="text-slate-300">' + t('sub.unassigned') + '</span>'}</td>
-                    <td class="px-4 py-3">
-                        <select onchange="assignSensorToHouse('${s.id}', this.value, '${assignedDevice?.id || ''}')" class="p-1.5 rounded-lg border text-[12px] font-medium bg-white custom-select w-full min-w-[120px] ${assignedDevice ? 'border-teal-200 bg-teal-50/30' : ''}">
-                            ${sensorOptions}
-                        </select>
-                    </td>
+                    <td class="px-4 py-3">${sensorDisplaySub}</td>
                     <td class="px-4 py-3">
                         <div class="flex flex-wrap gap-1">
                             ${statusBadge}
@@ -8748,31 +8744,24 @@
                 const projName = getSubjectProjectName(s.id);
                 const tuyaId = assignedDevice ? assignedDevice.tuya_device_id : null;
 
-                // Sensor dropdown
-                const unassignedDevices = devices.filter(d => !d.subject_id);
-                const sensorOpts = '<option value="">' + t('overview.no.sensor') + '</option>' +
-                    (assignedDevice ? '<option value="' + assignedDevice.id + '" selected>📡 ' + (DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) + '</option>' : '') +
-                    unassignedDevices.map(d => '<option value="' + d.id + '">📡 ' + (DEVICE_NAMES[d.tuya_device_id] || d.name) + '</option>').join('');
+                // Sensor display (read-only)
+                const sensorDisplay = assignedDevice
+                    ? '<span class="text-[12px] font-medium text-teal-700">📡 ' + esc(DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) + '</span>'
+                    : '<span class="text-[12px] text-slate-300">— ' + t('overview.no.sensor') + ' —</span>';
 
-                // Volunteer dropdown
-                const volOpts = '<option value="">' + t('overview.no.volunteer') + '</option>' +
-                    volunteers.map(v => '<option value="' + v.id + '" ' + (String(s.volunteer_id) === String(v.id) ? 'selected' : '') + '>' + v.full_name + '</option>').join('');
+                // Volunteer display (read-only)
+                const vol = volunteers.find(v => String(v.id) === String(s.volunteer_id));
+                const volDisplay = vol
+                    ? '<span class="text-[12px] font-medium text-slate-600">' + esc(vol.full_name) + '</span>'
+                    : '<span class="text-[12px] text-slate-300">— ' + t('overview.no.volunteer') + ' —</span>';
 
                 return `<tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="p-3">
                         <p class="font-bold text-navy text-[13px]">🏠 ${s.full_name}</p>
                         <p class="text-[11px] text-slate-400">${s.subdistrict ? 'ต.' + s.subdistrict : s.address || ''}</p>
                     </td>
-                    <td class="p-3">
-                        <select onchange="assignSensorFromOverview('${s.id}', this.value, '${assignedDevice?.id || ''}')" class="p-2 rounded-lg border text-[12px] font-medium bg-white custom-select w-full min-w-[140px] ${assignedDevice ? 'border-teal-200' : 'border-slate-200'}">
-                            ${sensorOpts}
-                        </select>
-                    </td>
-                    <td class="p-3">
-                        <select onchange="assignVolunteerFromOverview('${s.id}', this.value)" class="p-2 rounded-lg border text-[12px] font-medium bg-white custom-select w-full min-w-[130px] ${s.volunteer_id ? 'border-teal-200' : 'border-slate-200'}">
-                            ${volOpts}
-                        </select>
-                    </td>
+                    <td class="p-3">${sensorDisplay}</td>
+                    <td class="p-3">${volDisplay}</td>
                     <td class="p-3 text-center">${tuyaId ? renderHealthBadge(tuyaId) : '<span class="text-[11px] text-slate-300">—</span>'}</td>
                     <td class="p-3 text-center">${projName ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">' + projName + '</span>' : '<span class="text-[11px] text-slate-300">—</span>'}</td>
                 </tr>`;
