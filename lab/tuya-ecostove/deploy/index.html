@@ -1658,11 +1658,16 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-emerald-600">2</div>
-                            <div><b>ผูกอาสาสมัคร</b> — เลือกอาสาที่รับผิดชอบบ้านนี้</div>
+                            <div><b>ผูกโครงการ</b> — เลือกโครงการวิจัยที่บ้านนี้สังกัด</div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-emerald-600">3</div>
-                            <div><b>ผูกโครงการ</b> — เลือกโครงการวิจัยที่บ้านนี้สังกัด</div>
+                            <div><b>☑ มีเซนเซอร์</b> — ติ๊กถ้าบ้านนี้มีเซนเซอร์วัดคุณภาพอากาศ จะเปิดฟิลด์เพิ่มเติม:
+                                <ul class="mt-1 ml-4 list-disc text-[13px] space-y-1">
+                                    <li><b>เลือกอาสาสมัคร</b> — อาสาที่จะดูแลการเก็บข้อมูลที่บ้านนี้</li>
+                                    <li><b>การเชื่อมต่อ</b> — วิธีที่เซนเซอร์เชื่อมต่ออินเทอร์เน็ต: <b>Pocket WiFi</b> (ตั้งประจำบ้าน) หรือ <b>Hotspot</b> (อาสาเปิดจากมือถือ)</li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="guide-important">
@@ -1884,7 +1889,7 @@
                         </div>
 
                         <!-- Mockup: ผลค้นหาจาก Tuya Cloud -->
-                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอค้นหา Tuya Cloud:</p>
+                        <p class="font-bold text-navy mb-1">ตัวอย่างหน้าจอ หลังจากกด ค้นหา Tuya Cloud:</p>
                         <div style="margin-top:8px; margin-bottom:16px; max-width:420px;">
                             <!-- เครื่องที่ลงทะเบียนแล้ว -->
                             <div style="background:rgba(236,253,245,0.3); border:1px solid #a7f3d0; border-radius:16px; padding:16px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
@@ -3306,7 +3311,7 @@
             'sub.edit': { th: 'แก้ไขบ้านกลุ่มตัวอย่าง', en: 'Edit Subject House' },
             'sub.saved': { th: 'บันทึกบ้านแล้ว', en: 'House saved' },
             'sub.connectivity': { th: 'การเชื่อมต่อ', en: 'Connectivity' },
-            'sub.wifi': { th: '📶 WiFi', en: '📶 WiFi' },
+            'sub.wifi': { th: '📶 Pocket WiFi', en: '📶 Pocket WiFi' },
             'sub.hotspot': { th: '📱 Hotspot', en: '📱 Hotspot' },
             'sub.has.sensor': { th: '📡 มีเซนเซอร์', en: '📡 Has Sensor' },
             'sub.stove.only': { th: '🏠 เตาอย่างเดียว', en: '🏠 Stove Only' },
@@ -9676,7 +9681,7 @@
                 if (hasSensor) {
                     sensorCount++;
                     const icon = L.divIcon({ html: '<div style="background:#10b981;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">📡</div>', iconSize: [24, 24], iconAnchor: [12, 12], className: '' });
-                    const connLabel = s.connectivity === 'wifi' ? '📶 WiFi' : s.connectivity === 'hotspot' ? '📱 Hotspot' : '';
+                    const connLabel = s.connectivity === 'wifi' ? '📶 Pocket WiFi' : s.connectivity === 'hotspot' ? '📱 Hotspot' : '';
                     cluster.addLayer(L.marker([lat, lng], { icon }).bindPopup(
                         '<b>📡 ' + esc(s.full_name) + '</b>' +
                         '<br><span style="color:#10b981;font-weight:bold">🔧 ' + esc(deviceName) + '</span>' +
