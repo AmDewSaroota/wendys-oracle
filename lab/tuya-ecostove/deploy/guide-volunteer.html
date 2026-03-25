@@ -283,6 +283,9 @@
         <li>กดปุ่ม <strong>บันทึก</strong></li>
       </ol>
       <p class="text-sm text-purple-500 mt-3">⏰ ระบบจะเตือนทุก 5 นาที — ไม่ต้องจับเวลาเอง</p>
+      <div class="warning-box mt-3">
+        <p class="text-amber-800 text-base"><strong>⚠️ ต้องเปิดหน้าจอเก็บข้อมูลทิ้งไว้เท่านั้น</strong> ถ้าสลับไปแอปอื่นจะไม่ได้รับการแจ้งเตือน</p>
+      </div>
     </div>
 
     <div class="tip-box">
@@ -332,8 +335,8 @@
     <!-- ตัวอย่างหน้าจอ: ปุ่มจุดเตา -->
     <div class="bg-gray-800 rounded-2xl p-4 mt-3 shadow-sm">
       <p class="text-xs text-gray-400 mb-3 text-center">ตัวอย่างหน้าจอ</p>
-      <div class="bg-emerald-50 rounded-xl p-3 mb-2 text-center">
-        <p class="text-sm text-emerald-700 font-bold">📊 Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้</p>
+      <div class="bg-blue-50 rounded-xl p-3 mb-2 text-center">
+        <p class="text-sm text-blue-700 font-bold">📊 Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้</p>
       </div>
       <div class="bg-red-500 text-white py-5 rounded-2xl text-center">
         <div class="text-4xl mb-1">🔥</div>
@@ -349,6 +352,10 @@
         <li>📝 ถ้าเก็บ TVOC/CO → กรอกค่าต่อทุก 5 นาที จนกว่าจะครบ</li>
         <li>😊 ถ้าไม่เก็บ TVOC/CO → ปิดหน้าจอมือถือได้เลย เซนเซอร์เก็บเอง</li>
       </ul>
+      <div class="warning-box mt-3">
+        <p class="font-bold text-amber-800 text-base">⚠️ มือถือที่ปล่อย Hotspot</p>
+        <p class="text-amber-700 text-base mt-1">ต้องวางไว้ <strong>ใกล้เซนเซอร์</strong> ตลอดเวลาการเก็บข้อมูล และ <strong>ห้ามปิด Hotspot</strong> ขณะเก็บข้อมูล</p>
+      </div>
     </div>
   </div>
 
@@ -359,16 +366,25 @@
     <div class="flex items-start gap-4 mb-4">
       <div class="step-num bg-emerald-600">6</div>
       <div>
-        <h2 class="text-xl font-bold text-emerald-800">เสร็จแล้ว!</h2>
-        <p class="text-emerald-600 text-base mt-1">ระบบเก็บข้อมูลจนครบเอง</p>
+        <h2 class="text-xl font-bold text-emerald-800">รอจนครบเวลา</h2>
+        <p class="text-emerald-600 text-base mt-1">ระบบเก็บข้อมูลประมาณ 2 ชั่วโมง แล้วจบเอง</p>
       </div>
     </div>
 
     <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
-      <div class="text-center">
-        <p class="text-5xl mb-2">✅</p>
-        <p class="text-lg font-bold text-gray-800">ระบบจะเก็บข้อมูลประมาณ 2 ชั่วโมง</p>
-        <p class="text-base text-gray-500 mt-2">เมื่อครบ หน้าจอจะแสดงสรุป</p>
+      <p class="font-bold text-base text-gray-800 mb-2">เมื่อเก็บครบ ~130 นาที:</p>
+      <p class="text-base text-gray-600">ระบบจะปิด session อัตโนมัติ หน้าจอจะเปลี่ยนเป็นอย่างใดอย่างหนึ่ง:</p>
+      <div class="flex gap-3 mt-3">
+        <div class="flex-1 bg-amber-50 rounded-xl p-3 text-center border border-amber-200">
+          <p class="text-2xl">⏸️</p>
+          <p class="font-bold text-amber-800 text-sm">พักเครื่อง</p>
+          <p class="text-xs text-amber-600">ยังเก็บได้อีก 1 รอบ<br>รอจนหมดช่วงพัก</p>
+        </div>
+        <div class="flex-1 bg-emerald-50 rounded-xl p-3 text-center border border-emerald-200">
+          <p class="text-2xl">✅</p>
+          <p class="font-bold text-emerald-800 text-sm">ครบ 2 sessions</p>
+          <p class="text-xs text-emerald-600">เก็บครบแล้ววันนี้<br>พรุ่งนี้เก็บต่อได้</p>
+        </div>
       </div>
     </div>
 
@@ -379,6 +395,31 @@
         <li>📶 ปิด Hotspot มือถือ</li>
         <li>📦 เก็บเซนเซอร์ในที่แห้ง</li>
       </ul>
+    </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- FAQ: สถานการณ์พิเศษ -->
+  <!-- ============================= -->
+  <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-5 mb-6">
+    <p class="text-xl font-bold text-indigo-800 mb-4">❓ สถานการณ์พิเศษ</p>
+
+    <div class="bg-white rounded-xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-indigo-700 mb-2">🏠 ถ้าเปิดหน้าเก็บข้อมูลแล้วขึ้น "มีอาสาคนอื่นกำลังเก็บข้อมูลบ้านนี้อยู่"</p>
+      <p class="text-base text-gray-600">แสดงว่ามีคนเปิดหน้าเก็บข้อมูลบ้านเดียวกันอยู่แล้ว ระบบจะล็อคไม่ให้เข้าซ้ำ → <strong>ไม่ต้องทำอะไร</strong> รอให้คนแรกเก็บเสร็จก่อน</p>
+    </div>
+
+    <div class="bg-white rounded-xl p-4 mb-3 shadow-sm">
+      <p class="font-bold text-base text-indigo-700 mb-2">🔋 มือถือแบตหมด / ต้องเปลี่ยนเครื่องระหว่างเก็บข้อมูล</p>
+      <ol class="text-base text-gray-700 space-y-2 list-decimal list-inside">
+        <li>เปิด Hotspot จากมือถือเครื่องใหม่ (ชื่อ <strong>Biomass</strong> / รหัส <strong>Biomass2026</strong>)</li>
+        <li>Scan QR บนเซนเซอร์ด้วยมือถือเครื่องใหม่</li>
+        <li>รอ ~3 นาที → ระบบจะตรวจพบว่าเครื่องเดิมไม่ตอบแล้ว และปลดล็อคให้เครื่องใหม่เข้าได้</li>
+        <li>เลือกบ้านเดิม → ระบบจะต่อ session เดิมให้อัตโนมัติ</li>
+      </ol>
+      <div class="tip-box mt-3">
+        <p class="text-emerald-700 text-base">💡 ถ้าเคยกรอก TVOC/CO ไว้ ระบบจะโหลดค่าเดิมกลับมาให้ ไม่ต้องกรอกใหม่</p>
+      </div>
     </div>
   </div>
 
