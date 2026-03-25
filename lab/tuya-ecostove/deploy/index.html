@@ -1715,12 +1715,13 @@
                                     <div class="guide-mock-select" style="margin:0; width:130px;">อำเภอ: ทั้งหมด ▾</div>
                                 </div>
                                 <table class="guide-mock-table">
-                                    <thead><tr><th>บ้าน</th><th>อาสา</th><th>เซนเซอร์</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
+                                    <thead><tr><th>บ้าน</th><th>อาสา</th><th>เซนเซอร์</th><th>เชื่อมต่อ</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
                                     <tbody>
                                         <tr>
                                             <td><span class="font-bold text-[13px]">บ้าน A</span><br><span class="text-[10px] text-slate-400">อ.เมือง จ.เชียงใหม่</span></td>
                                             <td class="text-[12px] text-slate-500">นายก. กกก.</td>
                                             <td><span style="font-size:11px; padding:4px 8px; border-radius:8px; background:#f0fdfa; border:1px solid #99f6e4; color:#0d9488;">📡 BS 001</span></td>
+                                            <td><span style="font-size:11px; padding:4px 8px; border-radius:8px; background:#f5f3ff; color:#7c3aed;">📱 Hotspot</span></td>
                                             <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857; font-size:10px;">ใช้งาน</span></td>
                                             <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-amber-500">ปิด</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
                                         </tr>
@@ -1728,6 +1729,7 @@
                                             <td><span class="font-bold text-[13px]">บ้าน B</span><br><span class="text-[10px] text-slate-400">อ.สันทราย จ.เชียงใหม่</span></td>
                                             <td class="text-[12px] text-slate-400">ยังไม่กำหนด</td>
                                             <td><span style="font-size:11px; padding:4px 8px;">ไม่มีเซนเซอร์</span></td>
+                                            <td><span class="text-[11px] text-slate-300">—</span></td>
                                             <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857; font-size:10px;">ใช้งาน</span></td>
                                             <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
                                         </tr>
@@ -8698,6 +8700,7 @@
                     </td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(volName) || '<span class="text-slate-300">' + t('sub.unassigned') + '</span>'}</td>
                     <td class="px-4 py-3">${sensorDisplaySub}</td>
+                    <td class="px-4 py-3">${s.connectivity ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : '<span class="text-[11px] text-slate-300">—</span>'}</td>
                     <td class="px-4 py-3">
                         <div class="flex flex-wrap gap-1">
                             ${statusBadge}
@@ -8718,6 +8721,7 @@
                         <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.house')}</th>
                         <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.volunteer')}</th>
                         <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.sensor')}</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.connectivity')}</th>
                         <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.status')}</th>
                         <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
                     </tr></thead>
