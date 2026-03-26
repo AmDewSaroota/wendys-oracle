@@ -516,6 +516,8 @@
                         <button onclick="setQuickRange(0)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600" data-i18n="deep.range.all">ทั้งหมด</button>
                     </div>
                     <div class="flex items-center gap-1.5 text-sm text-gray-500">
+                        <button onclick="setDateToday()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all" id="btn-today" data-i18n="deep.range.today">วันนี้</button>
+                        <span class="text-gray-300">|</span>
                         <span class="text-[12px]">📅</span>
                         <input type="date" id="deep-date-start" onchange="onDateRangeChange()" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
                         <span class="text-gray-300">—</span>
@@ -2976,6 +2978,8 @@
 
         let isAdmin = false, map, mapDeep, allData = [], volunteers = [], subjects = [], devices = [];
         let allDataWithPending = [];
+        // Normalize: NULL stove_type → 'eco' (sync.js may leave it NULL if no collection_period exists)
+        function normalizeStoveType(records) { records.forEach(d => { if (!d.stove_type) d.stove_type = 'eco'; }); return records; }
         let dailySummariesData = []; // rows from daily_summaries table
         let fullDataLoaded = false;  // true after full 180-day raw data is loaded
         let sessionBaselines = {}; // session_id → { pm25, co2, temp, humidity }
@@ -3584,8 +3588,8 @@
             'approval.status.offline': { th: 'เซนเซอร์ออฟไลน์', en: 'Sensor Offline' },
             'approval.status.incomplete': { th: '⚠️ เซสชันไม่ครบ', en: '⚠️ Session Incomplete' },
             'approval.tip.collecting': { th: 'เซสชันกำลังเก็บข้อมูลจากเซนเซอร์อยู่', en: 'Session is collecting sensor data' },
-            'approval.tip.complete': { th: 'เซสชันเก็บข้อมูลครบแล้ว (≥24 ค่าจากเซนเซอร์)', en: 'Session data complete (≥24 sensor readings)' },
-            'approval.tip.incomplete': { th: 'เซสชันเก็บข้อมูลไม่ครบ (<24 ค่าจากเซนเซอร์)', en: 'Session data incomplete (<24 sensor readings)' },
+            'approval.tip.complete': { th: 'เซสชันเก็บข้อมูลครบแล้ว (≥22 ค่าจากเซนเซอร์)', en: 'Session data complete (≥22 sensor readings)' },
+            'approval.tip.incomplete': { th: 'เซสชันเก็บข้อมูลไม่ครบ (<22 ค่าจากเซนเซอร์)', en: 'Session data incomplete (<22 sensor readings)' },
             'approval.complete.but': { th: '⚠️ ครบแล้ว แต่ ', en: '⚠️ Complete but ' },
             'approval.collected.of': { th: 'เก็บได้ {0}/24 รายการ — ', en: 'Collected {0}/24 — ' },
             'approval.data.latest': { th: 'ข้อมูลล่าสุด {0} น. ({1}ที่แล้ว)', en: 'Latest data {0} ({1} ago)' },
@@ -3633,8 +3637,8 @@
             'status.cancelled': { th: 'ยกเลิก', en: 'Cancelled' },
             'status.tip.baseline': { th: 'เซสชันกำลังเก็บค่า Ambient ก่อนเริ่มจุดเตา', en: 'Session collecting ambient data before cooking' },
             'status.tip.collecting': { th: 'เซสชันกำลังเก็บข้อมูลจากเซนเซอร์', en: 'Session collecting sensor data' },
-            'status.tip.complete': { th: 'เซสชันเก็บข้อมูลครบแล้ว (≥24 ค่าจากเซนเซอร์)', en: 'Session data complete (≥24 sensor readings)' },
-            'status.tip.incomplete': { th: 'เซสชันเก็บข้อมูลไม่ครบ (<24 ค่าจากเซนเซอร์)', en: 'Session data incomplete (<24 sensor readings)' },
+            'status.tip.complete': { th: 'เซสชันเก็บข้อมูลครบแล้ว (≥22 ค่าจากเซนเซอร์)', en: 'Session data complete (≥22 sensor readings)' },
+            'status.tip.incomplete': { th: 'เซสชันเก็บข้อมูลไม่ครบ (<22 ค่าจากเซนเซอร์)', en: 'Session data incomplete (<22 sensor readings)' },
             'status.tip.cancelled': { th: 'เซสชันถูกยกเลิก', en: 'Session was cancelled' },
             // Session info
             'session.count.info': { th: '{0} เซสชัน ({1} บ้าน)', en: '{0} sessions ({1} houses)' },
@@ -3822,6 +3826,7 @@
             'deep.range.30d': { th: '30 วัน', en: '30 days' },
             'deep.range.60d': { th: '60 วัน', en: '60 days' },
             'deep.range.all': { th: 'ทั้งหมด', en: 'All' },
+            'deep.range.today': { th: 'วันนี้', en: 'Today' },
             'deep.env.temp': { th: '🌡 ชีวมวล {0}°C / ดั้งเดิม {1}°C', en: '🌡 Biomass {0}°C / Traditional {1}°C' },
             'deep.env.hum': { th: '💧 ชีวมวล {0}% / ดั้งเดิม {1}%', en: '💧 Biomass {0}% / Traditional {1}%' },
             'deep.env.default': { th: 'สภาพแวดล้อมขณะเก็บข้อมูล', en: 'Environmental conditions during data collection' },
@@ -4382,7 +4387,7 @@
                         offset += pageSize;
                         if (allRecords.length >= MAX_RECORDS) break;
                     }
-                    allDataWithPending = allRecords;
+                    allDataWithPending = normalizeStoveType(allRecords);
                     const hasPending = allDataWithPending.some(d => d.status !== 'approved');
                     allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
                     computeDailyAggregates();
@@ -5336,7 +5341,7 @@
 
                 // Raw data: keep full dataset if already loaded, otherwise use 7-day data
                 if (!fullDataLoaded) {
-                    allDataWithPending = rawRes.data || [];
+                    allDataWithPending = normalizeStoveType(rawRes.data || []);
                     const hasPending = allDataWithPending.some(d => d.status !== 'approved');
                     allData = hasPending ? allDataWithPending.filter(d => d.status === 'approved') : allDataWithPending;
                 }
@@ -5556,10 +5561,9 @@
             if (tempEl) tempEl.textContent = avgTemp != null ? avgTemp.toFixed(1) : '--';
             if (humEl) humEl.textContent = avgHum != null ? avgHum.toFixed(1) : '--';
 
-            // AQI badge under PM2.5
-            const pm = ecoAvgPm != null ? ecoAvgPm : oldAvgPm;
+            // PM2.5 context: Net value shouldn't be compared with WHO absolute thresholds
             const badgeEl = document.getElementById('basic-pm25-badge');
-            if (badgeEl) badgeEl.innerHTML = pm != null ? pm25AqiBadge(Math.round(pm)) : '';
+            if (badgeEl) badgeEl.innerHTML = '';
         }
 
         // ==================== Threshold Lines Plugin (IAQ/PCD standards) ====================
@@ -5900,6 +5904,28 @@
                     btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
                 }
             });
+            // Reset today button
+            const todayBtn = document.getElementById('btn-today');
+            if (todayBtn) todayBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all';
+            clearDrilldown();
+            updateDeepView();
+        }
+
+        function setDateToday() {
+            const today = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10); // Thai date (UTC+7)
+            const startEl = document.getElementById('deep-date-start');
+            const endEl = document.getElementById('deep-date-end');
+            if (startEl) startEl.value = today;
+            if (endEl) endEl.value = today;
+            deepDateStart = today;
+            deepDateEnd = today;
+            activeQuickRange = -1;
+            // Clear quick buttons, highlight today button
+            document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
+                btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
+            });
+            const todayBtn = document.getElementById('btn-today');
+            if (todayBtn) todayBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white border border-blue-600';
             clearDrilldown();
             updateDeepView();
         }
@@ -5909,11 +5935,13 @@
             const endEl = document.getElementById('deep-date-end');
             deepDateStart = startEl?.value || null;
             deepDateEnd = endEl?.value || null;
-            // Clear active quick button
+            // Clear active quick button + today button
             activeQuickRange = -1;
             document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
                 btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
             });
+            const todayBtn = document.getElementById('btn-today');
+            if (todayBtn) todayBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all';
             clearDrilldown();
             updateDeepView();
         }
@@ -6062,11 +6090,23 @@
             renderStat('co', avg(ecoData.filter(d => d.co_value != null), 'co_value'), avg(oldData.filter(d => d.co_value != null), 'co_value'), 'ppm', 1);
             renderStat('tvoc', avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value'), avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value'), 'mg/m³', 3);
 
-            // AQI badge for PM2.5
+            // PM2.5 context: show Gross value (Net value alone is misleading with WHO thresholds)
             const badgeEl = document.getElementById('r-stat-pm25-badge');
             if (badgeEl) {
-                const ecoAvgPm = avg(ecoData, 'pm25_value');
-                badgeEl.innerHTML = ecoAvgPm != null ? pm25AqiBadge(ecoAvgPm) : '';
+                const ecoNetPm = avg(ecoData, 'pm25_value');
+                if (ecoNetPm != null) {
+                    const ecoRawPm25 = _rawFiltered.filter(d => d.stove_type === 'eco' && d.pm25_value != null);
+                    const ecoGrossPm = ecoRawPm25.length ? ecoRawPm25.reduce((s, d) => s + d.pm25_value, 0) / ecoRawPm25.length : null;
+                    let html = '<div class="text-[11px] leading-relaxed mt-1">';
+                    html += '<span class="text-slate-400">' + (currentLang === 'th' ? 'ค่าที่เตาสร้างเพิ่มจาก ambient' : 'Stove emission above ambient') + '</span>';
+                    if (ecoGrossPm != null) {
+                        html += '<br><span class="text-slate-400">' + (currentLang === 'th' ? 'ค่าวัดจริง (Gross): ' : 'Measured (Gross): ') + '</span><b class="text-slate-600">' + ecoGrossPm.toFixed(1) + '</b> <span class="text-slate-400">µg/m³</span>';
+                    }
+                    html += '</div>';
+                    badgeEl.innerHTML = html;
+                } else {
+                    badgeEl.innerHTML = '';
+                }
             }
 
             // Temp / Humidity (combined card, display only)
@@ -6281,9 +6321,9 @@
             // so that mean and band are consistent
             const chartAgg = {};
             (netData || []).forEach(d => {
-                if (!d.recorded_at || !d.stove_type) return;
+                if (!d.recorded_at) return;
                 const day = d.recorded_at.slice(0, 10);
-                const st = (d.stove_type === 'old' || d.stove_type === 'traditional') ? 'old' : 'eco';
+                const st = (d.stove_type === 'old' || d.stove_type === 'traditional') ? 'old' : 'eco'; // NULL stove_type → 'eco'
                 if (!chartAgg[day]) chartAgg[day] = {};
                 if (!chartAgg[day][st]) {
                     chartAgg[day][st] = {};
@@ -7306,7 +7346,7 @@
                         const minutesAgo = lastTime ? Math.round((Date.now() - lastTime.getTime()) / 60000) : 999;
                         const sessStatus = logSessionId ? sessionStatuses[logSessionId] : null;
                         const isStillCollecting = sessStatus === 'baseline' || sessStatus === 'collecting';
-                        const isComplete = sessStatus === 'complete' || (s.logs.length >= 24 && !isStillCollecting);
+                        const isComplete = sessStatus === 'complete' || (s.logs.length >= 22 && !isStillCollecting);
                         const rawNote = logSessionId ? (sessionNotes[logSessionId] || '') : '';
                         const sessNote = translateNote(rawNote.replace(/\s*tuya_api_errors:\d+/g, '').replace(/\s*GPS:[0-9.,\-]+/g, '').replace(/\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2}):\d{2}\.\d+Z/g, (_, hh, mm) => { const th = (parseInt(hh) + 7) % 24; return String(th).padStart(2, '0') + ':' + mm; }).trim());
                         const isTuyaIssue = rawNote.includes('Tuya') || rawNote.includes('tuya_api');
@@ -7441,6 +7481,7 @@
             try {
                 await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
                 logActivity(t('actlog.approve'), ids.length + ' records');
+                fullDataLoaded = false; // Force re-fetch so Deep Insights sees newly approved data
                 await Promise.all([loadAdminData(), loadData()]);
                 showToast(t('approval.approved.count', ids.length));
             } catch (e) {
@@ -7452,6 +7493,7 @@
             try {
                 await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).in('id', ids);
                 logActivity(t('actlog.reject'), ids.length + ' records');
+                fullDataLoaded = false; // Force re-fetch so Deep Insights sees updated data
                 await Promise.all([loadAdminData(), loadData()]);
                 showToast(t('approval.rejected.count', ids.length));
             } catch (e) {
@@ -7514,7 +7556,7 @@
                     for (const s of activeSessions) {
                         const age = Math.round((Date.now() - new Date(s.started_at).getTime()) / 60000);
                         await supabaseClient.from('sessions').update({
-                            session_status: s.readings_count >= 24 ? 'complete' : 'incomplete',
+                            session_status: s.readings_count >= 22 ? 'complete' : 'incomplete',
                             ended_at: new Date().toISOString(),
                             collection_ended_at: new Date().toISOString(),
                             updated_at: new Date().toISOString(),
@@ -7527,6 +7569,7 @@
                 const ids = pendingLogs.map(d => d.id);
                 await supabaseClient.from('pollution_logs').update({ status: 'approved' }).in('id', ids);
                 logActivity(t('actlog.approve.all'), pendingLogs.length + ' records');
+                fullDataLoaded = false; // Force re-fetch so Deep Insights sees newly approved data
                 await Promise.all([loadAdminData(), loadData()]);
                 showToast(t('approval.approved.all', pendingLogs.length) +
                     (activeSessions?.length ? t('approval.approved.stopped', activeSessions.length) : ''));
@@ -7549,6 +7592,7 @@
                     const ids = pendingLogs.map(d => d.id);
                     await supabaseClient.from('pollution_logs').update({ status: 'rejected' }).in('id', ids);
                     logActivity(t('actlog.reject.all'), pendingLogs.length + ' records');
+                    fullDataLoaded = false; // Force re-fetch so Deep Insights sees updated data
                     await Promise.all([loadAdminData(), loadData()]);
                     showToast(t('approval.rejected.all', pendingLogs.length));
                 } catch (e) {

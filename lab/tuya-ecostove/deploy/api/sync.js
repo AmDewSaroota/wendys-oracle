@@ -552,7 +552,7 @@ async function closeSession(sbUrl, sbKey, session, closeReason) {
     const postBaselineData = session.baseline_ended_at
       ? data.filter(d => d.recorded_at && d.recorded_at >= session.baseline_ended_at)
       : data;
-    const isComplete = postBaselineData.length >= 24;
+    const isComplete = postBaselineData.length >= 22;
 
     // Check if Tuya API errors were tracked during this session
     const tuyaErrorMatch = ((session.notes || '').match(/tuya_api_errors:(\d+)/) || []);
