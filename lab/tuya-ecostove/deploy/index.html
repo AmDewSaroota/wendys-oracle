@@ -378,8 +378,8 @@
                     <div class="text-4xl mt-4 mb-2">⚠️</div>
                     <p class="text-2xl font-bold text-white" data-i18n="hero.noold.title">ไม่สามารถคำนวณได้</p>
                     <p class="text-stone-200 text-sm mt-2" data-i18n="hero.noold.sub">ไม่พบข้อมูลเตาดั้งเดิม — ไม่มีค่าเปรียบเทียบ</p>
-                    <div class="max-w-md mx-auto mt-4 bg-white/10 backdrop-blur rounded-xl p-3">
-                        <p class="text-stone-200 text-[12px] text-left" data-i18n-html="hero.noold.note">💡 <b>แนะนำ:</b> ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน ว่ามีข้อมูลประเภท "เตาดั้งเดิม" อยู่หรือไม่</p>
+                    <div class="max-w-lg mx-auto mt-4 bg-white/10 backdrop-blur rounded-xl px-4 py-2.5">
+                        <p class="text-stone-200 text-[12px]" data-i18n="hero.noold.note">💡 ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน</p>
                     </div>
                     <p class="text-white/70 text-[12px] mt-4"><span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-noold"></span></p>
                 </div>
@@ -758,6 +758,8 @@
             <div id="admin-overview-container" class="admin-tab-content space-y-6">
                 <!-- Stat Cards -->
                 <div id="overview-stats" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+                <!-- Collection Period Warning Banner (auto-hide when all set) -->
+                <div id="overview-period-banner" class="hidden"></div>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-3">
                     <h3 class="text-2xl font-bold text-navy" data-i18n="overview.title">ภาพรวมระบบ</h3>
                     <div class="flex items-center gap-3">
@@ -966,7 +968,8 @@
                 <div id="sched-sub-periods-content" class="hidden">
                 <div class="card-styled p-6 rounded-2xl max-w-3xl">
                     <h4 class="text-lg font-bold text-navy mb-1" data-i18n="sched.periods">ช่วงเก็บข้อมูลแต่ละบ้าน</h4>
-                    <p class="text-slate-400 text-xs mb-5" data-i18n="sched.periods.sub">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
+                    <p class="text-slate-400 text-xs mb-3" data-i18n="sched.periods.sub">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด — ระบบจะใช้ข้อมูลนี้แทนการอ่านจากเซนเซอร์</p>
+                    <div id="periods-checklist" class="mb-4"></div>
                     <div id="periods-list" class="mb-5"></div>
                     <div class="flex flex-wrap gap-3 items-center">
                         <button id="periods-batch-setup-btn" onclick="showBatchPeriodModal()" class="bg-[#064e3b] text-white px-5 py-2 rounded-2xl font-bold text-sm hover:bg-[#043327] transition-all opacity-40 cursor-not-allowed" disabled>📅 ตั้งค่าที่เลือก</button>
@@ -1424,7 +1427,7 @@
 
                         <p class="font-bold text-navy mb-2">คำศัพท์สำคัญ:</p>
                         <ul class="space-y-1.5 ml-4 list-disc">
-                            <li><b>Session (เซสชัน)</b> — รอบการเก็บข้อมูล 1 ครั้ง ใช้เวลา 130 นาที (2 ชม. 10 นาที)</li>
+                            <li><b>Session (เซสชัน)</b> — รอบการเก็บข้อมูล 1 ครั้ง ใช้เวลา 130 นาที (2 ชม. 10 นาที) ระบบบันทึกค่าทุก 5 นาที ได้สูงสุด ~26 readings/session — ถ้าได้ <b>≥ 22 readings = สมบูรณ์ ✅</b> ถ้าน้อยกว่า = ไม่สมบูรณ์ ⚠️ (ข้อมูลยังใช้ได้ แต่อาจไม่ครอบคลุมทั้ง session)</li>
                             <li><b>Baseline</b> — ค่าอากาศปกติก่อนจุดเตา (10 นาทีแรก) ใช้หักล้างค่าพื้นฐานออก ถ้าอาสาเลือก "เก็บ TVOC/CO" ระบบจะให้กรอกค่าตั้งแต่ช่วง Baseline เพื่อเปรียบเทียบก่อน-หลังจุดเตา</li>
                             <li><b>ช่วงเก็บข้อมูล (Collection Period)</b> — กำหนดว่าแต่ละบ้านใช้เตาอะไร (เตาชีวมวล/เตาดั้งเดิม) ในช่วงเวลาใด</li>
                             <li><b>Cooldown</b> — ช่วงพักเครื่อง 5 ชม. ระหว่างเซสชัน</li>
@@ -3291,7 +3294,7 @@
             // Hero no-old (eco data exists but no traditional stove data)
             'hero.noold.title': { th: 'ไม่สามารถคำนวณได้', en: 'Cannot calculate' },
             'hero.noold.sub': { th: 'ไม่พบข้อมูลเตาดั้งเดิม — ไม่มีค่าเปรียบเทียบ', en: 'No traditional stove data found — no baseline for comparison' },
-            'hero.noold.note': { th: '💡 <b>แนะนำ:</b> ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน ว่ามีข้อมูลประเภท "เตาดั้งเดิม" อยู่หรือไม่', en: '💡 <b>Suggestion:</b> Check collection period settings in Admin to verify "traditional stove" data exists' },
+            'hero.noold.note': { th: '💡 ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน', en: '💡 Check collection period settings in Admin' },
             // Hero eco-fail
             'hero.fail.label': { th: 'มลพิษเพิ่มขึ้นขณะหุงต้ม', en: 'Pollution increased while cooking' },
             'hero.fail.sub': { th: 'เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย', en: 'Biomass stove has not yet reduced pollution as targeted' },
@@ -3706,6 +3709,11 @@
             'overview.stat.sensors.online': { th: 'ออนไลน์', en: 'online' },
             'overview.stat.volunteers': { th: 'อาสาสมัคร', en: 'Volunteers' },
             'overview.stat.projects': { th: 'โครงการ', en: 'Projects' },
+            'overview.period.warn': { th: 'มี {0} บ้านที่ยังไม่ได้กำหนดช่วงเก็บข้อมูล', en: '{0} houses without collection period' },
+            'overview.period.btn': { th: 'ไปตั้งค่า →', en: 'Set up →' },
+            'sched.checklist.title': { th: 'สถานะการตั้งค่าบ้าน', en: 'House Setup Status' },
+            'sched.checklist.ok': { th: 'ตั้งค่าครบแล้ว ✅', en: 'All set up ✅' },
+            'sched.checklist.missing': { th: 'ยังไม่ได้กำหนด', en: 'Not set' },
             'overview.no.results': { th: 'ไม่พบผลลัพธ์', en: 'No results found' },
             'overview.no.sensor': { th: '— ยังไม่จับคู่ —', en: '— No sensor —' },
             'overview.no.volunteer': { th: '— ยังไม่มีอาสา —', en: '— No volunteer —' },
@@ -8314,6 +8322,43 @@
 
             container.innerHTML = html;
             updatePeriodsSelection();
+
+            // Render checklist summary
+            renderPeriodsChecklist();
+        }
+
+        function renderPeriodsChecklist() {
+            const el = document.getElementById('periods-checklist');
+            if (!el) return;
+
+            const housesWithSensors = getHousesWithSensors();
+            if (housesWithSensors.length === 0) { el.innerHTML = ''; return; }
+
+            const today = getThaiToday();
+            let okCount = 0;
+            let missingHtml = '';
+
+            housesWithSensors.forEach(h => {
+                const periods = collectionPeriods.filter(p => p.subject_id === h.id);
+                const active = periods.find(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
+                if (active) {
+                    okCount++;
+                } else {
+                    missingHtml += '<span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-red-50 border border-red-200 text-[12px] text-red-600 font-medium">❌ ' + esc(h.full_name || '?') + '</span>';
+                }
+            });
+
+            const total = housesWithSensors.length;
+            if (okCount === total) {
+                el.innerHTML = '<div class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm text-emerald-700 font-bold">'
+                    + '✅ ' + t('sched.checklist.ok') + ' (' + total + '/' + total + ')'
+                    + '</div>';
+            } else {
+                el.innerHTML = '<div class="px-4 py-3 rounded-xl bg-amber-50 border border-amber-200">'
+                    + '<p class="text-sm font-bold text-amber-800 mb-2">' + t('sched.checklist.title') + ' — <span class="text-emerald-600">' + okCount + '</span>/' + total + '</p>'
+                    + '<div class="flex flex-wrap gap-2">' + missingHtml + '</div>'
+                    + '</div>';
+            }
         }
 
         function toggleAllPeriodsCb(checked) {
@@ -9308,7 +9353,7 @@
             const totalProjects = projects.length;
 
             const cards = [
-                { icon: '🏠', label: t('overview.stat.houses.in.project'), value: totalHouses, sub: '📡 ' + housesWithSensors + ' ' + t('overview.stat.houses.with.sensor') + ' · 🔥 ' + housesStoveOnly + ' ' + t('overview.stat.houses.stove.only'), color: 'amber' },
+                { icon: '🏠', label: t('overview.stat.houses.in.project'), value: totalHouses, sub: '📡 ' + housesWithSensors + ' ' + t('overview.stat.houses.with.sensor') + ' · 🔥 ' + housesStoveOnly + ' ' + t('overview.stat.houses.stove.only'), color: 'emerald' },
                 { icon: '📡', label: t('overview.stat.sensors'), value: totalSensors, sub: (onlineSensors > 0 ? '🟢' : '⚪') + ' ' + t('overview.stat.sensors.online') + ' ' + onlineSensors + '/' + totalSensors + ' ' + (currentLang === 'th' ? 'ตัว' : ''), color: 'blue' },
                 { icon: '👤', label: t('overview.stat.volunteers'), value: totalVolunteers, color: 'amber' },
                 { icon: '📋', label: t('overview.stat.projects'), value: totalProjects, color: 'purple' },
@@ -9329,6 +9374,37 @@
                     ${c.sub ? '<div class="text-[12px] mt-1 font-medium">' + c.sub + '</div>' : ''}
                 </div>
             `).join('');
+
+            // Check collection periods and show banner if needed
+            renderOverviewPeriodBanner();
+        }
+
+        async function renderOverviewPeriodBanner() {
+            const banner = document.getElementById('overview-period-banner');
+            if (!banner) return;
+
+            // Fetch collection_periods if not loaded yet
+            if (collectionPeriods.length === 0 && subjects.length > 0) {
+                const { data } = await supabaseClient.from('collection_periods').select('*');
+                collectionPeriods = data || [];
+            }
+
+            const housesWithSensors = getHousesWithSensors();
+            if (housesWithSensors.length === 0) { banner.className = 'hidden'; return; }
+
+            const today = getThaiToday();
+            const missing = housesWithSensors.filter(h => {
+                const periods = collectionPeriods.filter(p => p.subject_id === h.id);
+                if (!periods.length) return true;
+                const active = periods.find(p => p.starts_at <= today && (!p.ends_at || p.ends_at >= today));
+                return !active;
+            });
+
+            if (missing.length === 0) { banner.className = 'hidden'; return; }
+
+            banner.className = 'bg-rose-50 border border-rose-200 rounded-2xl px-4 py-3 flex items-center justify-between gap-3';
+            banner.innerHTML = '<span class="text-sm text-rose-700">⚠️ ' + t('overview.period.warn', missing.length) + '</span>'
+                + '<button onclick="switchAdminTab(\'schedule\');switchScheduleSubTab(\'periods\')" class="shrink-0 px-3 py-1.5 rounded-lg text-[12px] font-bold bg-rose-600 text-white hover:bg-rose-700 transition-all">' + t('overview.period.btn') + '</button>';
         }
 
         function renderOverviewTable() {
