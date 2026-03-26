@@ -372,10 +372,24 @@
                 </div>
             </div>
 
+            <!-- HERO: No old data (can't compare) -->
+            <div id="hero-no-old" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-stone-500 via-stone-400 to-amber-700/60">
+                <div class="relative z-10 p-6 md:p-8 text-center">
+                    <div class="text-4xl mt-4 mb-2">⚠️</div>
+                    <p class="text-2xl font-bold text-white" data-i18n="hero.noold.title">ไม่สามารถคำนวณได้</p>
+                    <p class="text-stone-200 text-sm mt-2" data-i18n="hero.noold.sub">ไม่พบข้อมูลเตาดั้งเดิม — ไม่มีค่าเปรียบเทียบ</p>
+                    <div class="max-w-md mx-auto mt-4 bg-white/10 backdrop-blur rounded-xl p-3">
+                        <p class="text-stone-200 text-[12px] text-left" data-i18n-html="hero.noold.note">💡 <b>แนะนำ:</b> ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน ว่ามีข้อมูลประเภท "เตาดั้งเดิม" อยู่หรือไม่</p>
+                    </div>
+                    <p class="text-white/70 text-[12px] mt-4"><span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-noold"></span></p>
+                </div>
+            </div>
+
             <!-- 2. Big Number Cards -->
-            <div class="flex items-center gap-3 mb-1">
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
                 <p id="basic-range-label" class="text-[12px] text-slate-400"></p>
                 <span class="text-[12px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="badge.ambient">🧹 หักค่าแวดล้อม (Ambient) แล้ว</span>
+                <span id="card-stove-note" class="hidden text-[12px] px-2 py-0.5 rounded-full border"></span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
@@ -509,15 +523,15 @@
                     <select id="project-filter" onchange="updateDeepView()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
                         <option value="all" data-i18n="project.all">ทุกโครงการ</option>
                     </select>
-                    <div id="deep-range-buttons" class="flex gap-1">
-                        <button onclick="setQuickRange(7)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50" data-i18n="deep.range.7d">7 วัน</button>
-                        <button onclick="setQuickRange(30)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50" data-i18n="deep.range.30d">30 วัน</button>
-                        <button onclick="setQuickRange(60)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50" data-i18n="deep.range.60d">60 วัน</button>
-                        <button onclick="setQuickRange(0)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600" data-i18n="deep.range.all">ทั้งหมด</button>
-                    </div>
-                    <div class="flex items-center gap-1.5 text-sm text-gray-500">
-                        <button onclick="setDateToday()" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all" id="btn-today" data-i18n="deep.range.today">วันนี้</button>
-                        <span class="text-gray-300">|</span>
+                    <select id="quick-range-select" onchange="onQuickRangeChange(this.value)" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
+                        <option value="0" data-i18n="deep.range.all" selected>ทั้งหมด</option>
+                        <option value="7" data-i18n="deep.range.7d">7 วันล่าสุด</option>
+                        <option value="30" data-i18n="deep.range.30d">30 วันล่าสุด</option>
+                        <option value="60" data-i18n="deep.range.60d">60 วันล่าสุด</option>
+                        <option value="today" data-i18n="deep.range.today">วันนี้</option>
+                    </select>
+                    <span class="text-gray-300 text-xs" data-i18n="deep.range.or">หรือ</span>
+                    <div id="date-range-group" class="flex items-center gap-1.5 text-sm text-gray-500 opacity-40 transition-opacity duration-200">
                         <span class="text-[12px]">📅</span>
                         <input type="date" id="deep-date-start" onchange="onDateRangeChange()" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
                         <span class="text-gray-300">—</span>
@@ -527,9 +541,10 @@
             </div>
 
             <!-- Research Stat Cards — Row 1 -->
-            <div class="flex items-center gap-3 mb-1">
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
                 <p id="deep-range-label" class="text-[12px] text-slate-400"></p>
                 <span class="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200" data-i18n="deep.ambient.badge">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
+                <span id="deep-stove-note" class="hidden text-[12px] px-2 py-0.5 rounded-full border"></span>
                 <span class="info-btn text-emerald-600" onclick="showInfo(this,t('deep.glossary.title'),t('deep.glossary.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
             </div>
             <!-- Research Stat Cards — Row 1: Pollutants -->
@@ -614,15 +629,7 @@
                 <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
             </div>
 
-            <!-- Drill-down panel (hidden by default) -->
-            <div id="drilldown-panel" class="hidden space-y-4">
-                <div class="flex items-center justify-between">
-                    <h4 class="font-bold text-lg text-navy" id="drilldown-title">📅 รายละเอียดวันที่ --</h4>
-                    <button onclick="clearDrilldown()" class="text-sm text-slate-400 hover:text-slate-600 font-bold" data-i18n="deep.drilldown.close">✕ ปิด</button>
-                </div>
-                <div id="drilldown-legend" class="flex flex-wrap gap-2 mb-4"></div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="drilldown-charts-container"></div>
-            </div>
+            <!-- Drill-down panel (removed — session review moved to Admin) -->
 
             <!-- Comparison Table: Gross / Ambient / Net -->
             <div class="card-styled p-6 rounded-[2.5rem]">
@@ -990,12 +997,13 @@
                 <div id="pending-sessions-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- Tab 5: ข้อมูล (รวม อัตโนมัติ + TVOC) -->
+            <!-- Tab 5: ข้อมูล (รวม อัตโนมัติ + TVOC + เซสชัน) -->
             <div id="admin-data" class="admin-tab-content hidden space-y-4">
                 <!-- Sub-tab toggle -->
                 <div class="flex gap-2 bg-white/50 p-1.5 rounded-2xl border border-slate-200 shadow-inner w-fit">
                     <button onclick="switchDataSubTab('sensor')" id="data-sub-sensor" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active" data-i18n="data.sub.sensor">ข้อมูลเซนเซอร์</button>
                     <button onclick="switchDataSubTab('tvoc')" id="data-sub-tvoc" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="data.sub.manual">กรอกด้วยมือ</button>
+                    <button onclick="switchDataSubTab('sessions')" id="data-sub-sessions" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="data.sub.sessions">เซสชันย้อนหลัง</button>
                 </div>
 
                 <!-- Sub: อัตโนมัติ (sensor data) -->
@@ -1123,6 +1131,28 @@
                             <button onclick="loadMoreTvoc()" class="px-6 py-2 rounded-xl font-bold text-[13px] bg-purple-100 text-purple-600 hover:bg-purple-200 transition-all">โหลดเพิ่ม 100 รายการ</button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Sub: เซสชันย้อนหลัง -->
+                <div id="data-sub-sessions-content" class="hidden space-y-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-navy" data-i18n="tab.sessions.title">เซสชันย้อนหลัง</h3>
+                            <p class="text-slate-400 text-sm" data-i18n="tab.sessions.sub">ตรวจสอบกราฟข้อมูลรายเซสชัน — กดการ์ดเพื่อดูกราฟ</p>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <select id="admin-session-device" onchange="loadAdminSessions()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
+                                <option value="all">ทุกบ้าน</option>
+                            </select>
+                            <select id="admin-session-days" onchange="loadAdminSessions()" class="custom-select px-4 py-2 pr-10 rounded-xl border text-sm bg-white">
+                                <option value="7">7 วันล่าสุด</option>
+                                <option value="30" selected>30 วันล่าสุด</option>
+                                <option value="60">60 วันล่าสุด</option>
+                                <option value="0">ทั้งหมด</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="admin-sessions-list" class="space-y-6"></div>
                 </div>
             </div>
 
@@ -3258,6 +3288,10 @@
             'hero.noeco.card': { th: '🪵 เตาดั้งเดิม — ค่าเฉลี่ยสุทธิ', en: '🪵 Traditional — Net average' },
             'hero.noeco.pmtext': { th: 'PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Ambient)', en: 'Avg PM2.5 while cooking (after Ambient subtraction)' },
             'hero.info.noeco': { th: 'เก็บค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่าแวดล้อม Ambient ออก เพื่อสร้างค่าอ้างอิงสำหรับเปรียบเทียบกับเตาชีวมวลในระยะถัดไป', en: 'Collecting average PM2.5 while cooking, subtracting Ambient baseline, to build reference values for comparison with biomass stove in the next phase' },
+            // Hero no-old (eco data exists but no traditional stove data)
+            'hero.noold.title': { th: 'ไม่สามารถคำนวณได้', en: 'Cannot calculate' },
+            'hero.noold.sub': { th: 'ไม่พบข้อมูลเตาดั้งเดิม — ไม่มีค่าเปรียบเทียบ', en: 'No traditional stove data found — no baseline for comparison' },
+            'hero.noold.note': { th: '💡 <b>แนะนำ:</b> ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน ว่ามีข้อมูลประเภท "เตาดั้งเดิม" อยู่หรือไม่', en: '💡 <b>Suggestion:</b> Check collection period settings in Admin to verify "traditional stove" data exists' },
             // Hero eco-fail
             'hero.fail.label': { th: 'มลพิษเพิ่มขึ้นขณะหุงต้ม', en: 'Pollution increased while cooking' },
             'hero.fail.sub': { th: 'เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย', en: 'Biomass stove has not yet reduced pollution as targeted' },
@@ -3296,6 +3330,8 @@
             'card.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
             'card.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
             'card.traditional': { th: 'เตาดั้งเดิม', en: 'Traditional' },
+            'card.note.no.old': { th: '⚠ ยังไม่มีข้อมูลเตาดั้งเดิม — เทียบ % ได้เมื่อมีข้อมูลครบทั้ง 2 ประเภท', en: '⚠ No traditional stove data yet — % comparison available when both types collected' },
+            'card.note.no.eco': { th: '⚠ ยังไม่มีข้อมูลเตาชีวมวล — เทียบ % ได้เมื่อมีข้อมูลครบทั้ง 2 ประเภท', en: '⚠ No biomass stove data yet — % comparison available when both types collected' },
             'stove.eco.short': { th: '✨ ชีวมวล', en: '✨ Biomass' },
             'stove.old.short': { th: '🪵 ดั้งเดิม', en: '🪵 Traditional' },
             'sensor.no.data': { th: 'ยังไม่มีข้อมูล', en: 'No data yet' },
@@ -3339,6 +3375,12 @@
             'tab.data': { th: 'ข้อมูล', en: 'Data' },
             'tab.schedule': { th: 'กำหนดการ', en: 'Schedule' },
             'tab.activity': { th: 'ประวัติกิจกรรม', en: 'Activity Log' },
+            'tab.sessions': { th: 'เซสชัน', en: 'Sessions' },
+            'tab.sessions.title': { th: 'เซสชันย้อนหลัง', en: 'Session History' },
+            'tab.sessions.sub': { th: 'ตรวจสอบกราฟข้อมูลรายเซสชัน — กดการ์ดเพื่อดูกราฟ', en: 'Review session charts — tap a card to view graph' },
+            'tab.sessions.nodata': { th: 'ไม่มีเซสชันในช่วงเวลานี้', en: 'No sessions in this period' },
+            'tab.sessions.allhouses': { th: 'ทุกบ้าน', en: 'All houses' },
+            'tab.sessions.readings': { th: 'readings', en: 'readings' },
             // Volunteers
             'vol.list': { th: 'รายชื่ออาสาสมัคร', en: 'Volunteer List' },
             'vol.add': { th: '+ เพิ่มอาสา', en: '+ Add Volunteer' },
@@ -3675,6 +3717,7 @@
             // Data sub-tabs & headers
             'data.sub.sensor': { th: 'ข้อมูลเซนเซอร์', en: 'Sensor Data' },
             'data.sub.manual': { th: 'กรอกด้วยมือ', en: 'Manual Entry' },
+            'data.sub.sessions': { th: 'เซสชันย้อนหลัง', en: 'Session History' },
             'data.sensor.title': { th: '📡 ข้อมูลเซนเซอร์', en: '📡 Sensor Data' },
             'data.filter.all.devices': { th: 'ทุกเครื่อง', en: 'All Devices' },
             'data.filter.all.houses': { th: 'ทุกบ้าน', en: 'All Houses' },
@@ -3822,11 +3865,12 @@
             'deep.meth.3.a': { th: 'เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)', en: 'Data collected at different times (not a paired design)' },
             'deep.meth.3.b': { th: 'Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method', en: 'Semiconductor sensors have higher variance than gravimetric methods' },
             'deep.meth.3.c': { th: 'CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ', en: 'CO and TVOC manually recorded — not from automatic sensors' },
-            'deep.range.7d': { th: '7 วัน', en: '7 days' },
-            'deep.range.30d': { th: '30 วัน', en: '30 days' },
-            'deep.range.60d': { th: '60 วัน', en: '60 days' },
+            'deep.range.7d': { th: '7 วันล่าสุด', en: 'Last 7 days' },
+            'deep.range.30d': { th: '30 วันล่าสุด', en: 'Last 30 days' },
+            'deep.range.60d': { th: '60 วันล่าสุด', en: 'Last 60 days' },
             'deep.range.all': { th: 'ทั้งหมด', en: 'All' },
             'deep.range.today': { th: 'วันนี้', en: 'Today' },
+            'deep.range.or': { th: 'หรือ', en: 'or' },
             'deep.env.temp': { th: '🌡 ชีวมวล {0}°C / ดั้งเดิม {1}°C', en: '🌡 Biomass {0}°C / Traditional {1}°C' },
             'deep.env.hum': { th: '💧 ชีวมวล {0}% / ดั้งเดิม {1}%', en: '💧 Biomass {0}% / Traditional {1}%' },
             'deep.env.default': { th: 'สภาพแวดล้อมขณะเก็บข้อมูล', en: 'Environmental conditions during data collection' },
@@ -4431,15 +4475,16 @@
         }
 
         // ==================== Scenario Detection ====================
-        let currentScenario = 'normal'; // 'normal' | 'no-eco' | 'eco-fail'
+        let currentScenario = 'normal'; // 'normal' | 'no-eco' | 'no-old' | 'eco-fail'
 
         function detectScenario() {
             // Fast path: use dailyAgg weighted averages (covers full date range from daily_summaries)
             if (!fullDataLoaded && Object.keys(dailyAgg).length) {
                 const ecoAvgPm = getOverallAvgFromDailyAgg('eco', 'pm25_value');
                 const oldAvgPm = getOverallAvgFromDailyAgg('old', 'pm25_value');
+                if (ecoAvgPm == null && oldAvgPm == null) return 'no-eco';
                 if (ecoAvgPm == null) return 'no-eco';
-                if (oldAvgPm == null || oldAvgPm === 0) return 'normal';
+                if (oldAvgPm == null || oldAvgPm === 0) return 'no-old';
                 if (ecoAvgPm >= oldAvgPm) return 'eco-fail';
                 return 'normal';
             }
@@ -4448,13 +4493,15 @@
             const ecoData = data.filter(d => d.stove_type === 'eco');
             const oldData = data.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
 
+            if (ecoData.length === 0 && oldData.length === 0) return 'no-eco';
             if (ecoData.length === 0) return 'no-eco';
+            if (oldData.length === 0) return 'no-old';
 
             const ecoAvgPm = avg(ecoData, 'pm25_value');
             const oldAvgPm = avg(oldData, 'pm25_value');
 
             if (ecoAvgPm == null) return 'no-eco';
-            if (oldAvgPm == null || oldAvgPm === 0) return 'normal';
+            if (oldAvgPm == null || oldAvgPm === 0) return 'no-old';
             if (ecoAvgPm >= oldAvgPm) return 'eco-fail';
             return 'normal';
         }
@@ -4470,9 +4517,11 @@
             // Hero variants
             const heroNormal = document.getElementById('hero-normal');
             const heroNoEco = document.getElementById('hero-no-eco');
+            const heroNoOld = document.getElementById('hero-no-old');
             const heroFail = document.getElementById('hero-eco-fail');
             if (heroNormal) heroNormal.classList.toggle('hidden', currentScenario !== 'normal');
             if (heroNoEco) heroNoEco.classList.toggle('hidden', currentScenario !== 'no-eco');
+            if (heroNoOld) heroNoOld.classList.toggle('hidden', currentScenario !== 'no-old');
             if (heroFail) heroFail.classList.toggle('hidden', currentScenario !== 'eco-fail');
 
             // Update hero content with live data
@@ -4499,7 +4548,7 @@
             const metaText = range ? t('hero.meta', range.days, sensorCount) : sensorCount + (currentLang === 'th' ? ' ครัวเรือน' : ' households');
 
             // Always update meta text for all hero variants
-            ['hero-meta-normal', 'hero-meta-noeco', 'hero-meta-fail'].forEach(id => {
+            ['hero-meta-normal', 'hero-meta-noeco', 'hero-meta-noold', 'hero-meta-fail'].forEach(id => {
                 const m = document.getElementById(id); if (m) m.textContent = metaText;
             });
 
@@ -5186,20 +5235,21 @@
 
         // Sub-tabs within "ข้อมูล" tab
         function switchDataSubTab(sub) {
-            document.getElementById('data-sub-sensor').classList.remove('tab-active');
-            document.getElementById('data-sub-sensor').classList.add('text-slate-500');
-            document.getElementById('data-sub-tvoc').classList.remove('tab-active');
-            document.getElementById('data-sub-tvoc').classList.add('text-slate-500');
+            ['sensor', 'tvoc', 'sessions'].forEach(k => {
+                const btn = document.getElementById('data-sub-' + k);
+                const content = document.getElementById('data-sub-' + k + '-content');
+                if (btn) { btn.classList.remove('tab-active'); btn.classList.add('text-slate-500'); }
+                if (content) content.classList.add('hidden');
+            });
 
             const activeBtn = document.getElementById(`data-sub-${sub}`);
-            activeBtn.classList.add('tab-active');
-            activeBtn.classList.remove('text-slate-500');
-
-            document.getElementById('data-sub-sensor-content').classList.toggle('hidden', sub !== 'sensor');
-            document.getElementById('data-sub-tvoc-content').classList.toggle('hidden', sub !== 'tvoc');
+            const activeContent = document.getElementById(`data-sub-${sub}-content`);
+            if (activeBtn) { activeBtn.classList.add('tab-active'); activeBtn.classList.remove('text-slate-500'); }
+            if (activeContent) activeContent.classList.remove('hidden');
 
             if (sub === 'sensor') updateAllDataTable();
             if (sub === 'tvoc') updateTvocTab();
+            if (sub === 'sessions') loadAdminSessions();
         }
 
         // ==================== Modal ====================
@@ -5544,7 +5594,10 @@
                     if (detailEl) detailEl.innerHTML = t('card.eco') + ' <b class="text-red-600">' + f(ecoVal) + '</b> · ' + t('card.old') + ' <span class="text-gray-400">' + f(oldVal) + '</span> ' + unit;
                 } else if (currentScenario === 'no-eco' && oldVal != null) {
                     el.innerHTML = '<span class="text-gray-700">' + f(oldVal) + '</span>';
-                    if (detailEl) detailEl.innerHTML = unit + ' · ' + t('card.traditional');
+                    if (detailEl) detailEl.innerHTML = unit + ' · <span class="text-amber-600">🪵 ' + t('card.old') + '</span>';
+                } else if (currentScenario === 'no-old' && ecoVal != null) {
+                    el.innerHTML = '<span class="text-gray-700">' + f(ecoVal) + '</span>';
+                    if (detailEl) detailEl.innerHTML = unit + ' · <span class="text-emerald-600">✨ ' + t('card.eco') + '</span>';
                 } else {
                     el.textContent = f(ecoVal != null ? ecoVal : oldVal) || '--';
                     if (detailEl) detailEl.innerHTML = unit;
@@ -5554,6 +5607,20 @@
             renderCard('basic-pm25', 'basic-pm25-detail', ecoAvgPm, oldAvgPm, 'µg/m³', v => v != null ? v.toFixed(1) : '--');
             renderCard('basic-co2', 'basic-co2-detail', ecoAvgCo2, oldAvgCo2, 'ppm', v => v != null ? Math.round(v).toString() : '--');
             renderCard('basic-co', 'basic-co-detail', ecoAvgCo, oldAvgCo, 'ppm', v => v != null ? v.toFixed(1) : '--');
+
+            // Stove note banner (shown only when data is from one stove type)
+            const noteEl = document.getElementById('card-stove-note');
+            if (noteEl) {
+                if (currentScenario === 'no-old') {
+                    noteEl.className = 'text-[12px] px-2 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700';
+                    noteEl.textContent = t('card.note.no.old');
+                } else if (currentScenario === 'no-eco') {
+                    noteEl.className = 'text-[12px] px-2 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700';
+                    noteEl.textContent = t('card.note.no.eco');
+                } else {
+                    noteEl.className = 'hidden';
+                }
+            }
 
             // Temp/Humidity — same for all scenarios
             const tempEl = document.getElementById('basic-temp');
@@ -5886,27 +5953,38 @@
         let deepDateEnd = null;
         let activeQuickRange = 0; // 0 = all
 
+        // Toggle active/dim between quick-range dropdown and date-range group
+        function updateFilterGroups(activeGroup) {
+            const quickSel = document.getElementById('quick-range-select');
+            const dateG = document.getElementById('date-range-group');
+            if (!quickSel || !dateG) return;
+            if (activeGroup === 'quick') {
+                quickSel.classList.remove('opacity-40');
+                dateG.classList.add('opacity-40');
+            } else {
+                quickSel.classList.add('opacity-40');
+                dateG.classList.remove('opacity-40');
+            }
+        }
+
+        // Dropdown change handler — routes to setQuickRange or setDateToday
+        function onQuickRangeChange(val) {
+            if (val === 'today') { setDateToday(); return; }
+            setQuickRange(parseInt(val));
+        }
+
         function setQuickRange(days) {
             activeQuickRange = days;
-            // Quick range buttons use per-stove filtering, not absolute dates
             deepDateStart = null;
             deepDateEnd = null;
             const startEl = document.getElementById('deep-date-start');
             const endEl = document.getElementById('deep-date-end');
             if (startEl) startEl.value = '';
             if (endEl) endEl.value = '';
-            // Update button styles
-            document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
-                const btnDays = parseInt(btn.getAttribute('onclick').match(/\d+/)?.[0] || '0');
-                if (btnDays === days) {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600';
-                } else {
-                    btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
-                }
-            });
-            // Reset today button
-            const todayBtn = document.getElementById('btn-today');
-            if (todayBtn) todayBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all';
+            // Sync dropdown selection
+            const sel = document.getElementById('quick-range-select');
+            if (sel) sel.value = String(days);
+            updateFilterGroups('quick');
             clearDrilldown();
             updateDeepView();
         }
@@ -5920,12 +5998,10 @@
             deepDateStart = today;
             deepDateEnd = today;
             activeQuickRange = -1;
-            // Clear quick buttons, highlight today button
-            document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
-                btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
-            });
-            const todayBtn = document.getElementById('btn-today');
-            if (todayBtn) todayBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white border border-blue-600';
+            // Sync dropdown to "วันนี้"
+            const sel = document.getElementById('quick-range-select');
+            if (sel) sel.value = 'today';
+            updateFilterGroups('quick');
             clearDrilldown();
             updateDeepView();
         }
@@ -5935,13 +6011,11 @@
             const endEl = document.getElementById('deep-date-end');
             deepDateStart = startEl?.value || null;
             deepDateEnd = endEl?.value || null;
-            // Clear active quick button + today button
             activeQuickRange = -1;
-            document.querySelectorAll('#deep-range-buttons button').forEach(btn => {
-                btn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-gray-50';
-            });
-            const todayBtn = document.getElementById('btn-today');
-            if (todayBtn) todayBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-medium bg-white border text-gray-500 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-all';
+            // Deselect dropdown (custom date range active)
+            const sel = document.getElementById('quick-range-select');
+            if (sel) sel.value = '';
+            updateFilterGroups('date');
             clearDrilldown();
             updateDeepView();
         }
@@ -6089,6 +6163,20 @@
             // Manual data pollutants (filter nulls)
             renderStat('co', avg(ecoData.filter(d => d.co_value != null), 'co_value'), avg(oldData.filter(d => d.co_value != null), 'co_value'), 'ppm', 1);
             renderStat('tvoc', avg(ecoData.filter(d => d.tvoc_value != null), 'tvoc_value'), avg(oldData.filter(d => d.tvoc_value != null), 'tvoc_value'), 'mg/m³', 3);
+
+            // Stove note for Deep Insights
+            const deepNote = document.getElementById('deep-stove-note');
+            if (deepNote) {
+                if (ecoData.length > 0 && oldData.length === 0) {
+                    deepNote.className = 'text-[12px] px-2 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700';
+                    deepNote.textContent = t('card.note.no.old');
+                } else if (oldData.length > 0 && ecoData.length === 0) {
+                    deepNote.className = 'text-[12px] px-2 py-0.5 rounded-full border border-amber-200 bg-amber-50 text-amber-700';
+                    deepNote.textContent = t('card.note.no.eco');
+                } else {
+                    deepNote.className = 'hidden';
+                }
+            }
 
             // PM2.5 context: show Gross value (Net value alone is misleading with WHO thresholds)
             const badgeEl = document.getElementById('r-stat-pm25-badge');
@@ -6389,11 +6477,14 @@
                 // Old stove — gray dashed (baseline reference)
                 datasets.push({ label: t('chart.old') + ' (max)', data: oldBandUp, borderColor: 'rgba(156,163,175,0.3)', backgroundColor: 'rgba(156,163,175,0.15)', borderWidth: 1, pointRadius: 0, tension: 0.3, fill: '+1' });
                 datasets.push({ label: t('chart.old') + ' (min)', data: oldBandLo, borderColor: 'rgba(156,163,175,0.3)', backgroundColor: 'rgba(156,163,175,0.15)', borderWidth: 1, pointRadius: 0, tension: 0.3, fill: false });
-                datasets.push({ label: t('chart.old'), data: oldPoints, borderColor: '#6b7280', backgroundColor: '#6b728020', borderWidth: 2, borderDash: [6, 3], pointRadius: 0, pointHoverRadius: 5, tension: 0.3, fill: false });
+                // Show visible dots when data is sparse (≤7 days), hide when dense
+                const oldPtR = oldPoints.length <= 7 ? 4 : 0;
+                const ecoPtR = ecoPoints.length <= 7 ? 5 : 0;
+                datasets.push({ label: t('chart.old'), data: oldPoints, borderColor: '#6b7280', backgroundColor: '#6b728020', borderWidth: 2, borderDash: [6, 3], pointRadius: oldPtR, pointHoverRadius: 5, tension: 0.3, fill: false });
                 // Eco stove — green bold hero
                 datasets.push({ label: t('compare.eco') + ' (max)', data: ecoBandUp, borderColor: 'rgba(16,185,129,0.3)', backgroundColor: 'rgba(16,185,129,0.15)', borderWidth: 1, pointRadius: 0, tension: 0.3, fill: '+1' });
                 datasets.push({ label: t('compare.eco') + ' (min)', data: ecoBandLo, borderColor: 'transparent', backgroundColor: 'rgba(16,185,129,0.15)', borderWidth: 0, pointRadius: 0, tension: 0.3, fill: false });
-                datasets.push({ label: t('compare.eco'), data: ecoPoints, borderColor: '#10b981', backgroundColor: '#10b98130', borderWidth: 3, pointRadius: 0, pointHoverRadius: 7, tension: 0.3, fill: false });
+                datasets.push({ label: t('compare.eco'), data: ecoPoints, borderColor: '#10b981', backgroundColor: '#10b98130', borderWidth: 3, pointRadius: ecoPtR, pointHoverRadius: 7, tension: 0.3, fill: false });
 
                 sensorCharts[cfg.id] = new Chart(canvas, {
                     type: 'line',
@@ -6401,16 +6492,6 @@
                     options: {
                         responsive: true, maintainAspectRatio: false,
                         interaction: { mode: 'index', intersect: false },
-                        onClick: (evt, elements) => {
-                            if (elements.length) {
-                                const idx = elements[0].index;
-                                const ds = sensorCharts[cfg.id].data.datasets[elements[0].datasetIndex];
-                                if (ds.data[idx]) {
-                                    const clickedDate = new Date(ds.data[idx].x).toISOString().slice(0, 10);
-                                    setDrilldownDate(clickedDate);
-                                }
-                            }
-                        },
                         plugins: {
                             legend: {
                                 labels: {
@@ -6880,6 +6961,164 @@
                     </div>
                 </div>`;
             }).join('');
+        }
+
+        // ==================== Admin Sessions (grouped by date) ====================
+        let _adminSessionsLoaded = false;
+
+        async function loadAdminSessions() {
+            const container = document.getElementById('admin-sessions-list');
+            if (!container) return;
+
+            container.innerHTML = '<div class="text-center py-8"><div class="loading-spinner mx-auto" style="width:24px;height:24px;border-width:2px"></div></div>';
+
+            // Populate device dropdown (once)
+            const devSelect = document.getElementById('admin-session-device');
+            if (devSelect && !_adminSessionsLoaded) {
+                const opts = ['<option value="all">' + t('tab.sessions.allhouses') + '</option>'];
+                Object.keys(DEVICE_NAMES).sort().forEach(did => {
+                    const house = HOUSE_NAMES[did] || '';
+                    const label = house ? house + ' (' + DEVICE_NAMES[did] + ')' : DEVICE_NAMES[did];
+                    opts.push('<option value="' + did + '">' + esc(label) + '</option>');
+                });
+                devSelect.innerHTML = opts.join('');
+                _adminSessionsLoaded = true;
+            }
+
+            // Read filters
+            const deviceFilter = devSelect?.value || 'all';
+            const daysFilter = parseInt(document.getElementById('admin-session-days')?.value || '30');
+
+            // Build query
+            let query = supabaseClient.from('sessions')
+                .select('*')
+                .order('started_at', { ascending: false });
+
+            if (daysFilter > 0) {
+                const cutoff = new Date(Date.now() - daysFilter * 24 * 60 * 60 * 1000).toISOString();
+                query = query.gte('started_at', cutoff);
+            }
+            if (deviceFilter !== 'all') query = query.eq('device_id', deviceFilter);
+
+            // Project filter
+            const projDeviceIds = getProjectDeviceIds(getActiveProjectFilter());
+            if (projDeviceIds) query = query.in('device_id', projDeviceIds);
+
+            query = query.limit(200);
+
+            const { data: sessions, error } = await query;
+            if (error) { console.error('loadAdminSessions:', error); container.innerHTML = '<p class="text-red-400 text-center py-8">Error loading sessions</p>'; return; }
+
+            if (!sessions || sessions.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center py-8">' + t('tab.sessions.nodata') + '</p>';
+                return;
+            }
+
+            // Group by date (Thai timezone UTC+7)
+            const grouped = {};
+            sessions.forEach(s => {
+                const d = new Date(s.started_at);
+                const thaiDate = new Date(d.getTime() + 7 * 60 * 60 * 1000);
+                const dateKey = thaiDate.toISOString().slice(0, 10);
+                if (!grouped[dateKey]) grouped[dateKey] = [];
+                grouped[dateKey].push(s);
+            });
+
+            const statusColors = {
+                'baseline': 'bg-blue-100 text-blue-700 border-blue-200',
+                'collecting': 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                'complete': 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                'incomplete': 'bg-orange-100 text-orange-700 border-orange-200',
+                'cancelled': 'bg-red-100 text-red-700 border-red-200',
+            };
+            const statusIcons = { 'baseline': '🔵', 'collecting': '🟡', 'complete': '✅', 'incomplete': '⚠️', 'cancelled': '❌' };
+            const statusThai = { 'baseline': t('status.baseline'), 'collecting': t('status.collecting'), 'complete': t('status.complete'), 'incomplete': t('status.incomplete'), 'cancelled': t('status.cancelled') };
+
+            // Session counters per device per day
+            const dateKeys = Object.keys(grouped).sort().reverse();
+            let html = '';
+
+            dateKeys.forEach(dateKey => {
+                const daySessions = grouped[dateKey];
+                const uniqueDevices = new Set(daySessions.map(s => s.device_id));
+                const completeSessions = daySessions.filter(s => s.session_status === 'complete').length;
+
+                // Date header
+                html += '<div class="space-y-3">';
+                html += '<div class="flex items-center gap-3 px-1">';
+                html += '<h4 class="text-lg font-bold text-navy">' + fmtDateDMY(dateKey + 'T00:00:00') + '</h4>';
+                html += '<span class="text-[12px] text-slate-400">' + daySessions.length + ' sessions · ' + uniqueDevices.size + ' ' + (currentLang === 'th' ? 'ครัวเรือน' : 'houses');
+                if (completeSessions > 0) html += ' · ' + completeSessions + ' ✅';
+                html += '</span>';
+                html += '</div>';
+
+                // Session number per device per day
+                const dayCounters = {};
+                const sorted = [...daySessions].sort((a, b) => a.started_at.localeCompare(b.started_at));
+                sorted.forEach(s => {
+                    dayCounters[s.device_id] = (dayCounters[s.device_id] || 0) + 1;
+                    s._dayNum = dayCounters[s.device_id];
+                });
+
+                // Cards grid
+                html += '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">';
+
+                // Sort by started_at descending within day
+                daySessions.sort((a, b) => b.started_at.localeCompare(a.started_at));
+
+                daySessions.forEach(s => {
+                    const houseName = withSensor(HOUSE_NAMES[s.device_id], s.device_id);
+                    const sensorName = DEVICE_NAMES[s.device_id] || s.device_id;
+                    const startTime = new Date(s.started_at).toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit' });
+                    const endTime = s.ended_at ? new Date(s.ended_at).toLocaleTimeString(currentLang === 'th' ? 'th-TH' : 'en-US', { hour: '2-digit', minute: '2-digit' }) : '...';
+                    const duration = s.ended_at ? Math.round((new Date(s.ended_at) - new Date(s.started_at)) / 60000) : null;
+                    const durationStr = duration != null ? duration + ' min' : t('session.in.progress');
+
+                    const statusColor = statusColors[s.session_status] || 'bg-slate-100 text-slate-500 border-slate-200';
+                    const statusIcon = statusIcons[s.session_status] || '❓';
+                    const statusLabel = currentLang === 'th' ? (statusThai[s.session_status] || s.session_status) : s.session_status;
+                    const sessLabel = s._dayNum ? ' #' + s._dayNum : '';
+
+                    // Ambient badge
+                    let blBadge = '';
+                    if (s.baseline_transition === 'auto') {
+                        blBadge = '<span class="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-amber-100 text-amber-600">AUTO</span>';
+                    } else if (s.baseline_transition === 'manual') {
+                        blBadge = '<span class="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-emerald-100 text-emerald-600">MANUAL</span>';
+                    }
+
+                    // Card
+                    html += '<div class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer p-4" onclick="showSessionChart(' + s.id + ',\'' + houseName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\',\'' + (s.baseline_transition || '') + '\')">';
+
+                    // Top row: house name + status
+                    html += '<div class="flex items-start justify-between gap-2 mb-2">';
+                    html += '<div class="font-bold text-navy text-sm truncate">' + esc(houseName) + '<span class="text-slate-400 font-normal text-[12px]">' + sessLabel + '</span></div>';
+                    html += '<span class="shrink-0 px-2 py-0.5 rounded-lg text-[11px] font-bold border ' + statusColor + '">' + statusIcon + ' ' + statusLabel + '</span>';
+                    html += '</div>';
+
+                    // Time + duration
+                    html += '<div class="flex items-center gap-2 text-[13px] text-slate-500 mb-2">';
+                    html += '<span>🕐 ' + startTime + ' → ' + endTime + '</span>';
+                    html += '<span class="text-slate-300">·</span>';
+                    html += '<span>' + durationStr + '</span>';
+                    if (blBadge) html += blBadge;
+                    html += '</div>';
+
+                    // Stats row
+                    html += '<div class="flex gap-3 text-[12px]">';
+                    html += '<span class="text-slate-400">📊 ' + (s.readings_count || 0) + ' ' + t('tab.sessions.readings') + '</span>';
+                    if (s.avg_pm25 != null) html += '<span class="text-orange-500 font-semibold">PM2.5 ' + s.avg_pm25.toFixed(1) + '</span>';
+                    if (s.avg_co2 != null) html += '<span class="text-blue-500 font-semibold">CO₂ ' + s.avg_co2.toFixed(0) + '</span>';
+                    html += '</div>';
+
+                    html += '</div>'; // close card
+                });
+
+                html += '</div>'; // close grid
+                html += '</div>'; // close date group
+            });
+
+            container.innerHTML = html;
         }
 
         // ==================== Data Table (paginated — 100 rows at a time) ====================
