@@ -546,10 +546,7 @@ async function onHouseConfirmed(house) {
   let lockCheck = { blocked: false, resumed: false };
   if (!DEMO_MODE) {
     lockCheck = await checkDeviceLock(house.id);
-    if (lockCheck.blocked) {
-      showToast('🚫 มีอาสาคนอื่นกำลังเก็บข้อมูลบ้านนี้อยู่');
-      return;
-    }
+    if (lockCheck.blocked) return;
   }
 
   // Show session step
@@ -571,7 +568,7 @@ async function onHouseConfirmed(house) {
     isResumedSession = true;
   }
   // Always load previous TVOC/CO data (handles both resume and same-browser refresh)
-  await loadPreviousTvoc();
+  try { await loadPreviousTvoc(); } catch(e) { console.warn('loadPreviousTvoc error:', e); }
   // Restore TVOC answer from localStorage (survives refresh + tab close)
   // Key includes Thai date so answer resets each day (Thai timezone)
   if (!tvocQuestionAnswered) {
@@ -603,11 +600,18 @@ async function onHouseConfirmed(house) {
 // Device Lock System (tvoc_active_sessions)
 // ================================================
 async function checkDeviceLock(houseId) {
-  const { data } = await sb.from('tvoc_active_sessions')
+  const { data, error } = await sb.from('tvoc_active_sessions')
     .select('*')
     .eq('house_id', houseId)
     .order('last_ping_at', { ascending: false })
     .limit(1);
+
+  // Query failed — fail closed to prevent duplicate monitoring
+  if (error) {
+    console.warn('checkDeviceLock error:', error);
+    showToast('⚠️ ตรวจสอบบ้านซ้ำไม่ได้ — กรุณาลองใหม่');
+    return { blocked: true, resumed: false };
+  }
 
   if (!data || data.length === 0) {
     return { blocked: false, resumed: false };
@@ -637,13 +641,17 @@ async function registerLock(houseId, houseName) {
   // Remove any existing locks for this browser (in case of page refresh)
   await sb.from('tvoc_active_sessions').delete().eq('browser_id', browserId);
 
-  await sb.from('tvoc_active_sessions').insert([{
+  const { error } = await sb.from('tvoc_active_sessions').insert([{
     house_id: houseId,
     house_name: houseName,
     browser_id: browserId,
     started_at: new Date().toISOString(),
     last_ping_at: new Date().toISOString(),
   }]);
+  if (error) {
+    console.warn('registerLock error:', error);
+    showToast('⚠️ ล็อคบ้านไม่สำเร็จ — อาสาคนอื่นอาจเข้ามาซ้ำได้');
+  }
 }
 
 function startLockPing() {
