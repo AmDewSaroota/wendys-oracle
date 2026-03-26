@@ -7371,30 +7371,49 @@
                     }
                 }
 
-                // Group SENSOR data by device + date, then split by time gaps > 30 min
-                const deviceDateMap = {};
+                // Group SENSOR data: prefer session_id, fallback to device+date+time-gap
+                const bySessionId = {};
+                const noSessionId = [];
                 sensorData.forEach(d => {
-                    const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
-                    const key = `${d.tuya_device_id || 'unknown'}__${date}`;
-                    if (!deviceDateMap[key]) deviceDateMap[key] = [];
-                    deviceDateMap[key].push(d);
+                    if (d.session_id) {
+                        if (!bySessionId[d.session_id]) bySessionId[d.session_id] = [];
+                        bySessionId[d.session_id].push(d);
+                    } else {
+                        noSessionId.push(d);
+                    }
                 });
 
                 const sessions = [];
-                for (const [key, logs] of Object.entries(deviceDateMap)) {
+                // Logs WITH session_id → one card per session_id (no gap splitting)
+                for (const [sessId, logs] of Object.entries(bySessionId)) {
                     const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
-                    let cur = { device: sorted[0].tuya_device_id, stoveType: sorted[0].stove_type, date: key.split('__')[1], logs: [sorted[0]], ids: [sorted[0].id] };
-                    for (let i = 1; i < sorted.length; i++) {
-                        const gap = (new Date(sorted[i].recorded_at) - new Date(sorted[i-1].recorded_at)) / 60000;
-                        if (gap > 30) {
-                            sessions.push(cur);
-                            cur = { device: sorted[i].tuya_device_id, stoveType: sorted[i].stove_type, date: key.split('__')[1], logs: [sorted[i]], ids: [sorted[i].id] };
-                        } else {
-                            cur.logs.push(sorted[i]);
-                            cur.ids.push(sorted[i].id);
+                    const date = sorted[0].recorded_at ? sorted[0].recorded_at.split('T')[0] : 'unknown';
+                    sessions.push({ device: sorted[0].tuya_device_id, stoveType: sorted[0].stove_type, date, logs: sorted, ids: sorted.map(d => d.id) });
+                }
+                // Logs WITHOUT session_id → fallback to device+date + 30-min gap splitting
+                if (noSessionId.length > 0) {
+                    const deviceDateMap = {};
+                    noSessionId.forEach(d => {
+                        const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
+                        const key = `${d.tuya_device_id || 'unknown'}__${date}`;
+                        if (!deviceDateMap[key]) deviceDateMap[key] = [];
+                        deviceDateMap[key].push(d);
+                    });
+                    for (const [key, logs] of Object.entries(deviceDateMap)) {
+                        const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
+                        let cur = { device: sorted[0].tuya_device_id, stoveType: sorted[0].stove_type, date: key.split('__')[1], logs: [sorted[0]], ids: [sorted[0].id] };
+                        for (let i = 1; i < sorted.length; i++) {
+                            const gap = (new Date(sorted[i].recorded_at) - new Date(sorted[i-1].recorded_at)) / 60000;
+                            if (gap > 30) {
+                                sessions.push(cur);
+                                cur = { device: sorted[i].tuya_device_id, stoveType: sorted[i].stove_type, date: key.split('__')[1], logs: [sorted[i]], ids: [sorted[i].id] };
+                            } else {
+                                cur.logs.push(sorted[i]);
+                                cur.ids.push(sorted[i].id);
+                            }
                         }
+                        sessions.push(cur);
                     }
-                    sessions.push(cur);
                 }
                 // Sort sessions: newest first
                 sessions.sort((a, b) => new Date(b.logs[0].recorded_at) - new Date(a.logs[0].recorded_at));
@@ -7604,7 +7623,7 @@
                         let blInfoBar = '';
                         if (blTrans === 'auto') {
                             blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200"><span class="text-amber-500 text-sm">⚡</span><span class="text-[12px] text-amber-700 font-medium">' + t('baseline.auto') + ' <span class="text-amber-500">' + t('baseline.auto.note') + '</span></span></div>';
-                        } else if (blTrans === 'manual') {
+                        } else if (blTrans === 'manual' || blTrans === 'manual-retroactive') {
                             blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200"><span class="text-emerald-500 text-sm">✋</span><span class="text-[12px] text-emerald-700 font-medium">' + t('baseline.manual') + '</span></div>';
                         } else if (sessStatus === 'baseline') {
                             blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 border border-blue-200"><span class="text-blue-500 text-sm animate-pulse">📊</span><span class="text-[12px] text-blue-700 font-medium">' + t('baseline.collecting') + '</span></div>';

@@ -384,6 +384,7 @@ let stallLastCount = -1; // last known sensor readings count
 let stallSince = 0; // timestamp when readings stopped increasing
 let stallAlerted = false; // true after showing stall popup
 const STALL_THRESHOLD_MS = 15 * 60 * 1000; // 15 minutes
+let sessionEndSummaryShown = false; // true after auto-summary shown at session end
 
 const LOCK_STALE_MS = 3 * 60 * 1000; // 3 minutes = stale
 const MIN_BASELINE_READINGS = 2; // ต้องเก็บ baseline อย่างน้อย 2 ค่า (~10 นาที) ก่อนกดจุดเตา
@@ -501,10 +502,7 @@ function matchNearestHouse(lat, lng) {
     document.getElementById('matched-house-detail').textContent = parts.join(' · ');
     selectedHouse = nearest;
 
-    // Auto-confirm if very close
-    if (minDist < 30) {
-      confirmMatchedHouse();
-    }
+    // Show matched house — always wait for manual confirm (never auto-skip)
   } else {
     showManualSelect('ไม่พบบ้านในรัศมี 200 เมตร — เลือกเอง');
   }
@@ -574,10 +572,12 @@ async function onHouseConfirmed(house) {
   }
   // Always load previous TVOC/CO data (handles both resume and same-browser refresh)
   await loadPreviousTvoc();
-  // Restore TVOC answer from sessionStorage (handles page refresh after answering "ไม่เก็บ")
+  // Restore TVOC answer from localStorage (survives refresh + tab close)
+  // Key includes today's date so answer resets each day
   if (!tvocQuestionAnswered) {
     try {
-      const saved = sessionStorage.getItem('tvoc_answered_' + house.id);
+      const todayKey = 'tvoc_answered_' + house.id + '_' + new Date().toISOString().split('T')[0];
+      const saved = localStorage.getItem(todayKey);
       if (saved !== null) {
         tvocQuestionAnswered = true;
         tvocEnabled = saved === '1';
@@ -838,6 +838,12 @@ async function pollStatus() {
   }
 
   if (sessions.length === 0) {
+    // Session just ended — show summary if we had an active session
+    if (activeSession && !sessionEndSummaryShown) {
+      sessionEndSummaryShown = true;
+      showAutoSessionSummary();
+    }
+
     // Check if daily limit reached (2 completed sessions today)
     const today = new Date().toISOString().split('T')[0];
     const { data: todaySessions } = await sb.from('sessions')
@@ -886,8 +892,8 @@ async function pollStatus() {
           } catch (_) {}
 
           if (inQuiet) {
-            setSensorUI('cooldown', '🌙', 'อยู่ในช่วงหยุดเก็บข้อมูล (' + qs + '–' + qe + ')',
-              'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เก็บรอบถัดไปได้พรุ่งนี้ค่ะ');
+            setSensorUI('cooldown', '🌙', 'ครบ 1 รอบแล้ว — รอบถัดไปอยู่นอกเวลาเก็บข้อมูล',
+              'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เก็บต่อได้พรุ่งนี้ค่ะ');
           } else {
             setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เปิดได้อีกครั้ง ' + nextTimeStr + ' น.',
               'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เหลืออีก ~' + timeStr);
@@ -938,8 +944,8 @@ async function pollStatus() {
                   }
                 } catch (_) {}
                 if (pingInQuiet) {
-                  setSensorUI('cooldown', '🌙', 'อยู่ในช่วงหยุดเก็บข้อมูล (' + qs2 + '–' + qe2 + ')',
-                    'เซนเซอร์ออนไลน์ — เก็บรอบถัดไปได้พรุ่งนี้ค่ะ');
+                  setSensorUI('cooldown', '🌙', 'ครบ 1 รอบแล้ว — รอบถัดไปอยู่นอกเวลาเก็บข้อมูล',
+                    'เซนเซอร์ออนไลน์ — เก็บต่อได้พรุ่งนี้ค่ะ');
                 } else {
                   setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เหลืออีก ~' + ping.minutesLeft + ' นาที',
                     'เซนเซอร์ออนไลน์ แต่อยู่ช่วงพัก');
@@ -1011,7 +1017,9 @@ async function pollStatus() {
       'เก็บได้ ' + activeSession._sensorReadings + ' ค่า');
     showCollectingProgress();
     // Show retroactive cooking button if auto-transitioned and not yet marked
-    if (activeSession.baseline_transition === 'auto' && !cookingStartedAt) {
+    // But hide after 100 min — too late for retroactive marking
+    const collectElapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    if (activeSession.baseline_transition === 'auto' && !cookingStartedAt && collectElapsed < 100) {
       showCookingButton();
     } else {
       hideCookingButton();
@@ -1126,11 +1134,20 @@ function updateTimers() {
 
 function updateSessionRemaining() {
   if (!activeSession) return;
+  // Only show remaining info for active sessions (not complete/incomplete)
+  const isActive = activeSession.session_status === 'baseline' || activeSession.session_status === 'collecting';
   const sessionAge = elapsedMin(activeSession.started_at);
   const remaining = 130 - sessionAge; // SESSION_MAX_MINUTES = 130
   const endWrap = document.getElementById('end-btn-wrap');
   const remainWrap = document.getElementById('session-remaining-wrap');
   const remainText = document.getElementById('session-remaining-text');
+
+  if (!isActive) {
+    // Session ended — hide everything
+    if (endWrap) endWrap.classList.add('hidden');
+    if (remainWrap) remainWrap.classList.add('hidden');
+    return;
+  }
 
   if (!tvocEnabled) {
     // No TVOC — volunteer can leave, show "safe to close" message
@@ -1199,9 +1216,13 @@ function answerTvoc(yes) {
   document.getElementById('tvoc-question').classList.add('hidden');
   tvocEnabled = yes;
   tvocQuestionAnswered = true;
-  // Persist answer so page refresh won't ask again
+  // Persist answer so page refresh won't ask again (localStorage survives tab close)
+  // Key includes today's date so answer resets each day
   if (selectedHouse) {
-    try { sessionStorage.setItem('tvoc_answered_' + selectedHouse.id, yes ? '1' : '0'); } catch(e) {}
+    try {
+      const todayKey = 'tvoc_answered_' + selectedHouse.id + '_' + new Date().toISOString().split('T')[0];
+      localStorage.setItem(todayKey, yes ? '1' : '0');
+    } catch(e) {}
   }
   if (yes) {
     showTvocSection();
@@ -1424,6 +1445,46 @@ function endVolunteerSession() {
 
 function resetPage() {
   location.reload();
+}
+
+function showAutoSessionSummary() {
+  // Auto-triggered when poll detects session ended
+  clearInterval(pollTimer);
+  clearInterval(timeTimer);
+  clearInterval(lockPingTimer);
+  clearInterval(pollCountdownTimer);
+  stopTvocReminder();
+  if (!DEMO_MODE) removeLock();
+
+  playBeep();
+  try { navigator.vibrate?.([200, 100, 200]); } catch (_) {}
+
+  document.getElementById('step-session').classList.add('hidden');
+  document.getElementById('step-summary').classList.remove('hidden');
+
+  const det = document.getElementById('summary-details');
+  const items = [];
+  items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + esc(selectedHouse.full_name) + (selectedHouse._sensorName ? ' (' + esc(selectedHouse._sensorName) + ')' : '') + '</span></div>');
+
+  if (activeSession) {
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">' + (activeSession._sensorReadings || 0) + ' ค่า</span></div>');
+    const elapsed = Math.floor((Date.now() - new Date(activeSession.started_at).getTime()) / 60000);
+    const hrs = Math.floor(elapsed / 60);
+    const mins = elapsed % 60;
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">⏱ เวลารวม</span><span class="font-bold">' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที</span></div>');
+  }
+
+  if (tvocReadings.length > 0) {
+    const avg = tvocReadings.reduce((s, r) => s + r.value, 0) / tvocReadings.length;
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 TVOC</span><span class="font-bold text-purple-700">' + tvocReadings.length + ' ค่า (เฉลี่ย ' + avg.toFixed(3) + ' mg/m³)</span></div>');
+  }
+  if (coReadings.length > 0) {
+    const avg = coReadings.reduce((s, r) => s + r.value, 0) / coReadings.length;
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📝 CO</span><span class="font-bold text-amber-600">' + coReadings.length + ' ค่า (เฉลี่ย ' + Math.round(avg) + ' ppm)</span></div>');
+  }
+
+  items.push('<div class="text-center text-emerald-600 font-bold pt-2">ขอบคุณที่ช่วยเก็บข้อมูลค่ะ!</div>');
+  det.innerHTML = items.join('');
 }
 
 // ================================================
