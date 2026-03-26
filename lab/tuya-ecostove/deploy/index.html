@@ -320,26 +320,26 @@
                             <span class="text-6xl md:text-7xl font-bold text-white" id="hero-pct">--</span>
                             <span class="text-4xl font-bold text-emerald-200">%</span>
                         </div>
-                        <p class="text-emerald-100 text-lg font-medium" id="hero-label" data-i18n="hero.label">อากาศสะอาดขึ้นขณะหุงต้ม</p>
-                        <p class="text-emerald-200/70 text-sm mt-1" data-i18n="hero.sublabel">เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง</p>
+                        <p class="text-emerald-100 text-xl font-medium" id="hero-label" data-i18n="hero.label">อากาศสะอาดขึ้นขณะหุงต้ม</p>
+                        <p class="text-emerald-200/70 text-[15px] mt-1" data-i18n="hero.sublabel">เทียบกับเตาดั้งเดิม ในช่วงเวลาการใช้งานจริง</p>
                         <div class="max-w-md mx-auto mt-6 text-left">
                             <div class="mb-3">
-                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span data-i18n="hero.old">🪵 เตาดั้งเดิม</span><span class="font-bold" id="hero-old-val">-- µg/m³</span></div>
-                                <div class="flex h-6 rounded-full overflow-hidden" id="hero-old-bar">
-                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Ambient</div>
-                                    <div class="bg-orange-400/80 flex items-center justify-center text-[9px] text-white font-bold" style="width:85%" data-i18n="hero.pollution">มลพิษจากเตา</div>
+                                <div class="flex items-center justify-between text-[13px] text-emerald-200 mb-1"><span data-i18n="hero.old">🪵 เตาดั้งเดิม</span><span class="font-bold" id="hero-old-val">-- µg/m³</span></div>
+                                <div class="flex h-7 rounded-full overflow-hidden" id="hero-old-bar">
+                                    <div class="bg-emerald-900/50 flex items-center justify-center text-xs text-emerald-300" style="width:15%">Ambient</div>
+                                    <div class="bg-orange-400/80 flex items-center justify-center text-xs text-white font-bold" style="width:85%" data-i18n="hero.pollution">มลพิษจากเตา</div>
                                 </div>
                             </div>
                             <div>
-                                <div class="flex items-center justify-between text-xs text-emerald-200 mb-1"><span data-i18n="hero.eco">✨ เตาชีวมวล</span><span class="font-bold" id="hero-eco-val">-- µg/m³</span></div>
-                                <div class="flex h-6 rounded-full overflow-hidden" id="hero-eco-bar">
-                                    <div class="bg-emerald-900/50 flex items-center justify-center text-[9px] text-emerald-300" style="width:15%">Ambient</div>
-                                    <div class="bg-emerald-400 flex items-center justify-center text-[9px] text-white font-bold" id="hero-eco-emission" style="width:30%" data-i18n="hero.pollution">มลพิษจากเตา</div>
-                                    <div class="bg-white/10 flex items-center justify-center text-[9px] text-emerald-300/50" id="hero-eco-saved" style="width:55%" data-i18n="hero.saved">↓ ลดได้</div>
+                                <div class="flex items-center justify-between text-[13px] text-emerald-200 mb-1"><span data-i18n="hero.eco">✨ เตาชีวมวล</span><span class="font-bold" id="hero-eco-val">-- µg/m³</span></div>
+                                <div class="flex h-7 rounded-full overflow-hidden" id="hero-eco-bar">
+                                    <div class="bg-emerald-900/50 flex items-center justify-center text-xs text-emerald-300" style="width:15%">Ambient</div>
+                                    <div class="bg-emerald-400 flex items-center justify-center text-xs text-white font-bold" id="hero-eco-emission" style="width:30%" data-i18n="hero.pollution">มลพิษจากเตา</div>
+                                    <div class="bg-white/10 flex items-center justify-center text-xs text-emerald-300/50" id="hero-eco-saved" style="width:55%" data-i18n="hero.saved">↓ ลดได้</div>
                                 </div>
                             </div>
                         </div>
-                        <p class="text-emerald-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.normal'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-normal"></span></p>
+                        <p class="text-emerald-200/50 text-[13px] mt-4"><span class="info-btn" style="color:rgba(167,243,208,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.normal'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-normal"></span></p>
                     </div>
                 </div>
             </div>
@@ -353,9 +353,9 @@
                     <div class="max-w-xs mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-4">
                         <p class="text-xs font-bold text-orange-200" data-i18n="hero.noeco.card">🪵 เตาดั้งเดิม — ค่าเฉลี่ยสุทธิ</p>
                         <p class="text-3xl font-bold text-white mt-2" id="hero-noeco-pm25">-- <span class="text-lg text-slate-300">µg/m³</span></p>
-                        <p class="text-[10px] text-slate-300 mt-1" data-i18n="hero.noeco.pmtext">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Ambient)</p>
+                        <p class="text-[12px] text-slate-300 mt-1" data-i18n="hero.noeco.pmtext">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Ambient)</p>
                     </div>
-                    <p class="text-slate-300/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.noeco'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-noeco"></span></p>
+                    <p class="text-slate-300/50 text-[12px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.noeco'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-noeco"></span></p>
                 </div>
             </div>
 
@@ -366,42 +366,42 @@
                     <p class="text-amber-100 text-lg font-medium" data-i18n="hero.fail.label">มลพิษเพิ่มขึ้นขณะหุงต้ม</p>
                     <p class="text-amber-200/70 text-sm mt-1" data-i18n="hero.fail.sub">เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย</p>
                     <div class="max-w-md mx-auto mt-4 bg-white/15 backdrop-blur rounded-xl p-3">
-                        <p class="text-amber-100 text-[11px] text-left" data-i18n-html="hero.fail.note">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
+                        <p class="text-amber-100 text-[12px] text-left" data-i18n-html="hero.fail.note">⚠️ <b>หมายเหตุ:</b> อาจเกิดจากชนิดเชื้อเพลิง, วิธีการใช้งาน, หรือจำนวนตัวอย่างยังไม่เพียงพอ</p>
                     </div>
-                    <p class="text-amber-200/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(253,230,138,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.fail'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-fail"></span></p>
+                    <p class="text-amber-200/50 text-[12px] mt-4"><span class="info-btn" style="color:rgba(253,230,138,0.7)" onclick="showInfo(this,t('hero.method'),t('hero.info.fail'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> <span data-i18n="hero.method">วิธีวัด</span> · <span id="hero-meta-fail"></span></p>
                 </div>
             </div>
 
             <!-- 2. Big Number Cards -->
             <div class="flex items-center gap-3 mb-1">
-                <p id="basic-range-label" class="text-[11px] text-slate-400"></p>
-                <span class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="badge.ambient">🧹 หักค่าแวดล้อม (Ambient) แล้ว</span>
+                <p id="basic-range-label" class="text-[12px] text-slate-400"></p>
+                <span class="text-[12px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200" data-i18n="badge.ambient">🧹 หักค่าแวดล้อม (Ambient) แล้ว</span>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
-                    <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,t('card.info.pm25'),t('card.info.pm25.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[12px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5 <span class="info-btn" onclick="showInfo(this,t('card.info.pm25'),t('card.info.pm25.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div id="basic-pm25" class="text-3xl font-bold text-navy">--</div>
-                    <p id="basic-pm25-detail" class="text-[11px] text-gray-500 mt-1"></p>
+                    <p id="basic-pm25-detail" class="text-[12px] text-gray-500 mt-1"></p>
                     <div id="basic-pm25-badge" class="mt-1"></div>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
-                    <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,t('card.info.co2'),t('card.info.co2.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2 <span class="info-btn" onclick="showInfo(this,t('card.info.co2'),t('card.info.co2.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div id="basic-co2" class="text-3xl font-bold text-navy">--</div>
-                    <p id="basic-co2-detail" class="text-[11px] text-gray-500 mt-1"></p>
+                    <p id="basic-co2-detail" class="text-[12px] text-gray-500 mt-1"></p>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
-                    <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,t('card.info.co'),t('card.info.co.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[12px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO <span class="info-btn" onclick="showInfo(this,t('card.info.co'),t('card.info.co.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div id="basic-co" class="text-3xl font-bold text-navy">--</div>
-                    <p id="basic-co-detail" class="text-[11px] text-gray-500 mt-1"></p>
+                    <p id="basic-co-detail" class="text-[12px] text-gray-500 mt-1"></p>
                 </div>
                 <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
-                    <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1"><span data-i18n="card.temp.hum">อุณหภูมิ / ความชื้น</span> <span class="info-btn" onclick="showInfo(this,t('card.info.temp'),t('card.info.temp.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[12px] font-bold text-blue-600 uppercase tracking-wider mb-1"><span data-i18n="card.temp.hum">อุณหภูมิ / ความชื้น</span> <span class="info-btn" onclick="showInfo(this,t('card.info.temp'),t('card.info.temp.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <div class="flex justify-center gap-4 mt-2">
                         <div><span id="basic-temp" class="text-3xl font-bold text-gray-800">--</span><span class="text-gray-400">°C</span></div>
                         <span class="text-gray-300 text-xl">/</span>
                         <div><span id="basic-humidity" class="text-3xl font-bold text-gray-800">--</span><span class="text-gray-400">%</span></div>
                     </div>
-                    <p class="text-[10px] text-gray-400 mt-1" data-i18n="card.temp.hum.desc">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
+                    <p class="text-[12px] text-gray-400 mt-1" data-i18n="card.temp.hum.desc">ค่าเฉลี่ยสภาพแวดล้อมขณะวัด</p>
                 </div>
             </div>
 
@@ -409,12 +409,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="card-styled p-6 rounded-[2.5rem]">
                     <h4 class="font-bold text-sm text-navy mb-0.5" data-i18n="chart.basic.pm25">ฝุ่น PM2.5 ขณะหุงต้ม</h4>
-                    <p class="text-[10px] text-slate-400 mb-3" data-i18n="chart.daily.sub">ค่าเฉลี่ยรายวัน (หลังหัก Ambient)</p>
+                    <p class="text-[12px] text-slate-400 mb-3" data-i18n="chart.daily.sub">ค่าเฉลี่ยรายวัน (หลังหัก Ambient)</p>
                     <div class="h-[200px]"><canvas id="basicPm25Chart"></canvas></div>
                 </div>
                 <div class="card-styled p-6 rounded-[2.5rem]">
                     <h4 class="font-bold text-sm text-navy mb-0.5" data-i18n="chart.basic.co2">CO2 ขณะหุงต้ม</h4>
-                    <p class="text-[10px] text-slate-400 mb-3" data-i18n="chart.daily.sub">ค่าเฉลี่ยรายวัน (หลังหัก Ambient)</p>
+                    <p class="text-[12px] text-slate-400 mb-3" data-i18n="chart.daily.sub">ค่าเฉลี่ยรายวัน (หลังหัก Ambient)</p>
                     <div class="h-[200px]"><canvas id="basicCo2Chart"></canvas></div>
                 </div>
             </div>
@@ -423,12 +423,12 @@
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
                 <div class="flex items-center justify-between mb-3">
                     <h4 class="font-bold text-sm text-navy" data-i18n="sensor.title">📡 ค่าเซนเซอร์ล่าสุดแต่ละบ้าน</h4>
-                    <span class="text-[10px] text-slate-400 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200" data-i18n="badge.raw">📊 ค่าดิบจากเซนเซอร์</span>
+                    <span class="text-[12px] text-slate-400 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200" data-i18n="badge.raw">📊 ค่าดิบจากเซนเซอร์</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead>
-                            <tr class="text-[11px] text-slate-400 border-b">
+                            <tr class="text-[12px] text-slate-400 border-b">
                                 <th class="text-left py-2 font-medium" data-i18n="sensor.th.house">บ้าน</th>
                                 <th class="text-left py-2 font-medium" data-i18n="sensor.th.stove">เตา</th>
                                 <th class="text-right py-2 font-medium">PM2.5</th>
@@ -466,11 +466,11 @@
                         <div class="ring-icon"></div>
                         <span id="countdown-text" data-i18n="sync.checking">ตรวจสอบ...</span>
                     </div>
-                    <span id="last-check-time" class="text-slate-400 text-[11px]"></span>
+                    <span id="last-check-time" class="text-slate-400 text-[12px]"></span>
                 </div>
 
-                <div id="today-house-breakdown" class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px]"></div>
-                <div class="flex flex-wrap justify-center gap-x-5 gap-y-1 mt-3 text-[10px]">
+                <div id="today-house-breakdown" class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[12px]"></div>
+                <div class="flex flex-wrap justify-center gap-x-5 gap-y-1 mt-3 text-[12px]">
                     <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> <span class="text-blue-600" data-i18n="session.legend.online">กำลังเก็บข้อมูล</span></span>
                     <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> <span class="text-amber-600" data-i18n="session.legend.partial">ออฟไลน์ / เสร็จบางส่วน</span></span>
                     <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> <span class="text-emerald-600" data-i18n="session.legend.done">ครบ 2 รอบ</span></span>
@@ -516,7 +516,7 @@
                         <button onclick="setQuickRange(0)" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 text-white border border-emerald-600" data-i18n="deep.range.all">ทั้งหมด</button>
                     </div>
                     <div class="flex items-center gap-1.5 text-sm text-gray-500">
-                        <span class="text-[10px]">📅</span>
+                        <span class="text-[12px]">📅</span>
                         <input type="date" id="deep-date-start" onchange="onDateRangeChange()" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
                         <span class="text-gray-300">—</span>
                         <input type="date" id="deep-date-end" onchange="onDateRangeChange()" class="px-2.5 py-1.5 rounded-lg border text-xs bg-white" style="max-width:140px">
@@ -526,64 +526,64 @@
 
             <!-- Research Stat Cards — Row 1 -->
             <div class="flex items-center gap-3 mb-1">
-                <p id="deep-range-label" class="text-[11px] text-slate-400"></p>
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200" data-i18n="deep.ambient.badge">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
+                <p id="deep-range-label" class="text-[12px] text-slate-400"></p>
+                <span class="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200" data-i18n="deep.ambient.badge">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
                 <span class="info-btn text-emerald-600" onclick="showInfo(this,t('deep.glossary.title'),t('deep.glossary.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
             </div>
             <!-- Research Stat Cards — Row 1: Pollutants -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
-                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5 <span class="info-btn" onclick="showInfo(this,t('deep.info.pm25.title'),t('deep.info.pm25.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[12px] font-bold text-red-500 uppercase tracking-wider">PM 2.5 <span class="info-btn" onclick="showInfo(this,t('deep.info.pm25.title'),t('deep.info.pm25.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <h3 id="r-stat-pm25" class="text-2xl font-bold text-navy mt-1">--</h3>
-                    <div id="r-stat-pm25-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-pm25-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                     <div id="r-stat-pm25-badge" class="mt-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
-                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-wider">PM 10</p>
+                    <p class="text-[12px] font-bold text-orange-500 uppercase tracking-wider">PM 10</p>
                     <h3 id="r-stat-pm10" class="text-2xl font-bold text-navy mt-1">--</h3>
-                    <div id="r-stat-pm10-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-pm10-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
-                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                    <p class="text-[12px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
                     <h3 id="r-stat-co2" class="text-2xl font-bold text-navy mt-1">--</h3>
-                    <div id="r-stat-co2-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-co2-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-500">
-                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO <span class="info-btn" onclick="showInfo(this,t('deep.info.co.title'),t('deep.info.co.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
+                    <p class="text-[12px] font-bold text-amber-600 uppercase tracking-wider">CO <span class="info-btn" onclick="showInfo(this,t('deep.info.co.title'),t('deep.info.co.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></p>
                     <h3 id="r-stat-co" class="text-2xl font-bold text-navy mt-1">--</h3>
-                    <div id="r-stat-co-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-co-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
             </div>
             <!-- Research Stat Cards — Row 2: Index + Environmental -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
-                    <p class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                    <p class="text-[12px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
                     <h3 id="r-stat-aqi" class="text-2xl font-bold text-navy mt-1">--</h3>
-                    <div id="r-stat-aqi-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-aqi-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-gray-400">
-                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
+                    <p class="text-[12px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
                     <h3 id="r-stat-hcho" class="text-2xl font-bold text-gray-800 mt-1">-- <span class="text-sm text-gray-400">mg/m³</span></h3>
-                    <div id="r-stat-hcho-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-hcho-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
-                    <p class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
+                    <p class="text-[12px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
                     <h3 id="r-stat-tvoc" class="text-2xl font-bold text-navy mt-1">--</h3>
-                    <div id="r-stat-tvoc-change" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-tvoc-change" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
                 <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
-                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider" data-i18n="deep.stat.temp.hum">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <p class="text-[12px] font-bold text-teal-600 uppercase tracking-wider" data-i18n="deep.stat.temp.hum">🌡 อุณหภูมิ / 💧 ความชื้น</p>
                     <div class="flex gap-2 mt-1"><span id="r-stat-temp" class="text-xl font-bold text-gray-800">--°C</span><span class="text-gray-300">/</span><span id="r-stat-humidity" class="text-xl font-bold text-gray-800">--%</span></div>
-                    <div id="r-stat-env-detail" class="text-[10px] text-gray-500 mt-1 space-y-0.5"></div>
+                    <div id="r-stat-env-detail" class="text-[12px] text-gray-500 mt-1 space-y-0.5"></div>
                 </div>
             </div>
 
             <!-- STACKED BAR: PM2.5 Ambient Decomposition -->
             <div class="card-styled p-6 rounded-[2.5rem]">
                 <h4 class="font-bold text-sm text-gray-800 mb-1"><span data-i18n="deep.stacked.title">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</span> <span class="info-btn" onclick="showInfo(this,t('deep.info.stacked.title'),t('deep.info.stacked.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
-                <p class="text-[10px] text-gray-400 mb-4" data-i18n="deep.stacked.subtitle">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <p class="text-[12px] text-gray-400 mb-4" data-i18n="deep.stacked.subtitle">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
                 <div id="stacked-bar-container" class="space-y-4"></div>
-                <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
+                <div class="flex gap-4 mt-3 text-[12px] text-gray-400">
                     <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span><span data-i18n="deep.stacked.legend.ambient">Ambient (แวดล้อม)</span></span>
                     <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (<span data-i18n="compare.old">เตาดั้งเดิม</span>)</span>
                     <span id="stacked-legend-eco"><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (<span data-i18n="compare.eco">เตาชีวมวล</span>)</span>
@@ -594,22 +594,22 @@
             <div class="flex items-center gap-2 mb-4">
                 <p class="text-base font-bold text-navy tracking-wide" data-i18n="deep.charts.heading">Net Daily Average</p>
                 <span class="info-btn text-gray-500" onclick="showInfo(this,t('deep.info.chart.title'),t('deep.info.chart.body'))"><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span>
-                <span class="text-[10px] text-gray-400" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</span>
+                <span class="text-[12px] text-gray-400" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</span>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.particulate">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorPm10Chart"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.carbon">ก๊าซคาร์บอน (Carbon Gases)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorCoChart"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3" data-i18n="deep.cat.volatile">สารระเหย (Volatile Compounds)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="sensorHchoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[12px] text-gray-400 mb-3" data-i18n="deep.chart.subtitle">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="tvocTimeChart"></canvas></div></div>
             </div>
 
             <!-- Drill-down panel (hidden by default) -->
@@ -626,11 +626,11 @@
             <div class="card-styled p-6 rounded-[2.5rem]">
                 <h4 class="font-bold text-sm text-gray-800 mb-3"><span data-i18n="deep.compare.title">ตารางเปรียบเทียบ — ค่าดิบ (Gross) / Ambient / ค่าสุทธิ (Net)</span> <span class="info-btn" onclick="showInfo(this,t('deep.info.compare.title'),t('deep.info.compare.body'))"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span></h4>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-[11px]" id="comparison-table">
+                    <table class="w-full text-[12px]" id="comparison-table">
                         <thead id="comparison-table-head"></thead>
                         <tbody id="comparison-table-body"></tbody>
                     </table>
-                    <p class="text-[9px] text-gray-400 mt-2" data-i18n="deep.compare.footnote">Mean ± SD · Net = Gross − Ambient (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
+                    <p class="text-[12px] text-gray-400 mt-2" data-i18n="deep.compare.footnote">Mean ± SD · Net = Gross − Ambient (เฉลี่ย 10 นาทีแรกของแต่ละ session · คำนวณแยกตามชนิดเตา)</p>
                 </div>
             </div>
 
@@ -664,13 +664,13 @@
                     <table class="w-full text-left text-[13px] min-w-[800px]">
                         <thead class="bg-slate-50 border-b">
                             <tr>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="session.start">เริ่ม</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="session.device">อุปกรณ์</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.status">สถานะ</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.duration">ระยะเวลา</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.readings">รายการ</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.avg.pm25">PM2.5 เฉลี่ย</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="session.avg.co2">CO2 เฉลี่ย</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider" data-i18n="session.start">เริ่ม</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider" data-i18n="session.device">อุปกรณ์</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="session.status">สถานะ</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="session.duration">ระยะเวลา</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="session.readings">รายการ</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="session.avg.pm25">PM2.5 เฉลี่ย</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="session.avg.co2">CO2 เฉลี่ย</th>
                             </tr>
                         </thead>
                         <tbody id="sessions-table-body" class="divide-y"></tbody>
@@ -681,7 +681,7 @@
             <!-- Daily Summary -->
             <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-emerald-300 p-4">
                 <h4 class="font-bold text-lg text-navy mb-3" data-i18n="daily.title">สรุปรายวัน</h4>
-                <div class="mb-3 text-[11px] text-slate-400 flex flex-wrap gap-2">
+                <div class="mb-3 text-[12px] text-slate-400 flex flex-wrap gap-2">
                     <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-600 font-bold" data-i18n="daily.legend.complete">✅ ครบ 2 เซสชัน</span>
                     <span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-600 font-bold" data-i18n="daily.legend.partial">⚠️ ได้ 1 เซสชัน</span>
                     <span class="px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 font-bold" data-i18n="daily.legend.incomplete">⚠️ เซสชันไม่สมบูรณ์</span>
@@ -691,12 +691,12 @@
                     <table class="w-full text-left text-[13px] min-w-[600px]">
                         <thead class="bg-slate-50 border-b">
                             <tr>
-                                <th class="p-2 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="daily.date">วันที่</th>
-                                <th class="p-2 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="daily.device">อุปกรณ์</th>
-                                <th class="p-2 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="daily.sessions">เซสชัน</th>
-                                <th class="p-2 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="daily.readings">รายการ</th>
-                                <th class="p-2 font-bold text-navy uppercase text-[11px] tracking-wider text-center">PM2.5</th>
-                                <th class="p-2 font-bold text-navy uppercase text-[11px] tracking-wider text-center" data-i18n="daily.status">สถานะ</th>
+                                <th class="p-2 font-bold text-navy uppercase text-[12px] tracking-wider" data-i18n="daily.date">วันที่</th>
+                                <th class="p-2 font-bold text-navy uppercase text-[12px] tracking-wider" data-i18n="daily.device">อุปกรณ์</th>
+                                <th class="p-2 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="daily.sessions">เซสชัน</th>
+                                <th class="p-2 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="daily.readings">รายการ</th>
+                                <th class="p-2 font-bold text-navy uppercase text-[12px] tracking-wider text-center">PM2.5</th>
+                                <th class="p-2 font-bold text-navy uppercase text-[12px] tracking-wider text-center" data-i18n="daily.status">สถานะ</th>
                             </tr>
                         </thead>
                         <tbody id="daily-summary-body" class="divide-y"></tbody>
@@ -736,7 +736,7 @@
                 <button onclick="switchAdminTab('volunteers')" id="tab-btn-volunteers" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.volunteers">อาสา</button>
                 <button onclick="switchAdminTab('subjects')" id="tab-btn-subjects" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.subjects">บ้าน</button>
                 <button onclick="switchAdminTab('devices')" id="tab-btn-devices" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.devices">อุปกรณ์</button>
-                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500"><span data-i18n="tab.approvals">อนุมัติ</span> (<span id="count-pending" class="text-[11px]">0</span>)</button>
+                <button onclick="switchAdminTab('approvals')" id="tab-btn-approvals" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500"><span data-i18n="tab.approvals">อนุมัติ</span> (<span id="count-pending" class="text-[12px]">0</span>)</button>
                 <button onclick="switchAdminTab('data')" id="tab-btn-data" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.data">ข้อมูล</button>
                 <button onclick="switchAdminTab('schedule')" id="tab-btn-schedule" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.schedule">กำหนดการ</button>
                 <button onclick="switchAdminTab('activity')" id="tab-btn-activity" class="admin-tab-btn px-4 py-2 rounded-xl font-bold text-[13px] text-slate-500" data-i18n="tab.activity">ประวัติ</button>
@@ -760,11 +760,11 @@
                     <table class="w-full text-left text-[13px] min-w-[700px]">
                         <thead class="bg-slate-50 border-b">
                             <tr>
-                                <th onclick="sortOverviewTable('name')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.house">บ้าน</span> <span id="sort-arrow-name" class="text-[10px]"></span></th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="overview.sensor">เซนเซอร์</th>
-                                <th class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider" data-i18n="overview.volunteer">อาสาสมัคร</th>
-                                <th onclick="sortOverviewTable('status')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.status">สถานะ</span> <span id="sort-arrow-status" class="text-[10px]"></span></th>
-                                <th onclick="sortOverviewTable('project')" class="p-3 font-bold text-navy uppercase text-[11px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.project">โครงการ</span> <span id="sort-arrow-project" class="text-[10px]"></span></th>
+                                <th onclick="sortOverviewTable('name')" class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.house">บ้าน</span> <span id="sort-arrow-name" class="text-[12px]"></span></th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider" data-i18n="overview.sensor">เซนเซอร์</th>
+                                <th class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider" data-i18n="overview.volunteer">อาสาสมัคร</th>
+                                <th onclick="sortOverviewTable('status')" class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.status">สถานะ</span> <span id="sort-arrow-status" class="text-[12px]"></span></th>
+                                <th onclick="sortOverviewTable('project')" class="p-3 font-bold text-navy uppercase text-[12px] tracking-wider text-center cursor-pointer hover:text-emerald-600 select-none"><span data-i18n="overview.project">โครงการ</span> <span id="sort-arrow-project" class="text-[12px]"></span></th>
                             </tr>
                         </thead>
                         <tbody id="overview-table-body" class="divide-y"></tbody>
@@ -1090,7 +1090,7 @@
                             <p id="co-stat-max" class="text-2xl font-bold text-red-500">-- <span class="text-sm font-normal">ppm</span></p>
                         </div>
                     </div>
-                    <div class="text-[11px] text-slate-400 bg-slate-50 rounded-xl px-4 py-2 flex flex-wrap gap-x-6 gap-y-1">
+                    <div class="text-[12px] text-slate-400 bg-slate-50 rounded-xl px-4 py-2 flex flex-wrap gap-x-6 gap-y-1">
                         <span><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1"></span>เขียว = ต่ำสุด (ดี)</span>
                         <span><span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1"></span>แดง = สูงสุด (สูงผิดปกติ)</span>
                         <span><span class="inline-block w-2 h-2 rounded-full bg-purple-500 mr-1"></span>ม่วง = TVOC</span>
@@ -1169,7 +1169,7 @@
                 <!-- Search -->
                 <div class="relative">
                     <input id="guide-search" type="text" oninput="searchGuide(this.value)" placeholder="🔍 ค้นหาในคู่มือ... เช่น PIN, พิน, sensor, เซนเซอร์, volunteer, อาสา, Hotspot, อนุมัติ, บ้าน, โครงการ" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:border-emerald-400 bg-white">
-                    <div id="guide-search-count" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 font-bold"></div>
+                    <div id="guide-search-count" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-slate-400 font-bold"></div>
                 </div>
 
                 <!-- ==================== PART A: ระบบแอดมิน ==================== -->
@@ -1191,7 +1191,7 @@
                         </div>
 
                         <!-- Mockup: หน้า Login + pointer ลงทะเบียน -->
-                        <p class="text-[11px] font-bold text-slate-400 mt-2 mb-1">หน้า Login — กดตรงนี้:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mt-2 mb-1">หน้า Login — กดตรงนี้:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <div class="text-center mb-4">
@@ -1202,10 +1202,7 @@
                             <div class="guide-mock-input" style="text-align:center; letter-spacing:0.5em; font-family:monospace; position:relative;">P I N <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px;">🔒</span></div>
                             <div class="guide-mock-btn-primary mt-2">เข้าสู่ระบบ</div>
                             <p class="text-center text-[12px] text-amber-600 mt-2">ลืม PIN?</p>
-                            <div class="text-center mt-2" style="position:relative;">
-                                <p class="text-[12px] text-slate-400">ยังไม่มีบัญชี? <b class="text-emerald-600" style="border:2px solid #f59e0b; border-radius:6px; padding:2px 8px; background:#fffbeb;">ลงทะเบียน</b></p>
-                                <div style="position:absolute; left:50%; transform:translateX(30px); top:-8px; font-size:18px;">👆</div>
-                            </div>
+                            <p class="text-center text-[12px] text-slate-400 mt-2">ยังไม่มีบัญชี? <b class="text-emerald-600" style="position:relative; border:2px solid #f59e0b; border-radius:6px; padding:2px 8px; background:#fffbeb;">ลงทะเบียน<span style="position:absolute; left:50%; transform:translateX(-50%); top:20px; font-size:16px;">👆</span></b></p>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">2</div>
@@ -1218,7 +1215,7 @@
                         <div class="guide-danger">
                             <b>🚨 จดจำ PIN + Recovery Code!</b> ระบบไม่เก็บ PIN จริง (เก็บเฉพาะรหัสที่เข้ารหัสแล้ว) ถ้าลืม PIN ต้องใช้ Recovery Code กู้คืน
                         </div>
-                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <div class="text-center mb-4">
@@ -1228,7 +1225,7 @@
                             <div class="guide-mock-input" style="text-align:center;">ชื่อ-นามสกุล</div>
                             <div class="guide-mock-input" style="text-align:center;">อีเมล</div>
                             <div class="guide-mock-input" style="text-align:center; letter-spacing:0.3em; font-family:monospace; position:relative;">ตั้งรหัส PIN <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:14px;">🔒</span></div>
-                            <p class="text-[10px] text-slate-400 text-center mt-1 mb-2">ℹ️ ตั้งรหัส PIN ส่วนตัว (ไม่ใช่รหัสผ่าน Gmail) — อย่างน้อย 4 ตัว</p>
+                            <p class="text-[12px] text-slate-400 text-center mt-1 mb-2">ℹ️ ตั้งรหัส PIN ส่วนตัว (ไม่ใช่รหัสผ่าน Gmail) — อย่างน้อย 4 ตัว</p>
                             <div class="guide-mock-input" style="text-align:center; background:#fffbeb; border-color:#fde68a;">รหัสเชิญ</div>
                             <div class="guide-mock-btn-primary mt-2" style="background:#059669;">สมัครสมาชิก</div>
                         </div>
@@ -1237,9 +1234,9 @@
                             <div style="width:48px; height:48px; background:#ecfdf5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:28px;">✅</div>
                             <p class="text-lg font-bold text-emerald-700 mb-1">สมัครสำเร็จ!</p>
                             <p class="text-[12px] text-slate-500 mb-1">นี่คือ <b>Recovery Code</b> ส่วนตัว</p>
-                            <p class="text-[11px] text-red-500 font-bold mb-3">แสดงครั้งเดียว กรุณาจดบันทึกไว้!</p>
+                            <p class="text-[12px] text-red-500 font-bold mb-3">แสดงครั้งเดียว กรุณาจดบันทึกไว้!</p>
                             <div style="background:#0f172a; color:white; font-family:monospace; font-size:22px; letter-spacing:0.3em; text-align:center; padding:14px; border-radius:16px; margin-bottom:10px; cursor:pointer;">ABCD-1234</div>
-                            <p class="text-[10px] text-slate-400 mb-3">คลิกเพื่อคัดลอก — ใช้รีเซ็ต PIN หากลืม</p>
+                            <p class="text-[12px] text-slate-400 mb-3">คลิกเพื่อคัดลอก — ใช้รีเซ็ต PIN หากลืม</p>
                             <div class="guide-mock-btn-primary">จดแล้ว → ไปหน้า Login</div>
                         </div>
 
@@ -1255,7 +1252,7 @@
                             <div class="guide-step-num bg-blue-600">2</div>
                             <div>กรอก <b>อีเมล + PIN ส่วนตัว</b> → กด <b>"เข้าสู่ระบบ"</b></div>
                         </div>
-                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <div class="text-center mb-4">
@@ -1289,13 +1286,13 @@
                             <b>🚨 Recovery Code ใช้ได้ครั้งเดียว!</b> ใช้ reset PIN แล้ว code จะถูกลบทันที ต้อง login แล้วกดปุ่ม <b>"Recovery"</b> เพื่อสร้าง code ใหม่ ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset ให้
                         </div>
                         <!-- Mockup: ลืม PIN (รีเซ็ต PIN) -->
-                        <p class="text-[11px] font-bold text-slate-400 mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mt-2 mb-1">ตัวอย่างหน้าจอ:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <div class="text-center mb-4">
                                 <div style="width:48px; height:48px; background:#fef3c7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:22px;">🔑</div>
                                 <p class="text-lg font-bold text-[#0f172a]">รีเซ็ต PIN</p>
-                                <p class="text-[11px] text-slate-400">ใช้ Recovery Code ที่ได้ตอนสมัคร</p>
+                                <p class="text-[12px] text-slate-400">ใช้ Recovery Code ที่ได้ตอนสมัคร</p>
                             </div>
                             <div class="guide-mock-input" style="text-align:center;">Email ที่ลงทะเบียน</div>
                             <div class="guide-mock-input" style="text-align:center; letter-spacing:0.1em; background:#fffbeb; border-color:#fde68a;">RECOVERY CODE (เช่น ABCD-1234)</div>
@@ -1336,21 +1333,26 @@
                             <b>⚠️ สำคัญ:</b> หลัง reset แล้ว แอดมินคนนั้นจะ <b>ไม่มี Recovery Code</b> ต้อง login ด้วย PIN ใหม่แล้วไปสร้าง Recovery Code เองที่ปุ่ม "Recovery" ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset อีกครั้ง
                         </div>
 
-                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — การ์ดแอดมิน:</p>
-                        <div style="max-width:260px; margin-bottom:16px;">
-                            <div style="background:white; border-radius:14px; border:1px solid #e2e8f0; padding:14px;">
-                                <p class="font-bold text-[14px] text-navy">สมชาย ใจดี</p>
-                                <p class="text-[11px] text-slate-500 mt-1">somchai@email.com</p>
-                                <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
-                                <div class="flex gap-2 mt-3 flex-wrap">
-                                    <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
-                                    <span style="position:relative; font-size:10px; font-weight:700; color:#059669; padding:2px 6px; border-radius:6px; border:2px solid #f59e0b; background:#fffbeb;">รีเซ็ต<span style="position:absolute; left:50%; transform:translateX(-50%); top:-20px; font-size:16px;">👆</span></span>
-                                    <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                        <p class="text-[12px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — การ์ดแอดมิน:</p>
+                        <div style="max-width:380px; margin-bottom:16px;">
+                            <div style="background:white; border-radius:14px; border:1px solid #e2e8f0; padding:14px; border-bottom:3px solid #fb923c;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <p class="font-bold text-[14px] text-navy">สมชาย ใจดี</p>
+                                        <p class="text-[12px] text-slate-500 mt-1">somchai@email.com</p>
+                                    </div>
+                                    <div class="flex gap-2 flex-wrap" style="margin-left:12px; padding-top:2px;">
+                                        <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
+                                        <span style="position:relative; font-size:10px; font-weight:700; color:#059669; padding:2px 6px; border-radius:6px; border:2px solid #f59e0b; background:#fffbeb;">รีเซ็ต<span style="position:absolute; left:50%; transform:translateX(-50%); top:14px; font-size:16px;">👆</span></span>
+                                        <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                                    </div>
                                 </div>
+                                <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
+                                <p class="text-[12px] text-slate-400 mt-2">สมัครเมื่อ 23/03/2569</p>
                             </div>
                         </div>
 
-                        <p class="text-[11px] font-bold text-slate-400 mb-1">ตัวอย่างหน้าจอ — รีเซ็ต PIN:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mb-1">ตัวอย่างหน้าจอ — รีเซ็ต PIN:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div class="text-center mb-4">
                                 <div style="width:56px; height:56px; background:#fef3c7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:28px;">🔑</div>
@@ -1429,23 +1431,23 @@
                         <div class="grid grid-cols-2 gap-3 mb-4">
                             <div class="bg-amber-50 rounded-2xl p-3 border border-amber-200 text-center">
                                 <p class="text-2xl font-bold text-amber-700">🏠 16</p>
-                                <p class="text-[11px] text-amber-600 font-bold">บ้านในโครงการ</p>
-                                <p class="text-[10px] text-slate-400">จำนวนบ้านทั้งหมด + กี่บ้านมีเซนเซอร์</p>
+                                <p class="text-[12px] text-amber-600 font-bold">บ้านในโครงการ</p>
+                                <p class="text-[12px] text-slate-400">จำนวนบ้านทั้งหมด + กี่บ้านมีเซนเซอร์</p>
                             </div>
                             <div class="bg-slate-50 rounded-2xl p-3 border border-slate-200 text-center">
                                 <p class="text-2xl font-bold text-slate-600">📡 11</p>
-                                <p class="text-[11px] text-slate-500 font-bold">เซนเซอร์</p>
-                                <p class="text-[10px] text-slate-400">จำนวนทั้งหมด + ออนไลน์กี่ตัว</p>
+                                <p class="text-[12px] text-slate-500 font-bold">เซนเซอร์</p>
+                                <p class="text-[12px] text-slate-400">จำนวนทั้งหมด + ออนไลน์กี่ตัว</p>
                             </div>
                             <div class="bg-purple-50 rounded-2xl p-3 border border-purple-200 text-center">
                                 <p class="text-2xl font-bold text-purple-600">👤 70</p>
-                                <p class="text-[11px] text-purple-500 font-bold">อาสาสมัคร</p>
-                                <p class="text-[10px] text-slate-400">จำนวนอาสาทั้งหมดในระบบ</p>
+                                <p class="text-[12px] text-purple-500 font-bold">อาสาสมัคร</p>
+                                <p class="text-[12px] text-slate-400">จำนวนอาสาทั้งหมดในระบบ</p>
                             </div>
                             <div class="bg-blue-50 rounded-2xl p-3 border border-blue-200 text-center">
                                 <p class="text-2xl font-bold text-blue-600">📁 1</p>
-                                <p class="text-[11px] text-blue-500 font-bold">โครงการ</p>
-                                <p class="text-[10px] text-slate-400">จำนวนโครงการวิจัยที่สร้าง</p>
+                                <p class="text-[12px] text-blue-500 font-bold">โครงการ</p>
+                                <p class="text-[12px] text-slate-400">จำนวนโครงการวิจัยที่สร้าง</p>
                             </div>
                         </div>
 
@@ -1463,17 +1465,17 @@
                                     <thead><tr><th>บ้าน</th><th>เซนเซอร์</th><th>อาสาสมัคร</th><th style="text-align:center;">สถานะ</th><th>โครงการ</th></tr></thead>
                                     <tbody>
                                         <tr>
-                                            <td><span class="font-bold text-[13px]">บ้าน A</span><br><span class="text-[10px] text-slate-400">อ.เมือง จ.เชียงใหม่</span></td>
+                                            <td><span class="font-bold text-[13px]">บ้าน A</span><br><span class="text-[12px] text-slate-400">อ.เมือง จ.เชียงใหม่</span></td>
                                             <td><span style="font-size:11px; padding:3px 8px; border-radius:8px; background:#f0fdfa; border:1px solid #99f6e4; color:#0d9488;">📡 BS 001</span></td>
                                             <td class="text-[12px] text-slate-500">นาย ก. กกก.</td>
                                             <td style="text-align:center;"><span class="badge" style="background:#fee2e2; color:#dc2626; font-size:10px;">🔴 ออฟไลน์</span></td>
                                             <td><span style="font-size:10px; padding:2px 8px; border-radius:8px; background:#eef2ff; color:#4f46e5;">โครงการเตาชีวมวล</span></td>
                                         </tr>
                                         <tr>
-                                            <td><span class="font-bold text-[13px]">บ้าน B</span><br><span class="text-[10px] text-slate-400">อ.สันทราย</span></td>
+                                            <td><span class="font-bold text-[13px]">บ้าน B</span><br><span class="text-[12px] text-slate-400">อ.สันทราย</span></td>
                                             <td><span class="text-[12px] text-slate-300">— ยังไม่จับคู่ —</span></td>
                                             <td class="text-[12px] text-slate-500">นาง ข. ขขข.</td>
-                                            <td style="text-align:center;"><span class="text-[11px] text-slate-300">—</span></td>
+                                            <td style="text-align:center;"><span class="text-[12px] text-slate-300">—</span></td>
                                             <td><span style="font-size:10px; padding:2px 8px; border-radius:8px; background:#eef2ff; color:#4f46e5;">โครงการเตาชีวมวล</span></td>
                                         </tr>
                                     </tbody>
@@ -1713,7 +1715,7 @@
                                     <thead><tr><th>บ้าน</th><th>อาสา</th><th>เซนเซอร์</th><th>เชื่อมต่อ</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
                                     <tbody>
                                         <tr>
-                                            <td><span class="font-bold text-[13px]">บ้าน A</span><br><span class="text-[10px] text-slate-400">อ.เมือง จ.เชียงใหม่</span></td>
+                                            <td><span class="font-bold text-[13px]">บ้าน A</span><br><span class="text-[12px] text-slate-400">อ.เมือง จ.เชียงใหม่</span></td>
                                             <td class="text-[12px] text-slate-500">นายก. กกก.</td>
                                             <td><span style="font-size:11px; padding:4px 8px; border-radius:8px; background:#f0fdfa; border:1px solid #99f6e4; color:#0d9488;">📡 BS 001</span></td>
                                             <td><span style="font-size:11px; padding:4px 8px; border-radius:8px; background:#f5f3ff; color:#7c3aed;">📱 Hotspot</span></td>
@@ -1721,10 +1723,10 @@
                                             <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-amber-500">ปิด</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
                                         </tr>
                                         <tr>
-                                            <td><span class="font-bold text-[13px]">บ้าน B</span><br><span class="text-[10px] text-slate-400">อ.สันทราย จ.เชียงใหม่</span></td>
+                                            <td><span class="font-bold text-[13px]">บ้าน B</span><br><span class="text-[12px] text-slate-400">อ.สันทราย จ.เชียงใหม่</span></td>
                                             <td class="text-[12px] text-slate-400">ยังไม่กำหนด</td>
                                             <td><span style="font-size:11px; padding:4px 8px;">ไม่มีเซนเซอร์</span></td>
-                                            <td><span class="text-[11px] text-slate-300">—</span></td>
+                                            <td><span class="text-[12px] text-slate-300">—</span></td>
                                             <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857; font-size:10px;">ใช้งาน</span></td>
                                             <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
                                         </tr>
@@ -1822,14 +1824,14 @@
                                     <thead><tr><th>ชื่อเครื่อง</th><th>บ้าน</th><th style="text-align:center;">ออนไลน์</th><th style="text-align:center;">สถานะ</th><th>จัดการ</th></tr></thead>
                                     <tbody>
                                         <tr>
-                                            <td><span class="font-bold">BS 001</span> <span class="text-[10px] text-slate-400">...e0hf0e</span></td>
+                                            <td><span class="font-bold">BS 001</span> <span class="text-[12px] text-slate-400">...e0hf0e</span></td>
                                             <td class="text-slate-500">บ้าน A</td>
                                             <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857;">🟢 Online</span></td>
                                             <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857;">ใช้งาน</span></td>
                                             <td><span class="guide-mock-btn-link text-blue-500">แก้ไข</span> <span class="guide-mock-btn-link text-amber-500">ปิด</span> <span class="guide-mock-btn-link text-red-400">ลบ</span></td>
                                         </tr>
                                         <tr>
-                                            <td><span class="font-bold">BS 002</span> <span class="text-[10px] text-slate-400">...7ekytn</span></td>
+                                            <td><span class="font-bold">BS 002</span> <span class="text-[12px] text-slate-400">...7ekytn</span></td>
                                             <td class="text-slate-500">บ้าน B</td>
                                             <td style="text-align:center;"><span class="badge" style="background:#f1f5f9; color:#94a3b8;">⚪ Offline</span></td>
                                             <td style="text-align:center;"><span class="badge" style="background:#ecfdf5; color:#047857;">ใช้งาน</span></td>
@@ -1843,7 +1845,7 @@
                         <div class="guide-mock-modal" style="margin-top:16px; position:relative;">
                             <div style="position:absolute; top:12px; right:16px; color:#94a3b8; font-size:16px;">✕</div>
                             <p class="text-lg font-bold text-[#0f172a] mb-1">ผูกเซนเซอร์กับบ้าน</p>
-                            <p class="text-slate-400 text-[12px] mb-4">เลือกเซนเซอร์ที่ลงทะเบียนแล้ว และผูกกับบ้านตัวอย่าง</p>
+                            <p class="text-slate-400 text-[12px] mb-4">เลือกเซนเซอร์ที่ลงทะเบียนแล้ว และผูกกับบ้านกลุ่มตัวอย่าง</p>
                             <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกเซนเซอร์</p>
                             <div class="guide-mock-select">BS 001 ▾</div>
                             <p class="text-[12px] font-bold text-[#0f172a] mb-1">เลือกบ้าน</p>
@@ -1893,8 +1895,8 @@
                                 <span style="font-size:28px;">📴</span>
                                 <div style="flex:1;">
                                     <p class="font-bold text-navy text-[14px]">MT13W 1</p>
-                                    <p class="text-[11px] text-slate-400" style="font-family:monospace;">a3d01864e463e3ede0hf0e</p>
-                                    <p class="text-[11px] text-slate-400">ออฟไลน์ · MT13W</p>
+                                    <p class="text-[12px] text-slate-400" style="font-family:monospace;">a3d01864e463e3ede0hf0e</p>
+                                    <p class="text-[12px] text-slate-400">ออฟไลน์ · MT13W</p>
                                 </div>
                                 <span style="font-size:11px; padding:6px 12px; border-radius:12px; font-weight:700; background:#ecfdf5; color:#10b981;">ลงทะเบียนแล้ว</span>
                             </div>
@@ -1903,8 +1905,8 @@
                                 <span style="font-size:28px;">📴</span>
                                 <div style="flex:1;">
                                     <p class="font-bold text-navy text-[14px]">MT13W 2</p>
-                                    <p class="text-[11px] text-slate-400" style="font-family:monospace;">a3f9c351b1a172a67e7mtv</p>
-                                    <p class="text-[11px] text-slate-400">ออฟไลน์ · MT13W</p>
+                                    <p class="text-[12px] text-slate-400" style="font-family:monospace;">a3f9c351b1a172a67e7mtv</p>
+                                    <p class="text-[12px] text-slate-400">ออฟไลน์ · MT13W</p>
                                 </div>
                                 <span style="font-size:11px; padding:6px 12px; border-radius:12px; font-weight:700; background:#fef3c7; color:#b45309;">+ ลงทะเบียน</span>
                             </div>
@@ -2025,7 +2027,7 @@
                         </div>
 
                         <p class="font-bold text-navy mt-4 mb-2">ตัวอย่าง: เปลี่ยนช่วงเก็บข้อมูลระหว่างทาง</p>
-                        <p class="mb-2">สมมุติตั้งไว้: เตาเก่า 1-30 มี.ค. / เตาใหม่ 1-30 เม.ย. แต่เก็บไปพักหนึ่งข้อมูลไม่ถึงเป้า อยากขยายช่วงเตาเก่าเป็น 1 มี.ค. - 15 เม.ย. แล้วเลื่อนเตาใหม่เป็น 16 เม.ย. - 30 พ.ค.</p>
+                        <p class="mb-2">สมมุติตั้งไว้: เตาดั้งเดิม 1-30 มี.ค. / เตาชีวมวล 1-30 เม.ย. แต่เก็บไปพักหนึ่งข้อมูลไม่ถึงเป้า อยากขยายช่วงเตาดั้งเดิมเป็น 1 มี.ค. - 15 เม.ย. แล้วเลื่อนเตาชีวมวลเป็น 16 เม.ย. - 30 พ.ค.</p>
                         <div class="guide-step">
                             <div class="guide-step-num bg-amber-500">1</div>
                             <div>เลือกบ้านที่ต้องแก้ → กด <b>"✏️ แก้ไขที่เลือก"</b></div>
@@ -2043,7 +2045,7 @@
                             <div>เลือกประเภท <b>"เตาชีวมวล"</b> → เปลี่ยนวันเริ่มเป็น <b>16 เม.ย.</b> และสิ้นสุดเป็น <b>30 พ.ค.</b> → บันทึก</div>
                         </div>
                         <div class="guide-important mt-3">
-                            <b>⚠️ ระวังวันทับซ้อน:</b> ช่วงเตาเก่าและเตาใหม่ของบ้านเดียวกัน <b>ห้ามทับวันกัน</b> ไม่งั้นระบบจะไม่รู้ว่าวันนั้นใช้เตาอะไร
+                            <b>⚠️ ระวังวันทับซ้อน:</b> ช่วงเตาดั้งเดิมและเตาชีวมวลของบ้านเดียวกัน <b>ห้ามทับวันกัน</b> ไม่งั้นระบบจะไม่รู้ว่าวันนั้นใช้เตาอะไร
                         </div>
 
                         <div class="guide-important">
@@ -2070,7 +2072,7 @@
                             </div>
                             <div class="guide-mock-body">
                                 <p class="font-bold text-[#0f172a] text-[15px] mb-1">ช่วงเก็บข้อมูลแต่ละบ้าน</p>
-                                <p class="text-slate-400 text-[11px] mb-3">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด</p>
+                                <p class="text-slate-400 text-[12px] mb-3">กำหนดว่าแต่ละบ้านกำลังใช้เตาแบบใด</p>
                                 <div class="flex gap-2 mb-3 items-center">
                                     <div class="guide-mock-btn-sm bg-[#064e3b] text-white">📅 ตั้งค่าที่เลือก</div>
                                     <div class="guide-mock-btn-sm bg-blue-50 text-blue-600">✏️ แก้ไขที่เลือก</div>
@@ -2093,8 +2095,8 @@
                                         <tr>
                                             <td>☐</td>
                                             <td class="font-bold text-[13px] text-slate-400">บ้าน C</td>
-                                            <td class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</td>
-                                            <td class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</td>
+                                            <td class="text-slate-300 text-[12px]">ยังไม่ได้กำหนด</td>
+                                            <td class="text-slate-300 text-[12px]">ยังไม่ได้กำหนด</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -2177,11 +2179,11 @@
                             </div>
                             <div class="guide-mock-body">
                                 <p class="font-bold text-[#0f172a] text-[16px] mb-0">ตารางเก็บข้อมูล</p>
-                                <p class="text-[11px] text-slate-400 mb-4">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
+                                <p class="text-[12px] text-slate-400 mb-4">จัดการเวลาพัก วันเก็บข้อมูล และวันหยุดพิเศษ</p>
 
                                 <!-- Quiet Hours -->
                                 <p class="text-[12px] font-bold text-slate-700 mb-2">เวลาพักประจำวัน (Quiet Hours)</p>
-                                <div class="flex items-center gap-3 mb-4 text-[11px]">
+                                <div class="flex items-center gap-3 mb-4 text-[12px]">
                                     <div style="width:32px; height:18px; background:#34d399; border-radius:99px; position:relative;"><div style="width:14px; height:14px; background:white; border-radius:50%; position:absolute; top:2px; right:2px;"></div></div>
                                     <span class="text-slate-600">ไม่เรียก API ช่วง</span>
                                     <span style="padding:4px 8px; border:1px solid #e2e8f0; border-radius:8px; font-size:12px; color:#0f172a;">12:00 AM ⏱</span>
@@ -2230,7 +2232,7 @@
                                     <span style="padding:4px; border-radius:6px; background:#e2e8f0; color:#94a3b8;">15</span>
                                     <span style="padding:4px; border-radius:6px; background:#e2e8f0; color:#94a3b8;">16</span>
                                 </div>
-                                <div class="flex gap-3 text-[10px] text-slate-400 mb-4">
+                                <div class="flex gap-3 text-[12px] text-slate-400 mb-4">
                                     <span class="flex items-center gap-1"><span style="width:10px; height:10px; border-radius:3px; background:#059669; display:inline-block;"></span> เก็บ</span>
                                     <span class="flex items-center gap-1"><span style="width:10px; height:10px; border-radius:3px; background:#cbd5e1; display:inline-block;"></span> หยุดประจำ</span>
                                     <span class="flex items-center gap-1"><span style="width:10px; height:10px; border-radius:3px; background:#3b82f6; display:inline-block;"></span> วันหยุดพิเศษ</span>
@@ -2240,23 +2242,23 @@
                                 <p class="text-[12px] font-bold text-slate-700 mb-2">วันหยุดพิเศษ</p>
                                 <div class="flex flex-wrap items-end gap-2 mb-2">
                                     <div>
-                                        <p class="text-[10px] text-slate-500 mb-1">วันที่</p>
+                                        <p class="text-[12px] text-slate-500 mb-1">วันที่</p>
                                         <span style="padding:4px 8px; border:1px solid #e2e8f0; border-radius:8px; font-size:11px; color:#94a3b8;">mm/dd/yyyy 📅</span>
                                     </div>
                                     <div>
-                                        <p class="text-[10px] text-slate-500 mb-1">เหตุผล</p>
+                                        <p class="text-[12px] text-slate-500 mb-1">เหตุผล</p>
                                         <span style="padding:4px 8px; border:1px solid #e2e8f0; border-radius:8px; font-size:11px; color:#94a3b8;">เช่น สงกรานต์</span>
                                     </div>
                                     <span style="padding:4px 14px; border-radius:8px; font-size:11px; font-weight:600; background:#2563eb; color:white;">เพิ่ม</span>
                                 </div>
-                                <p class="text-[11px] text-slate-400 mb-4">ยังไม่มีวันหยุดพิเศษ</p>
+                                <p class="text-[12px] text-slate-400 mb-4">ยังไม่มีวันหยุดพิเศษ</p>
 
                                 <!-- Quota Summary -->
                                 <div style="background:#f8fafc; border-radius:12px; padding:12px 14px; margin-bottom:12px;">
                                     <p class="text-[12px] font-bold text-slate-700 mb-1">สรุป Quota เดือนนี้</p>
-                                    <p class="text-[11px] text-slate-600">เก็บ <b>22 วัน</b> / หยุดประจำ 9 วัน / วันหยุดพิเศษ 0 วัน</p>
-                                    <p class="text-[11px] text-slate-600">Projected: ~<b>17,534 calls</b> (73% ของ 24,000)</p>
-                                    <p class="text-[11px] text-slate-400">Device Info 216 + Status 572 (11 ตัว × 52) + Token ~9 ต่อวัน</p>
+                                    <p class="text-[12px] text-slate-600">เก็บ <b>22 วัน</b> / หยุดประจำ 9 วัน / วันหยุดพิเศษ 0 วัน</p>
+                                    <p class="text-[12px] text-slate-600">Projected: ~<b>17,534 calls</b> (73% ของ 24,000)</p>
+                                    <p class="text-[12px] text-slate-400">Device Info 216 + Status 572 (11 ตัว × 52) + Token ~9 ต่อวัน</p>
                                 </div>
 
                                 <div class="guide-mock-btn-sm bg-[#064e3b] text-white" style="display:inline-block;">บันทึก</div>
@@ -2289,11 +2291,11 @@
                         <div class="flex gap-3 mt-3 mb-3">
                             <div class="flex-1 bg-green-100 border-2 border-green-300 rounded-xl p-3 text-center">
                                 <p class="text-green-700 font-bold text-[13px]">✅ อนุมัติ</p>
-                                <p class="text-green-600 text-[11px] mt-1">ข้อมูลแสดงใน Dashboard</p>
+                                <p class="text-green-600 text-[12px] mt-1">ข้อมูลแสดงใน Dashboard</p>
                             </div>
                             <div class="flex-1 bg-red-100 border-2 border-red-300 rounded-xl p-3 text-center">
                                 <p class="text-red-700 font-bold text-[13px]">✗ ปฏิเสธ</p>
-                                <p class="text-red-600 text-[11px] mt-1">ข้อมูลจะไม่ถูกนำไปใช้</p>
+                                <p class="text-red-600 text-[12px] mt-1">ข้อมูลจะไม่ถูกนำไปใช้</p>
                             </div>
                         </div>
 
@@ -2336,7 +2338,7 @@
                                 <div class="flex justify-between items-center mb-3">
                                     <div>
                                         <p class="font-bold text-[#0f172a] text-[15px]">รออนุมัติข้อมูล</p>
-                                        <p class="text-[11px] text-slate-400">Sensor 25 records (1 sessions) + Manual 3 records (1 sessions)</p>
+                                        <p class="text-[12px] text-slate-400">Sensor 25 records (1 sessions) + Manual 3 records (1 sessions)</p>
                                     </div>
                                     <div class="flex gap-2">
                                         <div class="guide-mock-btn-sm bg-red-100 text-red-600" style="border:1px solid #fca5a5;">✕ ไม่อนุมัติทั้งหมด</div>
@@ -2350,24 +2352,24 @@
                                         <div class="flex justify-between items-start">
                                             <div style="min-width:0; flex:1;">
                                                 <p class="font-bold text-[#0f172a] text-[13px]" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">🏠 บ้านตัวอย่าง A</p>
-                                                <p class="text-[10px] text-slate-400">📡 BS 001 · 08:15–10:25 · 25 logs</p>
+                                                <p class="text-[12px] text-slate-400">📡 BS 001 · 08:15–10:25 · 25 logs</p>
                                             </div>
                                             <span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; white-space:nowrap;">เสร็จสมบูรณ์</span>
                                         </div>
-                                        <div class="flex items-center gap-2 text-[10px]">
+                                        <div class="flex items-center gap-2 text-[12px]">
                                             <span class="text-slate-500">25/27 readings</span>
                                             <div style="flex:1; height:5px; background:#f1f5f9; border-radius:99px; overflow:hidden;"><div style="width:93%; height:100%; background:#34d399; border-radius:99px;"></div></div>
                                             <span class="text-emerald-500">✓</span>
                                         </div>
                                         <div class="flex items-center gap-1.5" style="padding:4px 8px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px;">
-                                            <span class="text-emerald-500 text-[11px]">✋</span>
-                                            <span class="text-[10px] text-emerald-700 font-medium">Baseline ด้วยมือ (Manual)</span>
+                                            <span class="text-emerald-500 text-[12px]">✋</span>
+                                            <span class="text-[12px] text-emerald-700 font-medium">Baseline ด้วยมือ (Manual)</span>
                                         </div>
                                         <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:4px; text-align:center;">
-                                            <div style="background:#fff7ed; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Peak PM2.5</div><div class="text-[12px] font-bold text-orange-600">85.3</div></div>
-                                            <div style="background:rgba(255,247,237,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg PM2.5</div><div class="text-[12px] font-bold text-orange-400">42.1</div></div>
-                                            <div style="background:#eff6ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Peak CO₂</div><div class="text-[12px] font-bold text-blue-600">1850</div></div>
-                                            <div style="background:rgba(239,246,255,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg CO₂</div><div class="text-[12px] font-bold text-blue-400">920</div></div>
+                                            <div style="background:#fff7ed; border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Peak PM2.5</div><div class="text-[12px] font-bold text-orange-600">85.3</div></div>
+                                            <div style="background:rgba(255,247,237,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Avg PM2.5</div><div class="text-[12px] font-bold text-orange-400">42.1</div></div>
+                                            <div style="background:#eff6ff; border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Peak CO₂</div><div class="text-[12px] font-bold text-blue-600">1850</div></div>
+                                            <div style="background:rgba(239,246,255,0.5); border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Avg CO₂</div><div class="text-[12px] font-bold text-blue-400">920</div></div>
                                         </div>
                                         <div class="flex gap-1.5">
                                             <div class="guide-mock-btn-sm bg-slate-100 text-slate-600" style="border-radius:12px;">📊</div>
@@ -2380,14 +2382,14 @@
                                         <div class="flex justify-between items-start">
                                             <div>
                                                 <p class="font-bold text-[#0f172a] text-[13px]">🏠 บ้านตัวอย่าง A</p>
-                                                <p class="text-[10px] text-slate-400">👤 สมชาย · 24 มี.ค. 69 · 08:20–10:20 น.</p>
+                                                <p class="text-[12px] text-slate-400">👤 สมชาย · 24 มี.ค. 69 · 08:20–10:20 น.</p>
                                             </div>
                                             <span class="badge" style="background:#f3e8ff; color:#7c3aed;">📝 3</span>
                                         </div>
                                         <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4px; text-align:center;">
-                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Min</div><div class="text-[12px] font-bold text-emerald-600">0.120</div></div>
-                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Avg</div><div class="text-[12px] font-bold text-purple-700">0.350</div></div>
-                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[8px] text-slate-400 font-bold">Max</div><div class="text-[12px] font-bold text-red-500">0.580</div></div>
+                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Min</div><div class="text-[12px] font-bold text-emerald-600">0.120</div></div>
+                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Avg</div><div class="text-[12px] font-bold text-purple-700">0.350</div></div>
+                                            <div style="background:#faf5ff; border-radius:8px; padding:3px 4px;"><div class="text-[12px] text-slate-400 font-bold">Max</div><div class="text-[12px] font-bold text-red-500">0.580</div></div>
                                         </div>
                                         <div style="background:#f8fafc; border-radius:8px; padding:6px; height:40px; display:flex; align-items:center; justify-content:center;">
                                             <svg viewBox="0 0 200 30" style="width:100%; height:30px;"><polyline points="10,25 50,20 100,8 150,15 190,5" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/><circle cx="190" cy="5" r="3" fill="#ef4444"/><circle cx="10" cy="25" r="3" fill="#22c55e"/></svg>
@@ -2447,34 +2449,29 @@
                             </div>
                             <div class="guide-mock-body">
                                 <p class="font-bold text-[#0f172a] text-[15px] mb-3">จัดการแอดมิน</p>
-                                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;">
+                                <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
                                     <!-- Card 1: Super Admin (ตัวเอง — ไม่มีปุ่ม) -->
-                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border:1px solid #e2e8f0;">
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:14px; border:1px solid #e2e8f0; border-bottom:3px solid #fb923c;">
                                         <p class="font-bold text-[#0f172a] text-[13px]">Admin A</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">admin_a@email.com</p>
+                                        <p class="text-[12px] text-slate-500 mt-1">admin_a@email.com</p>
                                         <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#fef3c7; color:#92400e;">Super Admin</span>
+                                        <p class="text-[12px] text-slate-400 mt-2">สมัครเมื่อ 06/03/2569</p>
                                     </div>
-                                    <!-- Card 2: Admin -->
-                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border:1px solid #e2e8f0;">
-                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin B</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">admin_b@email.com</p>
-                                        <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
-                                        <div class="flex gap-2 mt-3 flex-wrap">
-                                            <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
-                                            <span style="font-size:10px; font-weight:700; color:#059669;">รีเซ็ต</span>
-                                            <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                                    <!-- Card 2: Admin (มีปุ่มจัดการ ด้านขวาบน) -->
+                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:14px; border:1px solid #e2e8f0; border-bottom:3px solid #fb923c;">
+                                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                            <div>
+                                                <p class="font-bold text-[#0f172a] text-[13px]">Admin B</p>
+                                                <p class="text-[12px] text-slate-500 mt-1">admin_b@email.com</p>
+                                            </div>
+                                            <div class="flex gap-1 flex-wrap" style="margin-left:8px;">
+                                                <span style="font-size:9px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
+                                                <span style="font-size:9px; font-weight:700; color:#059669;">รีเซ็ต</span>
+                                                <span style="font-size:9px; font-weight:700; color:#ef4444;">ลบ</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- Card 3: Admin -->
-                                    <div style="background:rgba(255,255,255,0.85); border-radius:14px; padding:12px; border:1px solid #e2e8f0;">
-                                        <p class="font-bold text-[#0f172a] text-[13px]">Admin C</p>
-                                        <p class="text-[10px] text-slate-500 mt-1">admin_c@email.com</p>
                                         <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
-                                        <div class="flex gap-2 mt-3 flex-wrap">
-                                            <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
-                                            <span style="font-size:10px; font-weight:700; color:#059669;">รีเซ็ต</span>
-                                            <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
-                                        </div>
+                                        <p class="text-[12px] text-slate-400 mt-2">สมัครเมื่อ 23/03/2569</p>
                                     </div>
                                 </div>
                             </div>
@@ -2515,20 +2512,25 @@
                             <b>⚠️ สำคัญ:</b> หลัง reset แล้ว แอดมินคนนั้นจะ <b>ไม่มี Recovery Code</b> — ต้อง login ด้วย PIN ใหม่แล้วไปสร้าง Recovery Code เองที่ปุ่ม "Recovery" ถ้าไม่สร้าง → ลืม PIN อีกทีต้องให้ Super Admin reset อีกครั้ง
                         </div>
 
-                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — กดปุ่ม "รีเซ็ต" บนการ์ด:</p>
-                        <div style="max-width:260px; margin-bottom:12px;">
-                            <div style="background:white; border-radius:14px; border:1px solid #e2e8f0; padding:14px;">
-                                <p class="font-bold text-[14px] text-navy">สมชาย ใจดี</p>
-                                <p class="text-[11px] text-slate-500 mt-1">somchai@email.com</p>
-                                <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
-                                <div class="flex gap-2 mt-3 flex-wrap">
-                                    <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
-                                    <span style="position:relative; font-size:10px; font-weight:700; color:#059669; padding:2px 6px; border-radius:6px; border:2px solid #f59e0b; background:#fffbeb;">รีเซ็ต<span style="position:absolute; left:50%; transform:translateX(-50%); top:-18px; font-size:16px;">👆</span></span>
-                                    <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                        <p class="text-[12px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — กดปุ่ม "รีเซ็ต" บนการ์ด:</p>
+                        <div style="max-width:380px; margin-bottom:12px;">
+                            <div style="background:white; border-radius:14px; border:1px solid #e2e8f0; padding:14px; border-bottom:3px solid #fb923c;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <p class="font-bold text-[14px] text-navy">สมชาย ใจดี</p>
+                                        <p class="text-[12px] text-slate-500 mt-1">somchai@email.com</p>
+                                    </div>
+                                    <div class="flex gap-2 flex-wrap" style="margin-left:12px; padding-top:2px;">
+                                        <span style="font-size:10px; font-weight:700; color:#d97706;">เลื่อนขั้น</span>
+                                        <span style="position:relative; font-size:10px; font-weight:700; color:#059669; padding:2px 6px; border-radius:6px; border:2px solid #f59e0b; background:#fffbeb;">รีเซ็ต<span style="position:absolute; left:50%; transform:translateX(-50%); top:14px; font-size:16px;">👆</span></span>
+                                        <span style="font-size:10px; font-weight:700; color:#ef4444;">ลบ</span>
+                                    </div>
                                 </div>
+                                <span style="display:inline-block; margin-top:6px; font-size:10px; padding:3px 10px; border-radius:99px; font-weight:700; background:#dbeafe; color:#1d4ed8;">Admin</span>
+                                <p class="text-[12px] text-slate-400 mt-2">สมัครเมื่อ 23/03/2569</p>
                             </div>
                         </div>
-                        <p class="text-[11px] font-bold text-slate-400 mb-1">ตัวอย่างหน้าจอ — รีเซ็ต PIN:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mb-1">ตัวอย่างหน้าจอ — รีเซ็ต PIN:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div class="text-center mb-4">
                                 <div style="width:56px; height:56px; background:#fef3c7; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:28px;">🔑</div>
@@ -2563,17 +2565,17 @@
                             <b>⚠️ คนที่สมัครแล้วไม่ได้รับผลกระทบ</b> — เปลี่ยน Invite Code กระทบเฉพาะคนที่จะสมัครใหม่เท่านั้น แอดมินที่สมัครไปแล้วไม่ต้องทำอะไร
                         </div>
 
-                        <p class="text-[11px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — เปลี่ยน Invite Code:</p>
+                        <p class="text-[12px] font-bold text-slate-400 mt-3 mb-1">ตัวอย่างหน้าจอ — เปลี่ยน Invite Code:</p>
                         <div class="guide-mock-modal" style="max-width:320px;">
                             <div class="text-center mb-4">
                                 <div style="width:56px; height:56px; background:#ecfdf5; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:28px;">🎟️</div>
                                 <p class="text-lg font-bold text-navy">Invite Code</p>
-                                <p class="text-[11px] text-slate-400">รหัสสำหรับให้คนอื่นสมัครเป็น Admin</p>
+                                <p class="text-[12px] text-slate-400">รหัสสำหรับให้คนอื่นสมัครเป็น Admin</p>
                             </div>
                             <div class="text-center mb-3">
-                                <span class="text-[10px] text-slate-400">ปัจจุบัน</span>
+                                <span class="text-[12px] text-slate-400">ปัจจุบัน</span>
                                 <div style="font-size:18px; font-family:monospace; font-weight:700; color:#059669; letter-spacing:0.2em; margin-top:4px;">xxxx1234</div>
-                                <p class="text-[10px] text-amber-600 mt-2">* รหัสตัวอย่าง — ต้องการรหัสจริงให้สอบถาม Super Admin</p>
+                                <p class="text-[12px] text-amber-600 mt-2">* รหัสตัวอย่าง — ต้องการรหัสจริงให้สอบถาม Super Admin</p>
                             </div>
                             <div style="border-top:1px solid #e2e8f0; margin:12px 0;"></div>
                             <div class="guide-mock-input" style="text-align:center; letter-spacing:0.15em; font-family:monospace;">Invite Code ใหม่</div>
@@ -2600,11 +2602,11 @@
 
                         <div class="flex gap-4 mb-4">
                             <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200 text-center">
-                                <div class="text-[11px] text-slate-500 mb-1">ชื่อ Hotspot</div>
+                                <div class="text-[12px] text-slate-500 mb-1">ชื่อ Hotspot</div>
                                 <div class="text-xl font-bold text-navy">Biomass</div>
                             </div>
                             <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-200 text-center">
-                                <div class="text-[11px] text-slate-500 mb-1">รหัสผ่าน</div>
+                                <div class="text-[12px] text-slate-500 mb-1">รหัสผ่าน</div>
                                 <div class="text-xl font-bold text-navy">Biomass2026</div>
                             </div>
                         </div>
@@ -2878,7 +2880,7 @@
                                 </tr>
                                 <tr>
                                     <td>Dashboard ขึ้น "ยังไม่มีข้อมูลเตาชีวมวล"</td>
-                                    <td><b>ปกติค่ะ ไม่ต้องแก้ไข</b> — โครงการแบ่งเป็น 2 ระยะ: <b>ระยะที่ 1</b> (3 เดือนแรก) เก็บข้อมูลเตาเก่า, <b>ระยะที่ 2</b> (3 เดือนหลัง) เก็บข้อมูลเตาชีวมวล ข้อความนี้จะหายไปเองเมื่อเข้าสู่ระยะที่ 2</td>
+                                    <td><b>ปกติค่ะ ไม่ต้องแก้ไข</b> — โครงการแบ่งเป็น 2 ระยะ: <b>ระยะที่ 1</b> (3 เดือนแรก) เก็บข้อมูลเตาดั้งเดิม, <b>ระยะที่ 2</b> (3 เดือนหลัง) เก็บข้อมูลเตาชีวมวล ข้อความนี้จะหายไปเองเมื่อเข้าสู่ระยะที่ 2</td>
                                 </tr>
                                 <tr>
                                     <td>เซสชันไม่เริ่ม</td>
@@ -2917,7 +2919,7 @@
                     </div>
                 </div>
 
-                <p class="text-[11px] text-slate-400 text-center mt-4">คู่มือ v1.0 — ปรับปรุงล่าสุด: มีนาคม 2569</p>
+                <p class="text-[12px] text-slate-400 text-center mt-4">คู่มือ v1.0 — ปรับปรุงล่าสุด: มีนาคม 2569</p>
             </div>
 
         </section>
@@ -3128,8 +3130,8 @@
             'live.title': { th: 'ค่าล่าสุดจาก Sensor', en: 'Latest Sensor Reading' },
             'live.waiting': { th: 'รอข้อมูล...', en: 'Waiting...' },
             'live.no.data': { th: 'ยังไม่มีข้อมูล', en: 'No data yet' },
-            'live.eco': { th: '✨ Eco', en: '✨ Eco' },
-            'live.old': { th: '🪵 เดิม', en: '🪵 Traditional' },
+            'live.eco': { th: '✨ ชีวมวล', en: '✨ Biomass' },
+            'live.old': { th: '🪵 ดั้งเดิม', en: '🪵 Traditional' },
             'live.autorefresh': { th: 'Auto-refresh: ทุก 1 นาที', en: 'Auto-refresh: every 1 min' },
             'live.updated': { th: 'อัปเดตล่าสุด: ', en: 'Last updated: ' },
             // Activity feed
@@ -3161,10 +3163,10 @@
             'stat.range.3d': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 3 วันล่าสุด', en: '📊 Biomass Avg — Last 3 Days' },
             'stat.range.7d': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 7 วันล่าสุด', en: '📊 Biomass Avg — Last 7 Days' },
             'stat.range.30d': { th: '📊 ค่าเฉลี่ยเตาชีวมวล — 30 วันล่าสุด', en: '📊 Biomass Avg — Last 30 Days' },
-            'stat.vs.old.lower': { th: 'ลดลง {0}% จากเตาเก่า', en: '{0}% lower than traditional' },
-            'stat.vs.old.higher': { th: 'สูงกว่าเตาเก่า {0}%', en: '{0}% higher than traditional' },
-            'stat.vs.old.default': { th: 'เทียบเตาเก่า: รอข้อมูล', en: 'vs Traditional: awaiting data' },
-            'stat.vs.old.nodata': { th: 'เทียบเตาเก่า: ข้อมูลไม่เพียงพอ', en: 'vs Traditional: insufficient data' },
+            'stat.vs.old.lower': { th: 'ลดลง {0}% จากเตาดั้งเดิม', en: '{0}% lower than traditional' },
+            'stat.vs.old.higher': { th: 'สูงกว่าเตาดั้งเดิม {0}%', en: '{0}% higher than traditional' },
+            'stat.vs.old.default': { th: 'เทียบเตาดั้งเดิม: รอข้อมูล', en: 'vs Traditional: awaiting data' },
+            'stat.vs.old.nodata': { th: 'เทียบเตาดั้งเดิม: ข้อมูลไม่เพียงพอ', en: 'vs Traditional: insufficient data' },
             'stat.insufficient': { th: 'ข้อมูลไม่เพียงพอ', en: 'Insufficient data' },
             'stat.temp': { th: '🌡️ อุณหภูมิ', en: '🌡️ Temperature' },
             'stat.humidity': { th: '💧 ความชื้น', en: '💧 Humidity' },
@@ -3287,11 +3289,11 @@
             'loading.csv': { th: 'กำลังสร้างไฟล์ CSV...', en: 'Creating CSV file...' },
             'loading.fetch': { th: 'กำลังดึงข้อมูล...', en: 'Fetching data...' },
             'loading.compare': { th: 'กำลังสร้างรายงานเปรียบเทียบ...', en: 'Creating comparison report...' },
-            'card.eco': { th: 'เตาใหม่', en: 'Biomass' },
-            'card.old': { th: 'เตาเก่า', en: 'Traditional' },
+            'card.eco': { th: 'เตาชีวมวล', en: 'Biomass' },
+            'card.old': { th: 'เตาดั้งเดิม', en: 'Traditional' },
             'card.traditional': { th: 'เตาดั้งเดิม', en: 'Traditional' },
-            'stove.eco.short': { th: '✨ ใหม่', en: '✨ Eco' },
-            'stove.old.short': { th: '🪵 เก่า', en: '🪵 Old' },
+            'stove.eco.short': { th: '✨ ชีวมวล', en: '✨ Biomass' },
+            'stove.old.short': { th: '🪵 ดั้งเดิม', en: '🪵 Traditional' },
             'sensor.no.data': { th: 'ยังไม่มีข้อมูล', en: 'No data yet' },
             // Admin
             'admin.title': { th: 'Admin Control', en: 'Admin Control' },
@@ -3799,8 +3801,8 @@
             'deep.compare.net': { th: 'ค่าสุทธิ (Net)', en: 'Net' },
             'deep.compare.decrease': { th: 'ลดลง', en: 'Reduction' },
             'deep.compare.change': { th: 'เปลี่ยนแปลง', en: 'Change' },
-            'deep.compare.old.short': { th: '🪵 เก่า', en: '🪵 Old' },
-            'deep.compare.eco.short': { th: '✨ ใหม่', en: '✨ New' },
+            'deep.compare.old.short': { th: '🪵 ดั้งเดิม', en: '🪵 Traditional' },
+            'deep.compare.eco.short': { th: '✨ ชีวมวล', en: '✨ Biomass' },
             'deep.info.compare.title': { th: 'อ่านตารางนี้อย่างไร?', en: 'How to read this table?' },
             'deep.info.compare.body': { th: '• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน', en: '• Gross = raw sensor reading during cooking\n• Ambient = background air before cooking (avg first 10 min)\n• Net = Gross − Ambient = actual stove pollution\n\nAmbient calculated per stove type since data is from different days' },
             'deep.meth.title': { th: '📋 วิธีวิเคราะห์ข้อมูล (Methodology)', en: '📋 Data Analysis Methodology' },
@@ -3820,8 +3822,8 @@
             'deep.range.30d': { th: '30 วัน', en: '30 days' },
             'deep.range.60d': { th: '60 วัน', en: '60 days' },
             'deep.range.all': { th: 'ทั้งหมด', en: 'All' },
-            'deep.env.temp': { th: '🌡 ใหม่ {0}°C / เก่า {1}°C', en: '🌡 New {0}°C / Old {1}°C' },
-            'deep.env.hum': { th: '💧 ใหม่ {0}% / เก่า {1}%', en: '💧 New {0}% / Old {1}%' },
+            'deep.env.temp': { th: '🌡 ชีวมวล {0}°C / ดั้งเดิม {1}°C', en: '🌡 Biomass {0}°C / Traditional {1}°C' },
+            'deep.env.hum': { th: '💧 ชีวมวล {0}% / ดั้งเดิม {1}%', en: '💧 Biomass {0}% / Traditional {1}%' },
             'deep.env.default': { th: 'สภาพแวดล้อมขณะเก็บข้อมูล', en: 'Environmental conditions during data collection' },
             'deep.drilldown.title': { th: '📅 รายละเอียดวันที่ {0}', en: '📅 Details for {0}' },
             'deep.drilldown.close': { th: '✕ ปิด', en: '✕ Close' },
@@ -4085,7 +4087,7 @@
 
         function pm25AqiBadge(pm25) {
             const info = getPm25AqiLevel(pm25);
-            return '<span class="ml-1 px-1.5 py-0.5 rounded text-[10px] font-bold ' + info.color + '">' + info.label + '</span>';
+            return '<span class="ml-1 px-1.5 py-0.5 rounded text-[12px] font-bold ' + info.color + '">' + info.label + '</span>';
         }
 
         // ===== Baseline Reference Thresholds =====
@@ -4941,21 +4943,21 @@
                             <div>
                                 <h4 class="font-bold text-lg text-navy">${esc(a.name)}</h4>
                                 <p class="text-sm text-slate-500 mt-1">${esc(a.email)}</p>
-                                <span class="inline-block mt-2 text-[11px] px-3 py-1 rounded-full font-bold ${a.role === 'super' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">
+                                <span class="inline-block mt-2 text-[12px] px-3 py-1 rounded-full font-bold ${a.role === 'super' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}">
                                     ${a.role === 'super' ? t('admin.role.super') : t('admin.role.admin')}
                                 </span>
                             </div>
                             ${canManage ? `
                                 <div class="flex gap-1 shrink-0 flex-wrap justify-end">
                                     ${String(a.id) !== String(currentAdminId) ? `
-                                    <button onclick="toggleAdminRole(${a.id}, '${escAttr(a.name)}', '${a.role}')" class="${a.role === 'super' ? 'text-blue-600 hover:bg-blue-50' : 'text-amber-600 hover:bg-amber-50'} text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${a.role === 'super' ? t('admin.demote') : t('admin.promote')}</button>
-                                    <button onclick="resetAdminPin(${a.id}, '${escAttr(a.name)}')" class="text-emerald-600 hover:bg-emerald-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.reset.pin')}</button>
-                                    <button onclick="deleteAdmin(${a.id}, '${escAttr(a.name)}')" class="text-red-500 hover:bg-red-50 text-[11px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.delete.btn')}</button>
+                                    <button onclick="toggleAdminRole(${a.id}, '${escAttr(a.name)}', '${a.role}')" class="${a.role === 'super' ? 'text-blue-600 hover:bg-blue-50' : 'text-amber-600 hover:bg-amber-50'} text-[12px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${a.role === 'super' ? t('admin.demote') : t('admin.promote')}</button>
+                                    <button onclick="resetAdminPin(${a.id}, '${escAttr(a.name)}')" class="text-emerald-600 hover:bg-emerald-50 text-[12px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.reset.pin')}</button>
+                                    <button onclick="deleteAdmin(${a.id}, '${escAttr(a.name)}')" class="text-red-500 hover:bg-red-50 text-[12px] font-bold px-2 py-1 rounded-lg transition-all whitespace-nowrap">${t('admin.delete.btn')}</button>
                                     ` : ''}
                                 </div>
                             ` : ''}
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-3">${t('admin.registered')} ${fmtDateDMY(a.created_at)}</p>
+                        <p class="text-[12px] text-slate-400 mt-3">${t('admin.registered')} ${fmtDateDMY(a.created_at)}</p>
                     </div>`;
                 }).join('');
             } catch (e) {
@@ -5482,8 +5484,8 @@
                 const ecoCount = filteredPending.filter(d => d.stove_type === 'eco').length;
                 const oldCount = filteredPending.filter(d => d.stove_type === 'old').length;
                 el('hero-status').textContent = currentLang === 'th'
-                    ? 'เตาเก่า ' + oldCount.toLocaleString() + ' · เตาใหม่ ' + ecoCount.toLocaleString() + ' รายการ'
-                    : 'Old ' + oldCount.toLocaleString() + ' · Eco ' + ecoCount.toLocaleString() + ' records';
+                    ? 'ดั้งเดิม ' + oldCount.toLocaleString() + ' · ชีวมวล ' + ecoCount.toLocaleString() + ' รายการ'
+                    : 'Traditional ' + oldCount.toLocaleString() + ' · Biomass ' + ecoCount.toLocaleString() + ' records';
             }
         }
 
@@ -5819,7 +5821,7 @@
                         <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1.5">
                             <div class="${barColor} h-1.5 rounded-full transition-all" style="width:${barPct}%"></div>
                         </div>
-                        <div class="text-[10px] text-slate-400 mt-1">${statusText}</div>
+                        <div class="text-[12px] text-slate-400 mt-1">${statusText}</div>
                     </div>`);
                 }
 
@@ -5868,7 +5870,7 @@
                         '<span class="text-xl mt-0.5">📡</span>' +
                         '<div class="flex-1 min-w-0">' +
                             '<p class="text-[13px] text-navy leading-relaxed">' + t('activity.collected') + ' <b>' + sensorName + '</b> ' + t('activity.of') + ' <b>' + houseName + '</b> ' + t('activity.done') + '</p>' +
-                            '<p class="text-[11px] text-slate-400 mt-1">PM2.5: <span class="font-bold ' + pm25Color + '">' + (d.pm25_value || '--') + '</span> µg/m³ · ' + timeAgo + '</p>' +
+                            '<p class="text-[12px] text-slate-400 mt-1">PM2.5: <span class="font-bold ' + pm25Color + '">' + (d.pm25_value || '--') + '</span> µg/m³ · ' + timeAgo + '</p>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -5965,8 +5967,8 @@
                 if (_perStoveRanges) {
                     const r = _perStoveRanges;
                     const parts = [];
-                    if (r.cutoffs.old && r.maxDates.old) parts.push((currentLang === 'th' ? 'เตาเก่า: ' : 'Old: ') + r.cutoffs.old + ' — ' + r.maxDates.old);
-                    if (r.cutoffs.eco && r.maxDates.eco) parts.push((currentLang === 'th' ? 'เตาใหม่: ' : 'Eco: ') + r.cutoffs.eco + ' — ' + r.maxDates.eco);
+                    if (r.cutoffs.old && r.maxDates.old) parts.push((currentLang === 'th' ? 'ดั้งเดิม: ' : 'Traditional: ') + r.cutoffs.old + ' — ' + r.maxDates.old);
+                    if (r.cutoffs.eco && r.maxDates.eco) parts.push((currentLang === 'th' ? 'ชีวมวล: ' : 'Biomass: ') + r.cutoffs.eco + ' — ' + r.maxDates.eco);
                     rangeLabelEl.textContent = '📊 ' + (parts.join(' · ') || t('stat.range.all'));
                 } else if (deepDateStart && deepDateEnd) {
                     rangeLabelEl.textContent = '📊 ' + deepDateStart + ' — ' + deepDateEnd;
@@ -6117,7 +6119,7 @@
                 const netPct = Math.max(((oldNetAvg || 0) / maxVal * 100), 10);
                 html += '<div>';
                 html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">' + t('hero.old') + '</span><span class="font-bold text-gray-700">' + oldGross.toFixed(1) + ' (gross) → <span class="text-gray-900">' + (oldNetAvg || 0).toFixed(1) + '</span> (net)</span></div>';
-                html += '<div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">';
+                html += '<div class="flex h-10 rounded-lg overflow-hidden text-[12px] font-medium">';
                 html += '<div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:' + ambPct.toFixed(0) + '%">' + oldAmbient.toFixed(1) + '<br>ambient</div>';
                 html += '<div class="bg-orange-400 flex items-center justify-center text-white" style="width:' + netPct.toFixed(0) + '%">' + (oldNetAvg || 0).toFixed(1) + ' µg/m³ — Stove Emission</div>';
                 html += '</div></div>';
@@ -6133,7 +6135,7 @@
 
                 html += '<div>';
                 html += '<div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">' + t('hero.eco') + '</span><span class="font-bold ' + (isGood ? 'text-gray-700' : 'text-red-600') + '">' + ecoGross.toFixed(1) + ' (gross) → <span class="' + textColor + '">' + (ecoNetAvg || 0).toFixed(1) + '</span> (net)' + (isGood ? '' : ' ⚠️') + '</span></div>';
-                html += '<div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">';
+                html += '<div class="flex h-10 rounded-lg overflow-hidden text-[12px] font-medium">';
                 html += '<div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:' + ambPct.toFixed(0) + '%">' + ecoAmbient.toFixed(1) + '<br>ambient</div>';
                 html += '<div class="' + barColor + ' flex items-center justify-center text-white" style="width:' + netPct.toFixed(0) + '%">' + (ecoNetAvg || 0).toFixed(1) + (isGood ? '' : ' — Stove Emission ↑') + '</div>';
 
@@ -6146,7 +6148,7 @@
 
                 html += '</div></div>';
             } else if (currentScenario === 'no-eco') {
-                html += '<div class="bg-slate-50 rounded-lg p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-300">' + t('deep.stacked.noeco') + '</div>';
+                html += '<div class="bg-slate-50 rounded-lg p-3 text-center text-[12px] text-slate-400 border border-dashed border-slate-300">' + t('deep.stacked.noeco') + '</div>';
             }
 
             container.innerHTML = html;
@@ -6191,11 +6193,11 @@
                 const changeBg = isNormal ? 'bg-green-50' : 'bg-red-50';
                 const changeLabel = isNormal ? t('deep.compare.decrease') : t('deep.compare.change');
                 headEl.innerHTML =
-                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">' + t('deep.compare.pollutant') + '</th><th class="text-center py-2 bg-slate-50" colspan="2">' + t('deep.compare.gross') + '</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 ' + netBg + '" colspan="2">' + t('deep.compare.net') + '</th><th class="text-center py-2 ' + changeBg + '">' + changeLabel + '</th></tr>' +
-                    '<tr class="text-[9px] text-gray-400 border-b"><th></th><th class="text-center py-1">' + t('deep.compare.old.short') + '</th><th class="text-center py-1">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 bg-blue-50">' + t('deep.compare.old.short') + '</th><th class="text-center py-1 bg-blue-50">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 ' + netBg + '">' + t('deep.compare.old.short') + '</th><th class="text-center py-1 ' + netBg + '">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 ' + changeBg + '">Net %</th></tr>';
+                    '<tr class="text-[12px] text-gray-400 border-b-2"><th class="text-left py-2">' + t('deep.compare.pollutant') + '</th><th class="text-center py-2 bg-slate-50" colspan="2">' + t('deep.compare.gross') + '</th><th class="text-center py-2 bg-blue-50" colspan="2">Ambient</th><th class="text-center py-2 ' + netBg + '" colspan="2">' + t('deep.compare.net') + '</th><th class="text-center py-2 ' + changeBg + '">' + changeLabel + '</th></tr>' +
+                    '<tr class="text-[12px] text-gray-400 border-b"><th></th><th class="text-center py-1">' + t('deep.compare.old.short') + '</th><th class="text-center py-1">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 bg-blue-50">' + t('deep.compare.old.short') + '</th><th class="text-center py-1 bg-blue-50">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 ' + netBg + '">' + t('deep.compare.old.short') + '</th><th class="text-center py-1 ' + netBg + '">' + t('deep.compare.eco.short') + '</th><th class="text-center py-1 ' + changeBg + '">Net %</th></tr>';
             } else {
                 headEl.innerHTML =
-                    '<tr class="text-[10px] text-gray-400 border-b-2"><th class="text-left py-2">' + t('deep.compare.pollutant') + '</th><th class="text-center py-2 bg-slate-50">' + t('deep.compare.gross') + '</th><th class="text-center py-2 bg-blue-50">Ambient</th><th class="text-center py-2 bg-orange-50">' + t('deep.compare.net') + '</th></tr>';
+                    '<tr class="text-[12px] text-gray-400 border-b-2"><th class="text-left py-2">' + t('deep.compare.pollutant') + '</th><th class="text-center py-2 bg-slate-50">' + t('deep.compare.gross') + '</th><th class="text-center py-2 bg-blue-50">Ambient</th><th class="text-center py-2 bg-orange-50">' + t('deep.compare.net') + '</th></tr>';
             }
 
             // Pollutant rows
@@ -6595,14 +6597,14 @@
                 const houseName = withSensor(HOUSE_NAMES[s.device_id], s.device_id);
                 const timeStr = new Date(s.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const sessNum = numMap[s.id] || '';
-                const sessLabel = sessNum ? '<span class="ml-1 text-[10px] text-slate-400">#' + sessNum + '</span>' : '';
+                const sessLabel = sessNum ? '<span class="ml-1 text-[12px] text-slate-400">#' + sessNum + '</span>' : '';
 
                 // Ambient transition badge
                 let blBadge = '';
                 if (s.baseline_transition === 'auto') {
-                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response') + '">AUTO</span>';
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[12px] font-semibold bg-amber-100 text-amber-600" title="' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response') + '">AUTO</span>';
                 } else if (s.baseline_transition === 'manual') {
-                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Ambient เอง' : 'Volunteer pressed ambient') + '">MANUAL</span>';
+                    blBadge = '<span class="ml-1 px-1.5 py-0.5 rounded text-[12px] font-semibold bg-emerald-100 text-emerald-600" title="' + (currentLang === 'th' ? 'อาสากดตัด Ambient เอง' : 'Volunteer pressed ambient') + '">MANUAL</span>';
                 }
 
                 // Format notes: shorten, remove GPS, format timestamp
@@ -6625,14 +6627,14 @@
                     shortNote = shortNote.trim();
                     if (!shortNote) shortNote = null;
                     if (shortNote) {
-                        notesHtml = '<div class="text-[10px] text-slate-400 mt-0.5">ℹ️ ' + translateNote(shortNote) + '</div>';
+                        notesHtml = '<div class="text-[12px] text-slate-400 mt-0.5">ℹ️ ' + translateNote(shortNote) + '</div>';
                     }
                 }
 
                 rows.push('<tr class="hover:bg-blue-50/50 cursor-pointer" onclick="showSessionChart(' + s.id + ',\'' + houseName.replace(/'/g, "\\'") + '\',\'' + s.started_at + '\',\'' + (s.baseline_transition || '') + '\')">' +
                     '<td class="p-3 whitespace-nowrap">' + timeStr + '</td>' +
                     '<td class="p-3 max-w-[160px]"><span class="truncate block" title="' + houseName + '">' + houseName + sessLabel + '</span></td>' +
-                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold cursor-help ' + colorClass + '" title="' + (statusTips[s.session_status] || '') + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
+                    '<td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[12px] font-bold cursor-help ' + colorClass + '" title="' + (statusTips[s.session_status] || '') + '">' + icon + ' ' + statusLabel + '</span>' + blBadge + notesHtml + '</td>' +
                     '<td class="p-3 text-center">' + duration + '</td>' +
                     '<td class="p-3 text-center font-bold">' + (s.readings_count || 0) + '</td>' +
                     '<td class="p-3 text-center">' + (s.avg_pm25 != null ? s.avg_pm25.toFixed(1) : '-') + '</td>' +
@@ -6672,7 +6674,7 @@
                     '<td class="p-2 text-center font-bold">' + completed + '/' + total + '</td>' +
                     '<td class="p-2 text-center">' + (d.total_readings || 0) + '</td>' +
                     '<td class="p-2 text-center">' + (d.avg_pm25 != null ? d.avg_pm25.toFixed(1) : '-') + '</td>' +
-                    '<td class="p-2 text-center"><span class="px-2 py-0.5 rounded-lg text-[11px] font-bold ' + statusColor + '">' + statusIcon + ' ' + statusText + '</span></td>' +
+                    '<td class="p-2 text-center"><span class="px-2 py-0.5 rounded-lg text-[12px] font-bold ' + statusColor + '">' + statusIcon + ' ' + statusText + '</span></td>' +
                     '</tr>';
             }).join('') || '<tr><td colspan="6" class="p-4 text-center text-slate-400">' + t('daily.no.data') + '</td></tr>';
         }
@@ -6831,7 +6833,7 @@
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0">${style.icon}</div>
                     <div class="flex-1 min-w-0">
                         <p class="text-[13px] font-bold text-navy truncate">${esc(translateAction(entry.action))}</p>
-                        <p class="text-[11px] text-slate-400">${esc(entry.admin_name || '-')} · ${fmtDateTimeDMY(entry.created_at)}</p>
+                        <p class="text-[12px] text-slate-400">${esc(entry.admin_name || '-')} · ${fmtDateTimeDMY(entry.created_at)}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-[13px] text-slate-500 truncate max-w-[180px]">${esc(entry.detail || '-')}</p>
@@ -6888,7 +6890,7 @@
                     <td class="p-3 text-center text-red-400">${d.temperature ?? '-'}</td>
                     <td class="p-3 text-center text-cyan-500">${d.humidity ?? '-'}</td>
                     <td class="p-3 text-center text-purple-400">${d.hcho_value ?? '-'}</td>
-                    <td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[11px] font-bold bg-blue-100 text-blue-600">${esc(houseName)}</span></td>
+                    <td class="p-3 text-center"><span class="px-2 py-1 rounded-lg text-[12px] font-bold bg-blue-100 text-blue-600">${esc(houseName)}</span></td>
                 </tr>`;
             }).join('');
             tbody.insertAdjacentHTML('beforeend', html);
@@ -7005,11 +7007,11 @@
             const oldPoints = sorted.filter(d => d.stove_type === 'old' || d.stove_type === 'traditional');
             const datasets = [];
             if (ecoPoints.length > 0) datasets.push({
-                label: '🟢 Eco', data: ecoPoints.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
+                label: '🟢 Biomass', data: ecoPoints.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
                 borderColor: '#10b981', backgroundColor: '#10b98120', borderWidth: 2, pointRadius: 4, tension: 0.3
             });
             if (oldPoints.length > 0) datasets.push({
-                label: '🔴 เดิม', data: oldPoints.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
+                label: '🔴 ดั้งเดิม', data: oldPoints.map(d => ({ x: new Date(d.recorded_at), y: d.tvoc_value })),
                 borderColor: '#f97316', backgroundColor: '#f9731620', borderWidth: 2, pointRadius: 4, tension: 0.3
             });
             tvocTabChartInstance = new Chart(canvas, {
@@ -7137,26 +7139,45 @@
                 const totalPending = (data || []).length;
                 const hasAny = sessions.length > 0 || manualData.length > 0;
 
-                // Group manual TVOC records into sessions (house_id + date + 30min gaps)
-                const manualDateMap = {};
+                // Group manual TVOC records by session_id (fallback: house_id + date + 30min gaps)
+                const manualBySession = {};
+                const manualNoSession = [];
                 manualData.forEach(d => {
-                    const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
-                    const key = `${d.house_id || 'unknown'}__${date}`;
-                    if (!manualDateMap[key]) manualDateMap[key] = [];
-                    manualDateMap[key].push(d);
+                    if (d.session_id) {
+                        if (!manualBySession[d.session_id]) manualBySession[d.session_id] = [];
+                        manualBySession[d.session_id].push(d);
+                    } else {
+                        manualNoSession.push(d);
+                    }
                 });
                 const manualSessions = [];
-                for (const [key, logs] of Object.entries(manualDateMap)) {
+                // Records WITH session_id → one card per session_id
+                for (const [sessId, logs] of Object.entries(manualBySession)) {
                     const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
-                    let cur = { houseId: sorted[0].house_id, stoveType: sorted[0].stove_type, date: key.split('__')[1], logs: [sorted[0]], ids: [sorted[0].id] };
-                    for (let i = 1; i < sorted.length; i++) {
-                        const gap = (new Date(sorted[i].recorded_at) - new Date(sorted[i-1].recorded_at)) / 60000;
-                        if (gap > 30) {
-                            manualSessions.push(cur);
-                            cur = { houseId: sorted[i].house_id, stoveType: sorted[i].stove_type, date: key.split('__')[1], logs: [sorted[i]], ids: [sorted[i].id] };
-                        } else { cur.logs.push(sorted[i]); cur.ids.push(sorted[i].id); }
+                    const date = sorted[0].recorded_at ? sorted[0].recorded_at.split('T')[0] : 'unknown';
+                    manualSessions.push({ houseId: sorted[0].house_id, stoveType: sorted[0].stove_type, date, logs: sorted, ids: sorted.map(d => d.id), sessionId: sessId });
+                }
+                // Records WITHOUT session_id → fallback to house_id + date + 30min gaps
+                if (manualNoSession.length > 0) {
+                    const fallbackMap = {};
+                    manualNoSession.forEach(d => {
+                        const date = d.recorded_at ? d.recorded_at.split('T')[0] : 'unknown';
+                        const key = `${d.house_id || 'unknown'}__${date}`;
+                        if (!fallbackMap[key]) fallbackMap[key] = [];
+                        fallbackMap[key].push(d);
+                    });
+                    for (const [key, logs] of Object.entries(fallbackMap)) {
+                        const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
+                        let cur = { houseId: sorted[0].house_id, stoveType: sorted[0].stove_type, date: key.split('__')[1], logs: [sorted[0]], ids: [sorted[0].id] };
+                        for (let i = 1; i < sorted.length; i++) {
+                            const gap = (new Date(sorted[i].recorded_at) - new Date(sorted[i-1].recorded_at)) / 60000;
+                            if (gap > 30) {
+                                manualSessions.push(cur);
+                                cur = { houseId: sorted[i].house_id, stoveType: sorted[i].stove_type, date: key.split('__')[1], logs: [sorted[i]], ids: [sorted[i].id] };
+                            } else { cur.logs.push(sorted[i]); cur.ids.push(sorted[i].id); }
+                        }
+                        manualSessions.push(cur);
                     }
-                    manualSessions.push(cur);
                 }
                 manualSessions.sort((a, b) => new Date(b.logs[0].recorded_at) - new Date(a.logs[0].recorded_at));
 
@@ -7226,17 +7247,17 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="font-bold text-navy text-sm leading-tight">🏠 ${houseName}</p>
-                                    <p class="text-[11px] text-slate-400">${volunteerName ? '👤 ' + volunteerName + ' · ' : ''}${dateStr} · ${timeRange} น.</p>
+                                    <p class="text-[12px] text-slate-400">${volunteerName ? '👤 ' + volunteerName + ' · ' : ''}${dateStr} · ${timeRange} น.</p>
                                 </div>
                                 <div class="flex items-center gap-1.5">
-                                    ${msStillActive ? '<span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold text-[11px] animate-pulse">' + t('approval.status.collecting') + '</span>' : ''}
-                                    <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px]">📝 ${ms.logs.length}</span>
+                                    ${msStillActive ? '<span class="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold text-[12px] animate-pulse">' + t('approval.status.collecting') + '</span>' : ''}
+                                    <span class="px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[12px]">📝 ${ms.logs.length}</span>
                                 </div>
                             </div>
                             <div class="flex gap-1.5 text-center">
-                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.min')}</div><div class="text-sm font-bold text-emerald-600">${minTvoc}</div></div>
-                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.avg')}</div><div class="text-sm font-bold text-purple-700">${avgTvoc}</div></div>
-                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.max')}</div><div class="text-sm font-bold text-red-500">${maxTvoc}</div></div>
+                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.min')}</div><div class="text-sm font-bold text-emerald-600">${minTvoc}</div></div>
+                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.avg')}</div><div class="text-sm font-bold text-purple-700">${avgTvoc}</div></div>
+                                <div class="flex-1 bg-purple-50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.max')}</div><div class="text-sm font-bold text-red-500">${maxTvoc}</div></div>
                             </div>
                             ${sparkHtml ? '<div class="bg-slate-50 rounded-lg p-1.5">' + sparkHtml + '</div>' : ''}
                             <div class="flex gap-1.5">
@@ -7295,13 +7316,13 @@
                         const blTrans = logSessionId ? sessionBaseline[logSessionId] : null;
                         let blInfoBar = '';
                         if (blTrans === 'auto') {
-                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200"><span class="text-amber-500 text-sm">⚡</span><span class="text-[11px] text-amber-700 font-medium">' + t('baseline.auto') + ' <span class="text-amber-500">' + t('baseline.auto.note') + '</span></span></div>';
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-200"><span class="text-amber-500 text-sm">⚡</span><span class="text-[12px] text-amber-700 font-medium">' + t('baseline.auto') + ' <span class="text-amber-500">' + t('baseline.auto.note') + '</span></span></div>';
                         } else if (blTrans === 'manual') {
-                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200"><span class="text-emerald-500 text-sm">✋</span><span class="text-[11px] text-emerald-700 font-medium">' + t('baseline.manual') + '</span></div>';
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200"><span class="text-emerald-500 text-sm">✋</span><span class="text-[12px] text-emerald-700 font-medium">' + t('baseline.manual') + '</span></div>';
                         } else if (sessStatus === 'baseline') {
-                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 border border-blue-200"><span class="text-blue-500 text-sm animate-pulse">📊</span><span class="text-[11px] text-blue-700 font-medium">' + t('baseline.collecting') + '</span></div>';
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 border border-blue-200"><span class="text-blue-500 text-sm animate-pulse">📊</span><span class="text-[12px] text-blue-700 font-medium">' + t('baseline.collecting') + '</span></div>';
                         } else {
-                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200"><span class="text-slate-400 text-sm">—</span><span class="text-[11px] text-slate-500">' + t('baseline.none') + '</span></div>';
+                            blInfoBar = '<div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200"><span class="text-slate-400 text-sm">—</span><span class="text-[12px] text-slate-500">' + t('baseline.none') + '</span></div>';
                         }
 
                         // Data coverage: actual vs expected readings + gap detection
@@ -7317,7 +7338,7 @@
                         const coverageColor = coveragePct >= 90 ? 'emerald' : coveragePct >= 70 ? 'amber' : 'red';
                         let coverageHtml = '';
                         if (actualLogs > 1 && !isStillCollecting) {
-                            coverageHtml = '<div class="flex items-center gap-2 text-[11px]">' +
+                            coverageHtml = '<div class="flex items-center gap-2 text-[12px]">' +
                                 '<span class="text-slate-500 shrink-0">' + actualLogs + '/' + expectedLogs + ' ' + t('approval.coverage.readings') + '</span>' +
                                 '<div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-' + coverageColor + '-400 rounded-full" style="width:' + coveragePct + '%"></div></div>' +
                                 (gaps.length > 0 ? '<span class="text-amber-500 font-bold shrink-0">' + t('approval.coverage.gaps', gaps.length) + '</span>' : '<span class="text-emerald-500 shrink-0">✓</span>') +
@@ -7332,21 +7353,21 @@
                         } else if (isComplete) {
                             statusBadge = '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs cursor-help" title="' + t('approval.tip.complete') + '">' + t('approval.status.complete') + '</span>';
                             borderColor = 'border-emerald-400';
-                            statusNote = isTuyaIssue ? '<div class="text-[11px] text-amber-500 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.complete.but') + sessNote + '</div>' : '';
+                            statusNote = isTuyaIssue ? '<div class="text-[12px] text-amber-500 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.complete.but') + sessNote + '</div>' : '';
                         } else {
                             const agoText = minutesAgo > 60 ? Math.round(minutesAgo / 60) + t('time.hours.short') : minutesAgo + t('time.mins.short');
                             if (isTuyaIssue) {
                                 statusBadge = '<span class="px-2.5 py-1 rounded-full bg-red-100 text-red-600 font-bold text-xs">' + t('approval.status.tuya.error') + '</span>';
                                 borderColor = 'border-red-400';
-                                statusNote = '<div class="text-[11px] text-red-500 bg-red-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
+                                statusNote = '<div class="text-[12px] text-red-500 bg-red-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
                             } else if (isOfflineIssue) {
                                 statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs">' + t('approval.status.offline') + '</span>';
                                 borderColor = 'border-amber-400';
-                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
+                                statusNote = '<div class="text-[12px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + sessNote + '</div>';
                             } else {
                                 statusBadge = '<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 font-bold text-xs cursor-help" title="' + t('approval.tip.incomplete') + '">' + t('approval.status.incomplete') + '</span>';
                                 borderColor = 'border-amber-400';
-                                statusNote = '<div class="text-[11px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + t('approval.data.latest', timeEnd, agoText + t('time.ago')) + '</div>';
+                                statusNote = '<div class="text-[12px] text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">' + t('approval.collected.of', s.logs.length) + t('approval.data.latest', timeEnd, agoText + t('time.ago')) + '</div>';
                             }
                         }
 
@@ -7355,7 +7376,7 @@
                             <div class="flex items-center justify-between gap-2">
                                 <div class="min-w-0 flex-1">
                                     <p class="font-bold text-navy text-sm leading-tight truncate" title="${houseName}">🏠 ${houseName}</p>
-                                    <p class="text-[11px] text-slate-400 truncate" title="${sensorName} · ${timeStart}–${timeEnd}">📡 ${sensorName} · ${timeStart}–${timeEnd} · ${s.logs.length} logs</p>
+                                    <p class="text-[12px] text-slate-400 truncate" title="${sensorName} · ${timeStart}–${timeEnd}">📡 ${sensorName} · ${timeStart}–${timeEnd} · ${s.logs.length} logs</p>
                                 </div>
                                 <div class="flex-shrink-0">${statusBadge}</div>
                             </div>
@@ -7363,13 +7384,13 @@
                             ${coverageHtml}
                             ${blInfoBar}
                             <div class="flex gap-1.5 text-center">
-                                <div class="flex-1 bg-orange-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.pm25.peak')}</div><div class="text-sm font-bold text-orange-600">${peakPM != null ? peakPM.toFixed(1) : '-'}</div></div>
-                                <div class="flex-1 bg-orange-50/50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.pm25.avg')}</div><div class="text-sm font-bold text-orange-400">${avgPM}</div></div>
-                                <div class="flex-1 bg-blue-50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.co2.peak')}</div><div class="text-sm font-bold text-blue-600">${peakCO2 != null ? peakCO2 : '-'}</div></div>
-                                <div class="flex-1 bg-blue-50/50 rounded-lg px-2 py-1"><div class="text-[9px] text-slate-400 font-bold">${t('stat.co2.avg')}</div><div class="text-sm font-bold text-blue-400">${avgCO2}</div></div>
+                                <div class="flex-1 bg-orange-50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.pm25.peak')}</div><div class="text-sm font-bold text-orange-600">${peakPM != null ? peakPM.toFixed(1) : '-'}</div></div>
+                                <div class="flex-1 bg-orange-50/50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.pm25.avg')}</div><div class="text-sm font-bold text-orange-400">${avgPM}</div></div>
+                                <div class="flex-1 bg-blue-50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.co2.peak')}</div><div class="text-sm font-bold text-blue-600">${peakCO2 != null ? peakCO2 : '-'}</div></div>
+                                <div class="flex-1 bg-blue-50/50 rounded-lg px-2 py-1"><div class="text-[12px] text-slate-400 font-bold">${t('stat.co2.avg')}</div><div class="text-sm font-bold text-blue-400">${avgCO2}</div></div>
                             </div>
                             <div class="flex gap-1.5">
-                                <button onclick="showLogsChart('${sKey}')" class="flex-none px-2 py-1.5 bg-slate-100 text-slate-600 rounded-xl text-[11px] font-bold hover:bg-slate-200 transition-all">📊</button>
+                                <button onclick="showLogsChart('${sKey}')" class="flex-none px-2 py-1.5 bg-slate-100 text-slate-600 rounded-xl text-[12px] font-bold hover:bg-slate-200 transition-all">📊</button>
                                 <button onclick="approveSession(window.${sKey})" ${isStillCollecting ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="flex-1 px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
                                 <button onclick="rejectSession(window.${sKey})" ${isStillCollecting ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
@@ -7563,30 +7584,30 @@
                 return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
                     <td class="px-4 py-3">
                         <span class="text-[13px] font-bold text-navy">${esc(displayName)}</span>
-                        <span class="text-[11px] text-slate-400 font-mono ml-2">${esc(d.tuya_device_id?.slice(-8))}</span>
+                        <span class="text-[12px] text-slate-400 font-mono ml-2">${esc(d.tuya_device_id?.slice(-8))}</span>
                     </td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(d.subjects?.full_name) || '<span class="text-slate-300">' + t('dev.unassigned') + '</span>'}</td>
                     <td class="px-4 py-3 text-center">
-                        <span class="text-[11px] px-2 py-0.5 rounded-full font-bold ${isOnline ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}">${isOnline ? '🟢 Online' : '⚪ Offline'}</span>
+                        <span class="text-[12px] px-2 py-0.5 rounded-full font-bold ${isOnline ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'}">${isOnline ? '🟢 Online' : '⚪ Offline'}</span>
                     </td>
                     <td class="px-4 py-3 text-center">
-                        <span class="text-[11px] px-2 py-0.5 rounded-full font-bold ${d.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}">${d.is_active ? t('dev.active') : t('dev.inactive')}</span>
+                        <span class="text-[12px] px-2 py-0.5 rounded-full font-bold ${d.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}">${d.is_active ? t('dev.active') : t('dev.inactive')}</span>
                     </td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
-                        <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[11px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
-                        <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[11px] ${d.is_active ? 'text-orange-500 hover:text-orange-600' : 'text-emerald-500 hover:text-emerald-600'} hover:underline mr-2">${d.is_active ? t('dev.off') : t('dev.on')}</button>
-                        <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(displayName)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                        <button onclick="showEditDeviceModal('${escAttr(d.id)}', '${escAttr(d.name)}', '${escAttr(d.tuya_device_id)}')" class="text-[12px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
+                        <button onclick="toggleDevice('${escAttr(d.id)}', ${!d.is_active})" class="text-[12px] ${d.is_active ? 'text-orange-500 hover:text-orange-600' : 'text-emerald-500 hover:text-emerald-600'} hover:underline mr-2">${d.is_active ? t('dev.off') : t('dev.on')}</button>
+                        <button onclick="deleteDevice('${escAttr(d.id)}', '${escAttr(displayName)}')" class="text-[12px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
                     </td>
                 </tr>`;
             }).join('');
             list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                 <table class="w-full text-left">
                     <thead><tr class="bg-slate-50 border-b border-slate-200">
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.name')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.house')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">${t('overview.stat.sensors.online')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">${t('sub.status')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.name')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.house')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-center">${t('overview.stat.sensors.online')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-center">${t('sub.status')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
@@ -7613,9 +7634,9 @@
                     <span class="text-2xl">📡</span>
                     <div class="flex-1 min-w-0">
                         <p class="font-bold text-navy text-sm truncate">${s.name}</p>
-                        <p class="text-[11px] text-slate-400 font-mono truncate">${s.tuyaId}</p>
+                        <p class="text-[12px] text-slate-400 font-mono truncate">${s.tuyaId}</p>
                     </div>
-                    <button onclick="deleteRegisteredSensor('${s.tuyaId}', '${s.name.replace(/'/g, "\\'")}')" class="text-[11px] px-2 py-1 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
+                    <button onclick="deleteRegisteredSensor('${s.tuyaId}', '${s.name.replace(/'/g, "\\'")}')" class="text-[12px] px-2 py-1 rounded-lg bg-slate-100 text-slate-400 hover:bg-red-100 hover:text-red-500 transition-all">${t('dev.delete')}</button>
                 </div>
             `).join('') || '<p class="text-slate-400 text-sm">' + t('dev.no.data') + '</p>';
         }
@@ -7973,7 +7994,7 @@
                         + formatLocaleDate(oldPeriod.starts_at) + ' → ' + (oldPeriod.ends_at ? formatLocaleDate(oldPeriod.ends_at) : t('sched.current'))
                         + '</div>';
                 } else {
-                    rows += '<span class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</span>';
+                    rows += '<span class="text-slate-300 text-[12px]">ยังไม่ได้กำหนด</span>';
                 }
                 rows += '</td>';
 
@@ -7985,7 +8006,7 @@
                         + formatLocaleDate(ecoPeriod.starts_at) + ' → ' + (ecoPeriod.ends_at ? formatLocaleDate(ecoPeriod.ends_at) : t('sched.current'))
                         + '</div>';
                 } else {
-                    rows += '<span class="text-slate-300 text-[11px]">ยังไม่ได้กำหนด</span>';
+                    rows += '<span class="text-slate-300 text-[12px]">ยังไม่ได้กำหนด</span>';
                 }
                 rows += '</td>';
 
@@ -7998,9 +8019,9 @@
                     + '<table class="w-full text-left">'
                     + '<thead><tr class="bg-slate-50 border-b border-slate-200">'
                     + '<th class="px-3 py-3 w-10"><input type="checkbox" id="periods-select-all" class="w-4 h-4 accent-emerald-600 cursor-pointer" onchange="toggleAllPeriodsCb(this.checked)"></th>'
-                    + '<th class="px-3 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">บ้าน</th>'
-                    + '<th class="px-3 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider"><span class="px-2 py-0.5 rounded bg-orange-100 text-orange-700">' + t('sched.stove.old') + '</span></th>'
-                    + '<th class="px-3 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">' + t('sched.stove.eco') + '</span></th>'
+                    + '<th class="px-3 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">บ้าน</th>'
+                    + '<th class="px-3 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider"><span class="px-2 py-0.5 rounded bg-orange-100 text-orange-700">' + t('sched.stove.old') + '</span></th>'
+                    + '<th class="px-3 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">' + t('sched.stove.eco') + '</span></th>'
                     + '</tr></thead>'
                     + '<tbody>' + rows + '</tbody>'
                     + '</table></div>';
@@ -8557,18 +8578,18 @@
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(p.description) || '-'}</td>
                     <td class="px-4 py-3 text-[13px] text-indigo-600 font-bold text-center">${houseCount}</td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
-                        <button onclick="showEditProjectModal('${p.id}')" class="text-[11px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
-                        <button onclick="deleteProject('${escAttr(p.id)}', '${escAttr(p.name)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                        <button onclick="showEditProjectModal('${p.id}')" class="text-[12px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
+                        <button onclick="deleteProject('${escAttr(p.id)}', '${escAttr(p.name)}')" class="text-[12px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
                     </td>
                 </tr>`;
             }).join('');
             list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                 <table class="w-full text-left">
                     <thead><tr class="bg-slate-50 border-b border-slate-200">
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('project.name')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('project.desc')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-center">🏠 ${t('overview.house')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('project.name')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('project.desc')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-center">🏠 ${t('overview.house')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
@@ -8647,8 +8668,8 @@
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(v.phone_contact) || '-'}</td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(houseName)}</td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
-                        <button onclick="showEditVolunteerModal('${escAttr(v.id)}', '${escAttr(v.full_name)}', '${escAttr(v.phone_contact || '')}')" class="text-[11px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
-                        <button onclick="deleteVolunteer('${escAttr(v.id)}', '${escAttr(v.full_name)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                        <button onclick="showEditVolunteerModal('${escAttr(v.id)}', '${escAttr(v.full_name)}', '${escAttr(v.phone_contact || '')}')" class="text-[12px] text-blue-500 hover:underline mr-2">${t('dev.edit')}</button>
+                        <button onclick="deleteVolunteer('${escAttr(v.id)}', '${escAttr(v.full_name)}')" class="text-[12px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
                     </td>
                 </tr>`;
             }).join('');
@@ -8656,10 +8677,10 @@
             list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                 <table class="w-full text-left">
                     <thead><tr class="bg-slate-50 border-b border-slate-200">
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.name')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.phone')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.house')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.name')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.phone')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('vol.house')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
@@ -8757,13 +8778,13 @@
 
                 // Status badge
                 const statusBadge = s.status === 'active'
-                    ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-emerald-50 text-emerald-600">' + t('sub.active') + '</span>'
-                    : '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-red-50 text-red-500">' + t('sub.inactive') + '</span>';
+                    ? '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-emerald-50 text-emerald-600">' + t('sub.active') + '</span>'
+                    : '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-red-50 text-red-500">' + t('sub.inactive') + '</span>';
 
                 // Sensor badge
                 const sensorBadge = s.has_sensor
-                    ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-teal-50 text-teal-600">' + t('sub.has.sensor') + '</span>'
-                    : '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-slate-100 text-slate-400">' + t('sub.stove.only') + '</span>';
+                    ? '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-teal-50 text-teal-600">' + t('sub.has.sensor') + '</span>'
+                    : '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-slate-100 text-slate-400">' + t('sub.stove.only') + '</span>';
 
                 // Sensor display (read-only — edit via แก้ไข button)
                 const sensorDisplaySub = assignedDevice
@@ -8773,11 +8794,11 @@
                 return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
                     <td class="px-4 py-3">
                         <div class="font-bold text-navy text-[13px]">${esc(s.full_name)}</div>
-                        <div class="text-[11px] text-slate-400">${esc(addrParts)}</div>
+                        <div class="text-[12px] text-slate-400">${esc(addrParts)}</div>
                     </td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(volName) || '<span class="text-slate-300">' + t('sub.unassigned') + '</span>'}</td>
                     <td class="px-4 py-3">${sensorDisplaySub}</td>
-                    <td class="px-4 py-3">${s.connectivity ? `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : '<span class="text-[11px] text-slate-300">—</span>'}</td>
+                    <td class="px-4 py-3">${s.connectivity ? `<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : '<span class="text-[12px] text-slate-300">—</span>'}</td>
                     <td class="px-4 py-3">
                         <div class="flex flex-wrap gap-1">
                             ${statusBadge}
@@ -8785,9 +8806,9 @@
                         </div>
                     </td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
-                        <button onclick="showEditSubjectModal('${escAttr(s.id)}')" class="text-[11px] text-blue-500 hover:underline mr-1">${t('dev.edit')}</button>
-                        ${s.has_sensor || assignedDevice ? `<button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[11px] mr-1 ${s.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-emerald-500 hover:text-emerald-700'}">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>` : ''}
-                        <button onclick="deleteSubject('${escAttr(s.id)}', '${escAttr(s.full_name)}')" class="text-[11px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
+                        <button onclick="showEditSubjectModal('${escAttr(s.id)}')" class="text-[12px] text-blue-500 hover:underline mr-1">${t('dev.edit')}</button>
+                        ${s.has_sensor || assignedDevice ? `<button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] mr-1 ${s.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-emerald-500 hover:text-emerald-700'}">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>` : ''}
+                        <button onclick="deleteSubject('${escAttr(s.id)}', '${escAttr(s.full_name)}')" class="text-[12px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
                     </td>
                 </tr>`;
             }).join('');
@@ -8795,12 +8816,12 @@
             list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
                     <thead><tr class="bg-slate-50 border-b border-slate-200">
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.house')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.volunteer')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.sensor')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.connectivity')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.status')}</th>
-                        <th class="px-4 py-3 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.house')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.volunteer')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.sensor')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.connectivity')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('sub.status')}</th>
+                        <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider text-right">${t('sched.actions')}</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
                 </table>
@@ -8827,20 +8848,20 @@
                     <input id="edit-sub-address" value="${escAttr(s.address || '')}" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>
+                            <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>
                             <select id="edit-sub-province" onchange="onEditProvinceChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
                                 <option value="">${t('sub.select.province')}</option>
                                 ${provinceOptions}
                             </select>
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.district')}</label>
+                            <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.district')}</label>
                             <select id="edit-sub-district" onchange="onEditDistrictChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
                                 <option value="">${t('sub.select.district')}</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.subdistrict')}</label>
+                            <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.subdistrict')}</label>
                             <select id="edit-sub-subdistrict" class="w-full p-3 rounded-xl border text-[13px] custom-select">
                                 <option value="">${t('sub.select.subdistrict')}</option>
                             </select>
@@ -8986,8 +9007,8 @@
 
         function renderHealthBadge(tuyaId) {
             const h = sensorHealthMap[tuyaId];
-            if (!h) return '<span class="text-[11px] px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400">⚪ ' + t('common.no.data') + '</span>';
-            return `<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold ${h.color}" title="${h.label}">${h.emoji} ${h.label}</span>`;
+            if (!h) return '<span class="text-[12px] px-2 py-0.5 rounded-lg bg-slate-100 text-slate-400">⚪ ' + t('common.no.data') + '</span>';
+            return `<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold ${h.color}" title="${h.label}">${h.emoji} ${h.label}</span>`;
         }
 
         // ==================== Overview Tab ====================
@@ -9022,7 +9043,7 @@
                     <div class="text-2xl mb-1">${c.icon}</div>
                     <div class="text-3xl font-bold">${c.value}</div>
                     <div class="text-[12px] font-medium opacity-70">${c.label}</div>
-                    ${c.sub ? '<div class="text-[11px] mt-1 font-medium">' + c.sub + '</div>' : ''}
+                    ${c.sub ? '<div class="text-[12px] mt-1 font-medium">' + c.sub + '</div>' : ''}
                 </div>
             `).join('');
         }
@@ -9105,12 +9126,12 @@
                 return `<tr class="hover:bg-slate-50/50 transition-colors">
                     <td class="p-3">
                         <p class="font-bold text-navy text-[13px]">🏠 ${s.full_name}</p>
-                        <p class="text-[11px] text-slate-400">${s.subdistrict ? 'ต.' + s.subdistrict : s.address || ''}</p>
+                        <p class="text-[12px] text-slate-400">${s.subdistrict ? 'ต.' + s.subdistrict : s.address || ''}</p>
                     </td>
                     <td class="p-3">${sensorDisplay}</td>
                     <td class="p-3">${volDisplay}</td>
-                    <td class="p-3 text-center">${tuyaId ? renderHealthBadge(tuyaId) : '<span class="text-[11px] text-slate-300">—</span>'}</td>
-                    <td class="p-3 text-center">${projName ? '<span class="text-[11px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">' + projName + '</span>' : '<span class="text-[11px] text-slate-300">—</span>'}</td>
+                    <td class="p-3 text-center">${tuyaId ? renderHealthBadge(tuyaId) : '<span class="text-[12px] text-slate-300">—</span>'}</td>
+                    <td class="p-3 text-center">${projName ? '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-indigo-50 text-indigo-600">' + projName + '</span>' : '<span class="text-[12px] text-slate-300">—</span>'}</td>
                 </tr>`;
             }).join('');
         }
@@ -9173,12 +9194,12 @@
                         <span class="text-2xl">${d.online ? '📡' : '📴'}</span>
                         <div class="flex-1">
                             <p class="font-bold text-navy text-sm">${d.name || d.id}</p>
-                            <p class="text-[11px] text-slate-400 font-mono">${d.id}</p>
-                            <p class="text-[11px] ${d.online ? 'text-emerald-500' : 'text-slate-400'}">${d.online ? 'ออนไลน์' : 'ออฟไลน์'}${d.model ? ' · ' + d.model : ''}</p>
+                            <p class="text-[12px] text-slate-400 font-mono">${d.id}</p>
+                            <p class="text-[12px] ${d.online ? 'text-emerald-500' : 'text-slate-400'}">${d.online ? 'ออนไลน์' : 'ออฟไลน์'}${d.model ? ' · ' + d.model : ''}</p>
                         </div>
                         ${isRegistered
-                            ? '<span class="text-[11px] px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-500">ลงทะเบียนแล้ว</span>'
-                            : '<button onclick="registerDiscoveredSensor(\'' + d.id + '\', \'' + (d.name || '').replace(/'/g, "\\'") + '\')" class="text-[11px] px-3 py-1.5 rounded-xl font-bold bg-amber-100 text-amber-700 hover:bg-amber-200 transition-all">+ ลงทะเบียน</button>'
+                            ? '<span class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-500">ลงทะเบียนแล้ว</span>'
+                            : '<button onclick="registerDiscoveredSensor(\'' + d.id + '\', \'' + (d.name || '').replace(/'/g, "\\'") + '\')" class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-amber-100 text-amber-700 hover:bg-amber-200 transition-all">+ ลงทะเบียน</button>'
                         }
                     </div>`;
                 }).join('');
@@ -9195,7 +9216,7 @@
                 const id = card.dataset.tuyaId;
                 if (registeredIds.includes(id)) {
                     const btn = card.querySelector('button');
-                    if (btn) btn.outerHTML = '<span class="text-[11px] px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-500">ลงทะเบียนแล้ว</span>';
+                    if (btn) btn.outerHTML = '<span class="text-[12px] px-3 py-1.5 rounded-xl font-bold bg-emerald-50 text-emerald-500">ลงทะเบียนแล้ว</span>';
                     card.classList.add('border-emerald-200', 'bg-emerald-50/30');
                     card.classList.remove('border-slate-100');
                 }
@@ -9291,20 +9312,20 @@
                     <input id="new-sub-address" placeholder="${t('sub.address.ph')}" class="w-full p-4 rounded-2xl border">
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>
+                            <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.province')}</label>
                             <select id="new-sub-province" onchange="onNewProvinceChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
                                 <option value="">${t('sub.select.province')}</option>
                                 ${provinceOptions}
                             </select>
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.district')}</label>
+                            <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.district')}</label>
                             <select id="new-sub-district" onchange="onNewDistrictChange()" class="w-full p-3 rounded-xl border text-[13px] custom-select">
                                 <option value="">${t('sub.select.district')}</option>
                             </select>
                         </div>
                         <div>
-                            <label class="text-[11px] font-bold text-slate-400 block mb-1">${t('sub.subdistrict')}</label>
+                            <label class="text-[12px] font-bold text-slate-400 block mb-1">${t('sub.subdistrict')}</label>
                             <select id="new-sub-subdistrict" class="w-full p-3 rounded-xl border text-[13px] custom-select">
                                 <option value="">${t('sub.select.subdistrict')}</option>
                             </select>
@@ -9959,9 +9980,9 @@
             // Subtitle with baseline transition badge + explanation
             let subHtml = fmtDateTimeDMY(startedAt);
             if (baselineTransition === 'auto') {
-                subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-600 shrink-0">AUTO</span><span class="text-[11px] text-amber-600">' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response detected') + '</span></div>';
+                subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[12px] font-semibold bg-amber-100 text-amber-600 shrink-0">AUTO</span><span class="text-[12px] text-amber-600">' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response detected') + '</span></div>';
             } else if (baselineTransition === 'manual') {
-                subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-emerald-100 text-emerald-600 shrink-0">MANUAL</span><span class="text-[11px] text-emerald-600">' + (currentLang === 'th' ? 'อาสากดปุ่ม "เริ่มจุดเตา" เอง — ข้อมูล Ambient ถูกแยกเรียบร้อย' : 'Volunteer pressed "Start Stove" — Ambient data properly separated') + '</span></div>';
+                subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[12px] font-semibold bg-emerald-100 text-emerald-600 shrink-0">MANUAL</span><span class="text-[12px] text-emerald-600">' + (currentLang === 'th' ? 'อาสากดปุ่ม "เริ่มจุดเตา" เอง — ข้อมูล Ambient ถูกแยกเรียบร้อย' : 'Volunteer pressed "Start Stove" — Ambient data properly separated') + '</span></div>';
             }
             document.getElementById('session-modal-sub').innerHTML = subHtml;
             document.getElementById('session-modal-stats').innerHTML = '';
@@ -10000,7 +10021,7 @@
                 { label: 'PM2.5 สูงสุด', value: pm25s.length ? safeMax(pm25s).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
                 { label: 'PM2.5 เฉลี่ย', value: pm25s.length ? (pm25s.reduce((a,b)=>a+b,0)/pm25s.length).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-400' },
                 { label: 'CO2 สูงสุด', value: co2s.length ? safeMax(co2s) + ' ppm' : '-', color: 'text-blue-600' },
-            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[11px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
+            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[12px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
             document.getElementById('session-modal-stats').innerHTML = statsHtml;
 
             // Render chart (using deduped data)
@@ -10079,7 +10100,7 @@
                 { label: 'PM2.5 พีค', value: peakPM != null ? peakPM.toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
                 { label: 'PM2.5 เฉลี่ย', value: avgPM + ' µg/m³', color: 'text-orange-400' },
                 { label: 'CO2 พีค', value: peakCO2 != null ? peakCO2 + ' ppm' : '-', color: 'text-blue-600' },
-            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[11px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
+            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[12px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
             document.getElementById('session-modal-stats').innerHTML = statsHtml;
 
             const ctx = document.getElementById('session-detail-chart').getContext('2d');

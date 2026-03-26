@@ -574,6 +574,17 @@ async function onHouseConfirmed(house) {
   }
   // Always load previous TVOC/CO data (handles both resume and same-browser refresh)
   await loadPreviousTvoc();
+  // Restore TVOC answer from sessionStorage (handles page refresh after answering "ไม่เก็บ")
+  if (!tvocQuestionAnswered) {
+    try {
+      const saved = sessionStorage.getItem('tvoc_answered_' + house.id);
+      if (saved !== null) {
+        tvocQuestionAnswered = true;
+        tvocEnabled = saved === '1';
+        if (tvocEnabled) showTvocSection();
+      }
+    } catch(e) {}
+  }
   if (isResumedSession && tvocReadings.length > 0) {
     // Toast already shown inside loadPreviousTvoc
   } else if (isResumedSession) {
@@ -1188,6 +1199,10 @@ function answerTvoc(yes) {
   document.getElementById('tvoc-question').classList.add('hidden');
   tvocEnabled = yes;
   tvocQuestionAnswered = true;
+  // Persist answer so page refresh won't ask again
+  if (selectedHouse) {
+    try { sessionStorage.setItem('tvoc_answered_' + selectedHouse.id, yes ? '1' : '0'); } catch(e) {}
+  }
   if (yes) {
     showTvocSection();
     showToast('📝 เปิดบันทึก TVOC/CO — จะเตือนทุก 5 นาที');
