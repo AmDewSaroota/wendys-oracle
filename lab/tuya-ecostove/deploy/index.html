@@ -7773,18 +7773,23 @@
                 .select('id, device_id, readings_count, started_at')
                 .eq('session_status', 'collecting');
 
-            // Check for incomplete sessions
-            const { data: incompleteSessions } = await supabaseClient
-                .from('sessions')
-                .select('id, device_id, readings_count, started_at, ended_at')
-                .eq('session_status', 'incomplete')
-                .order('started_at', { ascending: false })
-                .limit(20);
-
             const { data: pendingLogs } = await supabaseClient
                 .from('pollution_logs')
-                .select('id')
+                .select('id, session_id')
                 .eq('status', 'pending');
+
+            // Check for incomplete sessions — only those that have pending logs
+            const pendingSessionIds = [...new Set((pendingLogs || []).map(d => d.session_id).filter(Boolean))];
+            let incompleteSessions = [];
+            if (pendingSessionIds.length > 0) {
+                const { data: incSess } = await supabaseClient
+                    .from('sessions')
+                    .select('id, device_id, readings_count, started_at, ended_at')
+                    .eq('session_status', 'incomplete')
+                    .in('id', pendingSessionIds)
+                    .order('started_at', { ascending: false });
+                incompleteSessions = incSess || [];
+            }
 
             if (!pendingLogs || pendingLogs.length === 0) {
                 showToast(t('approval.no.pending')); return;
