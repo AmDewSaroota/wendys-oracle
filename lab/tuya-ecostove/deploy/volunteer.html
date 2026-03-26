@@ -402,8 +402,8 @@ async function init() {
     localStorage.setItem('biomass_stove_browser_id', browserId);
   }
 
-  // Cleanup lock on page close
-  window.addEventListener('beforeunload', () => { removeLock(); });
+  // No beforeunload lock removal — let stale mechanism handle cleanup (3 min timeout)
+  // This ensures lock survives page refresh
 
   // Demo mode
   if (DEMO_MODE) {
@@ -573,10 +573,11 @@ async function onHouseConfirmed(house) {
   // Always load previous TVOC/CO data (handles both resume and same-browser refresh)
   await loadPreviousTvoc();
   // Restore TVOC answer from localStorage (survives refresh + tab close)
-  // Key includes today's date so answer resets each day
+  // Key includes Thai date so answer resets each day (Thai timezone)
   if (!tvocQuestionAnswered) {
     try {
-      const todayKey = 'tvoc_answered_' + house.id + '_' + new Date().toISOString().split('T')[0];
+      const thaiDate = new Date(Date.now() + 7 * 3600000).toISOString().split('T')[0];
+      const todayKey = 'tvoc_answered_' + house.id + '_' + thaiDate;
       const saved = localStorage.getItem(todayKey);
       if (saved !== null) {
         tvocQuestionAnswered = true;
@@ -1217,10 +1218,11 @@ function answerTvoc(yes) {
   tvocEnabled = yes;
   tvocQuestionAnswered = true;
   // Persist answer so page refresh won't ask again (localStorage survives tab close)
-  // Key includes today's date so answer resets each day
+  // Key includes Thai date so answer resets each day
   if (selectedHouse) {
     try {
-      const todayKey = 'tvoc_answered_' + selectedHouse.id + '_' + new Date().toISOString().split('T')[0];
+      const thaiDate = new Date(Date.now() + 7 * 3600000).toISOString().split('T')[0];
+      const todayKey = 'tvoc_answered_' + selectedHouse.id + '_' + thaiDate;
       localStorage.setItem(todayKey, yes ? '1' : '0');
     } catch(e) {}
   }
