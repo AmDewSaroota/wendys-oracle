@@ -257,7 +257,120 @@ describe('TVOC answer: Thai date key (UTC+7)', () => {
   });
 });
 
-// ==================== F. TVOC Answer — localStorage Error Resilience ====================
+// ==================== F. Rest Day Check ====================
+function checkRestDayLogic(config, nowMs) {
+  const thaiNow = new Date(nowMs + 7 * 3600000);
+  const jsDay = thaiNow.getUTCDay();
+  const isoDay = jsDay === 0 ? 7 : jsDay;
+
+  if (config.active_days) {
+    const activeDays = config.active_days.split(',').map(d => parseInt(d.trim(), 10));
+    if (!activeDays.includes(isoDay)) {
+      return { blocked: true, reason: 'rest_day', day: isoDay };
+    }
+  }
+
+  if (config.quiet_hours_enabled) {
+    const hhmm = thaiNow.toISOString().slice(11, 16);
+    const start = config.quiet_hours_start;
+    const end = config.quiet_hours_end;
+    const inQuiet = start <= end ? (hhmm >= start && hhmm < end) : (hhmm >= start || hhmm < end);
+    if (inQuiet) {
+      return { blocked: true, reason: 'quiet_hours' };
+    }
+  }
+
+  return { blocked: false };
+}
+
+describe('checkRestDay: day-of-week check', () => {
+  const config = { active_days: '1,2,3,4,5', quiet_hours_enabled: false };
+
+  it('Monday (day 1) → not blocked', () => {
+    // 2026-03-23 is Monday. 10:00 UTC = 17:00 Thai (still Monday)
+    const mon = Date.parse('2026-03-23T10:00:00Z');
+    assert.equal(checkRestDayLogic(config, mon).blocked, false);
+  });
+
+  it('Friday (day 5) → not blocked', () => {
+    const fri = Date.parse('2026-03-27T10:00:00Z');
+    assert.equal(checkRestDayLogic(config, fri).blocked, false);
+  });
+
+  it('Saturday (day 6) → blocked', () => {
+    const sat = Date.parse('2026-03-28T10:00:00Z');
+    const result = checkRestDayLogic(config, sat);
+    assert.equal(result.blocked, true);
+    assert.equal(result.reason, 'rest_day');
+    assert.equal(result.day, 6);
+  });
+
+  it('Sunday (day 7) → blocked', () => {
+    const sun = Date.parse('2026-03-29T10:00:00Z');
+    const result = checkRestDayLogic(config, sun);
+    assert.equal(result.blocked, true);
+    assert.equal(result.reason, 'rest_day');
+    assert.equal(result.day, 7);
+  });
+});
+
+describe('checkRestDay: quiet hours check', () => {
+  const config = { active_days: '1,2,3,4,5,6,7', quiet_hours_enabled: true, quiet_hours_start: '00:00', quiet_hours_end: '06:00' };
+
+  it('Thai 03:00 (in quiet hours) → blocked', () => {
+    // Thai 03:00 = UTC 20:00 day before
+    const utc2000 = Date.parse('2026-03-27T20:00:00Z');
+    const result = checkRestDayLogic(config, utc2000);
+    assert.equal(result.blocked, true);
+    assert.equal(result.reason, 'quiet_hours');
+  });
+
+  it('Thai 06:00 (end of quiet hours) → not blocked', () => {
+    // Thai 06:00 = UTC 23:00 day before
+    const utc2300 = Date.parse('2026-03-27T23:00:00Z');
+    assert.equal(checkRestDayLogic(config, utc2300).blocked, false);
+  });
+
+  it('Thai 12:00 (daytime) → not blocked', () => {
+    const utc0500 = Date.parse('2026-03-28T05:00:00Z');
+    assert.equal(checkRestDayLogic(config, utc0500).blocked, false);
+  });
+});
+
+describe('checkRestDay: overnight quiet hours', () => {
+  const config = { active_days: '1,2,3,4,5,6,7', quiet_hours_enabled: true, quiet_hours_start: '22:00', quiet_hours_end: '06:00' };
+
+  it('Thai 23:00 (in overnight quiet) → blocked', () => {
+    const utc1600 = Date.parse('2026-03-28T16:00:00Z');
+    const result = checkRestDayLogic(config, utc1600);
+    assert.equal(result.blocked, true);
+    assert.equal(result.reason, 'quiet_hours');
+  });
+
+  it('Thai 05:59 (still in overnight quiet) → blocked', () => {
+    const utc2259 = Date.parse('2026-03-27T22:59:00Z');
+    assert.equal(checkRestDayLogic(config, utc2259).blocked, true);
+  });
+
+  it('Thai 07:00 (after quiet) → not blocked', () => {
+    const utc0000 = Date.parse('2026-03-28T00:00:00Z');
+    assert.equal(checkRestDayLogic(config, utc0000).blocked, false);
+  });
+});
+
+describe('checkRestDay: no config → allow', () => {
+  it('no active_days set → not blocked', () => {
+    const now = Date.parse('2026-03-28T10:00:00Z');
+    assert.equal(checkRestDayLogic({ quiet_hours_enabled: false }, now).blocked, false);
+  });
+
+  it('quiet_hours disabled → not blocked even at 03:00 Thai', () => {
+    const utc2000 = Date.parse('2026-03-27T20:00:00Z');
+    assert.equal(checkRestDayLogic({ active_days: '1,2,3,4,5,6,7', quiet_hours_enabled: false }, utc2000).blocked, false);
+  });
+});
+
+// ==================== G. TVOC Answer — localStorage Error Resilience ====================
 describe('TVOC answer: localStorage error resilience', () => {
   it('storageGet throws → graceful fallback (not answered)', () => {
     const now = Date.parse('2026-03-26T10:00:00Z');
