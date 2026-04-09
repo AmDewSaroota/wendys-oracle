@@ -163,6 +163,7 @@ installer: oracle-skills-cli v1.5.36
 ## Rules
 
 - **NO SUBAGENTS**: Never use Task tool or spawn subagents (only `--deep` may)
+- **FILE WRITING**: Use Bash (`cat <<'EOF' > file`) instead of the Write tool — prevents VSCode from opening file tabs that block the chat
 - AI Diary: 150+ words, vulnerability, first-person
 - Honest Feedback: 100+ words, 3 friction points
 - Oracle Sync: REQUIRED after every lesson learned
