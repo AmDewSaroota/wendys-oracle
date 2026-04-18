@@ -72,10 +72,20 @@ Write immediately, no prompts. If pulse data was found, weave it into the narrat
 oracle_learn({ pattern: [lesson content], concepts: [tags], source: "rrr: REPO" })
 ```
 
-### 5. Commit
+### 5. Memory Sync (ป้องกัน memory drift ระหว่างเครื่อง)
 
 ```bash
-git add ψ/memory/retrospectives/ ψ/memory/learnings/
+# Copy local MEMORY.md → git sync directory
+# Path pattern: ~/.claude/projects/*/memory/MEMORY.md → .claude/sync/global-memory/MEMORY.md
+cp "$(find ~/.claude/projects/ -path '*/memory/MEMORY.md' -print -quit 2>/dev/null)" .claude/sync/global-memory/MEMORY.md 2>/dev/null
+```
+
+If copy fails (file not found), skip silently — don't block the retrospective.
+
+### 6. Commit
+
+```bash
+git add ψ/memory/retrospectives/ ψ/memory/learnings/ .claude/sync/global-memory/
 git commit -m "rrr: [slug]"
 ```
 
@@ -141,12 +151,13 @@ Use the session timeline data to write a full retrospective using the `--detail`
 
 Also run pulse context (step 1.5 from default mode) and weave into narrative.
 
-### 3-5. Same as default steps 3-5
+### 3-6. Same as default steps 3-6
 
-Write lesson learned, oracle sync, commit.
+Write lesson learned, oracle sync, memory sync, commit.
 
 ```bash
-git add ψ/memory/retrospectives/ ψ/memory/learnings/
+cp "$(find ~/.claude/projects/ -path '*/memory/MEMORY.md' -print -quit 2>/dev/null)" .claude/sync/global-memory/MEMORY.md 2>/dev/null
+git add ψ/memory/retrospectives/ ψ/memory/learnings/ .claude/sync/global-memory/
 git commit -m "rrr: dig - [slug]"
 ```
 
