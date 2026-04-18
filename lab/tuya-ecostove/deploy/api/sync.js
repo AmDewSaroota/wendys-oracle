@@ -37,7 +37,7 @@ const {
   MAX_SESSIONS_PER_DAY,
   MONTHLY_API_LIMIT,
   BASELINE_MINUTES,
-} = require('./sync-logic');
+} = require('./_sync-logic');
 
 // SENSORS loaded dynamically from Supabase (registered_sensors + devices)
 async function loadSensors(sbUrl, sbKey) {
@@ -304,10 +304,10 @@ function sbHeaders(sbKey) {
 }
 
 async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId) {
-  // Dedup: skip if last log for this device was < 4.5 min ago (prevents cron jitter duplicates)
+  // Dedup + Stale data check: fetch last log to compare timing AND values
   try {
     const lastRes = await fetch(
-      sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + deviceId + '&data_source=eq.sensor&order=recorded_at.desc&limit=1&select=recorded_at',
+      sbUrl + '/rest/v1/pollution_logs?tuya_device_id=eq.' + deviceId + '&data_source=eq.sensor&order=recorded_at.desc&limit=1&select=recorded_at,pm25_value,pm10_value,co2_value,temperature,humidity,hcho_value',
       { headers: sbHeaders(sbKey) }
     );
     if (lastRes.ok) {
@@ -318,9 +318,27 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId)
           console.log('insertLog dedup: skipping ' + deviceId + ', last log ' + lastAge.toFixed(1) + ' min ago');
           return 'dedup';
         }
+        // Stale data detection: Tuya returns cached values when sensor is charging but not measuring
+        // Compare core values — if ALL match exactly, it's cached data (real sensors always have micro-variations)
+        const prev = lastData[0];
+        const pairs = [
+          [readings.pm25_value, prev.pm25_value],
+          [readings.co2_value, prev.co2_value],
+          [readings.temp_current, prev.temperature],
+          [readings.humidity_value, prev.humidity],
+          [readings.pm10, prev.pm10_value],
+          [readings.ch2o_value, prev.hcho_value],
+        ];
+        const comparable = pairs.filter(([a, b]) => a != null && b != null);
+        const matching = comparable.filter(([a, b]) => a === b);
+        // If 4+ values are non-null AND all match → stale cache
+        if (comparable.length >= 4 && matching.length === comparable.length) {
+          console.log('insertLog stale: skipping ' + deviceId + ' — all ' + comparable.length + ' values identical to last reading (Tuya cache)');
+          return 'stale';
+        }
       }
     }
-  } catch (_) {} // fail-open: insert if dedup check fails
+  } catch (_) {} // fail-open: insert if dedup/stale check fails
 
   const record = {
     pm25_value: readings.pm25_value ?? null,
@@ -330,7 +348,7 @@ async function insertLog(sbUrl, sbKey, readings, deviceId, stoveType, sessionId)
     temperature: readings.temp_current ?? null,
     humidity: readings.humidity_value ?? null,
     hcho_value: readings.ch2o_value ?? null,
-    tvoc_value: readings.tvoc_value ?? null,
+    tvoc_value: readings.tvoc_value ?? readings.voc_value ?? null,
     aqi: calculateAqiFromPm25(readings.pm25_value),
     data_source: 'sensor',
     tuya_device_id: deviceId,
@@ -1016,56 +1034,54 @@ module.exports = async function handler(req, res) {
     }
     if (!tokenCached) tuyaCalls++;
 
-    // ===== Phase 4: Device info — online check (1 Smart Home API call for ALL sensors) =====
+    // ===== Phase 4: Device info — online check =====
+    // Try batch API first; if permission denied, fall back to direct status for all
+    let batchApiFailed = false;
     const deviceInfoMap = await getBatchDeviceInfo(accessId, accessSecret, token, allIds, appUserUid);
     tuyaCalls += deviceInfoMap._attempts || 1;
 
-    // If Tuya API itself failed, track error count in session notes
     if (deviceInfoMap._apiError) {
-      console.error('Phase 4: Tuya API failed — ' + deviceInfoMap._errorMsg + '. Keeping sessions alive.');
-      for (const sensor of sensorsNeedingTuya) {
-        const cached = cachedSessions[sensor.id];
-        if (cached) {
-          // Track error count in session notes — append, don't overwrite
-          const existingNotes = (cached.notes || '').replace(/\s*tuya_api_errors:\d+/, '').trim();
-          const existingErrors = parseInt(((cached.notes || '').match(/tuya_api_errors:(\d+)/) || [])[1] || '0');
-          const newErrors = existingErrors + 1;
-          const updatedNotes = (existingNotes ? existingNotes + ' ' : '') + 'tuya_api_errors:' + newErrors;
-          await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + cached.id, {
-            method: 'PATCH', headers: sbHeaders(sbKey),
-            body: JSON.stringify({ updated_at: new Date().toISOString(), notes: updatedNotes }),
-          });
-        }
-        results.push({ sensor: sensor.name, status: 'tuya_api_error', reason: deviceInfoMap._errorMsg });
-      }
-      await updateMonthlyQuota(sbUrl, sbKey, tuyaCalls);
-      return res.status(200).json({ success: true, synced: '0/' + SENSORS.length, tuya_api_error: deviceInfoMap._errorMsg, time: new Date().toISOString(), tuya_calls: tuyaCalls, results });
+      console.warn('Phase 4: Batch API failed (' + deviceInfoMap._errorMsg + '), falling back to direct status for all sensors');
+      batchApiFailed = true;
     }
 
-    // ===== Phase 4.5: Write online/offline status for ALL sensors =====
+    // ===== Phase 4.5: Write online/offline status (only if batch API worked) =====
     const nowISO = new Date().toISOString();
-    await Promise.all(SENSORS.map(s => fetch(sbUrl + '/rest/v1/registered_sensors?tuya_device_id=eq.' + s.id, {
-      method: 'PATCH', headers: sbHeaders(sbKey),
-      body: JSON.stringify({ is_online: !!(deviceInfoMap[s.id] && deviceInfoMap[s.id].online), last_checked_at: nowISO }),
-    })));
+    if (!batchApiFailed) {
+      await Promise.all(SENSORS.map(s => fetch(sbUrl + '/rest/v1/registered_sensors?tuya_device_id=eq.' + s.id, {
+        method: 'PATCH', headers: sbHeaders(sbKey),
+        body: JSON.stringify({ is_online: !!(deviceInfoMap[s.id] && deviceInfoMap[s.id].online), last_checked_at: nowISO }),
+      })));
+    }
 
-    // ===== Phase 5: Device status — ONLY if any sensor is online (N parallel calls) =====
-    const onlineSensors = sensorsNeedingTuya.filter(s => {
-      const info = deviceInfoMap[s.id];
-      return info && info.online;
-    });
+    // ===== Phase 5: Device status — direct calls per sensor =====
+    // If batch API worked: only call online sensors. If batch failed: call all sensors.
+    const sensorsToFetch = batchApiFailed
+      ? sensorsNeedingTuya
+      : sensorsNeedingTuya.filter(s => deviceInfoMap[s.id] && deviceInfoMap[s.id].online);
 
     let deviceStatusMap = {};
-    if (onlineSensors.length > 0) {
-      const onlineIds = onlineSensors.map(s => s.id);
-      deviceStatusMap = await getBatchDeviceStatus(accessId, accessSecret, token, onlineIds);
+    if (sensorsToFetch.length > 0) {
+      const fetchIds = sensorsToFetch.map(s => s.id);
+      deviceStatusMap = await getBatchDeviceStatus(accessId, accessSecret, token, fetchIds);
       tuyaCalls += deviceStatusMap._attempts || 1;
+    }
+
+    // If batch API failed, update online status based on which devices returned data
+    if (batchApiFailed) {
+      await Promise.all(SENSORS.map(s => fetch(sbUrl + '/rest/v1/registered_sensors?tuya_device_id=eq.' + s.id, {
+        method: 'PATCH', headers: sbHeaders(sbKey),
+        body: JSON.stringify({ is_online: !!deviceStatusMap[s.id], last_checked_at: nowISO }),
+      })));
     }
 
     // ===== Phase 6: Process each sensor with batch results =====
     for (const sensor of sensorsNeedingTuya) {
       try {
-        const isOnline = deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online;
+        // If batch API failed, determine online from direct status result
+        const isOnline = batchApiFailed
+          ? !!deviceStatusMap[sensor.id]
+          : !!(deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online);
 
         const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id], sensor.projectId, closedMap[sensor.id] || null, countMap[sensor.id] || 0);
         const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
@@ -1085,7 +1101,7 @@ module.exports = async function handler(req, res) {
 
         results.push({
           sensor: sensor.name,
-          status: inserted === 'dedup' ? 'dedup' : (inserted ? 'ok' : 'insert_failed'),
+          status: inserted === 'dedup' ? 'dedup' : inserted === 'stale' ? 'stale_cache' : (inserted ? 'ok' : 'insert_failed'),
           pm25: readings.pm25_value,
           co2: readings.co2_value,
           temp: readings.temp_current,

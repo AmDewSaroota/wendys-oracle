@@ -235,6 +235,7 @@
         .guide-mock-btn-primary { background:#064e3b; color:white; text-align:center; padding:10px; border-radius:14px; font-weight:700; font-size:13px; }
         .guide-mock-modal { background:white; border-radius:1.25rem; border:1px solid #e2e8f0; box-shadow:0 25px 50px -12px rgba(0,0,0,0.15); padding:24px; margin-top:12px; margin-bottom:16px; max-width:360px; margin-left:auto; margin-right:auto; }
         .guide-mock-btn-link { font-size:11px; font-weight:600; cursor:default; }
+        .print-toc-only { display: none; }
         @media print {
             nav, .scenario-bar, #view-basic, #view-deep,
             .guide-controls, footer, #modal-overlay,
@@ -243,7 +244,12 @@
             #view-admin > *:not(.admin-tab-content),
             .admin-tab-content:not(#admin-guide) { display: none !important; }
             .guide-body { display: block !important; }
-            .guide-section { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; margin-bottom: 12px; }
+            .guide-section { border: 1px solid #ccc; margin-bottom: 12px; }
+            .guide-mock, .guide-mock-modal { break-inside: avoid; page-break-inside: avoid; }
+            .guide-important { break-inside: avoid; page-break-inside: avoid; }
+            .guide-header { break-after: avoid; page-break-after: avoid; }
+            .print-mock-group { break-inside: avoid; page-break-inside: avoid; }
+            .print-toc-only { display: block !important; break-after: page; page-break-after: always; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; }
             body { background: white !important; font-size: 12px; padding: 0 !important; margin: 0 !important; }
             main { padding: 8px !important; }
             #admin-guide { gap: 8px !important; }
@@ -650,9 +656,9 @@
                     <span id="meth-arrow" class="text-gray-400 transition-transform">▼</span>
                 </div>
                 <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
-                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.1.title">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n="deep.meth.1.sensor">เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)</li><li data-i18n="deep.meth.1.freq">ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li data-i18n="deep.meth.1.scope">10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.1.title">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n="deep.meth.1.sensor">เซนเซอร์: MT15 (PM2.5, PM10, CO2, CO, HCHO, TVOC, Temp, Humidity, AQI)</li><li data-i18n="deep.meth.1.freq">ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li data-i18n="deep.meth.1.scope">10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
                     <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.2.title">2. การหักค่าแวดล้อม (Ambient Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n-html="deep.meth.2.baseline">ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ค่าแวดล้อม (Ambient)</li><li data-i18n="deep.meth.2.net">ค่าสุทธิ (Net) = ค่าที่วัดได้ − Ambient ของ session นั้น</li><li data-i18n="deep.meth.2.note">ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง Ambient ไม่นำมาวิเคราะห์</li></ul></div>
-                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.3.title">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n="deep.meth.3.a">เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li data-i18n="deep.meth.3.b">Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li data-i18n="deep.meth.3.c">CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ</li></ul></div>
+                    <div><p class="font-bold text-gray-700 mb-1" data-i18n="deep.meth.3.title">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li data-i18n="deep.meth.3.a">เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li data-i18n="deep.meth.3.b">Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li data-i18n="deep.meth.3.c">MT15 ส่ง CO/TVOC ขึ้น Cloud อัตโนมัติ</li></ul></div>
                 </div>
             </div>
 
@@ -1414,7 +1420,7 @@
 
                         <p class="font-bold text-navy mb-2">การไหลของข้อมูล:</p>
                         <div class="flex flex-wrap items-center gap-2 mb-4 text-[12px]">
-                            <span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-bold">📡 เซนเซอร์ MT13W</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-blue-100 text-blue-700 font-bold">📡 เซนเซอร์ MT15</span>
                             <span class="text-slate-400">→</span>
                             <span class="px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 font-bold">☁️ Tuya Cloud</span>
                             <span class="text-slate-400">→</span>
@@ -1893,13 +1899,25 @@
                         <p class="font-bold text-[15px] text-navy mb-2">🆕 ส่วนที่ 2 — เพิ่มเซนเซอร์ใหม่</p>
                         <p class="mb-3">มีเซนเซอร์ใหม่และต้องการเพิ่มเข้าระบบ:</p>
 
+                        <div class="guide-tip" style="margin-bottom:12px;">
+                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                                <img src="smartlife-icon.png" alt="Smart Life App" style="width:40px; height:auto; border-radius:8px;">
+                                <b style="font-size:15px;">บัญชี Smart Life App</b>
+                            </div>
+                            <table style="margin-top:2px; font-size:13px;">
+                                <tr><td style="padding:2px 12px 2px 0; color:#065f46;"><b>Email:</b></td><td><code class="bg-white px-2 py-0.5 rounded text-xs">biomassstove.cmru@gmail.com</code></td></tr>
+                                <tr><td style="padding:2px 12px 2px 0; color:#065f46;"><b>Password:</b></td><td><code class="bg-white px-2 py-0.5 rounded text-xs">BioMass@cmru2026</code></td></tr>
+                            </table>
+                            <p style="margin-top:6px; font-size:12px; color:#6b7280;">ใช้บัญชีเดียวกันสำหรับ Smart Life App และ Tuya IoT Platform</p>
+                        </div>
+
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">1</div>
                             <div><b>ติดตั้ง Smart Life App</b> — ดาวน์โหลดแอป <b>"Smart Life"</b> จาก App Store / Google Play บนมือถือ</div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">2</div>
-                            <div><b>ลงทะเบียนเข้าสู่ระบบ</b> — ใช้บัญชี <b>biomassstove.cmru@gmail.com</b> / รหัส <b>BioMass@cmru2026</b></div>
+                            <div><b>Login เข้า Smart Life App</b> — ใช้บัญชีด้านบน (ห้ามสร้างบัญชีใหม่)</div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">3</div>
@@ -1929,9 +1947,9 @@
                             <div style="background:rgba(236,253,245,0.3); border:1px solid #a7f3d0; border-radius:16px; padding:16px; margin-bottom:10px; display:flex; align-items:center; gap:12px;">
                                 <span style="font-size:28px;">📴</span>
                                 <div style="flex:1;">
-                                    <p class="font-bold text-navy text-[14px]">MT13W 1</p>
-                                    <p class="text-[12px] text-slate-400" style="font-family:monospace;">a3d01864e463e3ede0hf0e</p>
-                                    <p class="text-[12px] text-slate-400">ออฟไลน์ · MT13W</p>
+                                    <p class="font-bold text-navy text-[14px]">MT15 1</p>
+                                    <p class="text-[12px] text-slate-400" style="font-family:monospace;">a31aff2ac0acbbf911cee3</p>
+                                    <p class="text-[12px] text-slate-400">ออฟไลน์ · MT15</p>
                                 </div>
                                 <span style="font-size:11px; padding:6px 12px; border-radius:12px; font-weight:700; background:#ecfdf5; color:#10b981;">ลงทะเบียนแล้ว</span>
                             </div>
@@ -1939,9 +1957,9 @@
                             <div style="background:rgba(255,255,255,0.7); border:1px solid #e2e8f0; border-radius:16px; padding:16px; display:flex; align-items:center; gap:12px;">
                                 <span style="font-size:28px;">📴</span>
                                 <div style="flex:1;">
-                                    <p class="font-bold text-navy text-[14px]">MT13W 2</p>
+                                    <p class="font-bold text-navy text-[14px]">MT15 2</p>
                                     <p class="text-[12px] text-slate-400" style="font-family:monospace;">a3f9c351b1a172a67e7mtv</p>
-                                    <p class="text-[12px] text-slate-400">ออฟไลน์ · MT13W</p>
+                                    <p class="text-[12px] text-slate-400">ออฟไลน์ · MT15</p>
                                 </div>
                                 <span style="font-size:11px; padding:6px 12px; border-radius:12px; font-weight:700; background:#fef3c7; color:#b45309;">+ ลงทะเบียน</span>
                             </div>
@@ -2663,9 +2681,9 @@
                         <span class="guide-arrow">▼</span>
                     </div>
                     <div class="guide-body text-slate-700 leading-relaxed">
-                        <p class="mb-3">กดปุ่มเปิดเครื่อง (ด้านหลัง) ค้างไว้จนหน้าจอติด</p>
+                        <p class="mb-3"><b>กดปุ่มค้าง 3 วินาที</b> จนหน้าจอติด เครื่องจะนับถอยหลัง 60 วินาทีแล้วเริ่มแสดงค่า</p>
 
-                        <p class="font-bold text-navy mb-2">ปุ่มกดบนเครื่อง:</p>
+                        <p class="font-bold text-navy mb-2">ปุ่มกดบนเครื่อง (MT15):</p>
                         <div class="space-y-2 mb-4">
                             <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
                                 <span class="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">1</span>
@@ -2677,12 +2695,23 @@
                             </div>
                             <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
                                 <span class="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm">3</span>
-                                <span><b>กด 3 ครั้ง</b> — ปรับเทียบเซนเซอร์ (Calibrate) — ใช้ตอนค่าค้าง</span>
+                                <span><b>กด 3 ครั้ง</b> — สลับหน้าจอ (ค่ามลพิษ ↔ นาฬิกา/จับเวลา)</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
+                                <span class="w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-sm">4</span>
+                                <span><b>กด 4 ครั้ง</b> — ปรับเทียบเซนเซอร์ (Calibrate 120 วิ) — ใช้ตอนค่าค้าง</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-slate-50 rounded-lg p-3">
+                                <span class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-sm">5</span>
+                                <span><b>กด 5 ครั้ง</b> — จับคู่ WiFi ใหม่ (ไอคอน WiFi กระพริบ ~5 วิ)</span>
                             </div>
                         </div>
 
-                        <div class="guide-important">
-                            <b>⚠️ รอ Warm-up 10 นาที:</b> หลังเปิดเครื่อง เซนเซอร์ต้องอุ่นเครื่องก่อนค่าจะแม่นยำ แนะนำเปิดทิ้งไว้อย่างน้อย 10 นาทีก่อนเริ่มเก็บจริง
+                        <div class="guide-tip">
+                            <b>💡 ตั้งจอไม่ดับ:</b> ในแอป Tuya Smart → เข้าเซนเซอร์ → ตั้งค่า (เกียร์) → Sleep → ตั้งเป็น <b>0 นาที</b> = จอเปิดค้างตลอด ไม่ดับระหว่างเก็บข้อมูล
+                        </div>
+                        <div class="guide-tip">
+                            <b>💡 ถ้าจอดับ:</b> กดปุ่ม 1 ครั้งเพื่อปลุกจอ — ค่าจะแสดงปกติ ไม่เปลี่ยนอะไร
                         </div>
                     </div>
                 </div>
@@ -2824,7 +2853,7 @@
                     </div>
                     <div class="guide-body text-slate-700 leading-relaxed">
                         <div class="guide-danger">
-                            <b>🚨 ห้ามจ่อเซนเซอร์ใกล้แหล่งควันเข้มข้น!</b> เซนเซอร์ชนิด semiconductor จะ "อิ่มตัว" ทำให้ค่าค้างไม่ลดลง แม้เอาออกจากควันแล้ว — ต้อง power cycle หรือรอ 24-48 ชม.
+                            <b>🚨 ห้ามจ่อเซนเซอร์ใกล้แหล่งควันเข้มข้น!</b> เซนเซอร์ชนิด semiconductor จะ "อิ่มตัว" ทำให้ค่าค้างไม่ลดลง — แก้ได้โดยกดปุ่ม 4 ครั้ง (Calibrate) รอ 120 วินาที
                         </div>
 
                         <p class="font-bold text-navy mt-4 mb-2">ถ้าค่าค้าง (ไม่ลดลง) ทำอย่างไร:</p>
@@ -2834,11 +2863,11 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-red-500">2</div>
-                            <div><b>กดปุ่ม 3 ครั้ง</b> เพื่อ Calibrate เซนเซอร์</div>
+                            <div><b>กดปุ่ม 4 ครั้ง</b> เพื่อ Calibrate เซนเซอร์ (รอ 120 วิ)</div>
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-red-500">3</div>
-                            <div><b>ถ้ายังไม่หาย</b> วางไว้ในที่อากาศถ่ายเทดี รอ 24-48 ชม.</div>
+                            <div><b>ถ้ายังไม่หาย</b> ปิด-เปิดเครื่องใหม่ แล้ว Calibrate อีกครั้ง</div>
                         </div>
 
                         <p class="font-bold text-navy mt-4 mb-2">ข้อควรระวังอื่นๆ:</p>
@@ -2907,7 +2936,7 @@
                                 </tr>
                                 <tr>
                                     <td>ค่าเซนเซอร์ค้าง ไม่ลดลง</td>
-                                    <td>ปิด-เปิดเครื่องใหม่ / กดปุ่ม 3 ครั้ง (Calibrate) / วางในที่อากาศดี รอ 24-48 ชม.</td>
+                                    <td>กดปุ่ม 4 ครั้ง (Calibrate รอ 120 วิ) / ถ้ายังค้าง: ปิด-เปิดเครื่องแล้ว Calibrate อีกครั้ง</td>
                                 </tr>
                                 <tr>
                                     <td>GPS ไม่ตรวจจับบ้าน</td>
@@ -2945,16 +2974,18 @@
                         </table>
                     </div>
                     <div class="bg-white/60 border border-slate-200 shadow-sm rounded-2xl p-5">
-                        <h4 class="font-bold text-navy mb-3">🔘 ปุ่มเซนเซอร์</h4>
+                        <h4 class="font-bold text-navy mb-3">🔘 ปุ่มเซนเซอร์ (MT15)</h4>
                         <table class="text-[13px] w-full">
                             <tr><td class="py-1.5 text-slate-500 w-24">กด 1 ครั้ง:</td><td>เปลี่ยน °C / °F</td></tr>
                             <tr><td class="py-1.5 text-slate-500">กด 2 ครั้ง:</td><td>ปิด/เปิดเสียง</td></tr>
-                            <tr><td class="py-1.5 text-slate-500">กด 3 ครั้ง:</td><td class="font-bold text-indigo-600">Calibrate (แก้ค่าค้าง)</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">กด 3 ครั้ง:</td><td>สลับหน้าจอ</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">กด 4 ครั้ง:</td><td class="font-bold text-amber-600">Calibrate (แก้ค่าค้าง)</td></tr>
+                            <tr><td class="py-1.5 text-slate-500">กด 5 ครั้ง:</td><td class="font-bold text-red-600">จับคู่ WiFi ใหม่</td></tr>
                         </table>
                     </div>
                 </div>
 
-                <p class="text-[12px] text-slate-400 text-center mt-4">คู่มือ v1.0 — ปรับปรุงล่าสุด: มีนาคม 2569</p>
+                <p class="text-[12px] text-slate-400 text-center mt-4">คู่มือ v1.1 — ปรับปรุงล่าสุด: เมษายน 2569 (เซนเซอร์ MT15)</p>
             </div>
 
         </section>
@@ -3862,7 +3893,7 @@
             'deep.info.compare.body': { th: '• Gross = ค่าดิบที่เซนเซอร์วัดได้ขณะหุงต้ม\n• Ambient = ค่าอากาศพื้นหลังก่อนจุดเตา (เฉลี่ย 10 นาทีแรก)\n• Net = Gross − Ambient = มลพิษที่เกิดจากเตาจริงๆ\n\nAmbient คำนวณแยกตามชนิดเตา เพราะเก็บข้อมูลคนละวัน สภาพอากาศอาจต่างกัน', en: '• Gross = raw sensor reading during cooking\n• Ambient = background air before cooking (avg first 10 min)\n• Net = Gross − Ambient = actual stove pollution\n\nAmbient calculated per stove type since data is from different days' },
             'deep.meth.title': { th: '📋 วิธีวิเคราะห์ข้อมูล (Methodology)', en: '📋 Data Analysis Methodology' },
             'deep.meth.1.title': { th: '1. การเก็บข้อมูล', en: '1. Data Collection' },
-            'deep.meth.1.sensor': { th: 'เซนเซอร์: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)', en: 'Sensor: MT13W (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI)' },
+            'deep.meth.1.sensor': { th: 'เซนเซอร์: MT15 (PM2.5, PM10, CO2, CO, HCHO, TVOC, Temp, Humidity, AQI)', en: 'Sensor: MT15 (PM2.5, PM10, CO2, CO, HCHO, TVOC, Temp, Humidity, AQI)' },
             'deep.meth.1.freq': { th: 'ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)', en: 'Frequency: every 5 min during cooking (~2 hrs/session)' },
             'deep.meth.1.scope': { th: '10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล', en: '10 households · 2 sessions/day · traditional + biomass stoves' },
             'deep.meth.2.title': { th: '2. การหักค่าแวดล้อม (Ambient Subtraction)', en: '2. Ambient Subtraction' },
@@ -3872,7 +3903,7 @@
             'deep.meth.3.title': { th: '3. ข้อจำกัด', en: '3. Limitations' },
             'deep.meth.3.a': { th: 'เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)', en: 'Data collected at different times (not a paired design)' },
             'deep.meth.3.b': { th: 'Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method', en: 'Semiconductor sensors have higher variance than gravimetric methods' },
-            'deep.meth.3.c': { th: 'CO และ TVOC บันทึกด้วยมือ — ไม่ใช่ค่าจากเซนเซอร์อัตโนมัติ', en: 'CO and TVOC manually recorded — not from automatic sensors' },
+            'deep.meth.3.c': { th: 'MT15 ส่ง CO/TVOC ขึ้น Cloud อัตโนมัติ', en: 'MT15 sends CO/TVOC to Cloud automatically' },
             'deep.range.7d': { th: '7 วันล่าสุด', en: 'Last 7 days' },
             'deep.range.30d': { th: '30 วันล่าสุด', en: 'Last 30 days' },
             'deep.range.60d': { th: '60 วันล่าสุด', en: 'Last 60 days' },
@@ -4004,8 +4035,7 @@
 
         // Known sensors — loaded from Supabase registered_sensors, with hardcoded fallback
         const DEFAULT_SENSORS = [
-            { tuyaId: 'a3d01864e463e3ede0hf0e', name: 'MT13W-01' },
-            { tuyaId: 'a3b9c2e4bdfe69ad7ekytn', name: 'MT29-01' },
+            { tuyaId: 'a31aff2ac0acbbf911cee3', name: 'MT15-01' },
         ];
         let KNOWN_SENSORS = [];
 
@@ -5167,6 +5197,64 @@
         }
         function printGuide() {
             toggleAllGuideSections(true);
+
+            // Remove old TOC if re-printing
+            const oldToc = document.getElementById('print-toc');
+            if (oldToc) oldToc.remove();
+
+            // Build Table of Contents from part labels + section headers
+            const guide = document.getElementById('admin-guide');
+            const toc = document.createElement('div');
+            toc.id = 'print-toc';
+            toc.className = 'print-toc-only';
+            toc.innerHTML = '<h2 style="font-size:20px;font-weight:800;color:#0f172a;margin-bottom:16px;">📖 สารบัญ</h2>';
+            const list = document.createElement('ol');
+            list.style.cssText = 'list-style:none;padding:0;margin:0;';
+            let partNum = 0;
+            let secNum = 0;
+
+            // Scan all direct children for part labels and guide-sections
+            guide.querySelectorAll(':scope > div').forEach(el => {
+                // Part label (ส่วนที่ X)
+                if (!el.classList.contains('guide-section') && el.textContent.includes('ส่วนที่')) {
+                    partNum++;
+                    secNum = 0;
+                    const li = document.createElement('li');
+                    li.style.cssText = 'font-weight:700;font-size:14px;color:#064e3b;margin-top:12px;padding:6px 0;border-bottom:1px solid #e2e8f0;';
+                    li.textContent = el.textContent.trim();
+                    list.appendChild(li);
+                }
+                // Section header
+                if (el.classList.contains('guide-section')) {
+                    const header = el.querySelector('.guide-header');
+                    if (header) {
+                        secNum++;
+                        const li = document.createElement('li');
+                        li.style.cssText = 'font-size:13px;color:#334155;padding:3px 0 3px 20px;';
+                        const text = header.textContent.replace('▼', '').trim();
+                        li.textContent = partNum + '.' + secNum + '  ' + text;
+                        list.appendChild(li);
+                    }
+                }
+            });
+            toc.appendChild(list);
+
+            // Insert TOC at the top of the guide (after header, before first part label)
+            const firstPart = guide.querySelector(':scope > div.px-4');
+            if (firstPart) guide.insertBefore(toc, firstPart);
+            else guide.prepend(toc);
+
+            // Wrap "ตัวอย่างหน้าจอ" label + mockup into print groups so they never split across pages
+            document.querySelectorAll('.guide-body p').forEach(p => {
+                if (!p.textContent.includes('ตัวอย่างหน้าจอ')) return;
+                const next = p.nextElementSibling;
+                if (!next || next.classList.contains('print-mock-group')) return; // already wrapped
+                const wrapper = document.createElement('div');
+                wrapper.className = 'print-mock-group';
+                p.parentNode.insertBefore(wrapper, p);
+                wrapper.appendChild(p);
+                wrapper.appendChild(next);
+            });
             setTimeout(() => window.print(), 200);
         }
         function searchGuide(query) {
@@ -7388,7 +7476,7 @@
                 for (const [sessId, logs] of Object.entries(bySessionId)) {
                     const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
                     const date = sorted[0].recorded_at ? sorted[0].recorded_at.split('T')[0] : 'unknown';
-                    sessions.push({ device: sorted[0].tuya_device_id, stoveType: sorted[0].stove_type, date, logs: sorted, ids: sorted.map(d => d.id) });
+                    sessions.push({ device: sorted[0].tuya_device_id, stoveType: sorted[0].stove_type, date, logs: sorted, ids: sorted.map(d => d.id), sessionId: sessId, manualLogs: [], manualIds: [] });
                 }
                 // Logs WITHOUT session_id → fallback to device+date + 30-min gap splitting
                 if (noSessionId.length > 0) {
@@ -7445,7 +7533,10 @@
                 const totalPending = (data || []).length;
                 const hasAny = sessions.length > 0 || manualData.length > 0;
 
-                // Group manual TVOC records by session_id (fallback: house_id + date + 30min gaps)
+                // Group manual TVOC records: merge into matching sensor session if possible
+                const sensorSessionMap = {};
+                sessions.forEach((s, i) => { if (s.sessionId) sensorSessionMap[s.sessionId] = i; });
+
                 const manualBySession = {};
                 const manualNoSession = [];
                 manualData.forEach(d => {
@@ -7457,11 +7548,19 @@
                     }
                 });
                 const manualSessions = [];
-                // Records WITH session_id → one card per session_id
+                // Records WITH session_id → merge into sensor card if exists, else separate card
                 for (const [sessId, logs] of Object.entries(manualBySession)) {
                     const sorted = [...logs].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at));
-                    const date = sorted[0].recorded_at ? sorted[0].recorded_at.split('T')[0] : 'unknown';
-                    manualSessions.push({ houseId: sorted[0].house_id, stoveType: sorted[0].stove_type, date, logs: sorted, ids: sorted.map(d => d.id), sessionId: sessId });
+                    const sIdx = sensorSessionMap[sessId];
+                    if (sIdx !== undefined) {
+                        // Merge into sensor session card
+                        sessions[sIdx].manualLogs = sorted;
+                        sessions[sIdx].manualIds = sorted.map(d => d.id);
+                    } else {
+                        // No matching sensor session → separate manual card
+                        const date = sorted[0].recorded_at ? sorted[0].recorded_at.split('T')[0] : 'unknown';
+                        manualSessions.push({ houseId: sorted[0].house_id, stoveType: sorted[0].stove_type, date, logs: sorted, ids: sorted.map(d => d.id), sessionId: sessId });
+                    }
                 }
                 // Records WITHOUT session_id → fallback to house_id + date + 30min gaps
                 if (manualNoSession.length > 0) {
@@ -7525,8 +7624,8 @@
                         return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:${h}px;"><polyline points="${points.join(' ')}" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linejoin="round"/><circle cx="${mx}" cy="${my}" r="3" fill="#ef4444"/><text x="${mx+5}" y="${my-4}" font-size="9" fill="#ef4444" font-weight="bold">${values[maxIdx].toFixed(3)}</text><circle cx="${nx}" cy="${ny}" r="3" fill="#22c55e"/><text x="${nx+5}" y="${ny+10}" font-size="9" fill="#22c55e" font-weight="bold">${values[minIdx].toFixed(3)}</text>${timeLabels}</svg>`;
                     }
 
-                    // Render manual session cards
-                    const manualCardsHtml = manualSessions.map(ms => {
+                    // Render manual session cards (with date for grouping)
+                    const manualCards = manualSessions.map(ms => {
                         const houseInfo = manualHouseMap[ms.houseId] || {};
                         const houseName = houseInfo.name || t('house.unassigned');
                         const volunteerName = houseInfo.volunteer || '';
@@ -7548,7 +7647,7 @@
                         const msSessionId = ms.logs.find(l => l.session_id)?.session_id;
                         const msSessStatus = msSessionId ? sessionStatuses[msSessionId] : null;
                         const msStillActive = msSessStatus === 'baseline' || msSessStatus === 'collecting';
-                        return `
+                        return { date: ms.date || 'unknown', html: `
                         <div class="card-styled p-3 rounded-2xl border-l-4 border-purple-400 flex flex-col gap-1.5">
                             <div class="flex items-center justify-between">
                                 <div>
@@ -7570,17 +7669,20 @@
                                 <button onclick="approveSession([${idsStr}])" ${msStillActive ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="flex-1 px-2 py-1.5 ${msStillActive ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
                                 <button onclick="rejectSession([${idsStr}])" ${msStillActive ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="px-2 py-1.5 ${msStillActive ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
-                        </div>`;
-                    }).join('');
+                        </div>` };
+                    });
 
-                    // Render sensor session cards
-                    const sensorCardsHtml = sessions.map((s, sIdx) => {
+                    // Render sensor session cards (with date for grouping)
+                    const sensorCards = sessions.map((s, sIdx) => {
                         const sensorName = DEVICE_NAMES[s.device] || s.device?.slice(0, 8);
                         const houseName = HOUSE_NAMES[s.device] || sensorName;
                         // stove_type now comes from collection_period, not sensor
                         const sKey = 'ps_' + (s.device || 'unknown').slice(-6) + '_' + s.date.replace(/-/g,'') + '_' + sIdx;
-                        window[sKey] = s.ids;
-                        window[sKey + '_logs'] = s.logs;
+                        // Include manual IDs so approve/reject covers both sensor+manual
+                        const allIds = [...s.ids, ...(s.manualIds || [])];
+                        window[sKey] = allIds;
+                        // Store all logs (sensor+manual) for chart modal
+                        window[sKey + '_logs'] = [...s.logs, ...(s.manualLogs || [])];
                         window[sKey + '_label'] = houseName + ' · ' + sensorName;
 
                         // Sort logs ascending for time range display
@@ -7677,12 +7779,12 @@
                             }
                         }
 
-                        return `
+                        return { date: s.date || 'unknown', html: `
                         <div class="card-styled p-3 rounded-2xl border-l-4 ${borderColor} flex flex-col gap-1.5">
                             <div class="flex items-center justify-between gap-2">
                                 <div class="min-w-0 flex-1">
                                     <p class="font-bold text-navy text-sm leading-tight truncate" title="${houseName}">🏠 ${houseName}</p>
-                                    <p class="text-[12px] text-slate-400 truncate" title="${sensorName} · ${timeStart}–${timeEnd}">📡 ${sensorName} · ${timeStart}–${timeEnd} · ${s.logs.length} logs</p>
+                                    <p class="text-[12px] text-slate-400 truncate" title="${sensorName} · ${timeStart}–${timeEnd}">📡 ${sensorName} · ${timeStart}–${timeEnd} · ${s.logs.length} logs${s.manualLogs && s.manualLogs.length > 0 ? ' + 📝 ' + s.manualLogs.length + ' กรอกมือ' : ''}</p>
                                 </div>
                                 <div class="flex-shrink-0">${statusBadge}</div>
                             </div>
@@ -7700,10 +7802,19 @@
                                 <button onclick="approveSession(window.${sKey})" ${isStillCollecting ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="flex-1 px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'} rounded-xl font-bold text-xs transition-all">${t('approval.approve')}</button>
                                 <button onclick="rejectSession(window.${sKey})" ${isStillCollecting ? 'disabled title="' + t('approval.still.collecting') + '"' : ''} class="px-2 py-1.5 ${isStillCollecting ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50' : 'bg-red-100 text-red-500 hover:bg-red-200'} rounded-xl font-bold text-xs transition-all">✗</button>
                             </div>
-                        </div>`;
-                    }).join('');
+                        </div>` };
+                    });
 
-                    container.innerHTML = manualCardsHtml + sensorCardsHtml;
+                    // Group all cards by date, render with date separators (DD/MM/YYYY)
+                    const allCards = [...manualCards, ...sensorCards].sort((a, b) => b.date.localeCompare(a.date));
+                    const dateGroups = {};
+                    allCards.forEach(c => { if (!dateGroups[c.date]) dateGroups[c.date] = []; dateGroups[c.date].push(c.html); });
+                    const sortedDates = Object.keys(dateGroups).sort((a, b) => b.localeCompare(a));
+                    container.innerHTML = sortedDates.map(date => {
+                        const dateLabel = fmtDateDMY(date + 'T00:00:00');
+                        const cards = dateGroups[date];
+                        return '<div class="col-span-full"><div class="flex items-center gap-3 mt-4 first:mt-0 mb-3"><div class="h-px flex-1 bg-slate-200"></div><span class="text-sm font-bold text-slate-500 whitespace-nowrap">📅 ' + dateLabel + ' (' + cards.length + ' เซสชัน)</span><div class="h-px flex-1 bg-slate-200"></div></div></div>' + cards.join('');
+                    }).join('');
                 }
             } catch (e) {
                 console.error('Error loading approval data:', e);
@@ -7723,6 +7834,7 @@
                 subjects = subRes.data || [];
                 projects = projRes.data || [];
                 subjectProjects = spRes.data || [];
+                await loadSensorHealth();
                 renderDevicesList();
                 renderRegisteredSensors();
                 loadSyncConfig();
@@ -7731,7 +7843,6 @@
                 renderSubjectsList();
                 renderProjectsList();
                 populateHouseDropdowns();
-                await loadSensorHealth();
                 renderOverviewStats();
                 renderOverviewTable();
                 adminLoaded = true;
@@ -7893,12 +8004,15 @@
                 return;
             }
             const rows = filtered.map(d => {
-                const displayName = DEVICE_NAMES[d.tuya_device_id] || d.name;
+                const sensorName = DEVICE_NAMES[d.tuya_device_id] || '';
+                const deviceName = d.name || '';
+                const displayName = deviceName || sensorName;
                 const health = sensorHealthMap[d.tuya_device_id];
                 const isOnline = health?.status === 'online';
                 return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
                     <td class="px-4 py-3">
                         <span class="text-[13px] font-bold text-navy">${esc(displayName)}</span>
+                        ${sensorName && sensorName !== deviceName ? '<span class="text-[11px] text-slate-400 ml-1">(' + esc(sensorName) + ')</span>' : ''}
                         <span class="text-[12px] text-slate-400 font-mono ml-2">${esc(d.tuya_device_id?.slice(-8))}</span>
                     </td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(d.subjects?.full_name) || '<span class="text-slate-300">' + t('dev.unassigned') + '</span>'}</td>
@@ -7915,8 +8029,8 @@
                     </td>
                 </tr>`;
             }).join('');
-            list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                <table class="w-full text-left">
+            list.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 overflow-x-auto">
+                <table class="w-full text-left min-w-[640px]">
                     <thead><tr class="bg-slate-50 border-b border-slate-200">
                         <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.name')}</th>
                         <th class="px-4 py-3 text-[12px] font-bold text-slate-500 uppercase tracking-wider">${t('dev.house')}</th>
@@ -9123,7 +9237,9 @@
 
             const rows = filteredSubjects.map(s => {
                 const assignedDevice = devices.find(d => String(d.subject_id) === String(s.id));
-                const sensorName = assignedDevice ? (DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) : '';
+                const deviceCustomName = assignedDevice ? (assignedDevice.name || '') : '';
+                const sensorModelName = assignedDevice ? (DEVICE_NAMES[assignedDevice.tuya_device_id] || '') : '';
+                const sensorName = deviceCustomName || sensorModelName;
                 const projName = getSubjectProjectName(s.id);
                 const addrParts = [s.district ? 'อ.' + s.district : '', s.province ? 'จ.' + s.province : ''].filter(Boolean).join(' ');
                 const volName = s.volunteers?.full_name || '';
@@ -9133,14 +9249,15 @@
                     ? '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-emerald-50 text-emerald-600">' + t('sub.active') + '</span>'
                     : '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-red-50 text-red-500">' + t('sub.inactive') + '</span>';
 
-                // Sensor badge
-                const sensorBadge = s.has_sensor
+                // Sensor badge — derive from device binding only
+                const effectiveHasSensor = !!assignedDevice;
+                const sensorBadge = effectiveHasSensor
                     ? '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-teal-50 text-teal-600">' + t('sub.has.sensor') + '</span>'
                     : '<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold bg-slate-100 text-slate-400">' + t('sub.stove.only') + '</span>';
 
                 // Sensor display (read-only — edit via แก้ไข button)
                 const sensorDisplaySub = assignedDevice
-                    ? '<span class="text-[12px] font-medium text-teal-700">📡 ' + esc(sensorName) + '</span>'
+                    ? '<span class="text-[12px] font-medium text-teal-700">📡 ' + esc(sensorName) + (sensorModelName && sensorModelName !== deviceCustomName ? ' <span class="text-slate-400">(' + esc(sensorModelName) + ')</span>' : '') + '</span>'
                     : '<span class="text-[12px] text-slate-300">— ' + t('sub.no.sensor') + ' —</span>';
 
                 return `<tr class="border-b border-slate-100 hover:bg-slate-50/50">
@@ -9150,7 +9267,7 @@
                     </td>
                     <td class="px-4 py-3 text-[12px] text-slate-500">${esc(volName) || '<span class="text-slate-300">' + t('sub.unassigned') + '</span>'}</td>
                     <td class="px-4 py-3">${sensorDisplaySub}</td>
-                    <td class="px-4 py-3">${s.connectivity ? `<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : '<span class="text-[12px] text-slate-300">—</span>'}</td>
+                    <td class="px-4 py-3">${effectiveHasSensor && s.connectivity ? `<span class="text-[12px] px-2 py-0.5 rounded-lg font-bold ${s.connectivity === 'wifi' ? 'bg-blue-50 text-blue-600' : 'bg-purple-50 text-purple-600'}">${s.connectivity === 'wifi' ? t('sub.wifi') : t('sub.hotspot')}</span>` : '<span class="text-[12px] text-slate-300">—</span>'}</td>
                     <td class="px-4 py-3">
                         <div class="flex flex-wrap gap-1">
                             ${statusBadge}
@@ -9159,7 +9276,7 @@
                     </td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
                         <button onclick="showEditSubjectModal('${escAttr(s.id)}')" class="text-[12px] text-blue-500 hover:underline mr-1">${t('dev.edit')}</button>
-                        ${s.has_sensor || assignedDevice ? `<button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] mr-1 ${s.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-emerald-500 hover:text-emerald-700'}">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>` : ''}
+                        ${assignedDevice ? `<button onclick="toggleSubjectStatus('${escAttr(s.id)}', '${s.status === 'active' ? 'inactive' : 'active'}')" class="text-[12px] mr-1 ${s.status === 'active' ? 'text-orange-500 hover:text-orange-700' : 'text-emerald-500 hover:text-emerald-700'}">${s.status === 'active' ? t('dev.off') : t('dev.on')}</button>` : ''}
                         <button onclick="deleteSubject('${escAttr(s.id)}', '${escAttr(s.full_name)}')" class="text-[12px] text-red-400 hover:text-red-600">${t('dev.delete')}</button>
                     </td>
                 </tr>`;
@@ -9183,6 +9300,9 @@
         function showEditSubjectModal(id) {
             const s = subjects.find(x => String(x.id) === String(id));
             if (!s) return;
+            // Auto-derive has_sensor from device binding
+            const hasDeviceAssigned = devices.some(d => String(d.subject_id) === String(id));
+            const effectiveHasSensor = s.has_sensor || hasDeviceAssigned;
             const currentSp = subjectProjects.find(sp => String(sp.subject_id) === String(id));
             const currentProjectId = currentSp ? String(currentSp.project_id) : '';
             const provinceOptions = thaiProvinces.filter(p => NORTHERN_PROVINCES.includes(p.provinceNameTh)).map(p => `<option value="${p.provinceCode}" ${p.provinceNameTh === (s.province || '') ? 'selected' : ''}>${p.provinceNameTh}</option>`).join('');
@@ -9223,14 +9343,15 @@
                         <input id="edit-sub-lat" value="${s.gps_lat || ''}" placeholder="Latitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
                         <input id="edit-sub-lng" value="${s.gps_long || ''}" placeholder="Longitude" class="w-full p-4 rounded-2xl border" type="number" step="any">
                     </div>
-                    <label class="flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:bg-teal-50/50 transition-all">
-                        <input type="checkbox" id="edit-sub-sensor" ${s.has_sensor ? 'checked' : ''} class="w-5 h-5 rounded accent-teal-600" onchange="document.getElementById('edit-sensor-fields').style.display=this.checked?'flex':'none'">
-                        <span class="font-bold text-navy">${t('sub.has.sensor')}</span>
-                    </label>
-                    <div id="edit-sensor-fields" class="space-y-4" style="display:${s.has_sensor ? 'flex' : 'none'};flex-direction:column;gap:1rem">
+                    <div class="flex items-center gap-3 p-4 rounded-2xl border ${hasDeviceAssigned ? 'bg-teal-50/50 border-teal-200' : 'bg-slate-50 border-slate-200'}">
+                        <span class="text-lg">${hasDeviceAssigned ? '📡' : '🔌'}</span>
+                        <span class="font-bold ${hasDeviceAssigned ? 'text-teal-700' : 'text-slate-400'}">${hasDeviceAssigned ? t('sub.has.sensor') : 'ยังไม่ได้ผูกเซนเซอร์'}</span>
+                        ${hasDeviceAssigned ? '<span class="text-[12px] text-teal-500 ml-auto">' + esc(devices.find(d => String(d.subject_id) === String(id))?.name || '') + '</span>' : '<span class="text-[11px] text-slate-400 ml-auto">ผูกได้ที่แท็บ อุปกรณ์</span>'}
+                    </div>
+                    ${hasDeviceAssigned ? `<div class="space-y-4" style="display:flex;flex-direction:column;gap:1rem">
                         <select id="edit-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
                             <option value="">${t('sub.select.vol')}</option>
-                            ${volunteers.map(v => `<option value="${v.id}" ${String(v.id) === String(s.volunteer_id) ? 'selected' : ''}>${v.full_name}</option>`).join('')}
+                            ${volunteers.map(v => '<option value="' + v.id + '" ' + (String(v.id) === String(s.volunteer_id) ? 'selected' : '') + '>' + esc(v.full_name) + '</option>').join('')}
                         </select>
                         <div>
                             <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
@@ -9240,7 +9361,7 @@
                                 <option value="hotspot" ${s.connectivity === 'hotspot' ? 'selected' : ''}>${t('sub.hotspot')}</option>
                             </select>
                         </div>
-                    </div>
+                    </div>` : ''}
                     <button onclick="saveSubject('${s.id}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
             `);
@@ -9285,9 +9406,11 @@
             const address = document.getElementById('edit-sub-address').value;
             const lat = document.getElementById('edit-sub-lat').value;
             const lng = document.getElementById('edit-sub-lng').value;
-            const volunteerId = document.getElementById('edit-sub-volunteer').value;
-            const connectivity = document.getElementById('edit-sub-connectivity').value;
-            const hasSensor = document.getElementById('edit-sub-sensor').checked;
+            const volEl = document.getElementById('edit-sub-volunteer');
+            const connEl = document.getElementById('edit-sub-connectivity');
+            const volunteerId = volEl ? volEl.value : '';
+            const connectivity = connEl ? connEl.value : '';
+            const hasSensor = devices.some(d => String(d.subject_id) === String(id));
             const projectId = document.getElementById('edit-sub-project').value;
             const provinceEl = document.getElementById('edit-sub-province');
             const districtEl = document.getElementById('edit-sub-district');
@@ -9296,7 +9419,7 @@
             const district = districtEl?.selectedOptions[0]?.text !== t('sub.select.district') ? districtEl?.selectedOptions[0]?.text : null;
             const subdistrict = subdistrictEl?.selectedOptions[0]?.text !== t('sub.select.subdistrict') ? subdistrictEl?.selectedOptions[0]?.text : null;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
-            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: connectivity || null, has_sensor: hasSensor, province: province, district: district, subdistrict: subdistrict };
+            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, gps_lat: lat ? parseFloat(lat) : null, gps_long: lng ? parseFloat(lng) : null, connectivity: hasSensor ? (connectivity || null) : null, has_sensor: hasSensor, province: province, district: district, subdistrict: subdistrict };
             const { error } = await supabaseClient.from('subjects').update(record).eq('id', String(id));
             if (error) { showToast(t('common.error') + error.message, 'error'); return; }
             // Update subject_projects junction
@@ -9322,6 +9445,8 @@
             // 2. Assign new device to this house
             if (newDeviceId) {
                 await supabaseClient.from('devices').update({ subject_id: subjectId }).eq('id', String(newDeviceId));
+                // Auto-set has_sensor when device is assigned
+                await supabaseClient.from('subjects').update({ has_sensor: true }).eq('id', String(subjectId));
             }
             loadAdminData();
         }
@@ -9495,9 +9620,11 @@
                 const projName = getSubjectProjectName(s.id);
                 const tuyaId = assignedDevice ? assignedDevice.tuya_device_id : null;
 
-                // Sensor display (read-only)
+                // Sensor display (read-only) — prefer device custom name (BS XXX) over sensor model name (MT15 XXX)
+                const devCustomName = assignedDevice ? (assignedDevice.name || '') : '';
+                const senModelName = assignedDevice ? (DEVICE_NAMES[assignedDevice.tuya_device_id] || '') : '';
                 const sensorDisplay = assignedDevice
-                    ? '<span class="text-[12px] font-medium text-teal-700">📡 ' + esc(DEVICE_NAMES[assignedDevice.tuya_device_id] || assignedDevice.name) + '</span>'
+                    ? '<span class="text-[12px] font-medium text-teal-700">📡 ' + esc(devCustomName || senModelName) + (senModelName && senModelName !== devCustomName ? ' <span class="text-slate-400">(' + esc(senModelName) + ')</span>' : '') + '</span>'
                     : '<span class="text-[12px] text-slate-300">— ' + t('overview.no.sensor') + ' —</span>';
 
                 // Volunteer display (read-only)
@@ -9623,7 +9750,7 @@
             const sensorOptions = availableSensors.map(s => `<option value="${escAttr(s.tuyaId)}">${esc(s.name)}</option>`).join('');
             // Hide houses that already have a sensor linked (1 house = 1 sensor)
             const assignedSubjectIds = devices.filter(d => d.subject_id).map(d => String(d.subject_id));
-            const availableSubjects = subjects.filter(s => s.has_sensor && !assignedSubjectIds.includes(String(s.id)));
+            const availableSubjects = subjects.filter(s => !assignedSubjectIds.includes(String(s.id)));
             const houseOptions = availableSubjects.length
                 ? availableSubjects.map(s => `<option value="${s.id}">${esc(s.full_name)}</option>`).join('')
                 : `<option value="" disabled>${t('dev.no.house')}</option>`;
@@ -9718,23 +9845,9 @@
                         <input id="new-sub-lat" placeholder="Latitude (เช่น 18.805)" class="w-full p-4 rounded-2xl border" type="number" step="any">
                         <input id="new-sub-lng" placeholder="Longitude (เช่น 98.921)" class="w-full p-4 rounded-2xl border" type="number" step="any">
                     </div>
-                    <label class="flex items-center gap-3 p-4 rounded-2xl border cursor-pointer hover:bg-teal-50/50 transition-all">
-                        <input type="checkbox" id="new-sub-sensor" class="w-5 h-5 rounded accent-teal-600" onchange="document.getElementById('new-sensor-fields').style.display=this.checked?'flex':'none'">
-                        <span class="font-bold text-navy">${t('sub.has.sensor')}</span>
-                    </label>
-                    <div id="new-sensor-fields" class="space-y-4" style="display:none;flex-direction:column;gap:1rem">
-                        <select id="new-sub-volunteer" class="w-full p-4 rounded-2xl border custom-select">
-                            <option value="">${t('sub.select.vol')}</option>
-                            ${volunteers.map(v => `<option value="${v.id}">${v.full_name}</option>`).join('')}
-                        </select>
-                        <div>
-                            <label class="text-[13px] font-bold text-navy block mb-1">${t('sub.connectivity')}</label>
-                            <select id="new-sub-connectivity" class="w-full p-4 rounded-2xl border custom-select">
-                                <option value="">${t('sub.select.conn')}</option>
-                                <option value="wifi">${t('sub.wifi')}</option>
-                                <option value="hotspot">${t('sub.hotspot')}</option>
-                            </select>
-                        </div>
+                    <div class="flex items-center gap-3 p-4 rounded-2xl border bg-slate-50 border-slate-200">
+                        <span class="text-lg">🔌</span>
+                        <span class="text-slate-400 text-[13px]">เซนเซอร์จะถูกตรวจพบอัตโนมัติเมื่อผูกอุปกรณ์ที่แท็บ อุปกรณ์</span>
                     </div>
                     <button onclick="addSubject()" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save')}</button>
                 </div>
@@ -9763,9 +9876,6 @@
             const address = document.getElementById('new-sub-address').value;
             const lat = document.getElementById('new-sub-lat').value;
             const lng = document.getElementById('new-sub-lng').value;
-            const volunteerId = document.getElementById('new-sub-volunteer').value;
-            const connectivity = document.getElementById('new-sub-connectivity').value;
-            const hasSensor = document.getElementById('new-sub-sensor').checked;
             const projectId = document.getElementById('new-sub-project').value;
             const provinceEl = document.getElementById('new-sub-province');
             const districtEl = document.getElementById('new-sub-district');
@@ -9774,8 +9884,7 @@
             const district = districtEl?.selectedOptions[0]?.text !== t('sub.select.district') ? districtEl?.selectedOptions[0]?.text : null;
             const subdistrict = subdistrictEl?.selectedOptions[0]?.text !== t('sub.select.subdistrict') ? subdistrictEl?.selectedOptions[0]?.text : null;
             if (!fullName) { showToast(t('sub.name.required'), 'warning'); return; }
-            const record = { full_name: fullName, address: address || null, volunteer_id: volunteerId || null, status: 'active', has_sensor: hasSensor };
-            if (connectivity) record.connectivity = connectivity;
+            const record = { full_name: fullName, address: address || null, status: 'active', has_sensor: false };
             if (lat) record.gps_lat = parseFloat(lat);
             if (lng) record.gps_long = parseFloat(lng);
             if (province) record.province = province;
@@ -10150,9 +10259,9 @@
                 L.marker([18.7883, 98.9853], { icon: noGpsIcon }).addTo(map);
                 return;
             }
-            // Map subject_id → device name (prefer registered name)
+            // Map subject_id → device name (prefer custom device name)
             const sensorMap = {};
-            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = DEVICE_NAMES[d.tuya_device_id] || d.name; });
+            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = d.name || DEVICE_NAMES[d.tuya_device_id] || d.tuya_device_id; });
             const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
             const bounds = [];
             let sensorCount = 0, stoveCount = 0;
@@ -10238,7 +10347,7 @@
                 return;
             }
             const sensorMap = {};
-            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = DEVICE_NAMES[d.tuya_device_id] || d.name; });
+            (devRes.data || []).forEach(d => { sensorMap[d.subject_id] = d.name || DEVICE_NAMES[d.tuya_device_id] || d.tuya_device_id; });
 
             // Compute per-house PM2.5/CO2 stats from allData (O(n), no copies, no API calls)
             const houseStats = {};
@@ -10344,6 +10453,11 @@
             </div>
             <!-- Stats row -->
             <div id="session-modal-stats" class="grid grid-cols-3 gap-3 mb-5"></div>
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-4">
+                <button id="session-tab-particulate" onclick="switchSessionChartTab('particulate')" class="px-5 py-2 rounded-xl font-bold text-[13px] tab-active">PM2.5 · PM10 · CO2</button>
+                <button id="session-tab-volatile" onclick="switchSessionChartTab('volatile')" class="px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500">HCHO · TVOC · CO</button>
+            </div>
             <!-- Chart -->
             <div class="relative bg-slate-50 rounded-2xl p-4">
                 <canvas id="session-detail-chart" height="200"></canvas>
@@ -10354,13 +10468,221 @@
 
     <script>
         let _sessionChartInstance = null;
+        let _sessionChartLogs = null;
+        let _sessionChartManualLogs = null;
+        let _sessionChartTab = 'particulate';
 
+        function _renderSessionModalChart(chartLogs, tab) {
+            const ctx = document.getElementById('session-detail-chart').getContext('2d');
+            if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
+            const labels = chartLogs.map(l => new Date(l.recorded_at));
+
+            if (tab === 'particulate') {
+                // --- Tab 1: PM2.5 / PM10 / CO2 ---
+                const pm25s = chartLogs.map(l => l.pm25_value).filter(v => v != null);
+                const pm10s = chartLogs.map(l => l.pm10_value).filter(v => v != null);
+                const co2s = chartLogs.map(l => l.co2_value).filter(v => v != null);
+                const peakPM = pm25s.length ? safeMax(pm25s) : null;
+                const peakPM10 = pm10s.length ? safeMax(pm10s) : null;
+
+                // Stats
+                const statsHtml = [
+                    { label: 'PM2.5 พีค', value: peakPM != null ? peakPM.toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
+                    { label: 'PM2.5 เฉลี่ย', value: pm25s.length ? (pm25s.reduce((a,b)=>a+b,0)/pm25s.length).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-400' },
+                    { label: 'PM10 พีค', value: peakPM10 != null ? peakPM10.toFixed(1) + ' µg/m³' : '-', color: 'text-amber-600' },
+                    { label: 'CO2 พีค', value: co2s.length ? safeMax(co2s) + ' ppm' : '-', color: 'text-blue-600' },
+                ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[12px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
+                document.getElementById('session-modal-stats').className = 'grid grid-cols-4 gap-3 mb-5';
+                document.getElementById('session-modal-stats').innerHTML = statsHtml;
+
+                // Chart
+                _sessionChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'PM2.5 (µg/m³)',
+                                data: chartLogs.map(l => l.pm25_value),
+                                borderColor: '#f97316',
+                                backgroundColor: 'rgba(249,115,22,0.1)',
+                                fill: true, tension: 0.4,
+                                pointRadius: chartLogs.map(l => l.pm25_value === peakPM ? 7 : 3),
+                                pointBackgroundColor: chartLogs.map(l => l.pm25_value === peakPM ? '#dc2626' : '#f97316'),
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'PM10 (µg/m³)',
+                                data: chartLogs.map(l => l.pm10_value),
+                                borderColor: '#fb923c',
+                                backgroundColor: 'rgba(251,146,60,0.05)',
+                                borderDash: [6, 3],
+                                fill: false, tension: 0.4,
+                                pointRadius: chartLogs.map(l => l.pm10_value === peakPM10 ? 6 : 2),
+                                pointBackgroundColor: chartLogs.map(l => l.pm10_value === peakPM10 ? '#c2410c' : '#fb923c'),
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'CO2 (ppm)',
+                                data: chartLogs.map(l => l.co2_value),
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59,130,246,0.05)',
+                                fill: false, tension: 0.4,
+                                pointRadius: 3,
+                                yAxisID: 'y2',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 }, usePointStyle: true } } },
+                        scales: {
+                            x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
+                            y: { position: 'left', suggestedMin: 0, title: { display: true, text: 'PM2.5 / PM10 (µg/m³)' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                            y2: { position: 'right', suggestedMin: 400, title: { display: true, text: 'CO2 (ppm)' }, grid: { display: false } }
+                        }
+                    },
+                    plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],
+                });
+            } else {
+                // --- Tab 2: HCHO (sensor) + TVOC (manual) + CO (sensor+manual) ---
+                // Merge sensor HCHO + manual TVOC/CO into unified timeseries
+                const manualLogs = _sessionChartManualLogs || [];
+
+                // HCHO from sensor (Tuya integer, unit 0.001 mg/m³)
+                const hchoPoints = chartLogs
+                    .filter(l => l.hcho_value != null)
+                    .map(l => ({ x: new Date(l.recorded_at).getTime(), y: l.hcho_value / 1000 }));
+
+                // TVOC: merge sensor (PV28 sends voc_value→tvoc_value) + manual
+                const tvocSensor = chartLogs
+                    .filter(l => l.tvoc_value != null && l.tvoc_value > 0)
+                    .map(l => ({ x: new Date(l.recorded_at).getTime(), y: l.tvoc_value / 1000 }));
+                const tvocManual = manualLogs
+                    .filter(l => l.tvoc_value != null)
+                    .map(l => ({ x: new Date(l.recorded_at).getTime(), y: l.tvoc_value }));
+                const tvocPoints = [...tvocSensor, ...tvocManual].sort((a, b) => a.x - b.x);
+
+                // CO: merge sensor + manual (both in ppm)
+                const coSensor = chartLogs
+                    .filter(l => l.co_value != null && l.co_value > 0)
+                    .map(l => ({ x: new Date(l.recorded_at).getTime(), y: l.co_value }));
+                const coManual = manualLogs
+                    .filter(l => l.co_value != null)
+                    .map(l => ({ x: new Date(l.recorded_at).getTime(), y: l.co_value }));
+                const coPoints = [...coSensor, ...coManual].sort((a, b) => a.x - b.x);
+
+                const hasData = hchoPoints.length || tvocPoints.length || coPoints.length;
+
+                // Stats
+                const fmtMg = (v) => v != null ? v.toFixed(3) + ' mg/m³' : '-';
+                const avgFn = (arr) => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null;
+                const hchoYs = hchoPoints.map(p => p.y);
+                const tvocYs = tvocPoints.map(p => p.y);
+                const coYs = coPoints.map(p => p.y);
+                const statsItems = [
+                    { label: 'HCHO เฉลี่ย', value: fmtMg(avgFn(hchoYs)), color: 'text-purple-600', sub: hchoPoints.length + ' จุด (เซนเซอร์)' },
+                    { label: 'TVOC เฉลี่ย', value: fmtMg(avgFn(tvocYs)), color: 'text-violet-500', sub: tvocPoints.length + ' จุด' + (tvocSensor.length && tvocManual.length ? ' (เซนเซอร์+กรอกมือ)' : tvocSensor.length ? ' (เซนเซอร์)' : tvocManual.length ? ' (กรอกมือ)' : '') },
+                    { label: 'CO เฉลี่ย', value: coYs.length ? avgFn(coYs).toFixed(1) + ' ppm' : '-', color: 'text-rose-600', sub: coPoints.length + ' จุด' },
+                ];
+                const statsHtml = statsItems.map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[12px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div><div class="text-[11px] text-slate-300 mt-0.5">' + s.sub + '</div></div>').join('');
+                document.getElementById('session-modal-stats').className = 'grid grid-cols-3 gap-3 mb-5';
+                document.getElementById('session-modal-stats').innerHTML = statsHtml;
+
+                if (!hasData) {
+                    const loadEl = document.getElementById('session-chart-loading');
+                    loadEl.textContent = 'ไม่มีข้อมูล HCHO / TVOC / CO ใน session นี้';
+                    loadEl.style.display = 'flex';
+                    return;
+                }
+
+                // Chart — HCHO+TVOC on left (mg/m³), CO on right (ppm)
+                // Use scatter-line with {x,y} points for independent timeseries
+                const volThresholds = [
+                    { value: 0.1, label: 'WHO 0.1', color: '#ef4444' },
+                ];
+                _sessionChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'HCHO (mg/m³) — เซนเซอร์',
+                                data: hchoPoints,
+                                borderColor: '#8b5cf6',
+                                backgroundColor: 'rgba(139,92,246,0.1)',
+                                fill: true, tension: 0.4,
+                                pointRadius: 3,
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'TVOC (mg/m³)' + (tvocSensor.length ? '' : ' — กรอกมือ'),
+                                data: tvocPoints,
+                                borderColor: '#a78bfa',
+                                backgroundColor: 'rgba(167,139,250,0.08)',
+                                borderDash: tvocSensor.length ? [] : [6, 3],
+                                fill: tvocSensor.length > 0, tension: 0.3,
+                                pointRadius: tvocSensor.length ? 3 : 5,
+                                pointStyle: tvocSensor.length ? 'circle' : 'triangle',
+                                yAxisID: 'y',
+                            },
+                            {
+                                label: 'CO (ppm)',
+                                data: coPoints,
+                                borderColor: '#f43f5e',
+                                backgroundColor: 'rgba(244,63,94,0.05)',
+                                fill: false, tension: 0.3,
+                                pointRadius: 4,
+                                yAxisID: 'y2',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: { mode: 'nearest', intersect: false },
+                        plugins: {
+                            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 }, usePointStyle: true } },
+                            tooltip: {
+                                callbacks: {
+                                    title: (items) => items.length ? new Date(items[0].parsed.x).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '',
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
+                            y: { position: 'left', suggestedMin: 0, suggestedMax: 0.2, title: { display: true, text: 'HCHO / TVOC (mg/m³)' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                            y2: { position: 'right', suggestedMin: 0, title: { display: true, text: 'CO (ppm)' }, grid: { display: false } }
+                        }
+                    },
+                    plugins: [thresholdLinesPlugin(volThresholds)],
+                });
+            }
+        }
+
+        // ==================== Tab switching ====================
+        function switchSessionChartTab(tab) {
+            _sessionChartTab = tab;
+            // Toggle tab styles
+            const tabP = document.getElementById('session-tab-particulate');
+            const tabV = document.getElementById('session-tab-volatile');
+            if (tab === 'particulate') {
+                tabP.className = 'px-5 py-2 rounded-xl font-bold text-[13px] tab-active';
+                tabV.className = 'px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500';
+            } else {
+                tabP.className = 'px-5 py-2 rounded-xl font-bold text-[13px] text-slate-500';
+                tabV.className = 'px-5 py-2 rounded-xl font-bold text-[13px] tab-active';
+            }
+            // Hide "no data" message if shown
+            document.getElementById('session-chart-loading').style.display = 'none';
+            // Re-render chart with stored data
+            _renderSessionModalChart(_sessionChartLogs, tab);
+        }
+
+        // ==================== showSessionChart (from pending approval) ====================
         async function showSessionChart(sessionId, deviceName, startedAt, baselineTransition) {
-            // Show modal
             const modal = document.getElementById('session-chart-modal');
             modal.style.display = 'flex';
             document.getElementById('session-modal-title').textContent = '📊 ' + deviceName;
-            // Subtitle with baseline transition badge + explanation
             let subHtml = fmtDateTimeDMY(startedAt);
             if (baselineTransition === 'auto') {
                 subHtml += '<div class="flex items-center gap-1.5 mt-1"><span class="px-1.5 py-0.5 rounded text-[12px] font-semibold bg-amber-100 text-amber-600 shrink-0">AUTO</span><span class="text-[12px] text-amber-600">' + (currentLang === 'th' ? 'ระบบตัด Ambient อัตโนมัติ — กรณีไม่มีการตอบสนองจากผู้ใช้' : 'System auto-cut Ambient — no user response detected') + '</span></div>';
@@ -10371,89 +10693,48 @@
             document.getElementById('session-modal-stats').innerHTML = '';
             document.getElementById('session-chart-loading').style.display = 'flex';
 
-            // Destroy old chart
             if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
 
-            // Fetch logs for this session (exclude manual entries — they only have TVOC/CO, no PM2.5/CO2)
-            const { data: logs, error } = await supabaseClient
-                .from('pollution_logs')
-                .select('recorded_at, pm25_value, co2_value, temperature, humidity')
-                .eq('session_id', sessionId)
-                .neq('data_source', 'manual')
-                .order('recorded_at', { ascending: true });
+            // Fetch sensor + manual logs in parallel
+            const [sensorRes, manualRes] = await Promise.all([
+                supabaseClient.from('pollution_logs')
+                    .select('recorded_at, pm25_value, pm10_value, co2_value, co_value, hcho_value, tvoc_value, temperature, humidity')
+                    .eq('session_id', sessionId)
+                    .neq('data_source', 'manual')
+                    .order('recorded_at', { ascending: true }),
+                supabaseClient.from('pollution_logs')
+                    .select('recorded_at, tvoc_value, co_value')
+                    .eq('session_id', sessionId)
+                    .eq('data_source', 'manual')
+                    .order('recorded_at', { ascending: true }),
+            ]);
+
+            const logs = sensorRes.data;
+            const error = sensorRes.error;
 
             if (error || !logs || logs.length === 0) {
                 document.getElementById('session-chart-loading').textContent = '⚠️ ไม่มีข้อมูล readings ใน session นี้';
                 return;
             }
 
-            // Dedup: filter out logs < 3 min apart (keep first of each cluster)
+            // Dedup sensor logs: filter out < 3 min apart
             const dedupLogs = [logs[0]];
             for (let i = 1; i < logs.length; i++) {
                 const gap = (new Date(logs[i].recorded_at) - new Date(dedupLogs[dedupLogs.length - 1].recorded_at)) / 60000;
                 if (gap >= 3) dedupLogs.push(logs[i]);
             }
-            const chartLogs = dedupLogs;
 
             document.getElementById('session-chart-loading').style.display = 'none';
-
-            // Stats
-            const pm25s = logs.map(l => l.pm25_value).filter(v => v != null);
-            const co2s = logs.map(l => l.co2_value).filter(v => v != null);
-            const statsHtml = [
-                { label: 'PM2.5 สูงสุด', value: pm25s.length ? safeMax(pm25s).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
-                { label: 'PM2.5 เฉลี่ย', value: pm25s.length ? (pm25s.reduce((a,b)=>a+b,0)/pm25s.length).toFixed(1) + ' µg/m³' : '-', color: 'text-orange-400' },
-                { label: 'CO2 สูงสุด', value: co2s.length ? safeMax(co2s) + ' ppm' : '-', color: 'text-blue-600' },
-            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[12px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
-            document.getElementById('session-modal-stats').innerHTML = statsHtml;
-
-            // Render chart (using deduped data)
-            const labels = chartLogs.map(l => new Date(l.recorded_at));
-            const ctx = document.getElementById('session-detail-chart').getContext('2d');
-            _sessionChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'PM2.5 (µg/m³)',
-                            data: chartLogs.map(l => l.pm25_value),
-                            borderColor: '#f97316',
-                            backgroundColor: 'rgba(249,115,22,0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 3,
-                            yAxisID: 'y',
-                        },
-                        {
-                            label: 'CO2 (ppm)',
-                            data: chartLogs.map(l => l.co2_value),
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59,130,246,0.05)',
-                            fill: false,
-                            tension: 0.4,
-                            pointRadius: 3,
-                            yAxisID: 'y2',
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { position: 'top' } },
-                    scales: {
-                        x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
-                        y: { position: 'left', suggestedMin: 0, suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        y2: { position: 'right', suggestedMin: 400, suggestedMax: 800, title: { display: true, text: 'CO2' }, grid: { display: false } }
-                    }
-                },
-                plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],
-            });
+            _sessionChartLogs = dedupLogs;
+            _sessionChartManualLogs = manualRes.data || [];
+            _sessionChartTab = 'particulate';
+            switchSessionChartTab('particulate');
         }
 
+        // ==================== showLogsChart (from session history) ====================
         function showLogsChart(sKey) {
-            const logs = window[sKey + '_logs'];
-            if (!logs || logs.length === 0) { alert('ไม่มีข้อมูล'); return; }
+            const allLogs = window[sKey + '_logs'];
+            if (!allLogs || allLogs.length === 0) { alert('ไม่มีข้อมูล'); return; }
             const deviceName = window[sKey + '_label'] || sKey;
             const timeRange = window[sKey + '_range'] || '';
 
@@ -10465,74 +10746,27 @@
 
             if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
 
-            const rawSorted = [...logs].sort((a, b) => a.recorded_at < b.recorded_at ? -1 : 1);
-            // Dedup: filter out logs < 3 min apart
-            const sortedLogs = [rawSorted[0]];
+            // Separate sensor vs manual logs
+            const sensorLogs = allLogs.filter(l => l.data_source !== 'manual');
+            const manualLogs = allLogs.filter(l => l.data_source === 'manual');
+
+            const rawSorted = [...sensorLogs].sort((a, b) => a.recorded_at < b.recorded_at ? -1 : 1);
+            const sortedLogs = rawSorted.length ? [rawSorted[0]] : [];
             for (let i = 1; i < rawSorted.length; i++) {
                 const gap = (new Date(rawSorted[i].recorded_at) - new Date(sortedLogs[sortedLogs.length - 1].recorded_at)) / 60000;
                 if (gap >= 3) sortedLogs.push(rawSorted[i]);
             }
-            const pm25s = sortedLogs.map(l => l.pm25_value).filter(v => v != null);
-            const co2s = sortedLogs.map(l => l.co2_value).filter(v => v != null);
-            const peakPM = pm25s.length ? safeMax(pm25s) : null;
-            const peakCO2 = co2s.length ? safeMax(co2s) : null;
-            const avgPM = pm25s.length ? (pm25s.reduce((a, b) => a + b, 0) / pm25s.length).toFixed(1) : '-';
-            const avgCO2 = co2s.length ? Math.round(co2s.reduce((a, b) => a + b, 0) / co2s.length) : '-';
 
-            const statsHtml = [
-                { label: 'PM2.5 พีค', value: peakPM != null ? peakPM.toFixed(1) + ' µg/m³' : '-', color: 'text-orange-600' },
-                { label: 'PM2.5 เฉลี่ย', value: avgPM + ' µg/m³', color: 'text-orange-400' },
-                { label: 'CO2 พีค', value: peakCO2 != null ? peakCO2 + ' ppm' : '-', color: 'text-blue-600' },
-            ].map(s => '<div class="bg-slate-50 rounded-xl p-3 text-center"><div class="text-[12px] text-slate-400 mb-1">' + s.label + '</div><div class="font-bold ' + s.color + '">' + s.value + '</div></div>').join('');
-            document.getElementById('session-modal-stats').innerHTML = statsHtml;
-
-            const ctx = document.getElementById('session-detail-chart').getContext('2d');
-            _sessionChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: sortedLogs.map(l => new Date(l.recorded_at)),
-                    datasets: [
-                        {
-                            label: 'PM2.5 (µg/m³)',
-                            data: sortedLogs.map(l => l.pm25_value),
-                            borderColor: '#f97316',
-                            backgroundColor: 'rgba(249,115,22,0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: sortedLogs.map(l => l.pm25_value === peakPM ? 7 : 3),
-                            pointBackgroundColor: sortedLogs.map(l => l.pm25_value === peakPM ? '#dc2626' : '#f97316'),
-                            yAxisID: 'y',
-                        },
-                        {
-                            label: 'CO2 (ppm)',
-                            data: sortedLogs.map(l => l.co2_value),
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'rgba(59,130,246,0.05)',
-                            fill: false,
-                            tension: 0.4,
-                            pointRadius: sortedLogs.map(l => l.co2_value === peakCO2 ? 7 : 3),
-                            pointBackgroundColor: sortedLogs.map(l => l.co2_value === peakCO2 ? '#1d4ed8' : '#3b82f6'),
-                            yAxisID: 'y2',
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { position: 'top' } },
-                    scales: {
-                        x: { type: 'time', time: { unit: 'minute', displayFormats: { minute: 'HH:mm' } }, ticks: { stepSize: 30, maxTicksLimit: 6 }, grid: { display: false } },
-                        y: { position: 'left', suggestedMin: 0, suggestedMax: 40, title: { display: true, text: 'PM2.5' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        y2: { position: 'right', suggestedMin: 400, suggestedMax: 800, title: { display: true, text: 'CO2' }, grid: { display: false } }
-                    }
-                },
-                plugins: [thresholdLinesPlugin(THRESHOLDS.pm25)],
-            });
+            _sessionChartLogs = sortedLogs;
+            _sessionChartManualLogs = manualLogs;
+            _sessionChartTab = 'particulate';
+            switchSessionChartTab('particulate');
         }
 
         function closeSessionModal() {
             document.getElementById('session-chart-modal').style.display = 'none';
             if (_sessionChartInstance) { _sessionChartInstance.destroy(); _sessionChartInstance = null; }
+            _sessionChartLogs = null;
         }
     </script>
 

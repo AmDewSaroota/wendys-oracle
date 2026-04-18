@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TravPlan — Trip Cost Planner</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Kanit', sans-serif;
+  background-color: #f9f9f7;
+  padding-bottom: 100px;
+}
+
+.header-bg {
+  background: linear-gradient(135deg, #1a2418 0%, #243421 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.vector-overlay {
+  position: absolute;
+  top: -20px;
+  right: -30px;
+  width: 350px;
+  height: 350px;
+  pointer-events: none;
+}
+
+.amber-gradient { background: linear-gradient(135deg, #ffb347 0%, #ff8c00 100%); }
+
+.amber-text-gradient {
+  background: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-tab {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.text-accent { color: #d8e2c3; }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) sepia(100%) saturate(500%) hue-rotate(350deg);
+  opacity: 0.6;
+}
+
+.budget-bar-fill {
+  transition: width 0.4s ease, background-color 0.3s ease;
+}
+
+.option-slide-enter {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-hover:active { transform: scale(0.97); }
+
+input[type="time"] { color-scheme: light; }
+
+.cheapest-glow {
+  box-shadow: 0 0 0 2px #16a34a, 0 8px 25px -5px rgba(22,163,74,0.15);
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+
+/* === Compact entry cards === */
+.entry-card {
+  transition: all 0.15s ease;
+  cursor: pointer;
+  user-select: none;
+}
+.entry-card:active { transform: scale(0.97); }
+.entry-card.selected {
+  background: #1a2418 !important;
+  color: white !important;
+  border-color: #1a2418 !important;
+  box-shadow: 0 4px 12px rgba(26,36,24,0.2);
+}
+.entry-card .card-cost { color: #374151; font-weight: 700; }
+.entry-card.selected .card-cost { color: #ffb347; }
+.entry-card .card-detail { color: #9ca3af; }
+.entry-card.selected .card-detail { color: rgba(255,255,255,0.5); }
+.entry-card .card-del { opacity: 0; transition: opacity 0.15s; }
+.entry-card:hover .card-del, .entry-card:active .card-del { opacity: 0.5; }
+.rt-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ffb347, #ff8c00);
+  color: #1a2418;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 0 5px;
+  border-radius: 999px;
+  line-height: 16px;
+}
+/* Leg include toggle */
+.leg-excluded { opacity: 0.4; transition: opacity 0.2s; }
+
+/* Drag & drop */
+.plan-drop-zone { transition: all 0.2s ease; }
+.plan-drop-zone.drag-over {
+  border-color: #ffb347 !important;
+  background: rgba(255,179,71,0.06) !important;
+  border-style: solid !important;
+}
+.plan-card { transition: all 0.15s ease; }
+.plan-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.available-chip { transition: all 0.15s ease; cursor: grab; }
+.available-chip:active { cursor: grabbing; transform: scale(0.96); }
+.available-chip:hover { border-color: #9ca3af; }
+.available-chip[draggable="true"] { -webkit-user-drag: element; }
+
+/* Validation */
+.validation-shake { animation: shake 0.3s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+</style>
+</head>
+<body class="text-stone-800">
+
+<div class="max-w-2xl mx-auto bg-white min-h-screen shadow-2xl relative border-x border-stone-50">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header-bg text-white sticky top-0 z-20 shadow-xl rounded-b-[2rem] transition-all duration-300">
+    <div class="absolute inset-0 pointer-events-none overflow-hidden rounded-b-[2rem]">
+      <svg class="absolute right-0 top-0 w-full h-full" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="400" cy="100" r="70" stroke="white" stroke-width="0.6" opacity="0.08"/>
+        <ellipse cx="400" cy="100" rx="70" ry="25" stroke="white" stroke-width="0.4" opacity="0.05"/>
+        <ellipse cx="400" cy="100" rx="70" ry="50" stroke="white" stroke-width="0.4" opacity="0.05"/>
+        <ellipse cx="400" cy="100" rx="25" ry="70" stroke="white" stroke-width="0.4" opacity="0.05"/>
+        <ellipse cx="400" cy="100" rx="50" ry="70" stroke="white" stroke-width="0.4" opacity="0.05"/>
+        <path d="M30,220 C120,120 250,60 400,100" stroke="#ffb347" stroke-width="0.8" stroke-dasharray="5,5" opacity="0.2"/>
+        <path d="M80,260 C180,180 300,140 430,80" stroke="white" stroke-width="0.5" stroke-dasharray="3,6" opacity="0.06"/>
+        <path d="M0,150 C100,100 200,80 320,110" stroke="white" stroke-width="0.5" stroke-dasharray="4,6" opacity="0.05"/>
+        <g opacity="0.2">
+          <circle cx="30" cy="220" r="2.5" fill="#ffb347"/><line x1="30" y1="220" x2="30" y2="212" stroke="#ffb347" stroke-width="1"/>
+          <circle cx="400" cy="100" r="3" fill="#ffb347"/><line x1="400" y1="100" x2="400" y2="91" stroke="#ffb347" stroke-width="1"/>
+          <circle cx="200" cy="135" r="2" fill="white" opacity="0.4"/>
+        </g>
+        <g transform="translate(340,85) rotate(-25)" opacity="0.15"><path d="M0,6 L18,0 L7,6 L18,12 Z" fill="white"/></g>
+        <g transform="translate(60,50)" opacity="0.06">
+          <circle cx="0" cy="0" r="16" stroke="white" stroke-width="0.8"/>
+          <line x1="0" y1="-18" x2="0" y2="18" stroke="white" stroke-width="0.5"/>
+          <line x1="-18" y1="0" x2="18" y2="0" stroke="white" stroke-width="0.5"/>
+          <polygon points="0,-20 -3,-8 3,-8" fill="white"/>
+        </g>
+        <circle cx="150" cy="40" r="1" fill="white" opacity="0.06"/>
+        <circle cx="280" cy="200" r="1.2" fill="white" opacity="0.04"/>
+        <circle cx="460" cy="220" r="0.8" fill="white" opacity="0.06"/>
+        <circle cx="100" cy="180" r="0.8" fill="#ffb347" opacity="0.08"/>
+      </svg>
+    </div>
+
+    <div class="relative z-10">
+      <!-- Collapsed -->
+      <div id="headerCollapsed" class="hidden px-5 py-3 cursor-pointer" onclick="toggleHeader()">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="text-lg font-light shrink-0">Trav<span class="font-bold text-accent">Plan</span></span>
+            <span class="text-[10px] text-white/50 truncate" id="headerSummary"></span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <div id="save-indicator-mini" class="text-[8px] font-bold text-[#ffb347] opacity-0 transition-opacity">SAVED</div>
+            <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-white/50 text-[10px]">▾</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expanded -->
+      <div id="headerExpanded" class="p-5 pb-5">
+        <div class="flex items-center justify-between mb-3">
+          <h1 class="flex flex-col">
+            <span class="text-3xl font-light tracking-tight leading-none">Trav<span class="font-bold text-accent">Plan</span></span>
+            <span class="text-[9px] font-bold amber-text-gradient uppercase tracking-[0.3em] mt-1 ml-0.5">Premium Planner</span>
+          </h1>
+          <div class="flex items-center gap-2">
+            <div id="save-indicator" class="text-[9px] font-bold bg-white/10 text-[#ffb347] px-3 py-1.5 rounded-full border border-white/10 opacity-0 transition-opacity uppercase">Saved</div>
+            <button onclick="toggleHeader()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/50 hover:text-white/80 transition-all text-xs" title="พับ">▴</button>
+          </div>
+        </div>
+        <input type="text" id="tripName" class="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-2.5 focus:bg-white/10 focus:border-[#ffb347]/30 transition-all placeholder-white/15 text-sm font-light outline-none mb-2" placeholder="ชื่อการเดินทาง">
+        <div class="grid grid-cols-2 gap-2 mb-2">
+          <div class="bg-white/5 rounded-xl px-3 py-2 border border-white/5 relative cursor-pointer" onclick="this.querySelector('input').showPicker?.()">
+            <label class="text-accent/30 text-[8px] uppercase font-bold mb-0.5 block">Start</label>
+            <input type="date" id="tripStart" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10">
+            <div id="tripStartDisplay" class="text-white text-xs">DD/Mon/YYYY</div>
+          </div>
+          <div class="bg-white/5 rounded-xl px-3 py-2 border border-white/5 relative cursor-pointer" onclick="this.querySelector('input').showPicker?.()">
+            <label class="text-accent/30 text-[8px] uppercase font-bold mb-0.5 block">End</label>
+            <input type="date" id="tripEnd" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10">
+            <div id="tripEndDisplay" class="text-white text-xs">DD/Mon/YYYY</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="flex items-center justify-between bg-black/20 rounded-xl px-3 py-2 border border-white/5">
+            <span class="text-[10px] text-white/40">People</span>
+            <div class="flex items-center gap-3">
+              <button onclick="changeTravelers(-1)" class="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-sm">-</button>
+              <span id="travelerCount" class="font-bold text-lg text-[#ffb347]">2</span>
+              <button onclick="changeTravelers(1)" class="w-7 h-7 rounded-full amber-gradient text-[#1a2418] flex items-center justify-center text-sm font-bold shadow-lg shadow-orange-500/20">+</button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between bg-black/20 rounded-xl px-3 py-2 border border-white/5">
+            <span class="text-[10px] text-white/40">Budget/คน</span>
+            <div class="flex items-center gap-1">
+              <span class="text-[#ffb347] text-xs">฿</span>
+              <input type="number" id="budgetInput" class="w-20 bg-transparent text-right text-[#ffb347] font-bold text-sm outline-none" placeholder="0" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== BUDGET BAR ===== -->
+  <div id="budgetBar" class="px-4 pt-3 hidden">
+    <div class="bg-stone-100 rounded-full h-2.5 overflow-hidden relative">
+      <div id="budgetFill" class="budget-bar-fill h-full rounded-full bg-emerald-500" style="width:0%"></div>
+    </div>
+    <div class="flex justify-between mt-1 text-xs font-bold">
+      <span id="budgetUsed" class="text-stone-400">฿0 used</span>
+      <span id="budgetRemain" class="text-stone-400">฿0 remaining</span>
+    </div>
+  </div>
+
+  <!-- ===== TABS ===== -->
+  <nav class="flex px-4 pt-3 z-10 bg-white border-b border-stone-100">
+    <button class="tab-btn flex-1 pb-3 text-xs font-bold tracking-wider uppercase text-[#1a2418] border-b-2 border-[#1a2418] transition-all" data-tab="items">รายการ</button>
+    <button class="tab-btn flex-1 pb-3 text-xs font-bold tracking-wider uppercase text-stone-300 border-b-2 border-transparent transition-all" data-tab="plan">จัดแผน</button>
+    <button class="tab-btn flex-1 pb-3 text-xs font-bold tracking-wider uppercase text-stone-300 border-b-2 border-transparent transition-all" data-tab="compare">เทียบ</button>
+  </nav>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="p-4 pb-32">
+
+    <!-- TAB 1: รายการ (ALL ITEMS) -->
+    <div id="tab-items" class="tab-content space-y-4">
+
+      <!-- Add entry button -->
+      <button id="addEntryBtn" onclick="openAddPanel()" class="w-full bg-[#1a2418] text-white h-12 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#243421] transition-all btn-hover shadow-lg">
+        <span class="text-lg leading-none">+</span>
+        <span class="text-sm">เพิ่มรายการ</span>
+      </button>
+
+      <!-- Add entry form panel (hidden by default) -->
+      <div id="addEntryPanel" class="hidden option-slide-enter bg-white rounded-2xl border-2 border-[#1a2418] shadow-xl overflow-hidden">
+        <div class="bg-[#1a2418] px-4 py-2.5 flex justify-between items-center">
+          <span class="text-white font-bold text-sm">เพิ่มรายการใหม่</span>
+          <button onclick="closeAddPanel()" class="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/60 hover:text-white text-xs transition-all">✕</button>
+        </div>
+        <div class="p-4 space-y-3">
+          <!-- Type toggle -->
+          <div class="flex gap-2">
+            <button id="typeTransport" onclick="setAddType('transport')" class="flex-1 py-2 rounded-xl text-sm font-bold transition-all">🚌 เดินทาง</button>
+            <button id="typeHotel" onclick="setAddType('hotel')" class="flex-1 py-2 rounded-xl text-sm font-bold transition-all">🏨 ที่พัก</button>
+            <button id="typeActivity" onclick="setAddType('activity')" class="flex-1 py-2 rounded-xl text-sm font-bold transition-all">🎫 กิจกรรม</button>
+          </div>
+
+          <!-- Route/Segment -->
+          <div>
+            <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">เส้นทาง / ช่วง</label>
+            <div id="routeChips" class="flex flex-wrap gap-1.5 mb-2 hidden"></div>
+            <!-- Transport: From → To -->
+            <div id="routeFromTo" class="flex items-center gap-2">
+              <input id="addRouteFrom" type="text" class="flex-1 bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="จาก...">
+              <span class="text-stone-300 font-bold text-sm shrink-0">→</span>
+              <input id="addRouteTo" type="text" class="flex-1 bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="ไป...">
+            </div>
+            <!-- Hotel: single location field -->
+            <input id="addRouteHotel" type="text" class="hidden w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="เช่น ที่พักเชียงใหม่, โรงแรมย่านสีลม">
+            <!-- Activity: single category/location field -->
+            <input id="addRouteActivity" type="text" class="hidden w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="เช่น อาหารเชียงใหม่, ที่เที่ยว, ช้อปปิ้ง, ทัวร์">
+          </div>
+
+          <!-- Name -->
+          <div>
+            <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">ชื่อตัวเลือก</label>
+            <input id="addName" type="text" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="เช่น AirAsia, รถทัวร์นครชัย, โรงแรม A">
+          </div>
+
+          <!-- Booking agent (transport only) -->
+          <div id="addAgentRow">
+            <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">จองกับ / Agent</label>
+            <input id="addAgent" type="text" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="เช่น Booking.com, Agoda, สายการบินตรง">
+          </div>
+
+          <!-- Link -->
+          <div>
+            <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">ลิงก์ / URL</label>
+            <input id="addLink" type="url" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418] transition-all" placeholder="https://...">
+          </div>
+
+          <!-- Price row -->
+          <div class="flex gap-2 items-end flex-wrap">
+            <div class="flex-1 min-w-[120px]">
+              <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">ราคา</label>
+              <div class="flex items-center bg-stone-50 border border-stone-200 rounded-xl px-3 py-2">
+                <span class="text-[#ffb347] font-bold text-sm mr-1">฿</span>
+                <input id="addPrice" type="number" min="0" class="flex-1 bg-transparent text-sm font-bold outline-none" placeholder="0">
+              </div>
+            </div>
+            <div>
+              <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">คิดราคา</label>
+              <select id="addPriceType" class="bg-stone-50 border border-stone-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#1a2418]" onchange="onPriceTypeChange()">
+                <option value="per_person">ต่อคน</option>
+                <option value="flat">เหมา</option>
+              </select>
+            </div>
+            <div id="addSplitRow" class="hidden">
+              <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider block mb-1">หาร</label>
+              <div class="flex items-center gap-1 bg-stone-50 border border-stone-200 rounded-xl px-2 py-2">
+                <input id="addSplitAmong" type="number" min="1" value="2" class="w-10 bg-transparent text-sm font-bold outline-none text-center">
+                <span class="text-xs text-stone-400">คน</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Round-trip (transport only) -->
+          <label id="addRoundTripRow" class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="addRoundTrip" class="accent-[#ffb347] w-4 h-4" onchange="toggleReturnFields()">
+            <span class="text-sm text-stone-500">ราคาไปกลับ (รวมขากลับแล้ว)</span>
+          </label>
+
+          <!-- Transport details -->
+          <div id="addTransportDetails" class="space-y-2">
+            <select id="addTransportType" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-2.5 text-sm outline-none focus:border-[#1a2418]" onchange="onTransportTypeChange()"></select>
+
+            <!-- Rental days (car/motorbike) -->
+            <div id="addRentalDaysRow" class="hidden flex items-center gap-2 flex-wrap">
+              <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">จำนวนวันเช่า</label>
+              <input id="addRentalDays" type="number" min="1" value="1" class="w-16 bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 text-sm font-bold outline-none text-center">
+              <span class="text-sm text-stone-400">วัน</span>
+              <select id="addRentalPriceBasis" class="ml-auto text-xs bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 outline-none">
+                <option value="total">ราคารวมทุกวัน</option>
+                <option value="per_unit">ราคาต่อวัน</option>
+              </select>
+            </div>
+
+            <!-- Outbound -->
+            <div id="outboundLabel" class="text-[10px] font-bold text-[#2a3d27] uppercase tracking-wider hidden">ขาไป Outbound</div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-stone-50 rounded-xl p-2.5">
+                <span id="departLabel" class="text-[10px] uppercase font-bold text-stone-400 block mb-1">ออก Depart</span>
+                <input id="addDepartTime" type="time" class="bg-transparent w-full text-sm font-medium outline-none">
+                <input id="addDepartPlace" type="text" placeholder="สถานที่..." class="bg-transparent w-full text-xs text-stone-400 outline-none mt-1">
+              </div>
+              <div class="bg-stone-50 rounded-xl p-2.5">
+                <span id="arriveLabel" class="text-[10px] uppercase font-bold text-stone-400 block mb-1">ถึง Arrive</span>
+                <input id="addArriveTime" type="time" class="bg-transparent w-full text-sm font-medium outline-none">
+                <input id="addArrivePlace" type="text" placeholder="สถานที่..." class="bg-transparent w-full text-xs text-stone-400 outline-none mt-1">
+              </div>
+            </div>
+
+            <!-- Return (shown when round-trip checked) -->
+            <div id="returnFields" class="hidden space-y-2">
+              <div class="text-[10px] font-bold text-[#6b553d] uppercase tracking-wider">ขากลับ Return</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-amber-50/50 rounded-xl p-2.5 border border-amber-100">
+                  <span class="text-[10px] uppercase font-bold text-stone-400 block mb-1">ออก Depart</span>
+                  <input id="addReturnDepartTime" type="time" class="bg-transparent w-full text-sm font-medium outline-none">
+                  <input id="addReturnDepartPlace" type="text" placeholder="สถานที่..." class="bg-transparent w-full text-xs text-stone-400 outline-none mt-1">
+                </div>
+                <div class="bg-amber-50/50 rounded-xl p-2.5 border border-amber-100">
+                  <span class="text-[10px] uppercase font-bold text-stone-400 block mb-1">ถึง Arrive</span>
+                  <input id="addReturnArriveTime" type="time" class="bg-transparent w-full text-sm font-medium outline-none">
+                  <input id="addReturnArrivePlace" type="text" placeholder="สถานที่..." class="bg-transparent w-full text-xs text-stone-400 outline-none mt-1">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hotel details -->
+          <div id="addHotelDetails" class="hidden">
+            <div class="flex items-center gap-2 flex-wrap">
+              <label class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">จำนวนคืน</label>
+              <input id="addNights" type="number" min="1" value="1" class="w-16 bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 text-sm font-bold outline-none text-center">
+              <span class="text-sm text-stone-400">คืน</span>
+              <select id="addHotelPriceBasis" class="ml-auto text-xs bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 outline-none">
+                <option value="total">ราคารวมทุกคืน</option>
+                <option value="per_unit">ราคาต่อคืน</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Activity details -->
+          <div id="addActivityDetails" class="hidden space-y-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-blue-50/50 rounded-xl p-2.5 border border-blue-100">
+                <span class="text-[10px] uppercase font-bold text-stone-400 block mb-1">เวลา (ถ้ามี)</span>
+                <input id="addActivityTime" type="time" class="bg-transparent w-full text-sm font-medium outline-none">
+              </div>
+              <div class="bg-blue-50/50 rounded-xl p-2.5 border border-blue-100">
+                <span class="text-[10px] uppercase font-bold text-stone-400 block mb-1">สถานที่</span>
+                <input id="addActivityPlace" type="text" placeholder="ที่ไหน..." class="bg-transparent w-full text-sm outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Validation message -->
+          <div id="validationMsg" class="hidden text-xs text-red-500 bg-red-50 rounded-xl p-2.5 space-y-0.5"></div>
+
+          <!-- Submit -->
+          <button onclick="submitEntry()" class="w-full amber-gradient text-[#1a2418] py-2.5 rounded-xl font-bold text-sm shadow-lg hover:brightness-110 transition-all btn-hover">
+            ✓ เพิ่มรายการ
+          </button>
+        </div>
+      </div>
+
+      <!-- Items list (all options, grouped by leg) -->
+      <div id="itemsContainer" class="space-y-4"></div>
+      <div id="itemsEmpty" class="text-center py-12 text-stone-300">
+        <div class="text-4xl mb-3">📝</div>
+        <p class="text-sm font-medium">ยังไม่มีรายการ — กด "+ เพิ่มรายการ" เพื่อเริ่ม</p>
+      </div>
+    </div>
+
+    <!-- TAB 2: จัดแผน (SELECT + ARRANGE) -->
+    <div id="tab-plan" class="tab-content hidden space-y-4">
+      <div id="planEmpty" class="text-center py-12 text-stone-300">
+        <div class="text-4xl mb-3">✈️</div>
+        <p class="text-sm font-medium">เพิ่มรายการที่แท็บ "รายการ" ก่อน แล้วมาเลือกจัดแผนที่นี่</p>
+      </div>
+
+      <!-- Selection cards (compact toggle per group) -->
+      <div id="legsContainer" class="space-y-4"></div>
+
+      <!-- Timeline -->
+      <div id="timelineSection" class="bg-stone-50 p-4 rounded-2xl border border-stone-100 hidden shadow-inner">
+        <div class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3">Journey Map</div>
+        <div id="timelineEntries"></div>
+      </div>
+
+      <!-- Save plan button -->
+      <div id="planSaveSection" class="hidden">
+        <button onclick="openSaveModal()" class="w-full bg-[#1a2418] text-white py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#243421] transition-all btn-hover shadow-lg">
+          <span>💾</span> บันทึกแผนนี้
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 3: เทียบ (COMPARE) -->
+    <div id="tab-compare" class="tab-content hidden space-y-4">
+      <div class="bg-[#1a2418] text-white p-6 rounded-2xl shadow-2xl flex flex-col items-center space-y-3 text-center relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-40 h-40 amber-gradient opacity-10 blur-3xl"></div>
+        <div class="text-xs text-[#ffb347]/60 font-bold uppercase tracking-wider relative z-10">แผนปัจจุบัน</div>
+        <div class="text-3xl font-light text-[#ffb347] relative z-10" id="archiveTotal">฿0</div>
+      </div>
+      <div id="savedPlansContainer" class="space-y-3"></div>
+      <div id="compareEmpty" class="text-center py-10 text-stone-300 hidden">
+        <div class="text-4xl mb-3">📊</div>
+        <p class="text-sm font-medium">ยังไม่มีแผนที่บันทึก — ไปจัดแผนแล้วกด "บันทึกแผนนี้"</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ===== BOTTOM SUMMARY ===== -->
+  <div class="fixed bottom-0 left-0 right-0 z-30 pointer-events-none">
+    <div class="max-w-2xl mx-auto px-4 pb-4">
+      <div class="bg-[#1a2418]/95 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.4)] rounded-2xl px-4 py-3 flex justify-between items-center pointer-events-auto relative overflow-hidden">
+        <div class="relative z-10">
+          <div class="text-[10px] font-bold text-[#ffb347]/50 uppercase tracking-wider">Total</div>
+          <div class="text-xl font-light text-white tracking-tight leading-tight" id="totalCost">฿0</div>
+        </div>
+        <div class="flex items-center gap-2 relative z-10">
+          <div class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-right">
+            <div class="text-[10px] font-bold text-[#ffb347] uppercase tracking-wider">Per Person</div>
+            <div class="text-sm font-bold text-white" id="perPersonCost">฿0</div>
+          </div>
+          <button onclick="exportJSON()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-all text-sm" title="Export">↓</button>
+          <button onclick="document.getElementById('importInput').click()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white/70 transition-all text-sm" title="Import">↑</button>
+          <input type="file" id="importInput" accept=".json" class="hidden" onchange="importJSON(event)">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SAVE MODAL ===== -->
+<div id="saveModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity">
+  <div class="bg-white rounded-2xl p-6 max-w-sm w-[90%] shadow-2xl">
+    <h3 class="font-bold text-base text-stone-600 mb-4">Save Plan</h3>
+    <input type="text" id="savePlanName" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-3 text-base font-medium outline-none focus:border-[#1a2418] transition-all mb-5" placeholder="Plan A — เครื่องบิน" onkeydown="if(event.key==='Enter')savePlan()">
+    <div class="flex gap-3">
+      <button onclick="closeSaveModal()" class="flex-1 py-2.5 rounded-full border border-stone-200 text-sm font-bold text-stone-400 hover:bg-stone-50 transition-all">Cancel</button>
+      <button onclick="savePlan()" class="flex-1 py-2.5 rounded-full bg-[#1a2418] text-white text-sm font-bold hover:bg-[#243421] transition-all">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== TRANSPORT TYPES =====
+const TRANSPORT_TYPES = [
+  { key: 'flight', icon: '✈️', label: 'เครื่องบิน Flight' },
+  { key: 'bus', icon: '🚌', label: 'รถทัวร์ Bus' },
+  { key: 'train', icon: '🚂', label: 'รถไฟ Train' },
+  { key: 'car', icon: '🚗', label: 'รถเช่า Car' },
+  { key: 'van', icon: '🚐', label: 'รถตู้ Van' },
+  { key: 'taxi', icon: '🚕', label: 'แท็กซี่ Taxi' },
+  { key: 'ferry', icon: '⛴️', label: 'เรือ Ferry' },
+  { key: 'motorbike', icon: '🏍️', label: 'มอไซค์ Moto' },
+  { key: 'walk', icon: '🚶', label: 'เดินเท้า Walk' },
+  { key: 'other', icon: '🚩', label: 'อื่นๆ Other' },
+];
+
+function getTransportType(key) {
+  return TRANSPORT_TYPES.find(t => t.key === key) || TRANSPORT_TYPES[TRANSPORT_TYPES.length - 1];
+}
+
+const RENTAL_TYPES = ['car', 'motorbike'];
+function isRentalType(key) { return RENTAL_TYPES.includes(key); }
+
+// ===== DATA MODEL =====
+let trip = {
+  name: '', startDate: '', endDate: '',
+  travelers: 2, budget: 0,
+  legs: [], savedPlans: []
+};
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const STORAGE_KEY = 'travplan_v2';
+const fmt = (n) => '฿' + Math.round(n).toLocaleString('th-TH');
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.getDate() + '/' + MONTHS[d.getMonth()] + '/' + d.getFullYear();
+}
+function formatDateShort(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  return d.getDate() + ' ' + MONTHS[d.getMonth()];
+}
+
+// ===== SAVE / LOAD =====
+function save() {
+  trip.name = document.getElementById('tripName').value;
+  trip.startDate = document.getElementById('tripStart').value;
+  trip.endDate = document.getElementById('tripEnd').value;
+  trip.budget = parseFloat(document.getElementById('budgetInput').value) || 0;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(trip));
+  ['save-indicator', 'save-indicator-mini'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 1500); }
+  });
+}
+
+function load() {
+  const d = localStorage.getItem(STORAGE_KEY);
+  if (d) { try { trip = JSON.parse(d); } catch(e) {} }
+  // Backward compat: assign planOrder (and returnPlanOrder for round-trips)
+  let maxOrd = Math.max(0, ...trip.legs.filter(l => l.planOrder).map(l => Math.max(l.planOrder || 0, l.returnPlanOrder || 0)));
+  trip.legs.forEach(l => {
+    if (!l.includedInPlan) return;
+    if (!l.planOrder) l.planOrder = ++maxOrd;
+    const sel = l.options && l.options.find(o => o.id === l.selectedOptionId);
+    if (sel && sel.isRoundTrip && (sel.returnDepartTime || sel.returnArriveTime) && !l.returnPlanOrder) {
+      l.returnPlanOrder = ++maxOrd;
+    }
+  });
+  document.getElementById('tripName').value = trip.name || '';
+  document.getElementById('tripStart').value = trip.startDate || '';
+  document.getElementById('tripEnd').value = trip.endDate || '';
+  document.getElementById('travelerCount').textContent = trip.travelers || 2;
+  document.getElementById('budgetInput').value = trip.budget || '';
+  // Update date displays
+  ['tripStart','tripEnd'].forEach(id => {
+    const val = document.getElementById(id).value;
+    const display = document.getElementById(id + 'Display');
+    display.textContent = val ? formatDate(val) : 'DD/Mon/YYYY';
+    display.classList.toggle('text-white/30', !val);
+    display.classList.toggle('text-white', !!val);
+  });
+  renderAll();
+}
+
+// ===== HEADER COLLAPSE =====
+let headerIsExpanded = true;
+function toggleHeader() {
+  headerIsExpanded = !headerIsExpanded;
+  document.getElementById('headerExpanded').classList.toggle('hidden', !headerIsExpanded);
+  document.getElementById('headerCollapsed').classList.toggle('hidden', headerIsExpanded);
+  if (!headerIsExpanded) updateHeaderSummary();
+}
+
+function updateHeaderSummary() {
+  const name = trip.name || 'Unnamed';
+  const p = trip.travelers || 1;
+  const s = trip.startDate, e = trip.endDate;
+  let parts = [name, p + ' คน'];
+  if (s) {
+    let dateStr = formatDateShort(s);
+    if (e) dateStr += ' – ' + formatDateShort(e);
+    parts.push(dateStr);
+  }
+  if (trip.budget > 0) parts.push(fmt(trip.budget));
+  document.getElementById('headerSummary').textContent = parts.join(' · ');
+}
+
+// ===== TRIP SETTINGS =====
+function onTripChange() { save(); updateBudgetBar(); if (!headerIsExpanded) updateHeaderSummary(); }
+
+function changeTravelers(d) {
+  trip.travelers = Math.max(1, (trip.travelers || 2) + d);
+  document.getElementById('travelerCount').textContent = trip.travelers;
+  save(); renderAll();
+}
+
+// ===== TABS =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('text-[#1a2418]', 'border-[#1a2418]');
+      b.classList.add('text-stone-300', 'border-transparent');
+    });
+    btn.classList.add('text-[#1a2418]', 'border-[#1a2418]');
+    btn.classList.remove('text-stone-300', 'border-transparent');
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById('tab-' + tab).classList.remove('hidden');
+    if (tab === 'items') renderItemsTab();
+    if (tab === 'plan') { renderPlanTab(); renderTimeline(); }
+    if (tab === 'compare') renderCompareTab();
+  });
+});
+
+// ===== INPUT LISTENERS =====
+['tripName','tripStart','tripEnd','budgetInput'].forEach(id => {
+  document.getElementById(id).addEventListener('input', onTripChange);
+});
+// Date display sync
+['tripStart','tripEnd'].forEach(id => {
+  const input = document.getElementById(id);
+  const display = document.getElementById(id + 'Display');
+  input.addEventListener('change', () => {
+    display.textContent = input.value ? formatDate(input.value) : 'DD/Mon/YYYY';
+    display.classList.toggle('text-white/30', !input.value);
+    display.classList.toggle('text-white', !!input.value);
+  });
+});
+
+// ===== LEG MANAGEMENT (internal) =====
+function createDefaultOption(type) {
+  return {
+    id: uid(), name: '',
+    price: 0, priceType: 'per_person',
+    isRoundTrip: false, agent: '',
+    transportType: 'flight',
+    departTime: '', arriveTime: '',
+    departPlace: '', arrivePlace: '',
+    returnDepartTime: '', returnArriveTime: '',
+    returnDepartPlace: '', returnArrivePlace: '',
+    nights: 1, notes: ''
+  };
+}
+
+function removeLeg(id) {
+  trip.legs = trip.legs.filter(l => l.id !== id);
+  save(); renderAll();
+}
+
+function moveLeg(id, dir) {
+  const idx = trip.legs.findIndex(l => l.id === id);
+  const ni = idx + dir;
+  if (ni < 0 || ni >= trip.legs.length) return;
+  [trip.legs[idx], trip.legs[ni]] = [trip.legs[ni], trip.legs[idx]];
+  save(); renderAll();
+}
+
+function removeOption(legId, optId) {
+  const leg = trip.legs.find(l => l.id === legId);
+  if (!leg) return;
+  leg.options = leg.options.filter(o => o.id !== optId);
+  if (leg.options.length === 0) {
+    trip.legs = trip.legs.filter(l => l.id !== legId);
+  } else if (leg.selectedOptionId === optId) {
+    leg.selectedOptionId = leg.options[0]?.id || null;
+  }
+  save(); renderAll();
+}
+
+function selectOption(legId, optId) {
+  const leg = trip.legs.find(l => l.id === legId);
+  if (leg) { leg.selectedOptionId = optId; leg.includedInPlan = true; }
+  save(); renderAll();
+}
+
+function toggleLegInPlan(legId) {
+  const leg = trip.legs.find(l => l.id === legId);
+  if (leg) leg.includedInPlan = !leg.includedInPlan;
+  save(); renderAll();
+}
+
+// ===== ADD ENTRY PANEL =====
+let addEntryType = 'transport';
+let editingLegId = null;
+let editingOptId = null;
+
+function openAddPanel() {
+  editingLegId = null;
+  editingOptId = null;
+  document.getElementById('addEntryBtn').classList.add('hidden');
+  document.getElementById('addEntryPanel').classList.remove('hidden');
+  document.querySelector('#addEntryPanel .bg-\\[\\#1a2418\\] span').textContent = 'เพิ่มรายการใหม่';
+  document.querySelector('#addEntryPanel button[onclick="submitEntry()"]').innerHTML = '✓ เพิ่มรายการ';
+  setAddType('transport');
+  document.getElementById('addTransportType').innerHTML =
+    TRANSPORT_TYPES.map(t => `<option value="${t.key}">${t.icon} ${t.label}</option>`).join('');
+  onTransportTypeChange();
+  showRouteChips();
+  document.getElementById('addRouteFrom').focus();
+}
+
+function editOption(legId, optId) {
+  const leg = trip.legs.find(l => l.id === legId);
+  if (!leg) return;
+  const opt = leg.options.find(o => o.id === optId);
+  if (!opt) return;
+
+  editingLegId = legId;
+  editingOptId = optId;
+
+  document.getElementById('addEntryBtn').classList.add('hidden');
+  document.getElementById('addEntryPanel').classList.remove('hidden');
+  document.getElementById('addTransportType').innerHTML =
+    TRANSPORT_TYPES.map(t => `<option value="${t.key}">${t.icon} ${t.label}</option>`).join('');
+
+  // Set type
+  setAddType(leg.type);
+
+  // Fill route
+  if (leg.type === 'transport') {
+    const parts = leg.name.split('→').map(s => s.trim());
+    document.getElementById('addRouteFrom').value = parts[0] || leg.name;
+    document.getElementById('addRouteTo').value = parts[1] || '';
+  } else if (leg.type === 'hotel') {
+    document.getElementById('addRouteHotel').value = leg.name;
+  } else {
+    document.getElementById('addRouteActivity').value = leg.name;
+  }
+
+  // Fill common fields
+  document.getElementById('addName').value = opt.name || '';
+  document.getElementById('addLink').value = opt.link || '';
+  document.getElementById('addPrice').value = opt.price || '';
+  document.getElementById('addPriceType').value = opt.priceType || 'per_person';
+  onPriceTypeChange();
+  if (opt.priceType === 'flat' && opt.splitAmong) document.getElementById('addSplitAmong').value = opt.splitAmong;
+  document.getElementById('addAgent').value = opt.agent || '';
+
+  // Fill type-specific fields
+  if (leg.type === 'transport') {
+    document.getElementById('addTransportType').value = opt.transportType || 'flight';
+    onTransportTypeChange();
+    document.getElementById('addRentalDays').value = opt.rentalDays || 1;
+    document.getElementById('addRentalPriceBasis').value = opt.priceBasis || 'total';
+    document.getElementById('addDepartTime').value = opt.departTime || '';
+    document.getElementById('addArriveTime').value = opt.arriveTime || '';
+    document.getElementById('addDepartPlace').value = opt.departPlace || '';
+    document.getElementById('addArrivePlace').value = opt.arrivePlace || '';
+    document.getElementById('addRoundTrip').checked = !!opt.isRoundTrip;
+    toggleReturnFields();
+    if (opt.isRoundTrip) {
+      document.getElementById('addReturnDepartTime').value = opt.returnDepartTime || '';
+      document.getElementById('addReturnArriveTime').value = opt.returnArriveTime || '';
+      document.getElementById('addReturnDepartPlace').value = opt.returnDepartPlace || '';
+      document.getElementById('addReturnArrivePlace').value = opt.returnArrivePlace || '';
+    }
+  } else if (leg.type === 'hotel') {
+    document.getElementById('addNights').value = opt.nights || 1;
+    document.getElementById('addHotelPriceBasis').value = opt.priceBasis || 'total';
+  } else if (leg.type === 'activity') {
+    document.getElementById('addActivityTime').value = opt.activityTime || '';
+    document.getElementById('addActivityPlace').value = opt.activityPlace || '';
+  }
+
+  // Update panel title & button
+  document.querySelector('#addEntryPanel .bg-\\[\\#1a2418\\] span').textContent = 'แก้ไขรายการ';
+  document.querySelector('#addEntryPanel button[onclick="submitEntry()"]').innerHTML = '✓ บันทึกการแก้ไข';
+  showRouteChips();
+  document.getElementById('addName').focus();
+}
+
+function closeAddPanel() {
+  document.getElementById('addEntryPanel').classList.add('hidden');
+  document.getElementById('addEntryBtn').classList.remove('hidden');
+  editingLegId = null;
+  editingOptId = null;
+  resetAddForm();
+}
+
+function setAddType(type) {
+  addEntryType = type;
+  const tBtn = document.getElementById('typeTransport');
+  const hBtn = document.getElementById('typeHotel');
+  const aBtn = document.getElementById('typeActivity');
+  const inactive = 'flex-1 py-2 rounded-xl text-sm font-bold transition-all bg-stone-50 text-stone-400 border-2 border-transparent';
+
+  tBtn.className = inactive;
+  hBtn.className = inactive;
+  aBtn.className = inactive;
+
+  // Hide all type-specific sections
+  document.getElementById('addTransportDetails').classList.add('hidden');
+  document.getElementById('addHotelDetails').classList.add('hidden');
+  document.getElementById('addActivityDetails').classList.add('hidden');
+  document.getElementById('addRoundTripRow').classList.add('hidden');
+  document.getElementById('addAgentRow').classList.add('hidden');
+  document.getElementById('routeFromTo').classList.add('hidden');
+  document.getElementById('addRouteHotel').classList.add('hidden');
+  document.getElementById('addRouteActivity').classList.add('hidden');
+
+  if (type === 'transport') {
+    tBtn.className = 'flex-1 py-2 rounded-xl text-sm font-bold transition-all bg-[#f2f4f1] text-[#2a3d27] border-2 border-[#2a3d27]';
+    document.getElementById('addTransportDetails').classList.remove('hidden');
+    document.getElementById('addRoundTripRow').classList.remove('hidden');
+    document.getElementById('addAgentRow').classList.remove('hidden');
+    document.getElementById('routeFromTo').classList.remove('hidden');
+  } else if (type === 'hotel') {
+    hBtn.className = 'flex-1 py-2 rounded-xl text-sm font-bold transition-all bg-[#fcf8f2] text-[#6b553d] border-2 border-[#6b553d]';
+    document.getElementById('addHotelDetails').classList.remove('hidden');
+    document.getElementById('addRouteHotel').classList.remove('hidden');
+    document.getElementById('addPriceType').value = 'flat';
+    onPriceTypeChange();
+  } else if (type === 'activity') {
+    aBtn.className = 'flex-1 py-2 rounded-xl text-sm font-bold transition-all bg-[#eef3fc] text-[#3b5998] border-2 border-[#3b5998]';
+    document.getElementById('addActivityDetails').classList.remove('hidden');
+    document.getElementById('addRouteActivity').classList.remove('hidden');
+    document.getElementById('addPriceType').value = 'per_person';
+    onPriceTypeChange();
+  }
+  toggleReturnFields();
+  showRouteChips();
+}
+
+function toggleReturnFields() {
+  const isRT = document.getElementById('addRoundTrip').checked;
+  document.getElementById('returnFields').classList.toggle('hidden', !isRT);
+  document.getElementById('outboundLabel').classList.toggle('hidden', !isRT);
+}
+
+function onTransportTypeChange() {
+  const tType = document.getElementById('addTransportType').value;
+  const rental = isRentalType(tType);
+  document.getElementById('addRentalDaysRow').classList.toggle('hidden', !rental);
+  document.getElementById('departLabel').textContent = rental ? 'รับรถ Pick-up' : 'ออก Depart';
+  document.getElementById('arriveLabel').textContent = rental ? 'คืนรถ Drop-off' : 'ถึง Arrive';
+  document.getElementById('addDepartPlace').placeholder = rental ? 'จุดรับรถ...' : 'สถานที่...';
+  document.getElementById('addArrivePlace').placeholder = rental ? 'จุดคืนรถ...' : 'สถานที่...';
+  document.getElementById('addRouteFrom').placeholder = rental ? 'รับรถที่...' : 'จาก...';
+  document.getElementById('addRouteTo').placeholder = rental ? 'คืนรถที่...' : 'ไป...';
+  document.getElementById('addRoundTripRow').classList.toggle('hidden', rental);
+  if (rental) { document.getElementById('addRoundTrip').checked = false; toggleReturnFields(); }
+  // Auto-default price type: rental/van/taxi → เหมา, others → ต่อคน
+  const autoFlat = ['car', 'motorbike', 'van', 'taxi'].includes(tType);
+  document.getElementById('addPriceType').value = autoFlat ? 'flat' : 'per_person';
+  onPriceTypeChange();
+}
+
+function onPriceTypeChange() {
+  const isFlat = document.getElementById('addPriceType').value === 'flat';
+  document.getElementById('addSplitRow').classList.toggle('hidden', !isFlat);
+  if (isFlat) document.getElementById('addSplitAmong').value = trip.travelers || 2;
+}
+
+function showRouteChips() {
+  const container = document.getElementById('routeChips');
+  const legs = trip.legs.filter(l => l.type === addEntryType);
+  if (legs.length === 0) { container.classList.add('hidden'); container.innerHTML = ''; return; }
+  container.classList.remove('hidden');
+  container.innerHTML = '<span class="text-[10px] text-stone-400">เพิ่มไปที่:</span> ' +
+    legs.map(l => {
+      const esc = l.name.replace(/'/g,"\\'");
+      return `<button type="button" onclick="fillRoute('${esc}')" class="text-xs px-2.5 py-1 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 hover:border-[#1a2418] text-stone-600 font-medium transition-all">${l.name} <span class="text-stone-300">(${l.options.length})</span></button>`;
+    }).join('');
+}
+
+function fillRoute(routeName) {
+  if (addEntryType === 'transport') {
+    const parts = routeName.split('→').map(s => s.trim());
+    document.getElementById('addRouteFrom').value = parts[0] || routeName;
+    document.getElementById('addRouteTo').value = parts[1] || '';
+  } else if (addEntryType === 'hotel') {
+    document.getElementById('addRouteHotel').value = routeName;
+  } else {
+    document.getElementById('addRouteActivity').value = routeName;
+  }
+  document.getElementById('addName').focus();
+}
+
+function getRouteName() {
+  if (addEntryType === 'transport') {
+    const from = document.getElementById('addRouteFrom').value.trim();
+    const to = document.getElementById('addRouteTo').value.trim();
+    if (!from && !to) return '';
+    if (from && to) return from + ' → ' + to;
+    return from || to;
+  } else if (addEntryType === 'hotel') {
+    return document.getElementById('addRouteHotel').value.trim();
+  } else {
+    return document.getElementById('addRouteActivity').value.trim();
+  }
+}
+
+function submitEntry() {
+  const routeName = getRouteName();
+  const name = document.getElementById('addName').value.trim();
+  const price = parseFloat(document.getElementById('addPrice').value) || 0;
+  const priceType = document.getElementById('addPriceType').value;
+  const isRoundTrip = addEntryType === 'transport' && document.getElementById('addRoundTrip').checked;
+  const isT = addEntryType === 'transport';
+  const isA = addEntryType === 'activity';
+
+  // === VALIDATION ===
+  const vMsg = document.getElementById('validationMsg');
+  const warns = [];
+  if (!routeName) {
+    if (isT) {
+      const f = document.getElementById('addRouteFrom').value.trim();
+      const t = document.getElementById('addRouteTo').value.trim();
+      if (!f && !t) warns.push('ระบุเส้นทาง (จาก → ไป)');
+      else if (!t) warns.push('ระบุปลายทาง (ไป...)');
+      else warns.push('ระบุต้นทาง (จาก...)');
+    } else if (isA) { warns.push('ระบุหมวดกิจกรรม'); }
+    else { warns.push('ระบุสถานที่พัก'); }
+  } else if (isT) {
+    const f = document.getElementById('addRouteFrom').value.trim();
+    const t = document.getElementById('addRouteTo').value.trim();
+    if (f && !t) warns.push('ระบุปลายทาง (ไป...)');
+    if (!f && t) warns.push('ระบุต้นทาง (จาก...)');
+  }
+  if (!name) warns.push('ระบุชื่อตัวเลือก');
+  if (warns.length > 0) {
+    vMsg.innerHTML = warns.map(w => `<div>• ${w}</div>`).join('');
+    vMsg.classList.remove('hidden');
+    vMsg.classList.add('validation-shake');
+    setTimeout(() => vMsg.classList.remove('validation-shake'), 300);
+    const focusEl = !routeName ? document.getElementById(isT ? 'addRouteFrom' : isA ? 'addRouteActivity' : 'addRouteHotel') :
+                    !name ? document.getElementById('addName') : null;
+    if (focusEl) focusEl.focus();
+    return;
+  }
+  vMsg.classList.add('hidden');
+
+  const optData = {
+    name: name || 'Untitled',
+    price, priceType, isRoundTrip,
+    link: document.getElementById('addLink').value.trim(),
+    agent: isT ? document.getElementById('addAgent').value.trim() : '',
+    transportType: isT ? document.getElementById('addTransportType').value : 'flight',
+    departTime: isT ? document.getElementById('addDepartTime').value : '',
+    arriveTime: isT ? document.getElementById('addArriveTime').value : '',
+    departPlace: isT ? document.getElementById('addDepartPlace').value : '',
+    arrivePlace: isT ? document.getElementById('addArrivePlace').value : '',
+    returnDepartTime: isT && isRoundTrip ? document.getElementById('addReturnDepartTime').value : '',
+    returnArriveTime: isT && isRoundTrip ? document.getElementById('addReturnArriveTime').value : '',
+    returnDepartPlace: isT && isRoundTrip ? document.getElementById('addReturnDepartPlace').value : '',
+    returnArrivePlace: isT && isRoundTrip ? document.getElementById('addReturnArrivePlace').value : '',
+    nights: addEntryType === 'hotel' ? (parseInt(document.getElementById('addNights').value) || 1) : 1,
+    priceBasis: addEntryType === 'hotel' ? document.getElementById('addHotelPriceBasis').value : (isT && isRentalType(document.getElementById('addTransportType').value) ? document.getElementById('addRentalPriceBasis').value : 'total'),
+    rentalDays: isT && isRentalType(document.getElementById('addTransportType').value) ? (parseInt(document.getElementById('addRentalDays').value) || 1) : 1,
+    splitAmong: priceType === 'flat' ? (parseInt(document.getElementById('addSplitAmong').value) || trip.travelers || 1) : null,
+    activityTime: isA ? document.getElementById('addActivityTime').value : '',
+    activityPlace: isA ? document.getElementById('addActivityPlace').value : '',
+    notes: ''
+  };
+
+  // === EDIT MODE ===
+  if (editingLegId && editingOptId) {
+    const leg = trip.legs.find(l => l.id === editingLegId);
+    if (leg) {
+      const optIdx = leg.options.findIndex(o => o.id === editingOptId);
+      if (optIdx !== -1) {
+        Object.assign(leg.options[optIdx], optData);
+      }
+      // Update leg name if route changed
+      leg.name = routeName;
+    }
+    editingLegId = null;
+    editingOptId = null;
+    save(); renderAll(); closeAddPanel();
+    return;
+  }
+
+  // === ADD MODE ===
+  const opt = { id: uid(), ...optData };
+
+  // Match existing leg by name (case-insensitive)
+  const existing = trip.legs.find(l => l.type === addEntryType && l.name.toLowerCase() === routeName.toLowerCase());
+
+  if (existing) {
+    existing.options.push(opt);
+  } else {
+    const leg = {
+      id: uid(), type: addEntryType,
+      name: routeName,
+      options: [opt],
+      selectedOptionId: opt.id,
+      expanded: true
+    };
+    trip.legs.push(leg);
+  }
+
+  save(); renderAll();
+
+  // Keep route for quick multi-add to same route
+  const keepFrom = document.getElementById('addRouteFrom').value;
+  const keepTo = document.getElementById('addRouteTo').value;
+  const keepHotel = document.getElementById('addRouteHotel').value;
+  const keepActivity = document.getElementById('addRouteActivity').value;
+  resetAddForm();
+  document.getElementById('addRouteFrom').value = keepFrom;
+  document.getElementById('addRouteTo').value = keepTo;
+  document.getElementById('addRouteHotel').value = keepHotel;
+  document.getElementById('addRouteActivity').value = keepActivity;
+  showRouteChips();
+  document.getElementById('addName').focus();
+}
+
+function resetAddForm() {
+  document.getElementById('addRouteFrom').value = '';
+  document.getElementById('addRouteTo').value = '';
+  document.getElementById('addRouteHotel').value = '';
+  document.getElementById('addRouteActivity').value = '';
+  document.getElementById('addName').value = '';
+  document.getElementById('addLink').value = '';
+  document.getElementById('addAgent').value = '';
+  document.getElementById('addPrice').value = '';
+  document.getElementById('addPriceType').value = 'per_person';
+  document.getElementById('addSplitAmong').value = trip.travelers || 2;
+  onPriceTypeChange();
+  document.getElementById('addRoundTrip').checked = false;
+  document.getElementById('addDepartTime').value = '';
+  document.getElementById('addArriveTime').value = '';
+  document.getElementById('addDepartPlace').value = '';
+  document.getElementById('addArrivePlace').value = '';
+  document.getElementById('addReturnDepartTime').value = '';
+  document.getElementById('addReturnArriveTime').value = '';
+  document.getElementById('addReturnDepartPlace').value = '';
+  document.getElementById('addReturnArrivePlace').value = '';
+  document.getElementById('addNights').value = '1';
+  document.getElementById('addHotelPriceBasis').value = 'total';
+  document.getElementById('addRentalDays').value = '1';
+  document.getElementById('addRentalPriceBasis').value = 'total';
+  document.getElementById('addActivityTime').value = '';
+  document.getElementById('addActivityPlace').value = '';
+  toggleReturnFields();
+}
+
+// ===== COST =====
+function calcBasePrice(opt, type) {
+  let base = opt.price || 0;
+  if (type === 'hotel' && opt.priceBasis === 'per_unit') base *= (opt.nights || 1);
+  if (type === 'transport' && isRentalType(opt.transportType) && opt.priceBasis === 'per_unit') base *= (opt.rentalDays || 1);
+  return base;
+}
+
+function calcOptCost(opt, type) {
+  const base = calcBasePrice(opt, type);
+  return opt.priceType === 'per_person' ? base * (trip.travelers || 1) : base;
+}
+
+function calcOptPerPerson(opt, type) {
+  const base = calcBasePrice(opt, type);
+  if (opt.priceType === 'per_person') return base;
+  return base / (opt.splitAmong || trip.travelers || 1);
+}
+
+function calcTotal() {
+  let t = 0;
+  trip.legs.forEach(leg => {
+    if (!leg.includedInPlan) return;
+    const sel = leg.options.find(o => o.id === leg.selectedOptionId);
+    if (sel) t += calcOptCost(sel, leg.type);
+  });
+  return t;
+}
+
+function calcTotalPerPerson() {
+  let pp = 0;
+  trip.legs.forEach(leg => {
+    if (!leg.includedInPlan) return;
+    const sel = leg.options.find(o => o.id === leg.selectedOptionId);
+    if (sel) pp += calcOptPerPerson(sel, leg.type);
+  });
+  return pp;
+}
+
+function updateTotal() {
+  const total = calcTotal();
+  const pp = calcTotalPerPerson();
+  document.getElementById('totalCost').textContent = fmt(total);
+  document.getElementById('perPersonCost').textContent = fmt(pp);
+  const at = document.getElementById('archiveTotal');
+  if (at) at.textContent = fmt(total);
+}
+
+function updateBudgetBar() {
+  const bar = document.getElementById('budgetBar');
+  const budget = trip.budget || 0;
+  if (budget <= 0) { bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  const total = calcTotal();
+  const pp = calcTotalPerPerson();
+  const pct = Math.min((pp / budget) * 100, 100);
+  const fill = document.getElementById('budgetFill');
+  fill.style.width = pct + '%';
+  if (pp > budget) {
+    fill.className = 'budget-bar-fill h-full rounded-full bg-red-500';
+    fill.style.width = '100%';
+  } else if (pct > 70) {
+    fill.className = 'budget-bar-fill h-full rounded-full bg-amber-400';
+  } else {
+    fill.className = 'budget-bar-fill h-full rounded-full bg-emerald-500';
+  }
+  document.getElementById('budgetUsed').textContent = fmt(pp) + '/คน used';
+  const remain = budget - pp;
+  const re = document.getElementById('budgetRemain');
+  if (remain < 0) {
+    re.textContent = 'เกินงบ ' + fmt(Math.abs(remain));
+    re.className = 'text-red-500 text-xs font-bold';
+  } else {
+    re.textContent = fmt(remain) + ' remaining';
+    re.className = 'text-stone-400 text-xs font-bold';
+  }
+}
+
+// ===== RENDER ALL =====
+function renderAll() {
+  renderItemsTab();
+  renderPlanTab();
+  updateTotal();
+  updateBudgetBar();
+  renderTimeline();
+}
+
+// ===== TAB 1: ITEMS LIST =====
+function renderItemsTab() {
+  const c = document.getElementById('itemsContainer');
+  const empty = document.getElementById('itemsEmpty');
+  if (trip.legs.length === 0) { c.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+
+  c.innerHTML = trip.legs.map((leg, idx) => {
+    const isT = leg.type === 'transport';
+    const isA = leg.type === 'activity';
+    const typeIcon = isT ? '📍' : isA ? '🎫' : '🏨';
+    const badgeColor = isT ? 'bg-[#2a3d27]' : isA ? 'bg-[#3b5998]' : 'bg-[#6b553d]';
+
+    const rows = leg.options.map(opt => {
+      const cost = calcOptCost(opt, leg.type);
+      const unitPrice = opt.price || 0;
+      const tType = isT ? getTransportType(opt.transportType || 'flight') : null;
+      const icon = isT ? tType.icon : isA ? '🎫' : '🏨';
+
+      // Detail line
+      let details = [];
+      const rental = isT && isRentalType(opt.transportType);
+      const isPerUnit = opt.priceBasis === 'per_unit';
+      if (isT) {
+        if (rental) details.push((opt.rentalDays || 1) + ' วัน');
+        if (opt.departTime && opt.arriveTime) details.push((rental ? 'รับ ' : '') + opt.departTime + ' → ' + (rental ? 'คืน ' : '') + opt.arriveTime);
+        else if (opt.departTime) details.push((rental ? 'รับ ' : 'ออก ') + opt.departTime);
+        if (!rental && opt.isRoundTrip) details.push('ไป-กลับ');
+        if (opt.departPlace || opt.arrivePlace) details.push([opt.departPlace, opt.arrivePlace].filter(Boolean).join(' → '));
+      } else if (isA) {
+        if (opt.activityTime) details.push(opt.activityTime);
+        if (opt.activityPlace) details.push(opt.activityPlace);
+      } else {
+        details.push((opt.nights || 1) + ' คืน');
+      }
+      if (opt.agent) details.push(opt.agent);
+      if (opt.priceType === 'flat') {
+        const split = opt.splitAmong || trip.travelers || 1;
+        details.push(split > 1 ? `เหมา ÷${split}` : 'เหมา');
+      }
+
+      const linkBtn = opt.link
+        ? `<a href="${opt.link}" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-600 text-xs" title="${opt.link}" onclick="event.stopPropagation()">🔗</a>`
+        : '';
+
+      // Price unit suffix
+      let priceSuffix = '';
+      if (rental && isPerUnit) priceSuffix = '/วัน';
+      else if (!isT && !isA && isPerUnit) priceSuffix = '/คืน';
+      if (opt.priceType === 'per_person') priceSuffix += '/คน';
+
+      const ppCost = calcOptPerPerson(opt, leg.type);
+      return `<div class="flex items-start gap-3 py-2.5 px-3 bg-white rounded-xl border border-stone-100 hover:border-stone-200 transition-all">
+        <span class="text-base mt-0.5 shrink-0">${icon}</span>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-sm text-stone-700 truncate">${opt.name || 'Untitled'}</span>
+            ${linkBtn}
+          </div>
+          <div class="text-xs text-stone-400 mt-0.5">${details.join(' · ')}</div>
+          <div class="text-sm font-bold text-stone-600 mt-0.5">฿${unitPrice.toLocaleString('th-TH')}${priceSuffix} <span class="text-xs font-normal text-stone-400">= ${fmt(cost)} รวม · ${fmt(ppCost)}/คน</span></div>
+        </div>
+        <div class="flex items-center gap-1 shrink-0 mt-1">
+          <button onclick="editOption('${leg.id}','${opt.id}')" class="w-7 h-7 rounded-lg hover:bg-blue-50 flex items-center justify-center text-stone-300 hover:text-blue-500 text-xs transition-all" title="แก้ไข">✎</button>
+          <button onclick="removeOption('${leg.id}','${opt.id}')" class="w-7 h-7 rounded-lg hover:bg-red-50 flex items-center justify-center text-stone-300 hover:text-red-400 text-xs transition-all" title="ลบ">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="space-y-2">
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full ${badgeColor}">${idx + 1}</span>
+        <span class="text-sm">${typeIcon}</span>
+        <span class="text-sm font-bold text-stone-600 flex-1 truncate">${leg.name}</span>
+        <span class="text-xs text-stone-400">${leg.options.length} ตัวเลือก</span>
+        <button onclick="removeLeg('${leg.id}')" class="w-5 h-5 rounded-full hover:bg-red-50 flex items-center justify-center text-stone-300 hover:text-red-400 text-[10px] transition-all" title="ลบกลุ่มนี้">✕</button>
+      </div>
+      <div class="space-y-1.5 pl-1">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== PLAN TAB (3 SECTIONS + DRAG & DROP) =====
+function renderPlanTab() {
+  const c = document.getElementById('legsContainer');
+  const planEmpty = document.getElementById('planEmpty');
+  const planSave = document.getElementById('planSaveSection');
+  if (trip.legs.length === 0) {
+    c.innerHTML = ''; planEmpty?.classList.remove('hidden'); planSave?.classList.add('hidden'); return;
+  }
+  planEmpty?.classList.add('hidden'); planSave?.classList.remove('hidden');
+
+  const TYPES = [
+    { key: 'transport', icon: '🚌', label: 'เดินทาง', color: '#2a3d27' },
+    { key: 'hotel', icon: '🏨', label: 'ที่พัก', color: '#6b553d' },
+    { key: 'activity', icon: '🎫', label: 'กิจกรรม', color: '#3b5998' },
+  ];
+
+  c.innerHTML = TYPES.map(t => {
+    const legs = trip.legs.filter(l => l.type === t.key);
+    if (legs.length === 0) return '';
+
+    const inPlan = legs.filter(l => l.includedInPlan);
+    const avail = [];
+    legs.forEach(leg => {
+      if (!leg.includedInPlan) {
+        leg.options.forEach(opt => avail.push({ leg, opt }));
+      } else {
+        leg.options.filter(o => o.id !== leg.selectedOptionId).forEach(opt => avail.push({ leg, opt }));
+      }
+    });
+
+    let sub = 0;
+    inPlan.forEach(leg => {
+      const sel = leg.options.find(o => o.id === leg.selectedOptionId);
+      if (sel) sub += calcOptCost(sel, leg.type);
+    });
+
+    const warnings = planConflicts(t.key, inPlan);
+    const planCards = inPlan.map(leg => {
+      const sel = leg.options.find(o => o.id === leg.selectedOptionId);
+      return sel ? planCardHtml(leg, sel, t) : '';
+    }).join('');
+    const availChips = avail.map(({ leg, opt }) => availChipHtml(leg, opt, t)).join('');
+
+    return `<div class="space-y-2">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">${t.icon}</span>
+        <span class="text-sm font-bold" style="color:${t.color}">${t.label}</span>
+        ${inPlan.length ? `<span class="text-xs text-stone-300">${inPlan.length}</span>` : ''}
+        <span class="flex-1"></span>
+        ${sub > 0 ? `<span class="text-sm font-bold" style="color:${t.color}">${fmt(sub)}</span>` : ''}
+      </div>
+      <div class="plan-drop-zone rounded-2xl min-h-[56px] p-2 space-y-2 border-2 border-dashed border-stone-200" data-type="${t.key}" ondragover="planDragOver(event)" ondragleave="planDragLeave(event)" ondrop="planDrop(event)">
+        ${planCards || '<div class="text-center py-3 text-stone-300 text-xs pointer-events-none">ลากรายการมาวางที่นี่ หรือกด +</div>'}
+      </div>
+      ${warnings.map(w => `<div class="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-1.5">⚠ ${w}</div>`).join('')}
+      ${avail.length ? `<div class="text-[10px] font-bold text-stone-300 uppercase tracking-wider">ยังไม่ได้เลือก</div><div class="flex flex-wrap gap-1.5">${availChips}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function planCardHtml(leg, sel, t) {
+  const isT = leg.type === 'transport', isA = leg.type === 'activity';
+  const tType = isT ? getTransportType(sel.transportType || 'flight') : null;
+  const icon = isT ? tType.icon : isA ? '🎫' : '🏨';
+  const cost = calcOptCost(sel, leg.type);
+  const rental = isT && isRentalType(sel.transportType);
+  let detail = [];
+  if (isT) {
+    if (rental) detail.push((sel.rentalDays || 1) + ' วัน');
+    if (sel.departTime && sel.arriveTime) detail.push(sel.departTime + ' → ' + sel.arriveTime);
+    if (!rental && sel.isRoundTrip) detail.push('ไป-กลับ');
+    if (sel.agent) detail.push(sel.agent);
+  } else if (isA) {
+    if (sel.activityTime) detail.push(sel.activityTime);
+    if (sel.activityPlace) detail.push(sel.activityPlace);
+  } else {
+    detail.push((sel.nights || 1) + ' คืน');
+  }
+  if (sel.priceType === 'flat') {
+    const sp = sel.splitAmong || trip.travelers || 1;
+    detail.push(sp > 1 ? `เหมา ÷${sp}` : 'เหมา');
+  }
+  const ppCost = calcOptPerPerson(sel, leg.type);
+
+  return `<div class="plan-card flex items-center gap-2 bg-white rounded-xl px-3 py-2.5 border border-stone-200 shadow-sm" draggable="true" ondragstart="planDragStart(event,'${leg.id}','${sel.id}')">
+    <span class="text-base shrink-0">${icon}</span>
+    <div class="flex-1 min-w-0">
+      <div class="text-[10px] text-stone-400 font-medium">${leg.name}</div>
+      <div class="text-sm font-bold text-stone-700 truncate">${sel.name || 'Untitled'}</div>
+      ${detail.length ? `<div class="text-xs text-stone-400">${detail.join(' · ')}</div>` : ''}
+    </div>
+    <div class="text-right shrink-0">
+      <div class="text-sm font-bold" style="color:${t.color}">${fmt(cost)}</div>
+      ${sel.priceType === 'flat' && (sel.splitAmong || trip.travelers) > 1 ? `<div class="text-[10px] text-stone-400">${fmt(ppCost)}/คน</div>` : ''}
+    </div>
+    <button onclick="event.stopPropagation();removeFromPlan('${leg.id}')" class="w-6 h-6 rounded-full hover:bg-red-50 flex items-center justify-center text-stone-300 hover:text-red-400 text-xs transition-all shrink-0">✕</button>
+  </div>`;
+}
+
+function availChipHtml(leg, opt, t) {
+  const isT = leg.type === 'transport', isA = leg.type === 'activity';
+  const tType = isT ? getTransportType(opt.transportType || 'flight') : null;
+  const icon = isT ? tType.icon : isA ? '🎫' : '🏨';
+  const cost = calcOptCost(opt, leg.type);
+  const inPlanAlready = !!leg.includedInPlan;
+  return `<div class="available-chip inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-stone-200 bg-white" draggable="true" ondragstart="planDragStart(event,'${leg.id}','${opt.id}')" ondragend="planDragEnd(event)">
+    <span class="text-xs">${icon}</span>
+    <div class="min-w-0">
+      ${!inPlanAlready ? `<div class="text-[9px] text-stone-300 leading-tight truncate">${leg.name}</div>` : ''}
+      <div class="text-xs font-medium text-stone-600 truncate">${opt.name || 'Untitled'}</div>
+    </div>
+    <span class="text-xs font-bold text-stone-500">${fmt(cost)}</span>
+    <button onclick="event.stopPropagation();addToPlan('${leg.id}','${opt.id}')" class="w-5 h-5 rounded-full bg-stone-100 hover:bg-emerald-100 flex items-center justify-center text-stone-400 hover:text-emerald-600 text-[10px] font-bold transition-all shrink-0" title="เพิ่มในแผน">+</button>
+  </div>`;
+}
+
+// ===== ADD / REMOVE FROM PLAN =====
+function getMaxTimelineOrder() {
+  let mx = 0;
+  trip.legs.filter(l => l.includedInPlan).forEach(l => {
+    if ((l.planOrder || 0) > mx) mx = l.planOrder;
+    if ((l.returnPlanOrder || 0) > mx) mx = l.returnPlanOrder;
+  });
+  return mx;
+}
+
+function addToPlan(legId, optId) {
+  const leg = trip.legs.find(l => l.id === legId);
+  if (!leg) return;
+  leg.includedInPlan = true;
+  leg.selectedOptionId = optId;
+  const sel = leg.options.find(o => o.id === optId);
+  // Auto-assign planOrder at end; round-trip gets returnPlanOrder too
+  const mx = getMaxTimelineOrder();
+  leg.planOrder = mx + 1;
+  if (sel && sel.isRoundTrip && (sel.returnDepartTime || sel.returnArriveTime)) {
+    leg.returnPlanOrder = mx + 2;
+  } else {
+    leg.returnPlanOrder = null;
+  }
+  save(); renderPlanTab(); renderTimeline(); updateTotal(); updateBudgetBar();
+}
+
+function removeFromPlan(legId) {
+  const leg = trip.legs.find(l => l.id === legId);
+  if (!leg) return;
+  leg.includedInPlan = false;
+  save(); renderPlanTab(); renderTimeline(); updateTotal(); updateBudgetBar();
+}
+
+// ===== DRAG & DROP HANDLERS =====
+function planDragStart(e, legId, optId) {
+  e.dataTransfer.setData('text/plain', JSON.stringify({ legId, optId }));
+  e.dataTransfer.effectAllowed = 'move';
+  requestAnimationFrame(() => { e.target.style.opacity = '0.4'; });
+}
+function planDragEnd(e) { e.target.style.opacity = ''; }
+function planDragOver(e) {
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function planDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function planDrop(e) {
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  try {
+    const { legId, optId } = JSON.parse(e.dataTransfer.getData('text/plain'));
+    const leg = trip.legs.find(l => l.id === legId);
+    if (!leg || leg.type !== e.currentTarget.dataset.type) return;
+    addToPlan(legId, optId);
+  } catch(err) {}
+}
+
+// ===== CONFLICT DETECTION =====
+function planConflicts(type, inPlanLegs) {
+  const w = [];
+  if (type === 'transport') {
+    const routes = {};
+    inPlanLegs.forEach(l => { const r = l.name.toLowerCase().trim(); routes[r] = (routes[r]||0)+1; });
+    for (const [r, n] of Object.entries(routes)) if (n > 1) w.push(`"${r}" ซ้ำ ${n} รายการ`);
+    for (let i = 0; i < inPlanLegs.length; i++) {
+      const s1 = inPlanLegs[i].options.find(o => o.id === inPlanLegs[i].selectedOptionId);
+      if (!s1?.departTime) continue;
+      for (let j = i+1; j < inPlanLegs.length; j++) {
+        const s2 = inPlanLegs[j].options.find(o => o.id === inPlanLegs[j].selectedOptionId);
+        if (s2?.departTime === s1.departTime) w.push(`${s1.name||'?'} และ ${s2.name||'?'} ออกเวลาเดียวกัน (${s1.departTime})`);
+      }
+    }
+  }
+  if (type === 'hotel') {
+    const locs = {};
+    inPlanLegs.forEach(l => { const r = l.name.toLowerCase().trim(); locs[r] = (locs[r]||0)+1; });
+    for (const [r, n] of Object.entries(locs)) if (n > 1) w.push(`"${r}" ซ้ำ ${n} ที่พัก`);
+  }
+  if (type === 'activity') {
+    const acts = {};
+    inPlanLegs.forEach(l => {
+      const sel = l.options.find(o => o.id === l.selectedOptionId);
+      if (sel) { const k = (sel.name||'').toLowerCase().trim(); acts[k] = (acts[k]||0)+1; }
+    });
+    for (const [a, n] of Object.entries(acts)) if (n > 1) w.push(`"${a}" ซ้ำ ${n} รายการ`);
+  }
+  return w;
+}
+
+// ===== TIMELINE =====
+function buildTimelineItems() {
+  const items = [];
+  trip.legs.filter(l => l.includedInPlan).forEach(leg => {
+    const sel = leg.options.find(o => o.id === leg.selectedOptionId);
+    if (!sel) return;
+    const isRT = leg.type === 'transport' && sel.isRoundTrip && (sel.returnDepartTime || sel.returnArriveTime);
+    // Main / outbound
+    items.push({ leg, sel, part: 'main', order: leg.planOrder || 0 });
+    // Return (separate item)
+    if (isRT) {
+      if (!leg.returnPlanOrder) leg.returnPlanOrder = (leg.planOrder || 0) + 0.5;
+      items.push({ leg, sel, part: 'return', order: leg.returnPlanOrder });
+    }
+  });
+  items.sort((a, b) => a.order - b.order);
+  return items;
+}
+
+function renderTimeline() {
+  const section = document.getElementById('timelineSection');
+  const container = document.getElementById('timelineEntries');
+  const items = buildTimelineItems();
+
+  if (items.length === 0) { section.classList.add('hidden'); return; }
+  section.classList.remove('hidden');
+
+  const groups = [];
+  let prevArriveTime = null;
+
+  items.forEach((item, i) => {
+    const { leg, sel, part } = item;
+    const isFirst = i === 0, isLast = i === items.length - 1;
+    const key = `'${leg.id}','${part}'`;
+    const arrows = `<div class="flex flex-col gap-0.5 ml-auto shrink-0">
+      <button onclick="moveTimeline(${key},-1)" class="w-5 h-5 rounded flex items-center justify-center text-stone-300 hover:text-stone-600 hover:bg-stone-100 text-xs transition-all ${isFirst ? 'invisible' : ''}" title="เลื่อนขึ้น">▲</button>
+      <button onclick="moveTimeline(${key},1)" class="w-5 h-5 rounded flex items-center justify-center text-stone-300 hover:text-stone-600 hover:bg-stone-100 text-xs transition-all ${isLast ? 'invisible' : ''}" title="เลื่อนลง">▼</button>
+    </div>`;
+
+    let lines = [];
+
+    if (leg.type === 'transport' && part === 'return') {
+      // Return flight only
+      const tType = getTransportType(sel.transportType || 'flight');
+      if (sel.returnDepartTime) {
+        let warning = '';
+        if (prevArriveTime && sel.returnDepartTime < prevArriveTime) {
+          warning = `<span class="inline-flex items-center gap-1 bg-red-50 text-red-500 text-xs font-bold px-2 py-0.5 rounded-full ml-1">⚠ เวลาไม่ต่อ!</span>`;
+        }
+        lines.push(`<div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-stone-400 w-12 text-right">${sel.returnDepartTime}</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#6b553d] flex-shrink-0"></div>
+          <span class="text-sm font-medium text-stone-600">${tType.icon} <strong>${sel.name || 'Untitled'}</strong> <span class="rt-badge">ขากลับ</span> ออก${sel.returnDepartPlace ? ' ' + sel.returnDepartPlace : ''} ${warning}</span>
+        </div>`);
+      }
+      if (sel.returnArriveTime) {
+        lines.push(`<div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-stone-400 w-12 text-right">${sel.returnArriveTime}</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#ffb347] flex-shrink-0"></div>
+          <span class="text-sm text-stone-500">ถึง${sel.returnArrivePlace ? ' ' + sel.returnArrivePlace : ''}</span>
+        </div>`);
+        prevArriveTime = sel.returnArriveTime;
+      }
+    } else if (leg.type === 'transport') {
+      // Outbound / main transport
+      const tType = getTransportType(sel.transportType || 'flight');
+      const rental = isRentalType(sel.transportType);
+      const rentalDaysLabel = rental && sel.rentalDays > 1 ? ` (${sel.rentalDays} วัน)` : '';
+      let warning = '';
+      if (prevArriveTime && sel.departTime && sel.departTime < prevArriveTime) {
+        warning = `<span class="inline-flex items-center gap-1 bg-red-50 text-red-500 text-xs font-bold px-2 py-0.5 rounded-full ml-1">⚠ เวลาไม่ต่อ!</span>`;
+      }
+      const label = !rental && sel.isRoundTrip ? ' <span class="rt-badge">ขาไป</span>' : '';
+      if (sel.departTime) {
+        lines.push(`<div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-stone-400 w-12 text-right">${sel.departTime}</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#1a2418] flex-shrink-0"></div>
+          <span class="text-sm font-medium text-stone-600">${tType.icon} <strong>${sel.name || 'Untitled'}</strong>${label}${rentalDaysLabel} ${rental ? 'รับรถ' : 'ออก'}${sel.departPlace ? ' ' + sel.departPlace : ''} ${warning}</span>
+        </div>`);
+      } else {
+        lines.push(`<div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-stone-400 w-12 text-right">—</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#1a2418] flex-shrink-0"></div>
+          <span class="text-sm font-medium text-stone-600">${tType.icon} <strong>${sel.name || 'Untitled'}</strong>${label}${rentalDaysLabel}</span>
+        </div>`);
+      }
+      if (sel.arriveTime) {
+        lines.push(`<div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-stone-400 w-12 text-right">${sel.arriveTime}</span>
+          <div class="w-2.5 h-2.5 rounded-full bg-[#ffb347] flex-shrink-0"></div>
+          <span class="text-sm text-stone-500">${rental ? 'คืนรถ' : 'ถึง'}${sel.arrivePlace ? ' ' + sel.arrivePlace : ''}</span>
+        </div>`);
+        prevArriveTime = sel.arriveTime;
+      }
+    } else if (leg.type === 'activity') {
+      const timeStr = sel.activityTime || '—';
+      lines.push(`<div class="flex items-center gap-3">
+        <span class="text-xs font-bold text-stone-400 w-12 text-right">${timeStr}</span>
+        <div class="w-2.5 h-2.5 rounded-full bg-blue-400 flex-shrink-0"></div>
+        <span class="text-sm font-medium text-stone-600">🎫 <strong>${sel.name || 'Untitled'}</strong>${sel.activityPlace ? ' · ' + sel.activityPlace : ''} · ${fmt(calcOptCost(sel, leg.type))}</span>
+      </div>`);
+    } else if (leg.type === 'hotel') {
+      lines.push(`<div class="flex items-center gap-3">
+        <span class="text-xs font-bold text-stone-400 w-12 text-right">${sel.nights || 1} คืน</span>
+        <div class="w-2.5 h-2.5 rounded-full bg-pink-400 flex-shrink-0"></div>
+        <span class="text-sm font-medium text-stone-600">🏨 <strong>${sel.name || 'Untitled'}</strong> · ${fmt(calcOptCost(sel, leg.type))}</span>
+      </div>`);
+    }
+
+    if (lines.length > 0) {
+      groups.push(`<div class="flex items-start gap-1 mb-2.5 group hover:bg-stone-50 rounded-xl py-1 px-1 -mx-1 transition-all">
+        <div class="flex-1 space-y-2">${lines.join('')}</div>
+        ${arrows}
+      </div>`);
+    }
+  });
+
+  container.innerHTML = groups.join('');
+}
+
+function moveTimeline(legId, part, dir) {
+  const items = buildTimelineItems();
+  const idx = items.findIndex(it => it.leg.id === legId && it.part === part);
+  if (idx < 0) return;
+  const swapIdx = idx + dir;
+  if (swapIdx < 0 || swapIdx >= items.length) return;
+  // Swap order values
+  const a = items[idx], b = items[swapIdx];
+  const aKey = a.part === 'return' ? 'returnPlanOrder' : 'planOrder';
+  const bKey = b.part === 'return' ? 'returnPlanOrder' : 'planOrder';
+  const tmp = a.leg[aKey];
+  a.leg[aKey] = b.leg[bKey];
+  b.leg[bKey] = tmp;
+  save(); renderTimeline();
+}
+
+// ===== TAB 3: COMPARE =====
+function renderCompareTab() {
+  const c = document.getElementById('savedPlansContainer');
+  const empty = document.getElementById('compareEmpty');
+  const at = document.getElementById('archiveTotal');
+  at.textContent = fmt(calcTotal());
+
+  if (trip.savedPlans.length === 0) { c.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  const cheapest = Math.min(...trip.savedPlans.map(p => p.totalCost));
+
+  c.innerHTML = trip.savedPlans.map(plan => {
+    const isCheap = plan.totalCost === cheapest && trip.savedPlans.length > 1;
+    const pp = plan.travelers > 1 ? fmt(plan.totalCost / plan.travelers) + '/คน' : '';
+    const legs = (plan.legs || []).map(l => `<div class="flex justify-between text-sm py-1.5 border-b border-stone-50"><span class="text-stone-500">${l.legName}: ${l.optionName}</span><span class="font-bold">${fmt(l.cost)}</span></div>`).join('');
+    const timeline = (plan.timeline || []).map(t => `<div class="flex gap-2 text-xs text-stone-400 py-0.5"><span class="font-bold w-12 text-right">${t.time}</span><span>${t.desc}</span></div>`).join('');
+
+    return `<div class="bg-white rounded-xl p-4 border-2 ${isCheap ? 'cheapest-glow border-emerald-500' : 'border-stone-100'} shadow-sm">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <div class="font-bold text-base">${plan.name} ${isCheap ? '<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 text-xs font-bold px-2 py-0.5 rounded-full ml-1">✓ ถูกสุด</span>' : ''}</div>
+          <div class="text-xs text-stone-300">${formatDate(plan.savedAt)}</div>
+        </div>
+      </div>
+      <div class="text-2xl font-light text-[#1a2418] mb-1">${fmt(plan.totalCost)}</div>
+      <div class="text-xs text-stone-400 mb-3">${pp}</div>
+      ${legs}
+      ${timeline ? '<div class="mt-3 pt-3 border-t border-stone-100">' + timeline + '</div>' : ''}
+      <div class="flex gap-2 mt-3">
+        <button onclick="loadPlan('${plan.id}')" class="flex-1 py-2 rounded-full border border-stone-200 text-xs font-bold text-stone-400 hover:bg-stone-50 hover:border-[#1a2418] hover:text-[#1a2418] transition-all">Load</button>
+        <button onclick="deletePlan('${plan.id}')" class="py-2 px-4 rounded-full border border-stone-200 text-xs font-bold text-stone-300 hover:bg-red-50 hover:border-red-300 hover:text-red-400 transition-all">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== SAVE / LOAD / DELETE PLAN =====
+function openSaveModal() {
+  const m = document.getElementById('saveModal');
+  m.classList.remove('opacity-0', 'pointer-events-none');
+  const input = document.getElementById('savePlanName');
+  input.value = 'Plan ' + String.fromCharCode(65 + trip.savedPlans.length);
+  input.focus(); input.select();
+}
+
+function closeSaveModal() {
+  document.getElementById('saveModal').classList.add('opacity-0', 'pointer-events-none');
+}
+
+function savePlan() {
+  const name = document.getElementById('savePlanName').value.trim() || 'Unnamed';
+  const legs = []; const timeline = []; let prevArr = null;
+  const done = new Set();
+  const tlItems = buildTimelineItems();
+  // Legs summary (deduplicated)
+  tlItems.forEach(({ leg, sel }) => {
+    if (done.has(leg.id)) return; done.add(leg.id);
+    legs.push({ legName: leg.name, optionName: sel.name || 'Untitled', cost: calcOptCost(sel, leg.type) });
+  });
+  // Timeline in order (round-trips split)
+  tlItems.forEach(({ leg, sel, part }) => {
+    if (leg.type === 'transport' && part === 'return') {
+      if (sel.returnDepartTime) { let w = prevArr && sel.returnDepartTime < prevArr ? ' ⚠' : ''; timeline.push({ time: sel.returnDepartTime, desc: `${sel.name || ''} ขากลับ ออก ${sel.returnDepartPlace || ''}${w}` }); }
+      if (sel.returnArriveTime) { timeline.push({ time: sel.returnArriveTime, desc: `ถึง ${sel.returnArrivePlace || ''}` }); prevArr = sel.returnArriveTime; }
+    } else if (leg.type === 'transport') {
+      if (sel.departTime) { let w = prevArr && sel.departTime < prevArr ? ' ⚠' : ''; timeline.push({ time: sel.departTime, desc: `${sel.name || ''} ออก ${sel.departPlace || ''}${w}` }); }
+      if (sel.arriveTime) { timeline.push({ time: sel.arriveTime, desc: `ถึง ${sel.arrivePlace || ''}` }); prevArr = sel.arriveTime; }
+    } else if (leg.type === 'hotel') { timeline.push({ time: `${sel.nights || 1} คืน`, desc: sel.name || 'Hotel' }); }
+    else if (leg.type === 'activity') { timeline.push({ time: sel.activityTime || '—', desc: `🎫 ${sel.name || 'Activity'}` }); }
+  });
+  trip.savedPlans.push({
+    id: uid(), name, savedAt: new Date().toISOString(),
+    travelers: trip.travelers, totalCost: calcTotal(),
+    legs, timeline,
+    selections: trip.legs.filter(l => l.includedInPlan).sort((a,b) => (a.planOrder||0) - (b.planOrder||0)).map(l => ({ legId: l.id, selectedOptionId: l.selectedOptionId, planOrder: l.planOrder || 0, returnPlanOrder: l.returnPlanOrder || null })),
+    includedLegs: trip.legs.filter(l => l.includedInPlan).sort((a,b) => (a.planOrder||0) - (b.planOrder||0)).map(l => l.id)
+  });
+  save(); closeSaveModal(); renderCompareTab();
+}
+
+function loadPlan(planId) {
+  const plan = trip.savedPlans.find(p => p.id === planId);
+  if (!plan) return;
+  // Reset all legs to not included
+  trip.legs.forEach(l => l.includedInPlan = false);
+  // Restore included legs + selections
+  if (plan.includedLegs) {
+    plan.includedLegs.forEach(legId => {
+      const leg = trip.legs.find(l => l.id === legId);
+      if (leg) leg.includedInPlan = true;
+    });
+  }
+  (plan.selections || []).forEach((s, i) => {
+    const leg = trip.legs.find(l => l.id === s.legId);
+    if (leg && leg.options.find(o => o.id === s.selectedOptionId)) {
+      leg.selectedOptionId = s.selectedOptionId;
+      leg.includedInPlan = true;
+      leg.planOrder = s.planOrder != null ? s.planOrder : i + 1;
+      if (s.returnPlanOrder) leg.returnPlanOrder = s.returnPlanOrder;
+    }
+  });
+  if (plan.travelers) { trip.travelers = plan.travelers; document.getElementById('travelerCount').textContent = trip.travelers; }
+  save(); renderAll();
+  document.querySelectorAll('.tab-btn')[1].click(); // switch to plan tab
+}
+
+function deletePlan(planId) {
+  trip.savedPlans = trip.savedPlans.filter(p => p.id !== planId);
+  save(); renderCompareTab();
+}
+
+// ===== EXPORT / IMPORT =====
+function exportJSON() {
+  save();
+  const blob = new Blob([JSON.stringify(trip, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `travplan-${trip.name || 'trip'}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+function importJSON(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if (d.legs) {
+        trip = d;
+        document.getElementById('tripName').value = trip.name || '';
+        document.getElementById('tripStart').value = trip.startDate || '';
+        document.getElementById('tripEnd').value = trip.endDate || '';
+        document.getElementById('travelerCount').textContent = trip.travelers || 2;
+        document.getElementById('budgetInput').value = trip.budget || '';
+        ['tripStart','tripEnd'].forEach(id => {
+          const val = document.getElementById(id).value;
+          const display = document.getElementById(id + 'Display');
+          display.textContent = val ? formatDate(val) : 'DD/Mon/YYYY';
+          display.classList.toggle('text-white/30', !val);
+          display.classList.toggle('text-white', !!val);
+        });
+        save(); renderAll();
+      }
+    } catch(err) { alert('ไม่สามารถอ่านไฟล์ JSON ได้'); }
+  };
+  r.readAsText(file); e.target.value = '';
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSaveModal(); closeAddPanel(); } });
+document.getElementById('saveModal').addEventListener('click', e => { if (e.target === document.getElementById('saveModal')) closeSaveModal(); });
+
+// ===== INIT =====
+load();
+</script>
+</body>
+</html>

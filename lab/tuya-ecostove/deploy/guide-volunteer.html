@@ -154,11 +154,11 @@
 
     <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
       <p class="font-bold text-lg text-gray-800 mb-3">🔌 เปิดเครื่อง</p>
-      <p class="text-base text-gray-700"><strong>กดปุ่มค้าง</strong> เพื่อเปิดเครื่อง → รอจอติดสว่าง</p>
+      <p class="text-base text-gray-700"><strong>กดปุ่มค้าง 3 วินาที</strong> จนหน้าจอติด → เครื่องจะนับถอยหลัง 60 วินาทีแล้วเริ่มแสดงค่า</p>
     </div>
 
     <div class="bg-white rounded-2xl p-4 mb-3 shadow-sm">
-      <p class="font-bold text-lg text-gray-800 mb-3">⚙️ ตั้งค่าปุ่ม (ด้านหลังเครื่อง)</p>
+      <p class="font-bold text-lg text-gray-800 mb-3">⚙️ ปุ่มกดบนเครื่อง (MT15)</p>
 
       <div class="btn-setting">
         <div class="btn-count">1</div>
@@ -180,14 +180,30 @@
         <div class="btn-count">3</div>
         <div>
           <p class="font-bold text-base text-gray-800">กด 3 ครั้ง</p>
-          <p class="text-gray-500 text-sm">ปรับเทียบค่า (Calibrate) → ค่าจะตรงขึ้น</p>
+          <p class="text-gray-500 text-sm">สลับหน้าจอ (ค่ามลพิษ ↔ นาฬิกา/จับเวลา)</p>
+        </div>
+      </div>
+
+      <div class="btn-setting">
+        <div class="btn-count" style="background:#f59e0b">4</div>
+        <div>
+          <p class="font-bold text-base text-gray-800">กด 4 ครั้ง</p>
+          <p class="text-gray-500 text-sm">ปรับเทียบเซนเซอร์ (Calibrate 120 วิ) — ใช้ตอนค่าค้าง</p>
+        </div>
+      </div>
+
+      <div class="btn-setting">
+        <div class="btn-count" style="background:#ef4444">5</div>
+        <div>
+          <p class="font-bold text-base text-gray-800">กด 5 ครั้ง</p>
+          <p class="text-gray-500 text-sm">จับคู่ WiFi ใหม่ (ไอคอน WiFi กระพริบ ~5 วิ)</p>
         </div>
       </div>
     </div>
 
     <div class="tip-box">
-      <p class="font-bold text-emerald-800 text-base">⏱ รอ 10 นาที</p>
-      <p class="text-emerald-700 text-base mt-1">หลังเปิดเครื่อง <strong>รอ 10 นาที</strong> ก่อนเริ่มเก็บข้อมูล เครื่องต้อง warm up ก่อนถึงจะวัดค่าได้แม่นยำ</p>
+      <p class="font-bold text-emerald-800 text-base">⏱ รอ 60 วินาที</p>
+      <p class="text-emerald-700 text-base mt-1">หลังเปิดเครื่อง เครื่องจะนับถอยหลัง <strong>60 วินาที</strong> แล้วเริ่มแสดงค่าอัตโนมัติ</p>
     </div>
   </div>
 
@@ -422,7 +438,7 @@
     <p class="text-xl font-bold text-red-800 mb-3">🚨 ข้อควรระวัง</p>
     <ul class="text-base text-red-700 space-y-3">
       <li>❌ <strong>อย่าวางเซนเซอร์ใกล้ควันเกินไป</strong> — ค่าอาจค้างไม่ลง</li>
-      <li>🔄 ถ้าค่าค้างไม่ลด → <strong>กดปุ่มหลังเครื่อง 3 ครั้งติด</strong> เพื่อ Calibrate ใหม่</li>
+      <li>🔄 ถ้าค่าค้างไม่ลด → <strong>กดปุ่ม 4 ครั้งติด</strong> เพื่อ Calibrate ใหม่ (รอ 120 วิ)</li>
       <li>📶 ถ้าเซนเซอร์ไม่เชื่อม → ตรวจสอบ <strong>ชื่อและรหัส Hotspot ให้ตรง</strong></li>
       <li>🔋 ระหว่างเก็บข้อมูล <strong>อย่าปิด Hotspot</strong> มือถือ</li>
     </ul>

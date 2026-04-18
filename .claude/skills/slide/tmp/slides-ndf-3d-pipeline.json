@@ -1,0 +1,345 @@
+{
+  "title": "Inside the 3D Pipeline — How We Build Worlds for VR",
+  "theme": {
+    "primary": "#00d4ff",
+    "secondary": "#e67e22",
+    "accent": "#00d4ff",
+    "background": "#1a1a2e",
+    "text": "#f0f0f0",
+    "muted": "#888899"
+  },
+  "language": "en",
+  "font": "Prompt",
+  "slides": [
+    {
+      "layout": "title",
+      "title": "Inside the 3D Pipeline",
+      "subtitle": "How We Build Worlds for VR, AR & Beyond\n\nNDF — Game · VR · AR · Metaverse Studio",
+      "icon": "🎮"
+    },
+    {
+      "layout": "content",
+      "title": "Meet the Team 👋",
+      "icon": "👥",
+      "bullets": [
+        { "text": "DewS — Lead 3D Modeler / Custom & Hero Assets", "icon": "🎨" },
+        { "text": "[Name A] — 3D Modeler / [Specialty]", "icon": "🧊" },
+        { "text": "[Name B] — 3D Modeler / [Specialty]", "icon": "⚡" }
+      ],
+      "notes": "Each presenter introduces themselves briefly. Keep it casual. [INSERT TEAM PHOTOS — one per person, or a group photo]"
+    },
+    {
+      "layout": "content",
+      "title": "What We Build at NDF 🏢",
+      "icon": "🎯",
+      "bullets": [
+        { "text": "VR Training Simulations — learn real jobs in virtual worlds", "icon": "🥽" },
+        { "text": "AR Experiences — digital layers on the real world", "icon": "📱" },
+        { "text": "Games — interactive 3D worlds", "icon": "🎮" },
+        { "text": "Web & App — 3D on every platform", "icon": "🌐" },
+        { "text": "We specialize in low-poly, real-time 3D — not film CGI, not 3D printing. Every polygon has to earn its place.", "icon": "🎯" }
+      ],
+      "notes": "Quick overview. [INSERT 4 PROJECT SCREENSHOTS — one for each category: VR/AR/Game/Web]. The last bullet is the key differentiator."
+    },
+    {
+      "layout": "content",
+      "title": "Why Are We Here Today?",
+      "icon": "💡",
+      "bullets": [
+        { "text": "Today we're NOT going to teach you how to model.", "icon": "🚫" },
+        { "text": "We're going to teach you how to survive in the real world.", "icon": "🌍" },
+        { "text": "Learning to model — that's one thing.", "icon": "🧊" },
+        { "text": "But the skills that really make your career?", "icon": "🤔" },
+        { "text": "Communication, teamwork, and knowing how to deliver.", "icon": "💪" }
+      ],
+      "notes": "This is the core message. Pause after the last bullet. Let it sink in."
+    },
+    {
+      "layout": "content",
+      "title": "The Real Pipeline — It's a Relay 🔄",
+      "icon": "🔄",
+      "bullets": [
+        { "text": "Modeler (Us) → Build the mesh, clean topology, proper naming", "icon": "🧊" },
+        { "text": "2D Artist → Add textures & materials (depends on our clean UV)", "icon": "🎨" },
+        { "text": "Animator → Rig & animate (depends on our clean topology)", "icon": "🦴" },
+        { "text": "If your mesh is messy → the texture artist struggles", "icon": "⚡" },
+        { "text": "If your pivot is wrong → the animator has to fix YOUR mistake", "icon": "⚡" },
+        { "text": "Your job isn't done when it looks good. It's done when the next person can use it.", "icon": "🎯" }
+      ],
+      "notes": "[INSERT 3 SCREENSHOTS side by side: wireframe mesh → textured model → rigged/animated model, showing the relay handoff]"
+    },
+    {
+      "layout": "two-column",
+      "title": "Your Model Isn't For You 🤝",
+      "left": {
+        "heading": "Handoff Checklist",
+        "icon": "✅",
+        "bullets": [
+          { "text": "Clean mesh — no stray verts, no overlapping faces" },
+          { "text": "Correct pivot points — a door rotates from the side, not the middle" },
+          { "text": "Face direction — all normals facing outward" },
+          { "text": "Proper naming — Project_Asset_v03_date" },
+          { "text": "Talk to the next person — \"How do you want this?\"" }
+        ]
+      },
+      "right": {
+        "heading": "Why It Matters",
+        "icon": "🎯",
+        "bullets": [
+          { "text": "The job is done when the next person can use it without asking you a single question" },
+          { "text": "[INSERT: Maya outliner screenshot with clean naming]" },
+          { "text": "[INSERT: Pivot point example — correct vs wrong]" }
+        ]
+      },
+      "notes": "This slide is about professional respect. Your model isn't for your portfolio — it's for the team."
+    },
+    {
+      "layout": "two-column",
+      "title": "Name It Like a Pro 📁",
+      "left": {
+        "heading": "❌ What we've all done",
+        "icon": "😱",
+        "bullets": [
+          { "text": "model_final.fbx" },
+          { "text": "model_final_v2.fbx" },
+          { "text": "model_FINAL_REAL.fbx" },
+          { "text": "model_FINAL_REAL_fixed.fbx" }
+        ]
+      },
+      "right": {
+        "heading": "✅ What you should do",
+        "icon": "✨",
+        "bullets": [
+          { "text": "JobVR_EspressoMachine_v01_20260401.fbx" },
+          { "text": "JobVR_EspressoMachine_v02_20260405.fbx" },
+          { "text": "JobVR_EspressoMachine_v03_20260410.fbx" },
+          { "text": "Your file name should tell: WHAT, WHICH version, WHEN" }
+        ]
+      },
+      "notes": "This always gets a laugh. Everyone has done the 'final_FINAL' thing. Be honest about it."
+    },
+    {
+      "layout": "two-column",
+      "title": "Communication is Your Superpower 💬",
+      "left": {
+        "heading": "As a Leader 👑",
+        "icon": "👑",
+        "bullets": [
+          { "text": "Break down unclear requirements — \"make it cool\" → actual task list" },
+          { "text": "Brief the team clearly — clear tasks, clear deadlines" },
+          { "text": "Shield team from client chaos — you handle the changes" }
+        ]
+      },
+      "right": {
+        "heading": "As a Team Member 🤝",
+        "icon": "🤝",
+        "bullets": [
+          { "text": "Speak up when there's a problem — don't hide until deadline" },
+          { "text": "Propose solutions, not just complaints" },
+          { "text": "Ask for help early — silence isn't strength, it's a bottleneck" }
+        ]
+      },
+      "notes": "Core message reinforcement: \"Don't be the person who makes problems. Be the person who makes everyone's job easier.\""
+    },
+    {
+      "layout": "content",
+      "title": "When the Client Changes Everything 🌪️",
+      "icon": "🌪️",
+      "bullets": [
+        { "text": "Client's fortune teller said the design was \"unlucky\" — redo everything", "icon": "🔮" },
+        { "text": "Client goes silent for weeks → drops 50 comments the day before deadline", "icon": "🤫" },
+        { "text": "\"Can you add 10 more characters? The deadline is still the same.\"", "icon": "⏰" },
+        { "text": "\"I want it low-poly but also... really detailed and realistic\"", "icon": "✨" },
+        { "text": "How you HANDLE it matters more than how you FEEL about it.", "icon": "💪" }
+      ],
+      "notes": "Tell the real stories! Fortune teller story = guaranteed laughs. End with: \"You don't have to believe me right now. But when it happens to you — and it will — you'll remember this conversation.\" [INSERT: Meme or funny visual about client revisions]"
+    },
+    {
+      "layout": "two-column",
+      "title": "AI in Our Workflow — What Actually Works 🤖",
+      "left": {
+        "heading": "✅ We Use AI For",
+        "icon": "🎨",
+        "bullets": [
+          { "text": "Concept art & mood boards — fast exploration" },
+          { "text": "Reference generation — try 10 styles in minutes" },
+          { "text": "Idea brainstorming — \"what if the robot was more friendly?\"" }
+        ]
+      },
+      "right": {
+        "heading": "AI as a Tool",
+        "icon": "🛠️",
+        "bullets": [
+          { "text": "AI helps you explore ideas FAST" },
+          { "text": "But the final model? That's still us." },
+          { "text": "[INSERT: AI-generated concept art used as reference for a real project]" }
+        ]
+      },
+      "notes": "Be positive about AI here — it's genuinely useful for concept/reference stage."
+    },
+    {
+      "layout": "two-column",
+      "title": "AI 3D Generation — The Pretty Lie 🎭",
+      "left": {
+        "heading": "AI-Generated Mesh",
+        "icon": "🤖",
+        "bullets": [
+          { "text": "Render view: looks amazing!" },
+          { "text": "Wireframe view: topology is a DISASTER" },
+          { "text": "Can't rig, can't animate, can't optimize for VR" },
+          { "text": "[INSERT: AI mesh render + wireframe]" }
+        ]
+      },
+      "right": {
+        "heading": "Hand-Modeled Mesh",
+        "icon": "🧑‍🎨",
+        "bullets": [
+          { "text": "Render view: maybe less flashy at first" },
+          { "text": "Wireframe view: clean topology!" },
+          { "text": "Ready for texture, rig, animation, VR — EVERYTHING" },
+          { "text": "[INSERT: Hand model render + wireframe]" }
+        ]
+      },
+      "notes": "This is the knockout punch: AI can generate a mesh — but it can't name the file properly, set the pivot, or ask the animator what they need. AI has no manners."
+    },
+    {
+      "layout": "content",
+      "title": "[Junior A] — My Project Story 🎨",
+      "icon": "🎨",
+      "bullets": [
+        { "text": "[INSERT: Reference / concept image — what they started with]", "icon": "📸" },
+        { "text": "[INSERT: Blockout / early stage screenshot]", "icon": "📦" },
+        { "text": "[INSERT: Wireframe view — show the topology]", "icon": "🧊" },
+        { "text": "[INSERT: Final shaded model — the finished mesh]", "icon": "✨" }
+      ],
+      "notes": "Junior A tells their story: What was the project? Walk through the process. Keep it personal and real."
+    },
+    {
+      "layout": "two-column",
+      "title": "[Junior A] — What I Learned 💡",
+      "left": {
+        "heading": "The Challenge",
+        "icon": "🔥",
+        "bullets": [
+          { "text": "[Junior A describes a specific challenge]" },
+          { "text": "[Communication issue, client change, technical problem, or team coordination]" }
+        ]
+      },
+      "right": {
+        "heading": "How I Handled It",
+        "icon": "💡",
+        "bullets": [
+          { "text": "1. [What they did first]" },
+          { "text": "2. [What they did next]" },
+          { "text": "3. [The result]" },
+          { "text": "[INSERT: Supporting visual — before/after, screenshot, etc.]" }
+        ]
+      },
+      "notes": "The lesson should connect to the core message: communication, teamwork, or adapting to change."
+    },
+    {
+      "layout": "content",
+      "title": "[Junior B] — My Project Story 🧊",
+      "icon": "🧊",
+      "bullets": [
+        { "text": "[INSERT: Reference / concept image — what they started with]", "icon": "📸" },
+        { "text": "[INSERT: Blockout / early stage screenshot]", "icon": "📦" },
+        { "text": "[INSERT: Wireframe view — show the topology]", "icon": "🧊" },
+        { "text": "[INSERT: Final shaded model — the finished mesh]", "icon": "✨" }
+      ],
+      "notes": "Junior B tells their story. Different project from Junior A for variety."
+    },
+    {
+      "layout": "two-column",
+      "title": "[Junior B] — What I Learned 💡",
+      "left": {
+        "heading": "The Challenge",
+        "icon": "🔥",
+        "bullets": [
+          { "text": "[Junior B describes a different challenge from Junior A]" },
+          { "text": "[Should give variety — if A was about clients, B could be about team coordination]" }
+        ]
+      },
+      "right": {
+        "heading": "How I Handled It",
+        "icon": "💡",
+        "bullets": [
+          { "text": "1. [What they did first]" },
+          { "text": "2. [What they did next]" },
+          { "text": "3. [The result]" },
+          { "text": "[INSERT: Supporting visual]" }
+        ]
+      },
+      "notes": "Different lesson from Junior A. Two different perspectives = richer experience for students."
+    },
+    {
+      "layout": "two-column",
+      "title": "Mistakes We've All Made 😅",
+      "left": {
+        "heading": "Don't Do This",
+        "icon": "❌",
+        "bullets": [
+          { "text": "Detailing too early — blockout first!" },
+          { "text": "Not talking to the next person in the pipeline" },
+          { "text": "Hiding problems instead of speaking up" },
+          { "text": "Naming files \"final_v2_REAL_thisone.fbx\"" },
+          { "text": "Forgetting scale — giant coffee cup in VR" },
+          { "text": "Buying assets without checking topology" }
+        ]
+      },
+      "right": {
+        "heading": "Learn From Us",
+        "icon": "😂",
+        "bullets": [
+          { "text": "[INSERT: Funny fail screenshot]" },
+          { "text": "Wrong scale, broken normals, messy outliner..." },
+          { "text": "We've been there. You will too." },
+          { "text": "The key: learn fast, don't repeat." }
+        ]
+      },
+      "notes": "Keep it fun. Humor makes mistakes memorable."
+    },
+    {
+      "layout": "content",
+      "title": "What We Hope You Remember 🧠",
+      "icon": "🧠",
+      "bullets": [
+        { "text": "🤝 Communicate — Talk to your team. Ask before you assume. Speak up when stuck.", "icon": "🤝" },
+        { "text": "🧹 Clean Handoff — Your work isn't for you. It's for the next person. Make their life easy.", "icon": "🧹" },
+        { "text": "🌪️ Adapt — Clients change their mind. Deadlines shift. Roll with it.", "icon": "🌪️" },
+        { "text": "\"Be the coworker everyone wants to work with.\"", "icon": "⭐" }
+      ],
+      "notes": "Pause on the last quote. This is the takeaway they should carry with them."
+    },
+    {
+      "layout": "two-column",
+      "title": "Your Turn — Ask Us Anything! 🎤",
+      "left": {
+        "heading": "Starter Questions",
+        "icon": "❓",
+        "bullets": [
+          { "text": "What software should I learn first?" },
+          { "text": "Will AI replace 3D modelers?" },
+          { "text": "How long to become job-ready?" },
+          { "text": "How did you get into this career?" },
+          { "text": "What's the hardest part of the job?" }
+        ]
+      },
+      "right": {
+        "heading": "Ask anything!",
+        "icon": "🎤",
+        "bullets": [
+          { "text": "Technical questions? Go for it." },
+          { "text": "Career advice? We're open." },
+          { "text": "Personal journey? Happy to share." },
+          { "text": "[INSERT: Team photo or fun behind-the-scenes shot]" }
+        ]
+      },
+      "notes": "These starter questions are for shy audiences. Encourage ALL questions. Split answers between team members — juniors answer career/learning questions, DewS handles client/industry questions."
+    },
+    {
+      "layout": "blank",
+      "content": "Thank You! 🙏\n\nNDF — Building Virtual Worlds\nwww.ndf.co.th"
+    }
+  ]
+}

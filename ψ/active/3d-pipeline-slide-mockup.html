@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inside the 3D Pipeline — Slide Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a1a; color: #f0f0f0; font-family: 'Prompt', sans-serif; padding: 40px 20px; }
+.slide-container { max-width: 960px; margin: 0 auto; }
+.slide {
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 48px;
+  margin-bottom: 32px;
+  border: 1px solid #2a2a4a;
+  position: relative;
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
+}
+.slide-number {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: #00d4ff;
+  color: #1a1a2e;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.slide-label {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  color: #888;
+  font-size: 12px;
+  font-weight: 300;
+}
+h1 { font-size: 42px; font-weight: 700; color: #00d4ff; margin-bottom: 8px; }
+h2 { font-size: 28px; font-weight: 600; color: #00d4ff; margin-bottom: 24px; }
+h3 { font-size: 18px; font-weight: 600; color: #e67e22; margin-bottom: 12px; }
+.subtitle { font-size: 20px; color: #ccc; font-weight: 300; margin-bottom: 32px; }
+.icon { font-size: 48px; margin-bottom: 16px; }
+.big-icon { font-size: 72px; }
+
+/* Image placeholder */
+.img-placeholder {
+  background: #16213e;
+  border: 2px dashed #00d4ff55;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #00d4ff88;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+  min-height: 180px;
+  transition: border-color 0.2s;
+}
+.img-placeholder:hover { border-color: #00d4ff; }
+.img-placeholder .ph-icon { font-size: 36px; margin-bottom: 8px; }
+.img-placeholder .ph-label { font-weight: 600; font-size: 15px; color: #00d4ffcc; }
+.img-placeholder .ph-desc { font-size: 12px; color: #666; margin-top: 4px; }
+.img-placeholder.tall { min-height: 280px; }
+.img-placeholder.wide { min-height: 140px; }
+
+/* Layouts */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; flex: 1; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; flex: 1; }
+.four-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1; }
+.center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; }
+.bullets { list-style: none; padding: 0; }
+.bullets li { padding: 10px 0; font-size: 18px; border-bottom: 1px solid #ffffff0a; display: flex; align-items: flex-start; gap: 12px; }
+.bullets li .b-icon { flex-shrink: 0; }
+.col-card { background: #16213e; border-radius: 12px; padding: 24px; }
+.highlight-box {
+  background: linear-gradient(135deg, #16213e, #1a2a4e);
+  border-left: 4px solid #e67e22;
+  border-radius: 0 12px 12px 0;
+  padding: 24px 28px;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.6;
+  margin: 20px 0;
+}
+.tag {
+  display: inline-block;
+  background: #00d4ff22;
+  color: #00d4ff;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px;
+}
+.tag.orange { background: #e67e2222; color: #e67e22; }
+.tag.green { background: #27ae6022; color: #27ae60; }
+.tag.red { background: #e74c3c22; color: #e74c3c; }
+.vs-divider {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: #e67e22;
+}
+.flow-arrow { text-align: center; font-size: 32px; color: #00d4ff55; padding: 8px 0; }
+.note {
+  background: #e67e2215;
+  border: 1px solid #e67e2233;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #e67e22cc;
+  margin-top: 16px;
+}
+.spacer { height: 24px; }
+</style>
+</head>
+<body>
+<div class="slide-container">
+
+<!-- SLIDE 1: Cover -->
+<div class="slide">
+  <span class="slide-number">1</span>
+  <span class="slide-label">COVER</span>
+  <div class="center">
+    <div class="big-icon">🎮</div>
+    <h1>Inside the 3D Pipeline</h1>
+    <p class="subtitle">How We Build Worlds for VR, AR & Beyond</p>
+    <div style="margin-top: 32px;">
+      <div class="img-placeholder" style="width: 300px; min-height: 80px;">
+        <span class="ph-icon">🏢</span>
+        <span class="ph-label">NDF Logo</span>
+      </div>
+    </div>
+    <p style="margin-top: 24px; color: #888; font-size: 16px;">NDF — Game &middot; VR &middot; AR &middot; Metaverse Studio</p>
+  </div>
+</div>
+
+<!-- SLIDE 2: Meet the Team -->
+<div class="slide">
+  <span class="slide-number">2</span>
+  <span class="slide-label">INTRO</span>
+  <h2>Meet the Team 👋</h2>
+  <div class="three-col">
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 160px; margin-bottom: 16px;">
+        <span class="ph-icon">📸</span>
+        <span class="ph-label">DewS Photo</span>
+        <span class="ph-desc">or avatar / work photo</span>
+      </div>
+      <h3 style="color: #00d4ff;">DewS</h3>
+      <p style="color: #aaa; font-size: 14px;">Lead 3D Modeler<br>Custom & Hero Assets</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 160px; margin-bottom: 16px;">
+        <span class="ph-icon">📸</span>
+        <span class="ph-label">Junior A Photo</span>
+        <span class="ph-desc">or avatar / work photo</span>
+      </div>
+      <h3 style="color: #00d4ff;">[Name A]</h3>
+      <p style="color: #aaa; font-size: 14px;">3D Modeler<br>[Specialty]</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 160px; margin-bottom: 16px;">
+        <span class="ph-icon">📸</span>
+        <span class="ph-label">Junior B Photo</span>
+        <span class="ph-desc">or avatar / work photo</span>
+      </div>
+      <h3 style="color: #00d4ff;">[Name B]</h3>
+      <p style="color: #aaa; font-size: 14px;">3D Modeler<br>[Specialty]</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: What We Build -->
+<div class="slide">
+  <span class="slide-number">3</span>
+  <span class="slide-label">CONTEXT</span>
+  <h2>What We Build at NDF 🏢</h2>
+  <div class="four-grid">
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 140px;">
+        <span class="ph-icon">🥽</span>
+        <span class="ph-label">VR Project Screenshot</span>
+        <span class="ph-desc">e.g. JobVR Barista</span>
+      </div>
+      <p style="margin-top: 12px; font-weight: 600;">VR Training</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 140px;">
+        <span class="ph-icon">📱</span>
+        <span class="ph-label">AR Project Screenshot</span>
+        <span class="ph-desc">e.g. AR experience</span>
+      </div>
+      <p style="margin-top: 12px; font-weight: 600;">AR Experiences</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 140px;">
+        <span class="ph-icon">🎮</span>
+        <span class="ph-label">Game Screenshot</span>
+        <span class="ph-desc">e.g. Flora Park</span>
+      </div>
+      <p style="margin-top: 12px; font-weight: 600;">Games</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 140px;">
+        <span class="ph-icon">🌐</span>
+        <span class="ph-label">Web/App Screenshot</span>
+        <span class="ph-desc">e.g. 3D on web</span>
+      </div>
+      <p style="margin-top: 12px; font-weight: 600;">Web & App</p>
+    </div>
+  </div>
+  <div class="highlight-box" style="margin-top: 20px; text-align: center;">
+    🎯 We specialize in <strong>low-poly, real-time 3D</strong> — games, VR, AR.<br>
+    Not film CGI. Not 3D printing. <strong>Every polygon has to earn its place.</strong>
+  </div>
+</div>
+
+<!-- SLIDE 4: Core Message -->
+<div class="slide">
+  <span class="slide-number">4</span>
+  <span class="slide-label">CORE MESSAGE</span>
+  <div class="center">
+    <div class="big-icon">💡</div>
+    <h2 style="font-size: 22px; color: #888; font-weight: 300; margin-bottom: 16px;">Today we're not going to teach you how to model.</h2>
+    <h1 style="font-size: 36px; line-height: 1.4;">We're going to teach you<br>how to <span style="color: #e67e22;">survive</span> in the real world.</h1>
+    <div class="spacer"></div>
+    <div class="highlight-box" style="max-width: 600px;">
+      You can learn to be a great artist anywhere.<br>
+      But nobody teaches you how to <strong>communicate</strong>,<br>
+      <strong>adapt</strong>, and <strong>deliver</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: The Real Pipeline -->
+<div class="slide">
+  <span class="slide-number">5</span>
+  <span class="slide-label">PIPELINE</span>
+  <h2>The Real Pipeline — It's a Relay 🔄</h2>
+  <div class="three-col" style="margin-bottom: 24px;">
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 120px;">
+        <span class="ph-icon">🧊</span>
+        <span class="ph-label">Wireframe Screenshot</span>
+        <span class="ph-desc">Your clean mesh</span>
+      </div>
+      <h3 style="margin-top: 12px;">Modeler (Us)</h3>
+      <p style="color: #aaa; font-size: 14px;">Build the mesh<br>Clean topology, proper naming</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 120px;">
+        <span class="ph-icon">🎨</span>
+        <span class="ph-label">Textured Screenshot</span>
+        <span class="ph-desc">After 2D artist paints it</span>
+      </div>
+      <h3 style="margin-top: 12px;">2D Artist</h3>
+      <p style="color: #aaa; font-size: 14px;">Add textures & materials<br>Depends on our clean UV</p>
+    </div>
+    <div class="col-card" style="text-align: center;">
+      <div class="img-placeholder" style="min-height: 120px;">
+        <span class="ph-icon">🦴</span>
+        <span class="ph-label">Rigged/Animated Screenshot</span>
+        <span class="ph-desc">After animator rigs it</span>
+      </div>
+      <h3 style="margin-top: 12px;">Animator</h3>
+      <p style="color: #aaa; font-size: 14px;">Rig & animate<br>Depends on our clean topology</p>
+    </div>
+  </div>
+  <div class="highlight-box">
+    ⚡ If your mesh is messy → the texture artist struggles.<br>
+    ⚡ If your pivot is wrong → the animator has to fix YOUR mistake.<br>
+    ⚡ <strong>Your job isn't done when it looks good. It's done when the next person can use it.</strong>
+  </div>
+</div>
+
+<!-- SLIDE 6: Your Model Isn't For You -->
+<div class="slide">
+  <span class="slide-number">6</span>
+  <span class="slide-label">HANDOFF</span>
+  <h2>Your Model Isn't For You 🤝</h2>
+  <p style="color: #aaa; margin-bottom: 24px; font-size: 18px;">The handoff checklist — what we do before passing the model:</p>
+  <div class="two-col">
+    <div>
+      <ul class="bullets">
+        <li><span class="b-icon">✅</span> Clean mesh — no stray verts, no overlapping faces</li>
+        <li><span class="b-icon">✅</span> Correct pivot points — door hinge at the hinge, not center</li>
+        <li><span class="b-icon">✅</span> Face direction — all normals facing outward</li>
+        <li><span class="b-icon">✅</span> Proper naming — <code style="color: #00d4ff;">Project_Asset_v03_date</code></li>
+        <li><span class="b-icon">✅</span> Talk to the next person — "How do you want this?"</li>
+      </ul>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🗂️</span>
+        <span class="ph-label">Screenshot: Outliner / File Naming</span>
+        <span class="ph-desc">Show a real Maya outliner with<br>clean naming vs messy naming</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Good Naming vs Bad Naming -->
+<div class="slide">
+  <span class="slide-number">7</span>
+  <span class="slide-label">NAMING</span>
+  <h2>Name It Like a Pro 📁</h2>
+  <div class="two-col">
+    <div class="col-card">
+      <h3 style="color: #e74c3c;">❌ What we've all done:</h3>
+      <div class="img-placeholder" style="min-height: 200px;">
+        <span class="ph-icon">😱</span>
+        <span class="ph-label">Bad Naming Example</span>
+        <span class="ph-desc">model_final.fbx<br>model_final_v2.fbx<br>model_FINAL_REAL.fbx<br>model_FINAL_REAL_fixed.fbx</span>
+      </div>
+    </div>
+    <div class="col-card">
+      <h3 style="color: #27ae60;">✅ What you should do:</h3>
+      <div class="img-placeholder" style="min-height: 200px;">
+        <span class="ph-icon">✨</span>
+        <span class="ph-label">Good Naming Example</span>
+        <span class="ph-desc">JobVR_EspressoMachine_v01_20260401.fbx<br>JobVR_EspressoMachine_v02_20260405.fbx<br>JobVR_EspressoMachine_v03_20260410.fbx</span>
+      </div>
+    </div>
+  </div>
+  <div class="note">💡 Tip: Your file name should tell someone WHAT it is, WHICH version, and WHEN — without opening it.</div>
+</div>
+
+<!-- SLIDE 8: Communication — Leader vs Team -->
+<div class="slide">
+  <span class="slide-number">8</span>
+  <span class="slide-label">COMMUNICATION</span>
+  <h2>Communication is Your Superpower 💬</h2>
+  <div class="two-col">
+    <div class="col-card">
+      <h3>As a Leader 👑</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">🔓</span> Crack open vague requirements — "make it cool" → actual brief</li>
+        <li><span class="b-icon">📋</span> Break it down for the team — clear tasks, clear deadlines</li>
+        <li><span class="b-icon">🛡️</span> Shield team from client chaos — you handle the changes</li>
+      </ul>
+    </div>
+    <div class="col-card">
+      <h3>As a Team Member 🤝</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">🚨</span> Speak up when there's a problem — don't hide until deadline</li>
+        <li><span class="b-icon">💡</span> Propose solutions, not just complaints</li>
+        <li><span class="b-icon">🆘</span> Ask for help early — silence isn't strength, it's a bottleneck</li>
+      </ul>
+    </div>
+  </div>
+  <div class="highlight-box">
+    <strong>"Don't be the person who makes problems. Be the person who makes everyone's job easier."</strong>
+  </div>
+</div>
+
+<!-- SLIDE 9: Client Chaos -->
+<div class="slide">
+  <span class="slide-number">9</span>
+  <span class="slide-label">REAL WORLD</span>
+  <h2>When the Client Changes Everything 🌪️</h2>
+  <div class="two-col">
+    <div>
+      <h3>True Stories from NDF:</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">🔮</span> Client's fortune teller said the design was "unlucky" — redo everything</li>
+        <li><span class="b-icon">🤫</span> Client goes silent for weeks → drops 50 comments the day before deadline</li>
+        <li><span class="b-icon">⏰</span> "Can you add 10 more characters? The deadline is still the same."</li>
+        <li><span class="b-icon">✨</span> "I want it low-poly but also... really detailed and realistic"</li>
+      </ul>
+      <div class="spacer"></div>
+      <div class="highlight-box">
+        How you <strong>handle</strong> it matters more than how you <strong>feel</strong> about it.
+      </div>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">😅</span>
+        <span class="ph-label">Meme or Funny Visual</span>
+        <span class="ph-desc">Optional: a relatable meme about<br>client revisions or scope creep<br><br>Or: before/after of a model that<br>got completely changed</span>
+      </div>
+    </div>
+  </div>
+  <div class="note" style="background: #00d4ff10; border-color: #00d4ff33; color: #00d4ffcc; font-size: 16px; padding: 16px 20px; margin-top: 20px; text-align: center;">
+    🎤 <em>"You don't have to believe me right now. But when it happens to you — and it will — you'll remember this conversation."</em>
+  </div>
+</div>
+
+<!-- SLIDE 10: AI — The Good -->
+<div class="slide">
+  <span class="slide-number">10</span>
+  <span class="slide-label">AI</span>
+  <h2>AI in Our Workflow — What Actually Works 🤖</h2>
+  <div class="two-col">
+    <div>
+      <h3 style="color: #27ae60;">✅ We Use AI For:</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">🎨</span> Concept art & mood boards — fast exploration</li>
+        <li><span class="b-icon">📸</span> Reference generation — try 10 styles in minutes</li>
+        <li><span class="b-icon">💡</span> Idea brainstorming — "what if the robot was more friendly?"</li>
+      </ul>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🎨</span>
+        <span class="ph-label">AI-Generated Concept Art</span>
+        <span class="ph-desc">Show a Midjourney/SD output<br>that you used as reference<br>for an actual project</span>
+      </div>
+    </div>
+  </div>
+  <div class="note">💡 AI is a great brainstorming partner — it helps you explore ideas fast before committing to modeling.</div>
+</div>
+
+<!-- SLIDE 11: AI — The Ugly Truth -->
+<div class="slide">
+  <span class="slide-number">11</span>
+  <span class="slide-label">AI</span>
+  <h2>AI 3D Generation — The Pretty Lie 🎭</h2>
+  <div class="two-col">
+    <div class="col-card">
+      <h3 style="color: #e67e22;">AI-Generated Mesh</h3>
+      <div class="img-placeholder" style="min-height: 220px;">
+        <span class="ph-icon">🤖</span>
+        <span class="ph-label">AI Model — Render View</span>
+        <span class="ph-desc">Looks amazing from outside!</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="img-placeholder" style="min-height: 220px;">
+        <span class="ph-icon">💀</span>
+        <span class="ph-label">AI Model — Wireframe View</span>
+        <span class="ph-desc">Topology is a DISASTER<br>Can't rig, can't animate,<br>can't optimize for VR</span>
+      </div>
+    </div>
+    <div class="col-card">
+      <h3 style="color: #00d4ff;">Hand-Modeled Mesh</h3>
+      <div class="img-placeholder" style="min-height: 220px;">
+        <span class="ph-icon">🧑‍🎨</span>
+        <span class="ph-label">Hand Model — Render View</span>
+        <span class="ph-desc">Maybe less flashy at first</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="img-placeholder" style="min-height: 220px;">
+        <span class="ph-icon">✨</span>
+        <span class="ph-label">Hand Model — Wireframe View</span>
+        <span class="ph-desc">Clean topology!<br>Ready for texture, rig,<br>animation, VR — EVERYTHING</span>
+      </div>
+    </div>
+  </div>
+  <div class="highlight-box">
+    AI can generate a mesh — but it can't name the file properly, set the pivot, or ask the animator what they need. <strong>AI has no manners.</strong>
+  </div>
+</div>
+
+<!-- SLIDE 12: Junior A Section -->
+<div class="slide" style="border: 2px solid #e67e22;">
+  <span class="slide-number">12</span>
+  <span class="slide-label">JUNIOR A's SECTION</span>
+  <h2>[Junior A] — My Project Story 🎨</h2>
+  <div class="two-col">
+    <div>
+      <div class="img-placeholder" style="min-height: 200px; margin-bottom: 16px;">
+        <span class="ph-icon">📸</span>
+        <span class="ph-label">Reference / Concept</span>
+        <span class="ph-desc">What they started with</span>
+      </div>
+      <div class="img-placeholder" style="min-height: 200px;">
+        <span class="ph-icon">📦</span>
+        <span class="ph-label">Blockout / Early Stage</span>
+        <span class="ph-desc">The ugly beginning</span>
+      </div>
+    </div>
+    <div>
+      <div class="img-placeholder" style="min-height: 200px; margin-bottom: 16px;">
+        <span class="ph-icon">🧊</span>
+        <span class="ph-label">Wireframe View</span>
+        <span class="ph-desc">Show the topology</span>
+      </div>
+      <div class="img-placeholder" style="min-height: 200px;">
+        <span class="ph-icon">✨</span>
+        <span class="ph-label">Final Shaded Model</span>
+        <span class="ph-desc">The finished mesh</span>
+      </div>
+    </div>
+  </div>
+  <div class="note">🎤 Junior A tells their story: What was the project? What went wrong? What did they learn about teamwork?</div>
+</div>
+
+<!-- SLIDE 13: Junior A Lesson -->
+<div class="slide" style="border: 2px solid #e67e22;">
+  <span class="slide-number">13</span>
+  <span class="slide-label">JUNIOR A's LESSON</span>
+  <h2>[Junior A] — What I Learned 💡</h2>
+  <div class="two-col">
+    <div>
+      <h3>The Challenge:</h3>
+      <div class="highlight-box">
+        [Junior A describes a specific challenge — communication issue, client change, technical problem, team coordination, etc.]
+      </div>
+      <div class="spacer"></div>
+      <h3>How I Handled It:</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">1️⃣</span> [What they did first]</li>
+        <li><span class="b-icon">2️⃣</span> [What they did next]</li>
+        <li><span class="b-icon">3️⃣</span> [The result]</li>
+      </ul>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">Supporting Visual</span>
+        <span class="ph-desc">Before/after, screenshot of<br>the problem, chat screenshot,<br>or any visual that supports<br>their story</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: Junior B Section -->
+<div class="slide" style="border: 2px solid #27ae60;">
+  <span class="slide-number">14</span>
+  <span class="slide-label">JUNIOR B's SECTION</span>
+  <h2>[Junior B] — My Project Story 🧊</h2>
+  <div class="two-col">
+    <div>
+      <div class="img-placeholder" style="min-height: 200px; margin-bottom: 16px;">
+        <span class="ph-icon">📸</span>
+        <span class="ph-label">Reference / Concept</span>
+        <span class="ph-desc">What they started with</span>
+      </div>
+      <div class="img-placeholder" style="min-height: 200px;">
+        <span class="ph-icon">📦</span>
+        <span class="ph-label">Blockout / Early Stage</span>
+        <span class="ph-desc">The ugly beginning</span>
+      </div>
+    </div>
+    <div>
+      <div class="img-placeholder" style="min-height: 200px; margin-bottom: 16px;">
+        <span class="ph-icon">🧊</span>
+        <span class="ph-label">Wireframe View</span>
+        <span class="ph-desc">Show the topology</span>
+      </div>
+      <div class="img-placeholder" style="min-height: 200px;">
+        <span class="ph-icon">✨</span>
+        <span class="ph-label">Final Shaded Model</span>
+        <span class="ph-desc">The finished mesh</span>
+      </div>
+    </div>
+  </div>
+  <div class="note">🎤 Junior B tells their story: What was the project? What went wrong? What did they learn about teamwork?</div>
+</div>
+
+<!-- SLIDE 15: Junior B Lesson -->
+<div class="slide" style="border: 2px solid #27ae60;">
+  <span class="slide-number">15</span>
+  <span class="slide-label">JUNIOR B's LESSON</span>
+  <h2>[Junior B] — What I Learned 💡</h2>
+  <div class="two-col">
+    <div>
+      <h3>The Challenge:</h3>
+      <div class="highlight-box">
+        [Junior B describes a specific challenge — different from Junior A's story to give variety]
+      </div>
+      <div class="spacer"></div>
+      <h3>How I Handled It:</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">1️⃣</span> [What they did first]</li>
+        <li><span class="b-icon">2️⃣</span> [What they did next]</li>
+        <li><span class="b-icon">3️⃣</span> [The result]</li>
+      </ul>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">🖼️</span>
+        <span class="ph-label">Supporting Visual</span>
+        <span class="ph-desc">Before/after, screenshot of<br>the problem, or any visual<br>that supports their story</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 16: Common Mistakes -->
+<div class="slide">
+  <span class="slide-number">16</span>
+  <span class="slide-label">LESSONS</span>
+  <h2>Mistakes We've All Made 😅</h2>
+  <div class="two-col">
+    <div>
+      <ul class="bullets">
+        <li><span class="b-icon">❌</span> Detailing too early — blockout first!</li>
+        <li><span class="b-icon">❌</span> Not talking to the next person in the pipeline</li>
+        <li><span class="b-icon">❌</span> Hiding problems instead of speaking up</li>
+        <li><span class="b-icon">❌</span> Naming files "final_v2_REAL_thisone.fbx"</li>
+        <li><span class="b-icon">❌</span> Forgetting scale — giant coffee cup in VR</li>
+        <li><span class="b-icon">❌</span> Buying assets without checking topology</li>
+      </ul>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">😂</span>
+        <span class="ph-label">Funny Fail Example</span>
+        <span class="ph-desc">A screenshot of a real mistake<br>— wrong scale, broken normals,<br>messy outliner, etc.<br><br>Humor makes it memorable!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 17: Summary -->
+<div class="slide">
+  <span class="slide-number">17</span>
+  <span class="slide-label">TAKEAWAY</span>
+  <h2>What We Hope You Remember 🧠</h2>
+  <div class="center" style="gap: 24px;">
+    <div style="display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;">
+      <div class="col-card" style="flex: 1; min-width: 250px; max-width: 280px; text-align: center; padding: 32px 24px;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🤝</div>
+        <h3 style="color: #00d4ff;">Communicate</h3>
+        <p style="color: #aaa; font-size: 14px;">Talk to your team.<br>Ask before you assume.<br>Speak up when stuck.</p>
+      </div>
+      <div class="col-card" style="flex: 1; min-width: 250px; max-width: 280px; text-align: center; padding: 32px 24px;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🧹</div>
+        <h3 style="color: #e67e22;">Clean Handoff</h3>
+        <p style="color: #aaa; font-size: 14px;">Your work isn't for you.<br>It's for the next person.<br>Make their life easy.</p>
+      </div>
+      <div class="col-card" style="flex: 1; min-width: 250px; max-width: 280px; text-align: center; padding: 32px 24px;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🌪️</div>
+        <h3 style="color: #27ae60;">Adapt</h3>
+        <p style="color: #aaa; font-size: 14px;">Clients change their mind.<br>Deadlines shift.<br>Roll with it.</p>
+      </div>
+    </div>
+    <div class="highlight-box" style="max-width: 600px; text-align: center;">
+      <strong>"Be the coworker everyone wants to work with."</strong>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 18: Q&A -->
+<div class="slide">
+  <span class="slide-number">18</span>
+  <span class="slide-label">Q&A</span>
+  <h2>Your Turn — Ask Us Anything! 🎤</h2>
+  <div class="two-col">
+    <div>
+      <h3>Starter Questions:</h3>
+      <ul class="bullets">
+        <li><span class="b-icon">💻</span> What software should I learn first?</li>
+        <li><span class="b-icon">🤖</span> Will AI replace 3D modelers?</li>
+        <li><span class="b-icon">⏱️</span> How long to become job-ready?</li>
+        <li><span class="b-icon">🛤️</span> How did you get into this career?</li>
+        <li><span class="b-icon">🤔</span> What's the hardest part of the job?</li>
+      </ul>
+    </div>
+    <div>
+      <div class="img-placeholder tall">
+        <span class="ph-icon">📸</span>
+        <span class="ph-label">Team Photo / Fun Photo</span>
+        <span class="ph-desc">Casual team photo or<br>behind-the-scenes shot<br>from the office/workspace</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 19: Thank You -->
+<div class="slide">
+  <span class="slide-number">19</span>
+  <span class="slide-label">CLOSING</span>
+  <div class="center">
+    <div class="big-icon">🙏</div>
+    <h1 style="font-size: 48px;">Thank You!</h1>
+    <p class="subtitle">It was great meeting you all.</p>
+    <div class="spacer"></div>
+    <div class="img-placeholder" style="width: 200px; min-height: 60px;">
+      <span class="ph-label">NDF Logo</span>
+    </div>
+    <p style="margin-top: 16px; color: #888;">NDF — Building Virtual Worlds</p>
+    <p style="color: #666; font-size: 14px; margin-top: 8px;">www.ndf.co.th</p>
+  </div>
+</div>
+
+<!-- Legend -->
+<div style="max-width: 960px; margin: 40px auto; padding: 32px; background: #111; border-radius: 12px; border: 1px solid #333;">
+  <h3 style="color: #e67e22; margin-bottom: 16px;">📋 Image Checklist for the Team</h3>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+    <div>
+      <h4 style="color: #00d4ff; margin-bottom: 8px;">DewS prepares:</h4>
+      <ul style="list-style: none; padding: 0; font-size: 14px; color: #aaa;">
+        <li style="padding: 4px 0;">☐ NDF logo</li>
+        <li style="padding: 4px 0;">☐ 4 project screenshots (VR/AR/Game/Web)</li>
+        <li style="padding: 4px 0;">☐ Pipeline relay visual (wireframe → textured → rigged)</li>
+        <li style="padding: 4px 0;">☐ Clean outliner screenshot (good naming example)</li>
+        <li style="padding: 4px 0;">☐ AI-generated mesh — render + wireframe</li>
+        <li style="padding: 4px 0;">☐ Hand-modeled mesh — render + wireframe</li>
+        <li style="padding: 4px 0;">☐ Funny fail example (wrong scale, messy naming, etc.)</li>
+        <li style="padding: 4px 0;">☐ Team photo (optional)</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="color: #e67e22; margin-bottom: 8px;">Each Junior prepares:</h4>
+      <ul style="list-style: none; padding: 0; font-size: 14px; color: #aaa;">
+        <li style="padding: 4px 0;">☐ Their photo or avatar</li>
+        <li style="padding: 4px 0;">☐ Project reference / concept image</li>
+        <li style="padding: 4px 0;">☐ Blockout screenshot</li>
+        <li style="padding: 4px 0;">☐ Wireframe view</li>
+        <li style="padding: 4px 0;">☐ Final shaded model</li>
+        <li style="padding: 4px 0;">☐ One supporting visual for their "lesson" story</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #333;">
+    <p style="color: #666; font-size: 13px;">💡 All screenshots: dark gray background, consistent angle, Maya/Blender viewport. Use Figma to add labels if needed.</p>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

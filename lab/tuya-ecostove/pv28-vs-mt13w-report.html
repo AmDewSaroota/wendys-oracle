@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PV28 Air Detector — Field Test Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --dark-green: #064e3b;
+    --green: #059669;
+    --light-green: #d1fae5;
+    --bg-tint: #f0f7f4;
+    --navy: #0f172a;
+    --orange: #fb923c;
+    --orange-dark: #ea580c;
+    --red: #dc2626;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Chakra Petch', sans-serif; background: var(--bg-tint); color: var(--navy); }
+
+  .slide {
+    width: 100vw; min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 40px 60px;
+    border-bottom: 4px solid var(--light-green);
+    position: relative;
+  }
+
+  .slide-num {
+    position: absolute; top: 20px; right: 30px;
+    font-size: 14px; color: var(--gray-400); font-weight: 300;
+  }
+
+  /* Slide themes */
+  .s-title {
+    background: linear-gradient(135deg, var(--dark-green) 0%, #0a7c5a 50%, var(--dark-green) 100%);
+    color: white;
+    border-bottom: 6px solid var(--orange);
+  }
+  .s-data { background: var(--bg-tint); }
+  .s-problem { background: linear-gradient(135deg, #fef2f2 0%, #fff1f2 100%); border-bottom-color: #fecaca; }
+  .s-summary {
+    background: linear-gradient(135deg, var(--dark-green) 0%, #0a7c5a 100%);
+    color: white;
+    border-bottom: 6px solid var(--orange);
+  }
+
+  h1 { font-size: 42px; font-weight: 700; margin-bottom: 10px; }
+  h2 { font-size: 30px; font-weight: 600; margin-bottom: 24px; color: var(--dark-green); }
+  h3 { font-size: 22px; font-weight: 500; margin-bottom: 16px; color: var(--gray-600); }
+
+  .s-title h2, .s-summary h2 { color: white; }
+  .s-title h3, .s-summary h3 { color: rgba(255,255,255,0.8); }
+  .s-title .slide-num, .s-summary .slide-num { color: rgba(255,255,255,0.4); }
+
+  .subtitle { font-size: 18px; color: var(--gray-500); font-weight: 300; margin-bottom: 30px; }
+  .s-title .subtitle { color: rgba(255,255,255,0.7); }
+
+  .accent { color: var(--dark-green); }
+  .green { color: var(--green); }
+  .orange { color: var(--orange-dark); }
+  .red { color: var(--red); }
+  .dim { color: var(--gray-500); }
+
+  .badge {
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 500; margin: 0 4px;
+  }
+  .badge-green { background: var(--light-green); border: 1px solid var(--green); color: var(--dark-green); }
+  .badge-orange { background: #fff7ed; border: 1px solid var(--orange); color: var(--orange-dark); }
+  .badge-red { background: #fef2f2; border: 1px solid #fca5a5; color: var(--red); }
+  .badge-blue { background: #eff6ff; border: 1px solid #93c5fd; color: #1d4ed8; }
+  .badge-white { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); color: white; }
+
+  table {
+    border-collapse: collapse; width: 100%; max-width: 900px;
+    margin: 16px 0; font-size: 15px;
+    background: white; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  th {
+    background: var(--dark-green); padding: 12px 16px; text-align: left;
+    font-weight: 500; color: white; border-bottom: 3px solid var(--orange);
+  }
+  td {
+    padding: 10px 16px; border-bottom: 1px solid var(--gray-200);
+  }
+  tr:hover td { background: var(--bg-tint); }
+
+  .card-row {
+    display: flex; gap: 20px; flex-wrap: wrap;
+    justify-content: center; max-width: 1000px; width: 100%;
+  }
+  .card {
+    flex: 1; min-width: 280px; max-width: 450px;
+    background: white; border-radius: 16px; padding: 24px;
+    border: none; border-bottom: 4px solid var(--orange);
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12); }
+  .card h3 { margin-bottom: 12px; }
+
+  .finding {
+    display: flex; gap: 16px; align-items: flex-start;
+    max-width: 800px; width: 100%; margin: 10px 0;
+    background: white; border-radius: 16px; padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    border-left: 4px solid var(--red);
+  }
+  .finding-icon { font-size: 32px; }
+  .finding-text h4 { font-size: 18px; margin-bottom: 4px; }
+  .finding-text p { font-size: 14px; color: var(--gray-600); line-height: 1.6; }
+
+  .callout {
+    background: white;
+    padding: 16px 24px; border-radius: 16px;
+    border-left: 4px solid var(--dark-green);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .callout-summary {
+    background: rgba(255,255,255,0.1);
+    padding: 24px; border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  ul { list-style: none; padding: 0; }
+  ul li { padding: 6px 0; font-size: 16px; }
+  ul li::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
+  ul.green-list li::before { background: var(--green); }
+  ul.orange-list li::before { background: var(--orange); }
+  ul.red-list li::before { background: var(--red); }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 600px;
+    width: 100%;
+  }
+  .photo-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
+    border-bottom: 4px solid var(--orange);
+    transition: transform 0.3s ease;
+  }
+  .photo-card:hover { transform: translateY(-3px); }
+  .photo-card img {
+    width: 100%; height: auto; display: block;
+  }
+  .photo-card .caption {
+    padding: 14px 18px; font-size: 15px; color: var(--gray-600);
+    line-height: 1.6;
+  }
+  .photo-card .caption strong { color: var(--navy); }
+
+  @media (min-width: 900px) {
+    .photo-grid {
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 1100px;
+    }
+    .photo-card .caption {
+      padding: 12px 16px; font-size: 13px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .slide { padding: 24px 20px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 22px; }
+    .subtitle { font-size: 15px; }
+  }
+
+  @media print {
+    .slide { page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide s-title">
+  <div class="slide-num">1 / 7</div>
+  <div style="font-size: 60px; margin-bottom: 20px;">🔬</div>
+  <h1>PV28 Air Detector</h1>
+  <h3>รายงานผลทดสอบภาคสนาม — Field Test Report</h3>
+  <p class="subtitle">ผลการทดสอบเซนเซอร์ PV28 เทียบกับ MT13W (BS 004)</p>
+  <p class="subtitle">ทดสอบ: 31 มี.ค. – 2 เม.ย. 2569</p>
+  <div style="margin-top: 30px;">
+    <span class="badge badge-white">Tuya Cloud API</span>
+    <span class="badge badge-white">Supabase DB</span>
+    <span class="badge badge-white">Real-time Comparison</span>
+  </div>
+</div>
+
+<!-- SLIDE 2: Why — MT13W Problem -->
+<div class="slide s-problem">
+  <div class="slide-num">2 / 7</div>
+  <h2 style="color: var(--red);">❌ ปัญหาของ MT13W — ทำไมต้องหาตัวแทน</h2>
+
+  <div class="finding" style="border-left-color: var(--red); border-left-width: 5px;">
+    <div class="finding-icon">📊</div>
+    <div class="finding-text">
+      <h4 class="red">PM2.5 วัดค่าไม่น่าเชื่อถือ — ปัญหาหลัก</h4>
+      <p>MT13W ใช้เซนเซอร์แบบ <strong>NDIR (Infrared)</strong> ซึ่ง<strong>ไม่ไวพอ</strong>สำหรับวัด PM2.5<br>
+      ทดสอบจริง → ค่า PM2.5 ค้างอยู่ที่ <strong>13–16 µg/m³ ทุกสถานที่</strong> ไม่ตอบสนองต่อสภาพแวดล้อม<br>
+      ขณะที่เครื่องอ้างอิง (SNDway) วัดได้ 82–224 µg/m³ ในที่เดียวกัน<br>
+      → จึงต้องหา <strong>PV28 ที่ใช้เซนเซอร์ Laser</strong> ซึ่งไวกว่าและจับการเปลี่ยนแปลงได้จริง</p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-icon">🌿</div>
+    <div class="finding-text">
+      <h4 class="red">MT13W ไม่ส่ง TVOC ขึ้น Cloud</h4>
+      <p>ค่า TVOC <strong>แสดงบนหน้าจอเครื่อง</strong>ได้ แต่<strong>ไม่ส่งขึ้น Tuya Cloud</strong><br>
+      ทำให้ pollution_logs ใน DB มี tvoc_value = <code style="background:#fef2f2; padding:2px 6px; border-radius:4px;">null</code> ทุก row<br>
+      → อาสาต้อง<strong>กรอกค่า TVOC ด้วยมือทุก 5 นาที</strong> ตลอด session (2 ชม.)</p>
+    </div>
+  </div>
+
+  <div class="finding" style="border-left-color: var(--orange);">
+    <div class="finding-icon">⚠️</div>
+    <div class="finding-text">
+      <h4 class="orange">เซนเซอร์ค้างหลังสัมผัสมลพิษสูง</h4>
+      <p>ทดสอบกับท่อไอเสียมอเตอร์ไซค์ → บางเครื่องค่าค้างชั่วคราว<br>
+      <em style="color:var(--gray-400);">แก้ได้ด้วยการ calibrate 3 ครั้ง ค่ากลับปกติทันที</em></p>
+    </div>
+  </div>
+
+  <div class="finding">
+    <div class="finding-icon">📋</div>
+    <div class="finding-text">
+      <h4 class="orange">ภาระงานอาสา — กรอกมือหลายค่า</h4>
+      <p>ปัจจุบันอาสาต้องกรอกมือ: <strong>TVOC + CO</strong> ทุก 5 นาที<br>
+      ถ้ามีเซนเซอร์ที่ส่ง TVOC อัตโนมัติ → ลดภาระงานอาสาได้มาก</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: Sensor Specs -->
+<div class="slide s-data">
+  <div class="slide-num">3 / 7</div>
+  <h2>📋 เปรียบเทียบ Spec — PV28 vs MT13W</h2>
+
+  <table style="max-width: 850px;">
+    <thead>
+      <tr>
+        <th style="width:180px;">ค่าที่วัด</th>
+        <th style="text-align:center;">PV28 <span class="badge badge-white" style="font-size:11px;">ตัวทดสอบ</span></th>
+        <th style="text-align:center;">MT13W <span class="badge badge-red" style="font-size:11px; background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:white;">ตัวเดิม</span></th>
+        <th style="text-align:center; width:80px;">ต่างกัน?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>📊 CO2</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;">—</td></tr>
+      <tr><td>📊 PM2.5</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;">—</td></tr>
+      <tr><td>📊 HCHO</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;">—</td></tr>
+      <tr><td>🌡️ Temp</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;">—</td></tr>
+      <tr><td>💧 Humidity</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;" class="green">✅ ดึงค่าได้</td><td style="text-align:center;">—</td></tr>
+      <tr style="background:var(--light-green);">
+        <td><strong>🌿 VOC / TVOC</strong></td>
+        <td style="text-align:center;" class="green"><strong>✅ ดึงค่าได้!</strong></td>
+        <td style="text-align:center;" class="red"><strong>❌ ไม่ส่ง cloud</strong></td>
+        <td style="text-align:center;">⭐</td>
+      </tr>
+      <tr style="background:#fef2f2;">
+        <td><strong>⚠️ CO</strong></td>
+        <td style="text-align:center;" class="red"><strong>❌ ไม่มีเลย</strong></td>
+        <td style="text-align:center;" class="green"><strong>✅ มี</strong></td>
+        <td style="text-align:center;">⭐</td>
+      </tr>
+      <tr style="background:#fff7ed;">
+        <td><strong>📊 PM1.0</strong></td>
+        <td style="text-align:center;" class="orange">หน้าจอมี แต่ไม่ส่ง cloud</td>
+        <td style="text-align:center;" class="dim">—</td>
+        <td style="text-align:center;">⭐</td>
+      </tr>
+      <tr style="background:#fff7ed;">
+        <td><strong>📊 PM10</strong></td>
+        <td style="text-align:center;" class="orange">หน้าจอมี แต่ไม่ส่ง cloud</td>
+        <td style="text-align:center;" class="green"><strong>✅ ดึงค่าได้</strong></td>
+        <td style="text-align:center;">⭐</td>
+      </tr>
+      <tr style="background:#fff7ed;">
+        <td><strong>🔋 Battery</strong></td>
+        <td style="text-align:center;" class="orange"><strong>800 mAh</strong></td>
+        <td style="text-align:center;" class="green"><strong>2,000 mAh</strong></td>
+        <td style="text-align:center;">⭐</td>
+      </tr>
+      <tr>
+        <td>📡 Cloud API</td>
+        <td style="text-align:center;">6 data points</td>
+        <td style="text-align:center;">8 data points</td>
+        <td style="text-align:center;">—</td>
+      </tr>
+      <tr style="background:var(--light-green);">
+        <td><strong>🔄 เซนเซอร์ค้าง</strong></td>
+        <td style="text-align:center;" class="green"><strong>ไม่ค้าง ✅</strong></td>
+        <td style="text-align:center;" class="orange"><strong>ค้างชั่วคราว</strong></td>
+        <td style="text-align:center;">⭐</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 16px; font-size: 14px; color: var(--gray-500);">
+    ⭐ = ค่าที่แตกต่างกัน &nbsp; | &nbsp; — = เหมือนกัน
+  </div>
+</div>
+
+<!-- SLIDE 4: Visual Comparison -->
+<div class="slide s-data">
+  <div class="slide-num">4 / 7</div>
+  <h2>📊 เปรียบเทียบกราฟจริง — ช่วงเวลาเดียวกัน</h2>
+  <p class="subtitle">ข้อมูลจาก Dashboard &nbsp; | &nbsp; 1 เมษายน 2569 เวลา ~08:20–10:15</p>
+
+  <div class="card-row" style="max-width:1200px;">
+    <div class="card" style="border-bottom-color: var(--dark-green); border-bottom-width: 4px;">
+      <h3 style="text-align:center; color: var(--dark-green);"><strong>PV28 (ตัวใหม่)</strong></h3>
+      <p class="dim" style="text-align:center; font-size:13px;">DewS house &nbsp; | &nbsp; 08:19–10:15</p>
+      <img src="pv28-chart.jpg" alt="PV28 chart" style="width:100%; border-radius:12px; margin-top:8px;">
+      <div style="margin-top:12px; font-size:14px;">
+        <p>PM2.5 พีค: <strong class="orange">184 µg/m³</strong> &nbsp; เฉลี่ย: <strong>111.7</strong></p>
+        <p>CO2 พีค: <strong class="orange">1,921 ppm</strong></p>
+        <p class="green" style="margin-top:4px;">→ จับ spike ได้ชัดเจน ทั้ง PM2.5 และ CO2</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="text-align:center;"><span class="dim">MT13W (ตัวเดิม)</span></h3>
+      <p class="dim" style="text-align:center; font-size:13px;">[MOCK] บ้านสะลวง · BS 004 &nbsp; | &nbsp; 08:20–09:55</p>
+      <img src="mt13w-chart.jpg" alt="MT13W chart" style="width:100%; border-radius:12px; margin-top:8px;">
+      <div style="margin-top:12px; font-size:14px;">
+        <p>PM2.5 พีค: <strong>19 µg/m³</strong> &nbsp; เฉลี่ย: <strong>14.7</strong></p>
+        <p>CO2 พีค: <strong>1,008 ppm</strong></p>
+        <p class="dim" style="margin-top:4px;">→ PM2.5 ค่อนข้างราบเรียบ จับ spike CO2 ได้</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 20px; max-width: 1200px;">
+    <p>💡 <strong>PV28 ไม่เซนซิทีฟเท่า SNDway</strong> แต่จับการเปลี่ยนแปลงของสภาวะ PM2.5 <strong class="green">ได้ดีกว่า MT13W</strong> ที่ค่าแทบไม่เปลี่ยนเลย</p>
+    <p class="dim" style="margin-top:4px;">ทั้งสองตัววัดในช่วงเวลาใกล้เคียงกัน (อยู่คนละตำแหน่ง) — ดูภาพทดสอบจริงในหน้าถัดไป</p>
+  </div>
+</div>
+
+<!-- SLIDE 5: Field Test Photos -->
+<div class="slide s-data">
+  <div class="slide-num">5 / 7</div>
+  <h2>📸 ภาพทดสอบจริง — 3 เซนเซอร์วางเทียบกัน</h2>
+  <p class="subtitle">PV28 (ตัวทดสอบ) &nbsp;|&nbsp; MT13W (ตัวเดิม) &nbsp;|&nbsp; SNDway SW-825 (ตัวอ้างอิง)</p>
+
+  <div class="photo-grid">
+    <div class="photo-card">
+      <img src="test-photo-1.jpg" alt="ทดสอบในร้านกาแฟ">
+      <div class="caption">
+        <strong>📍 สถานที่ 1</strong><br>
+        PV28: PM2.5 = <strong style="color:var(--orange-dark);">167</strong> &nbsp; MT13W: <strong>16</strong> &nbsp; SNDway: <strong style="color:var(--red);">224</strong><br>
+        <span class="dim">MT13W ค่าต่ำผิดปกติเมื่อเทียบกับเครื่องอื่น</span>
+      </div>
+    </div>
+    <div class="photo-card">
+      <img src="test-photo-2.jpg" alt="ทดสอบในออฟฟิส">
+      <div class="caption">
+        <strong>📍 สถานที่ 2</strong><br>
+        PV28: PM2.5 = <strong style="color:var(--orange-dark);">119</strong> &nbsp; MT13W: <strong>13</strong> &nbsp; SNDway: <strong style="color:var(--red);">205</strong><br>
+        <span class="dim">PV28 จับค่าได้ใกล้ SNDway กว่า MT13W มาก</span>
+      </div>
+    </div>
+    <div class="photo-card">
+      <img src="test-photo-3.jpg" alt="ทดสอบกลางแจ้ง">
+      <div class="caption">
+        <strong>📍 สถานที่ 3 (กลางแจ้ง)</strong><br>
+        PV28: PM2.5 = <strong style="color:var(--orange-dark);">43</strong> &nbsp; MT13W: <strong>14</strong> &nbsp; SNDway: <strong style="color:var(--red);">82</strong><br>
+        <span class="dim">MT13W ค่าราบเรียบไม่ตอบสนองต่อสภาพแวดล้อม</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top: 24px; max-width: 1100px;">
+    <p>📊 <strong>สรุปจากภาพ</strong> — MT13W วัด PM2.5 ได้ <strong>13–16 µg/m³</strong> ทุกสถานที่ (แทบไม่เปลี่ยน)<br>
+    ขณะที่ PV28 วัดได้ <strong>43–167 µg/m³</strong> ตอบสนองต่อการเปลี่ยนแปลงจริง แม้จะไม่เซนซิทีฟเท่า SNDway (82–224)</p>
+  </div>
+</div>
+
+<!-- SLIDE 6: Pros & Cons Side by Side -->
+<div class="slide s-data">
+  <div class="slide-num">6 / 7</div>
+  <h2>📋 ข้อดี & ข้อจำกัดของ PV28</h2>
+
+  <div class="card-row" style="max-width:1100px; align-items:flex-start;">
+    <div class="card" style="border-bottom-color: var(--green);">
+      <h3 class="green">✅ ข้อดี</h3>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">🌿 ส่ง VOC ขึ้น Cloud ได้จริง (ค่า 251)</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">ไม่ต้องกรอก TVOC ด้วยมือ — ระบบดึงอัตโนมัติทุก 5 นาที<br>ลดภาระอาสา ลดความผิดพลาดจากการกรอก</p>
+      </div>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">🧪 HCHO Scale เดียวกัน — ยืนยัน 2 ครั้ง</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">31 มี.ค.: PV28=4, MT13W=3<br>1 เม.ย.: PV28=<strong>23</strong>, MT13W=<strong>23</strong> ตรงกัน<br>ใช้ข้อมูลร่วมกันได้ ไม่ต้อง convert</p>
+      </div>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">📡 ใช้ Tuya API เดียวกัน</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">ไม่ต้องแก้ระบบ ใช้ API calls เท่ากัน<br>1 call/device/5 นาที → ไม่เปลือง quota เพิ่ม</p>
+      </div>
+    </div>
+
+    <div class="card" style="border-bottom-color: var(--red);">
+      <h3 class="red">⚠️ ข้อจำกัด</h3>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">🚫 ไม่มี CO (Carbon Monoxide) เลย</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">ไม่มีเซนเซอร์ CO — ไม่มีค่าให้อ่านบนหน้าจอ<br>กรอกมือก็ไม่ได้ เพราะตัวเครื่องไม่ได้วัด</p>
+      </div>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">🚫 PM1.0 / PM10 ดึง Cloud ไม่ได้</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">หน้าจอแสดง PM1.0 และ PM10 ได้<br>แต่ Tuya API ส่งเฉพาะ PM2.5 เท่านั้น</p>
+      </div>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">🔋 แบตเล็กกว่า 2.5 เท่า</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">800 mAh vs MT13W 2,000 mAh<br>ต้องเสียบสายชาร์จขณะวัดค่า</p>
+      </div>
+
+      <div style="margin: 12px 0;">
+        <h4 style="font-size:15px;">📦 จัดส่ง 3 วันนับจากสั่งซื้อ</h4>
+        <p style="font-size:13px; color:var(--gray-600); margin-top:4px;">ต้องสั่งล่วงหน้า รอรับ + ตั้งค่า + ทดสอบ</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Summary & Recommendation -->
+<div class="slide s-summary">
+  <div class="slide-num">7 / 7</div>
+  <h2>📋 สรุปผลการทดสอบ</h2>
+
+  <table style="max-width: 800px; color: var(--navy);">
+    <thead>
+      <tr>
+        <th>หัวข้อ</th>
+        <th style="text-align:center;">PV28 (ตัวทดสอบ)</th>
+        <th style="text-align:center;">MT13W (ตัวปัจจุบัน)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:var(--light-green);"><td><strong>VOC/TVOC Cloud</strong></td><td style="text-align:center; color:var(--green);">✅ ส่งอัตโนมัติ</td><td style="text-align:center; color:var(--red);">❌ ไม่ส่ง</td></tr>
+      <tr><td>CO</td><td style="text-align:center; color:var(--red);">❌ ไม่มีเลย (กรอกมือก็ไม่ได้)</td><td style="text-align:center; color:var(--green);">✅ มี (ค่าสูงถึงขึ้น)</td></tr>
+      <tr><td>PM2.5 Sensitivity</td><td style="text-align:center; color:var(--green);">จับ spike ได้ ✅</td><td style="text-align:center; color:var(--red);">ค่าราบเรียบ ❌</td></tr>
+      <tr><td>PM1.0 / PM10</td><td style="text-align:center; color:var(--orange-dark);">หน้าจอมี แต่ API ไม่ส่ง</td><td style="text-align:center; color:var(--green);">✅ PM10 ส่ง cloud</td></tr>
+      <tr><td>HCHO Scale</td><td style="text-align:center; color:var(--green);">เดียวกัน ✅</td><td style="text-align:center; color:var(--green);">เดียวกัน ✅</td></tr>
+      <tr><td>Battery</td><td style="text-align:center; color:var(--orange-dark);">800 mAh</td><td style="text-align:center; color:var(--green);">2,000 mAh</td></tr>
+      <tr><td>API Compatible</td><td style="text-align:center; color:var(--green);">✅ ใช้ร่วมได้</td><td style="text-align:center; color:var(--green);">✅ เดิม</td></tr>
+      <tr><td>เซนเซอร์ค้าง</td><td style="text-align:center; color:var(--green);">ไม่ค้าง ✅</td><td style="text-align:center; color:var(--orange-dark);">ค้างชั่วคราว (calibrate แก้ได้)</td></tr>
+      <tr><td>กรอกมือ</td><td style="text-align:center; color:var(--gray-500);">ไม่มีค่าต้องกรอก*</td><td style="text-align:center; color:var(--red);">TVOC + CO</td></tr>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 30px; max-width: 800px;">
+    <div class="callout-summary">
+      <p style="font-size: 18px; font-weight: 500; margin-bottom: 12px;">💡 ข้อเสนอแนะ</p>
+      <p style="font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.8;">
+        <strong style="color:white;">PV28 ใช้เซนเซอร์ Laser → จับการเปลี่ยนแปลง PM2.5 ได้จริง</strong> ซึ่งเป็นปัญหาหลักของ MT13W<br>
+        PV28 เชื่อมต่อ Tuya Cloud และดึงค่าได้ <strong style="color:white;">สามารถนำมาทดแทนในระบบได้</strong> โดยต้องมีการปรับเปลี่ยนตามขั้นตอนด้านล่าง<br>
+        TVOC ดึงค่าจาก Cloud ได้ด้วย (ยังไม่ได้ทดสอบดึงจริงผ่านระบบ ต้องยืนยันอีกครั้ง)<br>
+        <strong style="color:var(--orange);">แต่แลกมาด้วย</strong> — ไม่มี CO เลย, PM1.0/PM10 ดึง cloud ไม่ได้, แบตต้องเสียบสาย<br>
+      </p>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2);">
+        <p style="font-size: 15px; color: rgba(255,255,255,0.9); line-height: 1.8;">
+          ถ้า <strong>TVOC อัตโนมัติ</strong> สำคัญกว่า CO → PV28 น่าสนใจ (แต่จะไม่มีข้อมูล CO เลย)<br>
+          ถ้า <strong>CO</strong> จำเป็นสำหรับงานวิจัย → ต้องใช้ MT13W ต่อ (กรอก TVOC มือ)<br>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 24px; max-width: 800px;">
+    <div class="callout-summary">
+      <p style="font-size: 18px; font-weight: 500; margin-bottom: 12px;">📦 ถ้าเปลี่ยนมาใช้ PV28 — ต้องทำอะไรบ้าง</p>
+      <table style="font-size: 14px; max-width: 700px; color: var(--navy);">
+        <tr><td style="width:80px; font-weight:500;">วันที่ 1</td><td>สั่งซื้อ PV28 (จัดส่ง 3 วัน)</td></tr>
+        <tr><td style="font-weight:500;">วันที่ 4</td><td>รับเครื่อง + Pair WiFi + ตั้งค่าเบื้องต้น</td></tr>
+        <tr><td style="font-weight:500;">วันที่ 5–6</td><td>แก้ sync.js รองรับ PV28 DP codes + ทดสอบดึงข้อมูล + ทำสติกเกอร์วิธีใช้ใหม่ + อัพเดทคู่มือ</td></tr>
+        <tr><td style="font-weight:500;">วันที่ 7</td><td>ทดสอบการเก็บข้อมูล + ยืนยันข้อมูลเข้า DB ครบ</td></tr>
+        <tr><td style="font-weight:500;">วันที่ 8</td><td>Deploy + พร้อมใช้งาน</td></tr>
+      </table>
+      <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 12px;">ประมาณ <strong style="color:var(--orange);">~8 วัน</strong> นับจากสั่งซื้อ (เผื่อเวลาทดสอบ)</p>
+    </div>
+  </div>
+
+  <p style="margin-top: 30px; font-size: 13px; color: rgba(255,255,255,0.3);">
+    Prepared by WEnDyS Oracle &nbsp; | &nbsp; Data: Tuya Cloud API + Supabase &nbsp; | &nbsp; 2 เมษายน 2569
+  </p>
+</div>
+
+</body>
+</html>

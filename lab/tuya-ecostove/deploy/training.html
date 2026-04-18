@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biomass Stove — คู่มือการใช้งานระบบ</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --navy: #0f172a;
+            --green: #064e3b;
+            --teal: #0d9488;
+            --emerald: #10b981;
+            --bg: #f0f7f4;
+            --orange: #fb923c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: var(--bg);
+            color: var(--navy);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, #064e3b, #0f172a);
+            color: white;
+            padding: 40px 24px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 4px; }
+        .hero p { font-size: 0.9rem; opacity: 0.7; }
+
+        /* TOC */
+        .toc {
+            background: white;
+            margin: 16px;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .toc h2 { font-size: 1rem; font-weight: 700; color: var(--green); margin-bottom: 12px; }
+        .toc a {
+            display: block;
+            padding: 6px 0;
+            color: var(--navy);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .toc a:hover { color: var(--teal); }
+        .toc a:last-child { border-bottom: none; }
+
+        /* Main content */
+        .content { max-width: 800px; margin: 0 auto; padding: 0 16px 80px; }
+
+        /* Sections */
+        .section {
+            background: white;
+            border-radius: 16px;
+            margin: 16px 0;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--green);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ecfdf5;
+        }
+
+        .sub-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin: 20px 0 10px;
+        }
+
+        /* Bullets */
+        ul { padding-left: 20px; margin-bottom: 12px; }
+        li { margin-bottom: 6px; }
+
+        /* Ordered steps */
+        ol { padding-left: 20px; margin-bottom: 12px; }
+        ol li { margin-bottom: 8px; }
+
+        b, strong { color: var(--green); }
+
+        /* Boxes */
+        .tip {
+            background: #ecfdf5;
+            border-left: 4px solid var(--emerald);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+
+        .warn {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+        .warn b { color: #92400e; }
+
+        .danger {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+        .danger b { color: #991b1b; }
+
+        /* Params */
+        .params {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .param {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .param .val { font-size: 1.4rem; font-weight: 800; color: var(--green); }
+        .param .lbl { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+
+        /* Flow */
+        .flow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+            font-size: 0.9rem;
+        }
+        .flow-item {
+            background: white;
+            border: 2px solid var(--emerald);
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .flow-arrow { color: var(--teal); font-weight: 700; }
+
+        /* Table */
+        .ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 12px 0;
+        }
+        .ref-table th {
+            background: var(--green);
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .ref-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .ref-table tr:last-child td { border-bottom: none; }
+
+        /* Code */
+        code {
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Part divider */
+        .part-divider {
+            background: linear-gradient(135deg, var(--teal), var(--green));
+            color: white;
+            text-align: center;
+            padding: 24px;
+            border-radius: 16px;
+            margin: 24px 0 16px;
+        }
+        .part-divider h2 { font-size: 1.2rem; font-weight: 700; }
+        .part-divider p { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; }
+
+        /* Back to top */
+        .back-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--green);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 99;
+        }
+
+        /* Print */
+        @media print {
+            .hero { padding: 20px; }
+            .section { break-inside: avoid; box-shadow: none; border: 1px solid #e2e8f0; }
+            .back-top { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div style="font-size: 2.5rem;">🌿</div>
+    <h1>Biomass Stove</h1>
+    <p>คู่มือการใช้งานระบบเก็บข้อมูลคุณภาพอากาศ</p>
+</div>
+
+<div class="content">
+
+<!-- สารบัญ -->
+<div class="toc" id="top">
+    <h2>สารบัญ</h2>
+    <a href="#overview">🗺️ ภาพรวมระบบ</a>
+    <a href="#part1">🚀 Part 1 — เริ่มต้นใช้งาน</a>
+    <a href="#part2">⚙️ Part 2 — ตั้งค่าระบบ</a>
+    <a href="#part3">📆 Part 3 — การใช้งานประจำวัน</a>
+    <a href="#part4">🙋 Part 4 — สอนอาสาสมัคร</a>
+    <a href="#part5">🔧 Part 5 — Troubleshoot</a>
+    <a href="#ref">📋 Quick Reference</a>
+</div>
+
+<!-- ===== ภาพรวมระบบ ===== -->
+<div class="section" id="overview">
+    <div class="section-title">🗺️ ภาพรวมระบบ</div>
+    <p>ข้อมูลเดินทางจากเซนเซอร์ถึง Dashboard:</p>
+    <div class="flow">
+        <span class="flow-item">📡 เซนเซอร์</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">📶 Hotspot</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">☁️ Tuya Cloud</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">🔄 Sync ทุก 5 นาที</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">🗄️ ฐานข้อมูล</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">📊 Dashboard</span>
+    </div>
+    <div class="tip">
+        <b>💡 TVOC / CO กรอกมือ</b> — เซนเซอร์ MT13W ไม่ส่ง TVOC ขึ้น Cloud → อาสาต้องกรอกผ่านหน้าเว็บ
+    </div>
+</div>
+
+<!-- ===== PART 1 ===== -->
+<div class="part-divider" id="part1">
+    <h2>🚀 Part 1 — เริ่มต้นใช้งาน</h2>
+    <p>ลงทะเบียน เข้าสู่ระบบ ทำความรู้จักหน้าจอ</p>
+</div>
+
+<div class="section">
+    <div class="section-title">📝 ลงทะเบียนแอดมิน</div>
+    <ol>
+        <li>เปิดเว็บ <b>biomassstove.vercel.app</b></li>
+        <li>กด <b>"ลงทะเบียนแอดมินใหม่"</b></li>
+        <li>กรอก <b>ชื่อ-นามสกุล</b> + <b>อีเมล</b></li>
+        <li>ตั้ง <b>PIN ส่วนตัว</b> (ตัวเลข 4-8 หลัก)</li>
+        <li>ใส่ <b>Invite Code</b> ที่ได้รับ</li>
+        <li>ได้ <b>Recovery Code</b> — <span style="color:#dc2626; font-weight:700;">จดเก็บไว้ให้ดี!</span></li>
+    </ol>
+    <div class="danger">
+        <b>⚠️ Recovery Code ใช้ได้ครั้งเดียว!</b><br>
+        เมื่อใช้ reset PIN แล้ว code จะถูกลบทันที → ต้อง login แล้วไปสร้างใหม่ที่ "สร้าง Recovery Code"
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">🔐 เข้าสู่ระบบ + จัดการ PIN</div>
+
+    <div class="sub-title">เข้าสู่ระบบ</div>
+    <ol>
+        <li>กรอก <b>อีเมล</b> ที่ลงทะเบียน</li>
+        <li>กรอก <b>PIN ส่วนตัว</b></li>
+        <li>เข้าหน้าแอดมินได้เลย</li>
+    </ol>
+
+    <div class="sub-title">เปลี่ยน PIN</div>
+    <ul>
+        <li>ไปที่แท็บ <b>"เปลี่ยน PIN"</b> → ใส่ PIN เก่า → ตั้ง PIN ใหม่</li>
+    </ul>
+
+    <div class="sub-title">ลืม PIN?</div>
+    <ol>
+        <li>กด <b>"ลืม PIN"</b> ที่หน้า login</li>
+        <li>ใส่ <b>อีเมล + Recovery Code</b></li>
+        <li>ตั้ง <b>PIN ใหม่</b></li>
+    </ol>
+    <div class="warn">
+        <b>⚡ หลัง reset ต้องสร้าง Recovery Code ใหม่!</b><br>
+        Login → เมนู "สร้าง Recovery Code" → ถ้าไม่สร้าง ลืม PIN อีกที ต้องให้ Super Admin reset
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">🖥️ หน้าจอหลัก — 11 แท็บ</div>
+    <ul>
+        <li>📊 <b>ภาพรวม</b> — สถานะเซนเซอร์ เซสชันวันนี้ API quota</li>
+        <li>✅ <b>รออนุมัติ</b> — ตรวจสอบ + อนุมัติ/ปฏิเสธ session</li>
+        <li>📋 <b>ข้อมูล</b> — ดูข้อมูลเซนเซอร์ + TVOC/CO + Export Excel</li>
+        <li>📈 <b>ข้อมูลเบื้องต้น</b> — กราฟค่าเฉลี่ย เปรียบเทียบเตาเก่า/ใหม่</li>
+        <li>🔬 <b>เชิงลึก</b> — วิเคราะห์สถิติ แผนที่ AQI กราฟละเอียด</li>
+        <li>🏠 <b>กลุ่มตัวอย่าง</b> — จัดการบ้าน GPS จังหวัด/อำเภอ/ตำบล</li>
+        <li>📡 <b>อุปกรณ์</b> — จัดการเซนเซอร์ ผูกบ้าน ค้นหาเครื่องใหม่</li>
+        <li>👥 <b>อาสา</b> — ลงทะเบียนอาสาสมัคร</li>
+        <li>📁 <b>โครงการ</b> — สร้าง/แก้ไขโครงการวิจัย</li>
+        <li>📅 <b>ช่วงเก็บข้อมูล</b> — ตั้งวันเริ่ม-สิ้นสุด ประเภทเตา</li>
+        <li>📖 <b>คู่มือ</b> — คู่มือใช้งานในตัว</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">📋 ลำดับการตั้งค่า</div>
+    <p>ต้องทำตามลำดับนี้ เพราะข้อมูลอ้างอิงกัน:</p>
+    <div class="flow">
+        <span class="flow-item">📁 1. โครงการ</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">👥 2. อาสา</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">🏠 3. บ้าน</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">📡 4. ผูกเซนเซอร์</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-item">📅 5. ช่วงเก็บ</span>
+    </div>
+    <div class="tip">
+        <b>💡 ตั้งค่าครั้งเดียว</b> — ใช้งานประจำวันจะใช้แค่: ภาพรวม → รออนุมัติ → ดูข้อมูล
+    </div>
+</div>
+
+<!-- ===== PART 2 ===== -->
+<div class="part-divider" id="part2">
+    <h2>⚙️ Part 2 — ตั้งค่าระบบ</h2>
+    <p>โครงการ อาสา บ้าน อุปกรณ์ ช่วงเก็บข้อมูล</p>
+</div>
+
+<div class="section">
+    <div class="section-title">📁 สร้างโครงการ</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"โครงการ"</b></li>
+        <li>กด <b>"เพิ่มโครงการ"</b></li>
+        <li>กรอก <b>ชื่อโครงการ</b> + <b>คำอธิบาย</b></li>
+        <li>กด <b>บันทึก</b></li>
+    </ol>
+</div>
+
+<div class="section">
+    <div class="section-title">👥 เพิ่มอาสาสมัคร</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"อาสา"</b></li>
+        <li>กด <b>"เพิ่มอาสาสมัคร"</b></li>
+        <li>กรอก <b>ชื่อ-นามสกุล</b> + เลือก <b>โครงการ</b></li>
+        <li>กรอก <b>เบอร์โทร</b> (ถ้ามี)</li>
+        <li>กด <b>บันทึก</b></li>
+    </ol>
+    <div class="warn">
+        <b>⚡ ต้องสร้างอาสาก่อนสร้างบ้าน</b> เพราะตอนเพิ่มบ้าน ต้องเลือกอาสาที่รับผิดชอบ
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">🏠 เพิ่มบ้านกลุ่มตัวอย่าง</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"กลุ่มตัวอย่าง"</b></li>
+        <li>กด <b>"เพิ่มบ้าน"</b></li>
+        <li>กรอก <b>ชื่อบ้าน</b> + เลือก <b>โครงการ</b> + <b>อาสา</b></li>
+        <li>กรอก <b>ที่อยู่</b>: จังหวัด / อำเภอ / ตำบล</li>
+        <li>ตั้ง <b>พิกัด GPS</b> (latitude, longitude)</li>
+        <li>กด <b>บันทึก</b></li>
+    </ol>
+    <div class="tip">
+        <b>📡 เซนเซอร์ตรวจพบอัตโนมัติ</b> — ไม่ต้องติ๊ก "มีเซนเซอร์" → ระบบจะตรวจเองเมื่อผูกอุปกรณ์
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">📡 จัดการอุปกรณ์</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"อุปกรณ์"</b></li>
+        <li>ดูรายชื่อเครื่องทั้งหมดจาก Tuya Cloud</li>
+        <li>กด <b>"ผูกบ้าน"</b> เพื่อเลือกบ้านให้เครื่อง</li>
+        <li>ระบบจะอัพเดท "มีเซนเซอร์" ให้อัตโนมัติ</li>
+    </ol>
+
+    <div class="sub-title">ชื่อ 2 แบบ</div>
+    <ul>
+        <li><b>BS 001</b> — ชื่ออุปกรณ์ (ตั้งเอง, ไม่ผูกบ้าน ย้ายได้)</li>
+        <li><b>MT15 001</b> — ชื่อเซนเซอร์ (จากรุ่นใน Tuya)</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">📱 ลงทะเบียนเซนเซอร์ใหม่</div>
+    <p>กรณีได้เซนเซอร์ตัวใหม่:</p>
+
+    <div class="sub-title">ขั้นตอนที่ 1: Pair ในแอป Smart Life</div>
+    <ol>
+        <li>เปิดแอป <b>Smart Life</b> บนมือถือ</li>
+        <li>Login ด้วยบัญชีโครงการ</li>
+        <li>ตั้ง Hotspot: ชื่อ <b>Biomass</b> / รหัส <b>Biomass2026</b> / <b>2.4 GHz</b></li>
+        <li>กดเพิ่มอุปกรณ์ → Add Device → ทำตามขั้นตอนในแอป</li>
+    </ol>
+
+    <div class="sub-title">ขั้นตอนที่ 2: ลงทะเบียนในระบบ</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"อุปกรณ์"</b></li>
+        <li>กด <b>"ค้นหาเซนเซอร์ใหม่จาก Tuya"</b></li>
+        <li>เลือกเซนเซอร์ที่พบ → <b>ตั้งชื่อ</b></li>
+        <li>กด <b>ลงทะเบียน</b></li>
+    </ol>
+</div>
+
+<div class="section">
+    <div class="section-title">📅 ตั้งช่วงเก็บข้อมูล</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"ช่วงเก็บข้อมูล"</b></li>
+        <li>กด <b>"เพิ่มช่วง"</b></li>
+        <li>เลือก <b>บ้าน</b> ที่ต้องการ</li>
+        <li>เลือก <b>วันเริ่ม</b> + <b>วันสิ้นสุด</b></li>
+        <li>เลือกประเภทเตา: <b>eco</b> (เตาใหม่) หรือ <b>old</b> (เตาเก่า)</li>
+        <li>กด <b>บันทึก</b></li>
+    </ol>
+    <div class="danger">
+        <b>⚠️ ห้ามซ้อนวัน!</b> บ้านเดียวกัน ห้ามมีช่วงเก็บข้อมูล 2 ช่วงที่วันทับกัน
+    </div>
+    <div class="tip">
+        <b>💡 ทำไมแยก eco / old?</b> ระบบเก็บแยกเพื่อเปรียบเทียบ — เตาใหม่ลดมลพิษได้เท่าไหร่เทียบกับเตาเก่า
+    </div>
+</div>
+
+<!-- ===== PART 3 ===== -->
+<div class="part-divider" id="part3">
+    <h2>📆 Part 3 — การใช้งานประจำวัน</h2>
+    <p>ภาพรวม อนุมัติข้อมูล ดูรายงาน</p>
+</div>
+
+<div class="section">
+    <div class="section-title">📊 ภาพรวม (Overview)</div>
+    <p>หน้าแรกหลัง login — สรุปสถานะทั้งระบบ:</p>
+    <ul>
+        <li>📡 <b>สถานะเซนเซอร์</b> — ออนไลน์ / ออฟไลน์ / กำลังเก็บ</li>
+        <li>📈 <b>เซสชันวันนี้</b> — กี่บ้านเก็บแล้ว / เหลือกี่บ้าน</li>
+        <li>🔑 <b>API Quota</b> — เหลือ API call เท่าไหร่ในเดือนนี้</li>
+    </ul>
+    <div class="tip">
+        <b>💡 ดูทุกวัน</b> — เช็คเซนเซอร์ทำงานปกติ + quota พอใช้
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">✅ อนุมัติข้อมูล</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"รออนุมัติ"</b></li>
+        <li>ดูการ์ด session — แบ่งตาม <b>วันที่</b></li>
+        <li>ตรวจสอบ: จำนวน readings, ระยะเวลา, ค่าผิดปกติ</li>
+        <li>กด <b>"อนุมัติ"</b> หรือ <b>"ปฏิเสธ"</b></li>
+    </ol>
+
+    <div class="sub-title">สถานะ session</div>
+    <ul>
+        <li>🔵 <b>กำลังเก็บ</b> — session ยังไม่จบ</li>
+        <li>🟢 <b>เสร็จสมบูรณ์</b> — ครบ 130 นาที</li>
+        <li>🟡 <b>ไม่สมบูรณ์</b> — หยุดก่อนครบ</li>
+        <li>✅ <b>อนุมัติแล้ว</b> — แอดมิน approve</li>
+        <li>❌ <b>ปฏิเสธ</b> — ข้อมูลไม่ผ่าน</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">📋 ดูข้อมูล + Export</div>
+    <ol>
+        <li>ไปที่แท็บ <b>"ข้อมูล"</b></li>
+        <li>เลือก <b>บ้าน</b> + <b>ช่วงวันที่</b></li>
+        <li>ดูข้อมูลเซนเซอร์: PM2.5, CO2, อุณหภูมิ, ความชื้น ฯลฯ</li>
+        <li>ดูข้อมูล <b>TVOC / CO ที่กรอกมือ</b></li>
+        <li>กด <b>"Export Excel"</b> เพื่อดาวน์โหลด</li>
+    </ol>
+
+    <div class="sub-title">ข้อมูลที่เก็บได้</div>
+    <ul>
+        <li>🌡️ อุณหภูมิ (°C) / 💧 ความชื้น (%)</li>
+        <li>💨 PM2.5 (µg/m³) / 🌫️ PM10 (µg/m³)</li>
+        <li>🏭 CO2 (ppm) / ⚗️ HCHO (µg/m³)</li>
+        <li>☁️ TVOC (กรอกมือ) / 💀 CO (กรอกมือ)</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">📈 Dashboard</div>
+    <ul>
+        <li>📈 <b>ข้อมูลเบื้องต้น (Basic)</b> — ค่าเฉลี่ยรายวัน, เปรียบเทียบเตาเก่า vs เตาใหม่, impact ของเตาใหม่</li>
+        <li>🔬 <b>เชิงลึก (Deep Insights)</b> — วิเคราะห์สถิติ, เปรียบเทียบรายบ้าน, แผนที่ AQI, time-series</li>
+    </ul>
+    <div class="tip">
+        <b>💡 เตาใหม่ (eco) คือพระเอก!</b> Dashboard แสดงว่าเตาใหม่ดีกว่าเตาเก่าอย่างไร — เตาเก่า (old) เป็นแค่ baseline เทียบ
+    </div>
+</div>
+
+<!-- ===== PART 4 ===== -->
+<div class="part-divider" id="part4">
+    <h2>🙋 Part 4 — สอนอาสาสมัคร</h2>
+    <p>Hotspot, เซนเซอร์, หน้าอาสา, การเก็บข้อมูล</p>
+</div>
+
+<div class="section">
+    <div class="section-title">📶 เตรียม Hotspot มือถือ</div>
+    <p>อาสาทุกคนต้องตั้ง Hotspot เหมือนกัน:</p>
+    <div class="params">
+        <div class="param">
+            <div class="val">Biomass</div>
+            <div class="lbl">ชื่อ Hotspot</div>
+        </div>
+        <div class="param">
+            <div class="val">Biomass2026</div>
+            <div class="lbl">รหัสผ่าน</div>
+        </div>
+        <div class="param">
+            <div class="val">2.4 GHz</div>
+            <div class="lbl">ย่านความถี่</div>
+        </div>
+    </div>
+    <div class="danger">
+        <b>⚠️ ห้ามใช้ 5 GHz!</b> เซนเซอร์รองรับ 2.4 GHz เท่านั้น
+    </div>
+    <div class="tip">
+        <b>💡 Pair ครั้งเดียว</b> — เซนเซอร์จำ WiFi "Biomass" แล้ว เปิด Hotspot ชื่อเดียวกัน เชื่อมอัตโนมัติ ไม่ต้อง pair ใหม่
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">📡 เปิดเซนเซอร์</div>
+    <ol>
+        <li><b>เปิด Hotspot</b> มือถือก่อน (ชื่อ: Biomass)</li>
+        <li><b>กดค้าง 3 วินาที</b> ที่ปุ่มบนเซนเซอร์ → เปิดเครื่อง</li>
+        <li><b>รอ warm-up 60 วินาที</b> ก่อนเริ่มเก็บข้อมูล</li>
+        <li>เซนเซอร์พร้อมใช้งาน</li>
+    </ol>
+
+    <div class="sub-title">ปุ่มกดบนเครื่อง</div>
+    <ul>
+        <li>กด <b>1 ครั้ง</b> → เปลี่ยน °C / °F</li>
+        <li>กด <b>2 ครั้ง</b> → ปิด/เปิดเสียง</li>
+        <li>กด <b>3 ครั้ง</b> → Calibrate เซนเซอร์ (ใช้เมื่อค่าค้างเท่านั้น)</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">📱 เปิดหน้าอาสาสมัคร</div>
+    <ol>
+        <li><b>สแกน QR Code</b> บนสติกเกอร์เซนเซอร์</li>
+        <li><b>อนุญาตตำแหน่ง (GPS)</b> — ระบบจะหาบ้านที่ใกล้ที่สุด</li>
+        <li><b>ยืนยันบ้าน</b> ที่ถูกต้อง</li>
+        <li>เลือก <b>"กรอก TVOC/CO"</b> หรือ <b>"ข้ามไป"</b></li>
+        <li>กด <b>"เริ่มเก็บข้อมูล"</b></li>
+    </ol>
+    <div class="tip">
+        <b>💡 QR ทุกตัวชี้ URL เดียวกัน</b> — biomassstove.vercel.app/volunteer.html → GPS detect บ้านให้อัตโนมัติ
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">🌬️ Baseline + TVOC/CO</div>
+
+    <div class="sub-title">🌬️ Baseline (10 นาทีแรก)</div>
+    <ul>
+        <li>เก็บค่าอากาศ "ปกติ" ก่อนจุดเตา</li>
+        <li>ระบบเก็บอัตโนมัติ 10 นาทีแรก</li>
+        <li><b>ยังไม่ต้องจุดเตา!</b></li>
+    </ul>
+
+    <div class="sub-title">🔥 หลัง Baseline</div>
+    <ul>
+        <li>กดเริ่มเก็บข้อมูลจริง → จุดเตาได้เลย</li>
+        <li>ระบบเก็บทุก 5 นาที เป็นเวลา 130 นาที</li>
+    </ul>
+
+    <div class="sub-title">TVOC / CO กรอกมือ</div>
+    <ul>
+        <li>ถ้าเลือก "กรอก" → ต้องอยู่กรอกทุก 5 นาที (อ่านค่าจากหน้าจอเซนเซอร์)</li>
+        <li>ถ้าเลือก "ข้าม" → ปิดหน้าจอไปทำอย่างอื่นได้ ระบบเก็บจาก cloud อัตโนมัติ</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">⏱️ เก็บข้อมูล</div>
+    <div class="params">
+        <div class="param">
+            <div class="val">130</div>
+            <div class="lbl">นาที / เซสชัน</div>
+        </div>
+        <div class="param">
+            <div class="val">~27</div>
+            <div class="lbl">readings / เซสชัน</div>
+        </div>
+        <div class="param">
+            <div class="val">2</div>
+            <div class="lbl">เซสชัน / วัน (สูงสุด)</div>
+        </div>
+        <div class="param">
+            <div class="val">5 ชม.</div>
+            <div class="lbl">cooldown ระหว่างเซสชัน</div>
+        </div>
+    </div>
+    <ul>
+        <li>เมื่อครบ 130 นาที ระบบปิด session เอง → ปิด Hotspot ได้เลย</li>
+        <li>ตัวอย่าง: เช้า 06:00 → session 1 จบ 08:10 → cooldown 5 ชม. → บ่าย 13:10 → session 2 จบ 15:20</li>
+    </ul>
+</div>
+
+<!-- ===== PART 5 ===== -->
+<div class="part-divider" id="part5">
+    <h2>🔧 Part 5 — Troubleshoot</h2>
+    <p>แก้ปัญหาที่พบบ่อย</p>
+</div>
+
+<div class="section">
+    <div class="section-title">📶 WiFi / Hotspot ไม่เชื่อมต่อ</div>
+    <ul>
+        <li>ชื่อ Hotspot ถูกต้อง: <b>Biomass</b> (ตัว B ใหญ่)</li>
+        <li>รหัสถูกต้อง: <b>Biomass2026</b></li>
+        <li>ใช้ <b>2.4 GHz</b> (ไม่ใช่ 5 GHz)</li>
+        <li>เซนเซอร์อยู่ <b>ใกล้มือถือ</b> (ไม่เกิน 5 เมตร)</li>
+        <li>ลอง <b>ปิด-เปิด Hotspot</b> ใหม่</li>
+        <li>ลอง <b>ปิด-เปิดเซนเซอร์</b> ใหม่ (กดค้าง 3 วิ)</li>
+    </ul>
+    <div class="danger">
+        <b>⚠️ สาเหตุที่พบบ่อยสุด:</b> มือถือตั้งเป็น 5 GHz โดยอัตโนมัติ!<br>
+        วิธีแก้: ตั้งค่า Hotspot → เลือก Band → 2.4 GHz
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">📡 ค่าเซนเซอร์ค้าง / ผิดปกติ</div>
+    <p>ค่า CO2/CO ค้างสูง ไม่ลดลง แม้อากาศปกติ:</p>
+    <ol>
+        <li><b>กดปุ่มบนเซนเซอร์ 3 ครั้ง</b> (Calibrate)</li>
+        <li>รอ <b>60 วินาที</b> ให้ค่า reset</li>
+        <li>ค่ากลับมาปกติ</li>
+    </ol>
+    <div class="warn">
+        <b>⚡ ป้องกัน:</b> อย่าจ่อเซนเซอร์ใกล้แหล่งควันเข้มข้น — วางห่างจากเตาอย่างน้อย 1-2 เมตร
+    </div>
+    <p><b>สัญญาณว่าค่าค้าง:</b></p>
+    <ul>
+        <li>CO2 > 2,000 ppm ตอนอากาศปกติ</li>
+        <li>CO > 5 ppm ตอนอากาศปกติ</li>
+        <li>ค่าไม่ลดลงเลย > 30 นาที</li>
+    </ul>
+</div>
+
+<div class="section">
+    <div class="section-title">❓ เซสชันไม่ขึ้น / ข้อมูลไม่เข้า</div>
+    <ul>
+        <li>เช็ค <b>Hotspot เปิดอยู่</b> ตลอดเวลาเก็บข้อมูล</li>
+        <li>เช็ค <b>เซนเซอร์ online</b> ที่หน้า "ภาพรวม"</li>
+        <li>เช็ค <b>ช่วงเก็บข้อมูล</b> ตรงกับวันนี้หรือเปล่า</li>
+        <li>เช็ค <b>ครบ 2 เซสชัน/วัน</b> แล้วหรือยัง</li>
+        <li>เช็ค <b>API quota</b> — ถ้าหมด จะไม่ sync</li>
+    </ul>
+    <div class="warn">
+        <b>⚡ ยังไม่ขึ้น?</b> รอ 5-10 นาที (ระบบ sync ทุก 5 นาที) → ถ้ารอ 15 นาทีแล้วยังไม่มีข้อมูล → แจ้งแอดมิน
+    </div>
+</div>
+
+<!-- ===== Quick Reference ===== -->
+<div class="section" id="ref">
+    <div class="section-title">📋 Quick Reference</div>
+    <table class="ref-table">
+        <thead>
+            <tr><th>พารามิเตอร์</th><th>ค่า</th><th>หมายเหตุ</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><b>ระยะเวลาเซสชัน</b></td><td>130 นาที</td><td>ปิดอัตโนมัติ</td></tr>
+            <tr><td><b>Baseline</b></td><td>10 นาทีแรก</td><td>ยังไม่จุดเตา</td></tr>
+            <tr><td><b>Readings / เซสชัน</b></td><td>~27 ครั้ง</td><td>ทุก 5 นาที</td></tr>
+            <tr><td><b>สูงสุดต่อวัน</b></td><td>2 เซสชัน</td><td>ประหยัด API quota</td></tr>
+            <tr><td><b>Cooldown</b></td><td>5 ชั่วโมง</td><td>ระหว่างเซสชัน</td></tr>
+            <tr><td><b>Warm-up</b></td><td>60 วินาที</td><td>หลังเปิดเครื่อง</td></tr>
+            <tr><td><b>Hotspot</b></td><td>Biomass / Biomass2026</td><td>2.4 GHz เท่านั้น</td></tr>
+            <tr><td><b>Sync</b></td><td>ทุก 5 นาที</td><td>อัตโนมัติ</td></tr>
+            <tr><td><b>Calibrate</b></td><td>กดปุ่ม 3 ครั้ง</td><td>เมื่อค่าค้างเท่านั้น</td></tr>
+            <tr><td><b>URL</b></td><td>biomassstove.vercel.app</td><td>แอดมิน + อาสา</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Footer -->
+<div style="text-align: center; padding: 40px 0 20px; color: #94a3b8; font-size: 0.8rem;">
+    🌿 Biomass Stove — โครงการนวัตกรรมเตาชีวมวลเพื่ออากาศสะอาด
+</div>
+
+</div><!-- end .content -->
+
+<!-- Back to top -->
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0, behavior:'smooth'})">▲</button>
+
+<script>
+window.addEventListener('scroll', function() {
+    document.getElementById('backTop').style.display = window.scrollY > 300 ? 'block' : 'none';
+});
+</script>
+
+</body>
+</html>
