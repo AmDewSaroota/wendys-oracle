@@ -241,7 +241,7 @@
 <div class="toc" id="top">
     <h2>สารบัญ</h2>
     <a href="#overview">🗺️ ภาพรวมระบบ</a>
-    <a href="#part1">🚀 Part 1 — เริ่มต้นใช้งาน</a>
+    <a href="#part1">🚀 Part 1 — เริ่มต้นใช้งาน (+ บัญชีโครงการ)</a>
     <a href="#part2">⚙️ Part 2 — ตั้งค่าระบบ</a>
     <a href="#part3">📆 Part 3 — การใช้งานประจำวัน</a>
     <a href="#part4">🙋 Part 4 — สอนอาสาสมัคร</a>
@@ -317,6 +317,43 @@
     <div class="warn">
         <b>⚡ หลัง reset ต้องสร้าง Recovery Code ใหม่!</b><br>
         Login → เมนู "สร้าง Recovery Code" → ถ้าไม่สร้าง ลืม PIN อีกที ต้องให้ Super Admin reset
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">🔑 บัญชีโครงการ</div>
+    <p>ระบบใช้บัญชีกลางเดียวกันทุก platform:</p>
+    <div class="params">
+        <div class="param">
+            <div class="val" style="font-size: 0.95rem;">biomassstove.cmru<br>@gmail.com</div>
+            <div class="lbl">อีเมลโครงการ</div>
+        </div>
+        <div class="param">
+            <div class="val" style="font-size: 1.1rem;">BioMass@cmru2026</div>
+            <div class="lbl">รหัสผ่าน</div>
+        </div>
+    </div>
+
+    <div class="sub-title">ใช้เข้าสู่ระบบที่ไหนบ้าง</div>
+    <table class="ref-table">
+        <thead>
+            <tr><th>Platform</th><th>ใช้ทำอะไร</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><b>Smart Life App</b></td><td>Pair เซนเซอร์ใหม่ + ดูสถานะอุปกรณ์</td></tr>
+            <tr><td><b>Tuya IoT Platform</b></td><td>จัดการ API + ดู Device ID</td></tr>
+            <tr><td><b>Vercel</b></td><td>Deploy เว็บ + ตั้งค่า Environment</td></tr>
+            <tr><td><b>Supabase</b></td><td>จัดการฐานข้อมูล</td></tr>
+            <tr><td><b>cron-job.org</b></td><td>ตั้งเวลา sync ทุก 5 นาที</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warn">
+        <b>⚡ ตอนส่งมอบโครงการ</b> — ต้องเปลี่ยน Recovery Email + เบอร์โทร Recovery ใน Google Account → Security → Recovery options
+    </div>
+    <div class="danger">
+        <b>⚠️ Tuya IoT Core หมดอายุ: 17 ต.ค. 2026</b><br>
+        ต้อง extend ก่อนหมดอายุที่ <b>tuya.com/vas/user/service</b> → Extend Trial Period (login ด้วยบัญชีโครงการ)
     </div>
 </div>
 
@@ -708,6 +745,7 @@
             <tr><td><b>Sync</b></td><td>ทุก 5 นาที</td><td>อัตโนมัติ</td></tr>
             <tr><td><b>Calibrate</b></td><td>กดปุ่ม 3 ครั้ง</td><td>เมื่อค่าค้างเท่านั้น</td></tr>
             <tr><td><b>URL</b></td><td>biomassstove.vercel.app</td><td>แอดมิน + อาสา</td></tr>
+            <tr><td><b>บัญชีโครงการ</b></td><td>biomassstove.cmru@gmail.com</td><td>ใช้ทุก platform</td></tr>
         </tbody>
     </table>
 </div>
