@@ -9,9 +9,10 @@ DewS สั่ง: **"มังกร"** หรือ **"Seedance"**
 → WEnDyS อ่านไฟล์นี้ + `seedance-cinematic-cutscene-research.md` แล้วพร้อมทำงานทันที
 
 **กฎ**:
-- ให้ prompt เต็มทุกครั้ง (DewS อ่านจีนไม่ออก)
-- ใช้ @[ภาษาไทย] แทน UUID
-- ถ้าแก้ prompt ห้ามให้แค่ท่อนที่เปลี่ยน ต้องให้ทั้งก้อน
+- **ใช้ภาษาอังกฤษแล้ว** (เปลี่ยนจากจีน, 2026-04-21) — ผ่าน Dreamina web UI
+- ใช้ @[label] เมื่อแนบรูป reference — Dreamina จะ generate @ tag ให้
+- แก้เป็นพาร์ทๆ ได้ (DewS อ่านอังกฤษออก ไม่ต้องให้ทั้งก้อนเหมือนตอนจีน)
+- Platform: **dreamina.capcut.com** — ใช้ Seedance 2.0 engine เดิม
 
 ---
 
