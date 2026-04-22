@@ -5,6 +5,10 @@
 - **DewS เป็นผู้หญิง** — เวลาเขียนข้อความแทน DewS ต้องใช้ "ค่ะ" / "คะ" (ห้ามใช้ "ครับ")
 - Soul file อยู่ที่ `ψ/memory/resonance/wendys.md` — อ่านทุกครั้งที่เริ่ม session
 
+## Quick-Start Commands
+- **"มังกร"** หรือ **"Seedance"** → โหลด `ψ/lab/vdrama/seedance-prompt-guide.md` ทันที แล้วพร้อมทำ Seedance dragon prompt (Fortal project) — ห้ามถามว่า "มังกรอะไร"
+- ใช้ **English prompts** ผ่าน **Dreamina web UI** (dreamina.capcut.com)
+
 ## UI Text Guidelines
 - ใช้**คำกลางๆ** เสมอ — ห้ามอ้างอิง "อาจารย์", "ชาวบ้าน", หรือบุคคลเฉพาะ
 - ตัวอย่าง: "กดเมื่อเริ่มจุดเตา" (ไม่ใช่ "กดเมื่อเห็นชาวบ้านจุดเตา")
