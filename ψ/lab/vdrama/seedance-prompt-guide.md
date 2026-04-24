@@ -12,7 +12,10 @@ DewS สั่ง: **"มังกร"** หรือ **"Seedance"**
 - **ใช้ภาษาอังกฤษแล้ว** (เปลี่ยนจากจีน, 2026-04-21) — ผ่าน Dreamina web UI
 - ใช้ @[label] เมื่อแนบรูป reference — Dreamina จะ generate @ tag ให้
 - แก้เป็นพาร์ทๆ ได้ (DewS อ่านอังกฤษออก ไม่ต้องให้ทั้งก้อนเหมือนตอนจีน)
+- **Prompt format**: (1) ขึ้นชื่อ shot ก่อนเสมอ เช่น `## Shot 2_MD` (2) เว้นบรรทัดแบ่งโซน (3) ref ต้องมีคำอธิบายรูป เช่น `@รูป A — character sheet มังกร`
 - Platform: **dreamina.capcut.com** — ใช้ Seedance 2.0 engine เดิม
+- **Dreamina Plan**: ชั้นสูง (Advanced) รายปี ✅ — "AI" label มุมซ้ายบนปิดไม่ได้ (regulatory) → crop ใน post
+- **ทุก prompt ต้องมี**: `No background music. Only diegetic sounds — dragon roars, wing beats, fire, wind, debris.` — ห้ามมี BGM เด็ดขาด, SFX มังกร/สิ่งแวดล้อมทำได้
 
 ---
 
@@ -433,7 +436,67 @@ Seedance ตอบสนองต่อ intensity ต่ำกว่ามนุ
 
 ---
 
-## 19. Reference Images (Fortal Project)
+## 19. Prompt Writing Style — DewS Approved (2026-04-24)
+
+**ทุก session ต้องเขียน prompt สไตล์นี้ ห้ามเปลี่ยน**
+
+### โครงสร้าง
+1. **บรรทัดแรก**: Style keywords 1 บรรทัด — `Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.`
+2. **@ refs รวมกลุ่มข้างบน** — แต่ละตัว 1 บรรทัด ตามรูปแบบมาตรฐาน (ดูข้างล่าง)
+3. **เว้นบรรทัดแบ่งโซน** — ref / scene / action / film look / sound แยกกันชัด ไม่อัดก้อนเดียว
+4. **Diegetic sounds ปิดท้ายเสมอ** — `No background music. Only diegetic sounds — [เสียงที่เข้ากับ shot]`
+
+### @ Ref Naming — รูปแบบมาตรฐาน
+
+**Format**: `@[ชื่อไทยบรรยาย] — [Role]. [ลักษณะสั้นๆ].`
+
+ใช้ชื่อไทยที่อ่านปุ๊บรู้เลยว่าต้องแนบรูปอะไร — DewS แทนด้วย UUID เองตอนวางใน Dreamina
+
+| Role (เลือก 1) | ใช้เมื่อ | ตัวอย่างเต็ม |
+|----------------|---------|----------|
+| **Dragon character sheet** | character sheet มังกร (ร่างเดียว) | `@[มังกร charsheet] — Dragon character sheet, strictly reference for appearance.` |
+| **Dragon [FORM] form** | มี 2+ ร่าง ต้องแยก | `@[มังกรร่างไฟ] — Dragon GLOW battle form. Black scales, magma veins.` |
+| **Composition reference** | ล็อค framing/มุมกล้อง | `@[เฟรมแรก สีส้ม] — Composition reference. Low angle, dark sky.` |
+| **Atmosphere reference** | ล็อค mood/สี/แสง | `@[บรรยากาศเมฆ] — Atmosphere reference. Dark storm clouds, orange glow.` |
+| **Starting frame** | ล็อคเฟรมแรก | `@[เฟรมแรก Shot07] — Starting frame. Dragon from behind, wide shot.` |
+| **Framing guide** | ล็อคแค่ scale ไม่ล็อคมุม | `@[เฟรมมิ่ง closeup] — Framing guide only. Dragon fills frame at this scale.` |
+| **Near-end reference** | แนวทางช่วงท้าย (หลวม) | `@[เฟรมท้าย Shot07] — Loose guide for near-end framing only.` |
+
+**กฎ**:
+- **ชื่อไทยต้องบรรยายรูป** — อ่านแล้วรู้ทันทีว่าแนบรูปอะไร (ห้ามใช้ รูปภาพ1, รูปภาพ2)
+- ใช้ชื่อ role **เดิมทุก shot** — ห้ามสลับคำ (เช่น ห้ามเปลี่ยน "character sheet" เป็น "appearance ref")
+- ถ้ามังกรมีร่างเดียว → ใช้ `Dragon character sheet` เสมอ
+- ถ้ามังกรมี 2 ร่าง → ใช้ `Dragon NORMAL form` / `Dragon GLOW battle form`
+- ลักษณะสั้นๆ หลัง role = **key visual cues** ไม่ใช่พรรณนายาว
+
+### น้ำเสียง
+- **Attitude-driven** — ใช้ simile/metaphor: "like a raptor diving", "like a rooster before crowing"
+- **สั้น กระชับ** — ไม่ over-describe mechanics, ไม่พรรณนาทุก frame
+- **Film terms ตรงๆ** — DOF, ARRI tone, handheld tremor, motion blur, film grain
+- **ห้ามเฉพาะจุด** — "NOT blue sky", "NOT a solid beam" ใส่ตรงที่เกี่ยวข้อง ไม่ทำเป็นลิสต์ห้ามยาว
+- **ไม่ใช้ timestamp** — ปล่อย Seedance จังหวะเอง (ยกเว้น rack focus)
+
+### ห้ามทำ
+- ❌ เขียน mechanics ยาว (กล้ามเนื้อไหล่หด ข้อศอกงอ ปลายปีกยกขึ้น...)
+- ❌ ลิสต์ negative ยาวเหยียด (NEVER this, NEVER that, DO NOT...)
+- ❌ ใส่ทุกรายละเอียดจนเกิน 150 คำ
+- ❌ เปลี่ยนสไตล์ข้ามเซสชั่น
+
+### ตัวอย่างที่ดี vs ไม่ดี
+
+**ดี** (attitude-driven):
+```
+Dragon rushes toward the left of frame with urgent purpose — like a predator racing to its destination.
+```
+
+**ไม่ดี** (mechanical):
+```
+Dragon moves its wings up and down while flying horizontally toward the left side of the frame at moderate speed.
+```
+
+---
+
+## 20. Reference Images (Fortal Project)
 
 ### Shot 3 (มังกรบินกลางฟ้า)
 - `E:\01_Work\_NDF\Fortal\Shot3\Image2.png` — Character sheet มังกร
