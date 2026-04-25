@@ -85,6 +85,13 @@
 ### EcoStove TODO (ค้างไว้)
 - ⏳ **คู่มือ: เพิ่มวิธีแอดเตา/ผูกเตา** — DewS ฝากไว้ (2026-04-21) ต้องเขียนใน admin manual
 - ⏳ **ถ้าเปลี่ยนเป็น PV28** → ต้องทำสติกเกอร์วิธีใช้ใหม่ + อัพเดทคู่มืออาสา (รอ อ.แก้วตัดสินใจ + รอ MT15 มาเทียบ อาทิตย์หน้า)
+- ✅ **Map + Stove Type + Frequency** — deploy แล้ว (2026-04-25) แต่ **DewS สั่ง recheck ทุกระบบ**
+  - ⏳ **รัน migration 028** (`stoves.description`) + **029** (`monthly_usage.updated_at`)
+  - ⏳ **Recheck**: ประเภทเตา tab, stove linking (add+edit), ความถี่ inline+audit, แผนที่ทั้ง 2, export
+  - ลบแท็บ "ความถี่" → ย้าย inline เข้า subjects, stove = ชื่อ+รายละเอียด (เหมือน projects)
+  - frequency audit trail: ✅ ชื่อ วว/ดด ใต้ input
+  - Monthly frequency batch input
+  - **Mockup-first** → preview-map.html ก่อน merge
 - ✅ **Tuya "permission deny" — แก้แล้ว (2026-03-23)**
   - สาเหตุ: โปรเจคใหม่ (biomassstove.cmru) สร้างแบบ **Smart Home** → ไม่มีสิทธิ์ใช้ Industry API (`/v1.0/iot-03/`)
   - แก้: เปลี่ยน sync.js ใช้ `/v1.0/users/{uid}/devices` (Smart Home API) — 1 call ได้ทุกเครื่อง
