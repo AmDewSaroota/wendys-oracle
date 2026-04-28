@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EcoStove Unit Tests</title>
+<style>
+body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 20px auto; padding: 0 20px; background: #f8fafc; }
+h1 { color: #1e293b; }
+.test-group { margin: 16px 0; background: white; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0; }
+.test-group h2 { font-size: 15px; color: #334155; margin: 0 0 12px; }
+.test { padding: 6px 12px; margin: 4px 0; border-radius: 8px; font-size: 13px; font-family: monospace; }
+.pass { background: #dcfce7; color: #166534; }
+.fail { background: #fef2f2; color: #991b1b; }
+.summary { margin-top: 20px; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 16px; }
+.summary.all-pass { background: #dcfce7; color: #166534; border: 2px solid #86efac; }
+.summary.has-fail { background: #fef2f2; color: #991b1b; border: 2px solid #fca5a5; }
+</style>
+</head>
+<body>
+<h1>EcoStove Unit Tests</h1>
+<div id="results"></div>
+<div id="summary"></div>
+
+<script>
+// ==================== Test Framework ====================
+let _passed = 0, _failed = 0, _currentGroup = '';
+const _results = document.getElementById('results');
+
+function group(name) {
+    _currentGroup = name;
+    const div = document.createElement('div');
+    div.className = 'test-group';
+    div.innerHTML = '<h2>' + name + '</h2>';
+    div.id = 'group-' + name.replace(/\s/g, '-');
+    _results.appendChild(div);
+}
+
+function assert(desc, condition) {
+    const container = document.getElementById('group-' + _currentGroup.replace(/\s/g, '-'));
+    const div = document.createElement('div');
+    if (condition) {
+        div.className = 'test pass';
+        div.textContent = '✅ ' + desc;
+        _passed++;
+    } else {
+        div.className = 'test fail';
+        div.textContent = '❌ ' + desc;
+        _failed++;
+    }
+    container.appendChild(div);
+}
+
+function assertEqual(desc, actual, expected) {
+    assert(desc + ' (expected: ' + JSON.stringify(expected) + ', got: ' + JSON.stringify(actual) + ')', actual === expected);
+}
+
+function showSummary() {
+    const total = _passed + _failed;
+    const el = document.getElementById('summary');
+    el.className = 'summary ' + (_failed === 0 ? 'all-pass' : 'has-fail');
+    el.textContent = (_failed === 0 ? '✅' : '❌') + ' ' + _passed + '/' + total + ' tests passed' + (_failed ? ' (' + _failed + ' failed)' : '');
+}
+
+// ==================== Functions Under Test ====================
+// Extracted from index.html for isolated testing
+
+function deepMapFreqColor(usageCount) {
+    if (usageCount >= 15) return '#10b981';
+    if (usageCount >= 4) return '#f97316';
+    return '#ef4444';
+}
+
+function deepMapFreqLabel(usageCount) {
+    if (usageCount >= 15) return 'ใช้บ่อย (' + usageCount + ' ครั้ง/เดือน)';
+    if (usageCount >= 4) return 'ปานกลาง (' + usageCount + ' ครั้ง/เดือน)';
+    return 'น้อย/ไม่ใช้ (' + usageCount + ' ครั้ง/เดือน)';
+}
+
+function applyMapRatio_logic(ratio, containerWidth) {
+    // Returns height in px
+    if (ratio === 'auto') return 400;
+    const ratioMap = { '1:1': 1, '3:4': 3/4, '16:9': 16/9 };
+    const aspect = ratioMap[ratio] || 1;
+    return Math.round(containerWidth / aspect);
+}
+
+function getFreqCellType(effectiveHasSensor, subjectType) {
+    if (effectiveHasSensor) return 'sensor-auto';
+    if ((subjectType || 'household') === 'sme') return 'sme-dash';
+    return 'household-input';
+}
+
+function getMarkerColor(hasSensor, subjectType, usageCount) {
+    if (hasSensor) return '#3b82f6';
+    if (subjectType === 'sme') return '#a855f7';
+    return deepMapFreqColor(usageCount);
+}
+
+function filterStovesForDropdown(allStoves, subjectId, mode) {
+    if (mode === 'add') {
+        return allStoves.filter(st => !st.subject_id);
+    } else {
+        return allStoves.filter(st => !st.subject_id || String(st.subject_id) === String(subjectId));
+    }
+}
+
+function buildAuditBadge(meta) {
+    if (!meta || !meta.updated_at) return '';
+    const d = new Date(meta.updated_at);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const who = (meta.created_by || '').split('@')[0] || 'Unknown';
+    return who + ' ' + dd + '/' + mm;
+}
+
+function populateMonths_logic() {
+    const months = [];
+    const now = new Date(2026, 3, 25); // 2026-04-25
+    const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    for (let i = 0; i < 6; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        months.push({
+            value: d.toISOString().slice(0, 7),
+            label: thaiMonths[d.getMonth()] + ' ' + (d.getFullYear() + 543)
+        });
+    }
+    return months;
+}
+
+function escAttr(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ==================== TESTS ====================
+
+// --- Frequency Color Logic ---
+group('Frequency Colors');
+assertEqual('0 usage → red', deepMapFreqColor(0), '#ef4444');
+assertEqual('1 usage → red', deepMapFreqColor(1), '#ef4444');
+assertEqual('3 usage → red (boundary)', deepMapFreqColor(3), '#ef4444');
+assertEqual('4 usage → orange (boundary)', deepMapFreqColor(4), '#f97316');
+assertEqual('10 usage → orange', deepMapFreqColor(10), '#f97316');
+assertEqual('14 usage → orange', deepMapFreqColor(14), '#f97316');
+assertEqual('15 usage → green (boundary)', deepMapFreqColor(15), '#10b981');
+assertEqual('20 usage → green', deepMapFreqColor(20), '#10b981');
+assertEqual('31 usage → green (max)', deepMapFreqColor(31), '#10b981');
+
+// --- Frequency Labels ---
+group('Frequency Labels');
+assert('0 usage label has น้อย/ไม่ใช้', deepMapFreqLabel(0).includes('น้อย/ไม่ใช้'));
+assert('0 usage label has count', deepMapFreqLabel(0).includes('0 ครั้ง/เดือน'));
+assert('5 usage label has ปานกลาง', deepMapFreqLabel(5).includes('ปานกลาง'));
+assert('5 usage label has count', deepMapFreqLabel(5).includes('5 ครั้ง/เดือน'));
+assert('20 usage label has ใช้บ่อย', deepMapFreqLabel(20).includes('ใช้บ่อย'));
+assert('20 usage label has count', deepMapFreqLabel(20).includes('20 ครั้ง/เดือน'));
+
+// --- Map Ratio ---
+group('Export Ratio Logic');
+assertEqual('auto → 400px', applyMapRatio_logic('auto', 800), 400);
+assertEqual('1:1 with 800w → 800h', applyMapRatio_logic('1:1', 800), 800);
+assertEqual('3:4 with 600w → 800h', applyMapRatio_logic('3:4', 600), 800);
+assertEqual('16:9 with 800w → 450h', applyMapRatio_logic('16:9', 800), 450);
+assertEqual('unknown ratio → 1:1 fallback', applyMapRatio_logic('2:3', 500), 500);
+
+// --- Marker Colors ---
+group('Marker Colors');
+assertEqual('sensor house → blue', getMarkerColor(true, 'household', 0), '#3b82f6');
+assertEqual('sensor SME → blue (sensor takes priority)', getMarkerColor(true, 'sme', 0), '#3b82f6');
+assertEqual('non-sensor SME → purple', getMarkerColor(false, 'sme', 0), '#a855f7');
+assertEqual('household freq 0 → red', getMarkerColor(false, 'household', 0), '#ef4444');
+assertEqual('household freq 5 → orange', getMarkerColor(false, 'household', 5), '#f97316');
+assertEqual('household freq 20 → green', getMarkerColor(false, 'household', 20), '#10b981');
+
+// --- Frequency Cell Type ---
+group('Frequency Cell Types');
+assertEqual('sensor house → auto', getFreqCellType(true, 'household'), 'sensor-auto');
+assertEqual('sensor SME → auto (sensor priority)', getFreqCellType(true, 'sme'), 'sensor-auto');
+assertEqual('non-sensor SME → dash', getFreqCellType(false, 'sme'), 'sme-dash');
+assertEqual('non-sensor household → input', getFreqCellType(false, 'household'), 'household-input');
+assertEqual('null type defaults to household → input', getFreqCellType(false, null), 'household-input');
+assertEqual('undefined type defaults to household → input', getFreqCellType(false, undefined), 'household-input');
+
+// --- Stove Dropdown Filtering ---
+group('Stove Dropdown Filter');
+const testStoves = [
+    { id: 1, name: 'Eco', subject_id: null },
+    { id: 2, name: 'Traditional', subject_id: 10 },
+    { id: 3, name: 'Bio', subject_id: 20 },
+    { id: 4, name: 'Gas', subject_id: null },
+];
+assertEqual('add mode → only unlinked (2 stoves)', filterStovesForDropdown(testStoves, null, 'add').length, 2);
+assert('add mode → has Eco', filterStovesForDropdown(testStoves, null, 'add').some(s => s.name === 'Eco'));
+assert('add mode → has Gas', filterStovesForDropdown(testStoves, null, 'add').some(s => s.name === 'Gas'));
+assert('add mode → no Traditional', !filterStovesForDropdown(testStoves, null, 'add').some(s => s.name === 'Traditional'));
+
+assertEqual('edit mode (house 10) → unlinked + own (3)', filterStovesForDropdown(testStoves, 10, 'edit').length, 3);
+assert('edit mode (house 10) → includes own linked', filterStovesForDropdown(testStoves, 10, 'edit').some(s => s.name === 'Traditional'));
+assert('edit mode (house 10) → excludes other linked', !filterStovesForDropdown(testStoves, 10, 'edit').some(s => s.name === 'Bio'));
+
+// --- Audit Badge ---
+group('Audit Badge');
+assertEqual('no meta → empty', buildAuditBadge(null), '');
+assertEqual('no updated_at → empty', buildAuditBadge({ created_by: 'test@x.com' }), '');
+assertEqual('valid meta → shows name + date',
+    buildAuditBadge({ created_by: 'dews@gmail.com', updated_at: '2026-04-25T10:00:00Z' }),
+    'dews 25/04');
+assertEqual('email without @ → Unknown',
+    buildAuditBadge({ created_by: '', updated_at: '2026-04-25T10:00:00Z' }),
+    'Unknown 25/04');
+
+// --- Month Population ---
+group('Month Selector');
+const months = populateMonths_logic();
+assertEqual('generates 6 months', months.length, 6);
+assertEqual('first month value is 2026-04', months[0].value, '2026-04');
+assertEqual('last month value is 2025-11', months[5].value, '2025-11');
+assert('first month label has เม.ย.', months[0].label.includes('เม.ย.'));
+assert('first month label has 2569 (Thai year)', months[0].label.includes('2569'));
+assert('last month label has พ.ย.', months[5].label.includes('พ.ย.'));
+
+// --- XSS Protection (escAttr) ---
+group('XSS Protection');
+assertEqual('escapes quotes', escAttr("test'quote"), "test&#39;quote");
+assertEqual('escapes double quotes', escAttr('test"quote'), 'test&quot;quote');
+assertEqual('escapes <>', escAttr('test<script>'), 'test&lt;script&gt;');
+assertEqual('escapes &', escAttr('test&value'), 'test&amp;value');
+assertEqual('handles empty string', escAttr(''), '');
+assert('stove name with quote is safe in data-attr',
+    !escAttr("Eco' onclick='alert(1)").includes("'"));
+
+// --- Edge Cases ---
+group('Edge Cases');
+assertEqual('negative usage → red', deepMapFreqColor(-5), '#ef4444');
+assertEqual('very high usage → green', deepMapFreqColor(999), '#10b981');
+assertEqual('NaN usage → red (falsy)', deepMapFreqColor(NaN), '#ef4444');
+assertEqual('undefined stoves array → 0 in add', filterStovesForDropdown([], null, 'add').length, 0);
+
+// Stove linking consistency: parseInt behavior
+assert('parseInt consistent for numeric IDs', parseInt('42') === 42);
+assert('parseInt handles string IDs', !isNaN(parseInt('abc123'))); // NaN check — this should FAIL to verify guard
+// Actually parseInt('abc123') IS NaN
+assert('parseInt("abc123") is NaN — need guard', isNaN(parseInt('abc123')));
+
+// ==================== Summary ====================
+showSummary();
+</script>
+</body>
+</html>

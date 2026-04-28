@@ -906,8 +906,12 @@ module.exports = async function handler(req, res) {
       }
     }
 
+    // 0.5 override: Admin one-day override — skip day-of-week + holiday checks
+    const thaiToday = thaiNow.toISOString().slice(0, 10);
+    const overrideActive = quietConfig && quietConfig.override_date === thaiToday;
+
     // 0.5b: Day-of-week check (1=จ, 2=อ, ..., 7=อา)
-    if (quietConfig && quietConfig.active_days) {
+    if (!overrideActive && quietConfig && quietConfig.active_days) {
       const jsDay = thaiNow.getUTCDay(); // 0=Sun, 1=Mon, ...
       const isoDay = jsDay === 0 ? 7 : jsDay; // 7=อา
       const activeDays = quietConfig.active_days.split(',').map(d => parseInt(d.trim(), 10));
@@ -922,7 +926,7 @@ module.exports = async function handler(req, res) {
     }
 
     // 0.5c: Holiday check
-    if (schedule.holidays.length > 0) {
+    if (!overrideActive && schedule.holidays.length > 0) {
       const todayStr = thaiNow.toISOString().slice(0, 10); // "YYYY-MM-DD"
       const holiday = schedule.holidays.find(h => h.holiday_date === todayStr);
       if (holiday) {

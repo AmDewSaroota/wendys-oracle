@@ -404,7 +404,7 @@ const PING_INTERVAL = 30000; // ping Tuya ทุก 30 วินาที (ไ�
 // ================================================
 async function checkRestDay() {
   try {
-    const { data } = await sb.from('sync_config').select('active_days, quiet_hours_enabled, quiet_hours_start, quiet_hours_end').limit(1);
+    const { data } = await sb.from('sync_config').select('active_days, quiet_hours_enabled, quiet_hours_start, quiet_hours_end, override_date').limit(1);
     if (!data || data.length === 0) return false;
     const config = data[0];
     const thaiNow = new Date(Date.now() + 7 * 3600000);
@@ -412,8 +412,12 @@ async function checkRestDay() {
     const isoDay = jsDay === 0 ? 7 : jsDay; // 7=อา
     const dayNames = ['', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์'];
 
+    // Admin one-day override — skip day-of-week + holiday checks
+    const thaiToday = thaiNow.toISOString().slice(0, 10);
+    const overrideActive = config.override_date === thaiToday;
+
     // Day-of-week check
-    if (config.active_days) {
+    if (!overrideActive && config.active_days) {
       const activeDays = config.active_days.split(',').map(d => parseInt(d.trim(), 10));
       if (!activeDays.includes(isoDay)) {
         const activeNames = activeDays.map(d => dayNames[d]).join(', ');
@@ -424,7 +428,7 @@ async function checkRestDay() {
       }
     }
 
-    // Quiet hours check
+    // Quiet hours check (always applies, even with override)
     if (config.quiet_hours_enabled) {
       const hhmm = thaiNow.toISOString().slice(11, 16);
       const start = config.quiet_hours_start;
