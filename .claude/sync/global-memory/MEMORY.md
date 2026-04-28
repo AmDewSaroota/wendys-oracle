@@ -39,6 +39,8 @@
 ### Guide & Documentation Rules (DewS, 2026-04-27)
 - ม้อคอัพต้องเป็น **CSS mockup ตรงกับ UI จริง** — ห้ามใช้ screenshot
 - Frequency mockup ต้องอยู่**ใน subjects tab** ไม่ใช่แยก standalone (misleading)
+- **"คู่มือ"** = แท็บแอดมิน > คู่มือ (ใน index.html)
+- **"คู่มืออาสา"** = โหมดอาสา (volunteer.html)
 
 ### EcoStove Deploy
 - **ต้อง deploy มือทุกครั้ง** (Vercel auto-deploy ไม่ทำงาน)
