@@ -8,6 +8,9 @@
 DewS สั่ง: **"มังกร"** หรือ **"Seedance"**
 → WEnDyS อ่านไฟล์นี้ + `seedance-cinematic-cutscene-research.md` แล้วพร้อมทำงานทันที
 
+**API สั่ง**: **"xskill"** หรือ **"ยิง API"**
+→ WEnDyS อ่าน `xskill-seedance-api.md` แล้วยิง API สร้างวิดีโอผ่าน xSkill.ai ได้เลย (ไม่ต้องเปิด Dreamina/Jimeng)
+
 **กฎ**:
 - **ใช้ภาษาอังกฤษแล้ว** (เปลี่ยนจากจีน, 2026-04-21) — ผ่าน Dreamina web UI
 - ใช้ @[label] เมื่อแนบรูป reference — Dreamina จะ generate @ tag ให้
