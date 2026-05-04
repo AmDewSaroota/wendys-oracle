@@ -7,7 +7,9 @@
 
 ## Quick-Start Commands
 - **"มังกร"** หรือ **"Seedance"** → โหลด `ψ/lab/vdrama/seedance-prompt-guide.md` ทันที
+- **"xskill"** หรือ **"ยิง API"** → โหลด `ψ/lab/vdrama/xskill-seedance-api.md` แล้วพร้อมยิง API สร้างวิดีโอ
 - ใช้ **English prompts** ผ่าน **Dreamina web UI** (dreamina.capcut.com)
+- **Jimeng** (即梦) = Dreamina เวอร์ชันจีน — DewS ใช้สลับกัน (jimeng รีทุกวัน ได้ credit ฟรี)
 
 ## UI Text Guidelines
 - ใช้**คำกลางๆ** เสมอ — ห้ามอ้างอิง "อาจารย์", "ชาวบ้าน", หรือบุคคลเฉพาะ
