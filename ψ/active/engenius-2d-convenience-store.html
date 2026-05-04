@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engenius 2D — Convenience Store (Quantifiers)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 20px; max-width: 900px; margin: 0 auto; line-height: 1.6; }
+  h1 { color: #f8b500; text-align: center; margin-bottom: 5px; font-size: 1.8em; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+  .info-box { background: #16213e; border-left: 4px solid #f8b500; padding: 15px; margin-bottom: 25px; border-radius: 0 8px 8px 0; }
+  .info-box h3 { color: #f8b500; margin-bottom: 8px; }
+  .char-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  .char-table th { background: #0f3460; color: #f8b500; padding: 8px; text-align: left; }
+  .char-table td { padding: 8px; border-bottom: 1px solid #333; }
+  .scene { background: #16213e; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .scene-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .scene-title { color: #00d2ff; font-size: 1.3em; font-weight: bold; }
+  .scene-time { background: #0f3460; color: #f8b500; padding: 3px 10px; border-radius: 12px; font-size: 0.85em; }
+  .scene-zone { color: #888; font-size: 0.9em; margin-bottom: 10px; }
+  .prompt-section { margin-bottom: 15px; }
+  .prompt-label { color: #f8b500; font-weight: bold; margin-bottom: 5px; font-size: 0.9em; }
+  pre { background: #0d1117; padding: 15px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85em; line-height: 1.5; color: #c9d1d9; position: relative; }
+  .copy-btn { position: absolute; top: 8px; right: 8px; background: #f8b500; color: #1a1a2e; border: none; padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; font-weight: bold; }
+  .copy-btn:hover { background: #ffd000; }
+  .dialogue-box { background: #0f3460; padding: 12px 15px; border-radius: 8px; margin-top: 10px; }
+  .dialogue-box .line { margin: 4px 0; }
+  .dialogue-box .speaker-a { color: #4fc3f7; }
+  .dialogue-box .speaker-b { color: #f48fb1; }
+  .quantifier { color: #f8b500; font-weight: bold; }
+  .fix-table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  .fix-table th { background: #0f3460; color: #f8b500; padding: 6px 10px; text-align: left; font-size: 0.85em; }
+  .fix-table td { padding: 6px 10px; border-bottom: 1px solid #333; font-size: 0.85em; }
+  .status { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
+  .status-done { background: #1b5e20; color: #a5d6a7; }
+  .status-ready { background: #0d47a1; color: #90caf9; }
+  .status-todo { background: #4a148c; color: #ce93d8; }
+  .warning { background: #4a1500; border-left: 4px solid #ff6b35; padding: 12px 15px; border-radius: 0 8px 8px 0; margin: 15px 0; font-size: 0.9em; }
+  .warning strong { color: #ff6b35; }
+  .summary { background: #1a3a1a; border-left: 4px solid #4caf50; padding: 15px; border-radius: 0 8px 8px 0; margin: 20px 0; }
+  .summary h3 { color: #4caf50; margin-bottom: 8px; }
+  .footer { text-align: center; color: #555; margin-top: 30px; font-size: 0.85em; }
+  hr { border: none; border-top: 1px solid #333; margin: 25px 0; }
+</style>
+</head>
+<body>
+
+<h1>Engenius 2D — Convenience Store</h1>
+<p class="subtitle">Quantifiers Vocabulary (~30-35s) | 7 Scenes | Shinji & Leah</p>
+
+<!-- PROJECT INFO -->
+<div class="info-box">
+  <h3>Project Info</h3>
+  <p><strong>Theme:</strong> English Quantifiers (a bag of, a bottle of, a carton of...)</p>
+  <p><strong>Style:</strong> Flat 2D cartoon, NO line art, NO outlines, soft flat color shapes</p>
+  <p><strong>Duration:</strong> ~35 seconds (ไม่เกิน 1 นาที)</p>
+  <p><strong>Flow:</strong> เจนภาพนิ่ง (English prompt) &rarr; เอาเข้า Jimeng เจนวิดีโอ + lip sync</p>
+  <p><strong>Files:</strong> <code>E:\01_Work\_NDF\Engenius\2D\</code></p>
+</div>
+
+<!-- CHARACTERS -->
+<div class="info-box">
+  <h3>Characters</h3>
+  <table class="char-table">
+    <tr><th>Name</th><th>Role</th><th>Description</th></tr>
+    <tr>
+      <td><strong>Shinji (A)</strong></td>
+      <td>Boy</td>
+      <td>Curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, orange shoes</td>
+    </tr>
+    <tr>
+      <td><strong>Leah (B)</strong></td>
+      <td>Girl</td>
+      <td>Curly magenta-pink hair, yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, orange shoes</td>
+    </tr>
+  </table>
+  <p style="margin-top:8px; color:#888; font-size:0.85em;">Ref: <code>Boy.png</code> / <code>Girl.png</code></p>
+</div>
+
+<!-- LESSONS LEARNED -->
+<div class="warning">
+  <strong>Lessons Learned (จากการเจนวันนี้):</strong>
+  <ul style="margin-top:8px; padding-left:20px;">
+    <li><strong>ท่ายากเกินไป = ตัวละครเพี้ยน</strong> — ห้าม "hugging", "holding X in one hand and Y in the other" → ใช้ pointing, clapping, looking แทน</li>
+    <li><strong>สินค้าอยู่บนชั้น ไม่ใช่ในมือ</strong> — วางของไว้บน shelf/display แล้วให้ตัวละครชี้/มองแทน</li>
+    <li><strong>ระบุ foreground/background ชัดเจน</strong> — "Both characters stand in the foreground, clearly in front of the shelves" ป้องกัน AI วางคนซ้อนชั้น</li>
+    <li><strong>"sparkling eyes" เพี้ยน</strong> — ตัดคำพวกนี้ออก</li>
+  </ul>
+</div>
+
+<!-- STYLE TEMPLATE -->
+<div class="info-box">
+  <h3>Style Template (ใช้ทุก prompt)</h3>
+  <p><code>in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients.</code></p>
+  <p style="margin-top:5px;"><code>Camera: eye-level medium shot. Aspect ratio: 16:9.</code></p>
+</div>
+
+<hr>
+
+<!-- ==================== SCENE 1 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 1 — เข้าร้าน</span>
+    <span class="scene-time">~4s</span>
+  </div>
+  <div class="scene-zone">Zone: Store Interior Wide | Ref: <code>1.png</code> <span class="status status-done">IMAGE DONE</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah walk into a bright convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, arms spread wide in excitement. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, smiling and looking around curiously. They stand just inside the entrance, glass door behind them. The store interior stretches ahead with colorful shelves stocked with products on both sides, warm fluorescent ceiling lights, clean tiled floor.
+Background: cheerful convenience store interior, pastel-toned product displays, a friendly "Welcome!" sign near the entrance. Camera: eye-level wide shot, both characters fully visible with store aisles behind them. Mood: excited and happy. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+男孩（左）张开双臂，兴奋地看着店内，嘴巴张开说话，口型同步。
+女孩（右）微笑环顾四周，然后转头看男孩，开口回应，口型同步。
+
+两个角色保持原位，仅有手臂动作和口型变化。
+背景静止不动。
+
+对话：
+男孩（活泼男童声）: "Wow! Look at all the food and drinks!"
+女孩（开朗女童声）: "Yes! What do you want?"
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-a">A (Shinji):</span> "Wow! Look at all the food and drinks!"</div>
+    <div class="line"><span class="speaker-b">B (Leah):</span> "Yes! What do you want?"</div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 2 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 2 — โซนขนม+นม</span>
+    <span class="scene-time">~8s</span>
+  </div>
+  <div class="scene-zone">Zone: Snack & Dairy Aisle | Ref: <code>2.png</code> <span class="status status-todo">TODO</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah standing together in front of a snack shelf in a convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, pointing excitedly at the shelf behind them with a big smile. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, giving a thumbs up with a happy grin. Both characters stand in the foreground, clearly in front of the shelves. The shelf behind them displays colorful bags of chips, bottles of water, cartons of milk, and boxes of chocolate neatly arranged in rows.
+Background: warm-lit store aisle, pastel-colored product packaging on shelves behind the characters. Camera: eye-level medium shot, both characters in foreground, products visible behind them. Mood: cheerful and fun. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+男孩（左）指向身后的货架，自豪地说话，口型同步。
+女孩（右）竖起大拇指回应，然后开心说话，口型同步。
+男孩听后开心地点头回应。
+
+两个角色保持原位，仅有手臂动作、表情变化和口型变化。
+背景静止不动。
+
+对话：
+男孩（活泼男童声）: "I want a bag of chips and a bottle of water."
+女孩（开朗女童声）: "Good choice!"
+女孩（开朗女童声）: "I want a carton of milk and a box of chocolate."
+男孩（活泼男童声）: "Yum!"
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-a">A:</span> "I want <span class="quantifier">a bag of</span> chips and <span class="quantifier">a bottle of</span> water."</div>
+    <div class="line"><span class="speaker-b">B:</span> "Good choice!"</div>
+    <div class="line"><span class="speaker-b">B:</span> "I want <span class="quantifier">a carton of</span> milk and <span class="quantifier">a box of</span> chocolate."</div>
+    <div class="line"><span class="speaker-a">A:</span> "Yum!"</div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 3 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 3 — โซนของสด</span>
+    <span class="scene-time">~5s</span>
+  </div>
+  <div class="scene-zone">Zone: Fresh Produce | Ref: <code>3.png</code> <span class="status status-todo">TODO</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah standing together in front of a fresh produce display in a convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, pointing excitedly at the produce display behind them. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, smiling and clapping her hands. Both characters stand in the foreground, clearly in front of the display. The display behind them shows a woven basket full of bright red apples, a burlap sack of brown potatoes, and a tray of white eggs in a carton on a wooden stand.
+Background: fresh produce area with soft green accent wall, warm lighting. Camera: eye-level medium shot, both characters in foreground, produce display visible behind them. Mood: curious and delighted. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+男孩（左）兴奋地指向身后的水果篮和土豆袋，开口说话，口型同步。
+女孩（右）拍手回应，开心地说话，口型同步。
+
+两个角色保持原位，仅有手臂动作、表情变化和口型变化。
+背景静止不动。
+
+对话：
+男孩（活泼男童声）: "Look! A basket of apples and a sack of potatoes."
+女孩（开朗女童声）: "I want a dozen eggs too."
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-a">A:</span> "Look! <span class="quantifier">A basket of</span> apples and <span class="quantifier">a sack of</span> potatoes."</div>
+    <div class="line"><span class="speaker-b">B:</span> "I want <span class="quantifier">a dozen</span> eggs too."</div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 4 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 4 — โซนแช่แข็ง</span>
+    <span class="scene-time">~4s</span>
+  </div>
+  <div class="scene-zone">Zone: Frozen Treats | Ref: <code>4.png</code> <span class="status status-todo">TODO</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง) — FIXED</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah at the frozen treats section of a convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, pointing excitedly at the freezer. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, clapping her hands with a big happy grin. Both characters stand in the foreground, clearly in front of the freezer. Behind them a glass-door freezer displays colorful tubs of ice-cream and sticks of butter on a nearby shelf.
+Background: cool-toned freezer section with soft blue accent, bright overhead light. Camera: eye-level medium shot, both characters in foreground, freezer visible behind them. Mood: excited and playful. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+女孩（右）拍手，眼睛发亮，兴奋说话，口型同步。
+男孩（左）点头，开心回应，口型同步。
+
+两个角色保持原位，仅有手臂动作、表情变化和口型变化。
+背景静止不动。
+
+对话：
+女孩（开朗女童声）: "I want a tub of ice-cream!"
+男孩（活泼男童声）: "Me too! And a stick of butter."
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-b">B:</span> "I want <span class="quantifier">a tub of</span> ice-cream!"</div>
+    <div class="line"><span class="speaker-a">A:</span> "Me too! And <span class="quantifier">a stick of</span> butter."</div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 5 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 5 — โซนเครื่องดื่ม</span>
+    <span class="scene-time">~4s</span>
+  </div>
+  <div class="scene-zone">Zone: Beverage | Ref: <code>5.png</code> <span class="status status-todo">TODO</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah standing together in front of a beverage refrigerator in a convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, smiling contentedly and looking at the drinks display. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, pointing at the refrigerator with a satisfied smile. Both characters stand in the foreground, clearly in front of the refrigerator. Behind them a tall glass-door refrigerator displays cups of tea, glasses of juice, and colorful beverage bottles in neat rows.
+Background: beverage aisle with cool pastel tones, glass refrigerator glowing softly behind the characters. Camera: eye-level medium shot, both characters in foreground, drinks display visible behind them. Mood: relaxed and happy. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+男孩（左）满足地微笑说话，口型同步。
+女孩（右）指向身后的饮料柜，开心回应，口型同步。
+
+两个角色保持原位，仅有手臂动作、表情变化和口型变化。
+背景静止不动。
+
+对话：
+男孩（活泼男童声）: "I want a cup of tea."
+女孩（开朗女童声）: "I want a glass of juice."
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-a">A:</span> "I want <span class="quantifier">a cup of</span> tea."</div>
+    <div class="line"><span class="speaker-b">B:</span> "I want <span class="quantifier">a glass of</span> juice."</div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 6 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 6 — โซนอาหาร</span>
+    <span class="scene-time">~5s</span>
+  </div>
+  <div class="scene-zone">Zone: Food Aisle | Ref: <code>6.png</code> <span class="status status-todo">TODO</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง) — FIXED</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah standing together in front of a food shelf in a convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, pointing at the shelf behind them with an impressed expression. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, smiling and looking at the shelf with excitement. Both characters stand in the foreground, clearly in front of the shelves. The shelf behind them displays loaves of bread, stacked cans of tuna, and jars of golden honey with simple cartoon labels.
+Background: warm-lit food aisle, wooden-toned shelves behind the characters, cozy atmosphere. Camera: eye-level medium shot, both characters in foreground, shelf products visible behind them. Mood: warm and enthusiastic. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+男孩（左）指向身后货架上的面包和金枪鱼罐头，惊喜地说话，口型同步。
+女孩（右）开心地指向蜂蜜罐，回应，口型同步。
+
+两个角色保持原位，仅有手臂动作、表情变化和口型变化。
+背景静止不动。
+
+对话：
+男孩（活泼男童声）: "Look! A loaf of bread and a can of tuna."
+女孩（开朗女童声）: "And a jar of honey!"
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-a">A:</span> "Look! <span class="quantifier">A loaf of</span> bread and <span class="quantifier">a can of</span> tuna."</div>
+    <div class="line"><span class="speaker-b">B:</span> "And <span class="quantifier">a jar of</span> honey!"</div>
+  </div>
+</div>
+
+<!-- ==================== SCENE 7 ==================== -->
+<div class="scene">
+  <div class="scene-header">
+    <span class="scene-title">Scene 7 — แคชเชียร์</span>
+    <span class="scene-time">~6s</span>
+  </div>
+  <div class="scene-zone">Zone: Checkout Counter | Ref: <code>7.png</code> <span class="status status-todo">TODO</span></div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Image Prompt (เจนภาพนิ่ง)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>Scene: Shinji and Leah at the checkout counter of a convenience store in flat 2D cartoon shape-based illustration style, NO line art, NO outlines, only soft flat color shapes with smooth gradients. Shinji on the left with curly black hair, big blue eyes, freckles, green t-shirt, navy shorts, looking at a pile of groceries on the counter with wide surprised eyes. Leah on the right with curly magenta-pink hair with yellow hair clip, big pink eyes, rosy cheeks, yellow overalls, white shirt, waving happily with a big cheerful grin. Both characters stand in the foreground, clearly in front of the counter. The counter behind them has a cute cartoon cash register and is piled with colorful grocery items and shopping bags.
+Background: checkout area, friendly store interior, a "Thank You!" sign on the wall behind the counter. Camera: eye-level medium shot, both characters in foreground, counter and groceries visible behind them. Mood: proud and joyful. Aspect ratio: 16:9.</pre>
+  </div>
+
+  <div class="prompt-section">
+    <div class="prompt-label">Jimeng Video Prompt (เจนวิดีโอ lip sync)</div>
+    <pre><button class="copy-btn" onclick="copyPrompt(this)">COPY</button>2D卡通动画，扁平插画风格，柔和渐变色彩。
+
+男孩（左）看着堆满柜台的商品，惊讶地张大嘴巴说话，口型同步。
+女孩（右）开心地挥手，大声回应，口型同步。
+最后两个孩子一起开心地笑着。
+
+两个角色保持原位，仅有手臂动作、表情变化和口型变化。
+背景静止不动。
+
+对话：
+男孩（活泼男童声）: "That's a lot!"
+女孩（开朗女童声）: "Yes, let's go!"
+男孩（活泼男童声）: "I'm happy!"
+女孩（开朗女童声）: "Me too!"
+
+无背景音乐。仅有轻柔的店内环境音。</pre>
+  </div>
+
+  <div class="dialogue-box">
+    <div class="line"><span class="speaker-a">A:</span> "That's a lot!"</div>
+    <div class="line"><span class="speaker-b">B:</span> "Yes, let's go!"</div>
+    <div class="line"><span class="speaker-a">A:</span> "I'm happy!"</div>
+    <div class="line"><span class="speaker-b">B:</span> "Me too!"</div>
+  </div>
+</div>
+
+<hr>
+
+<!-- SUMMARY -->
+<div class="summary">
+  <h3>Quantifiers Checklist (14 คำ)</h3>
+  <table class="char-table">
+    <tr><th>#</th><th>Quantifier</th><th>Item</th><th>Scene</th></tr>
+    <tr><td>1</td><td>a bag of</td><td>chips</td><td>2</td></tr>
+    <tr><td>2</td><td>a bottle of</td><td>water</td><td>2</td></tr>
+    <tr><td>3</td><td>a carton of</td><td>milk</td><td>2</td></tr>
+    <tr><td>4</td><td>a box of</td><td>chocolate</td><td>2</td></tr>
+    <tr><td>5</td><td>a basket of</td><td>apples</td><td>3</td></tr>
+    <tr><td>6</td><td>a sack of</td><td>potatoes</td><td>3</td></tr>
+    <tr><td>7</td><td>a dozen</td><td>eggs</td><td>3</td></tr>
+    <tr><td>8</td><td>a tub of</td><td>ice-cream</td><td>4</td></tr>
+    <tr><td>9</td><td>a stick of</td><td>butter</td><td>4</td></tr>
+    <tr><td>10</td><td>a cup of</td><td>tea</td><td>5</td></tr>
+    <tr><td>11</td><td>a glass of</td><td>juice</td><td>5</td></tr>
+    <tr><td>12</td><td>a loaf of</td><td>bread</td><td>6</td></tr>
+    <tr><td>13</td><td>a can of</td><td>tuna</td><td>6</td></tr>
+    <tr><td>14</td><td>a jar of</td><td>honey</td><td>6</td></tr>
+  </table>
+</div>
+
+<!-- PROGRESS -->
+<div class="info-box">
+  <h3>Progress</h3>
+  <table class="char-table">
+    <tr><th>Scene</th><th>Image</th><th>Video</th></tr>
+    <tr><td>1 — เข้าร้าน</td><td><span class="status status-done">DONE</span> 1.png</td><td><span class="status status-todo">TODO</span></td></tr>
+    <tr><td>2 — ขนม+นม</td><td><span class="status status-todo">TODO</span></td><td><span class="status status-todo">TODO</span></td></tr>
+    <tr><td>3 — ของสด</td><td><span class="status status-todo">TODO</span></td><td><span class="status status-todo">TODO</span></td></tr>
+    <tr><td>4 — แช่แข็ง</td><td><span class="status status-todo">TODO</span></td><td><span class="status status-todo">TODO</span></td></tr>
+    <tr><td>5 — เครื่องดื่ม</td><td><span class="status status-todo">TODO</span></td><td><span class="status status-todo">TODO</span></td></tr>
+    <tr><td>6 — อาหาร</td><td><span class="status status-todo">TODO</span></td><td><span class="status status-todo">TODO</span></td></tr>
+    <tr><td>7 — แคชเชียร์</td><td><span class="status status-todo">TODO</span></td><td><span class="status status-todo">TODO</span></td></tr>
+  </table>
+</div>
+
+<p class="footer">
+  Engenius 2D Convenience Store | WEnDyS &times; DewS | 2026-05-04<br>
+  Session: พี่เวนดี้ / น้องเวนดี้
+</p>
+
+<script>
+function copyPrompt(btn) {
+  const pre = btn.parentElement;
+  const text = pre.textContent.replace('COPY', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'COPIED!';
+    setTimeout(() => btn.textContent = 'COPY', 1500);
+  });
+}
+</script>
+
+</body>
+</html>
