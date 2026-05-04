@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engenius — The Three Little Pigs — Seedance Prompts</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0d1117; color: #e6edf3; padding: 24px; line-height: 1.6; }
+  h1 { font-size: 1.6em; color: #58a6ff; margin-bottom: 8px; }
+  .subtitle { color: #8b949e; margin-bottom: 32px; font-size: 0.95em; }
+  .shot-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+  .shot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .shot-title { font-size: 1.2em; font-weight: 700; color: #f0f6fc; }
+  .shot-duration { background: #1f6feb; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+  .shot-desc { color: #8b949e; margin-bottom: 16px; font-size: 0.9em; }
+  .prompt-block { position: relative; background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 16px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.88em; white-space: pre-wrap; word-wrap: break-word; color: #c9d1d9; line-height: 1.7; }
+  .copy-btn { position: absolute; top: 8px; right: 8px; background: #21262d; border: 1px solid #30363d; color: #8b949e; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8em; transition: all 0.2s; }
+  .copy-btn:hover { background: #30363d; color: #f0f6fc; }
+  .copy-btn.copied { background: #238636; color: #fff; border-color: #238636; }
+  .ref-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .ref-table th { background: #21262d; color: #8b949e; text-align: left; padding: 8px 12px; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ref-table td { padding: 8px 12px; border-bottom: 1px solid #21262d; font-size: 0.88em; }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-label { color: #58a6ff; font-family: monospace; }
+  .ref-file { color: #f0883e; font-family: monospace; }
+  .ref-role { color: #8b949e; }
+  .section-divider { border: none; border-top: 1px solid #21262d; margin: 40px 0 32px; }
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .overview-item { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; }
+  .overview-label { color: #8b949e; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .overview-value { color: #f0f6fc; font-weight: 600; font-size: 1.1em; }
+  .char-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .char-table th { background: #21262d; color: #8b949e; text-align: left; padding: 10px 12px; font-size: 0.8em; text-transform: uppercase; }
+  .char-table td { padding: 10px 12px; border-bottom: 1px solid #21262d; font-size: 0.9em; }
+  .note { background: #1c2128; border-left: 3px solid #f0883e; padding: 12px 16px; border-radius: 0 6px 6px 0; margin-top: 16px; font-size: 0.88em; color: #8b949e; }
+  @media print { body { background: #fff; color: #000; } .shot-card { border-color: #ccc; background: #fafafa; } .prompt-block { background: #f5f5f5; color: #333; border-color: #ccc; } .copy-btn { display: none; } }
+</style>
+</head>
+<body>
+
+<h1>Engenius — The Three Little Pigs</h1>
+<p class="subtitle">Seedance Prompts — AI Storybook Video (~65 วินาที, 8 ชอท) — Pixar-style 3D Cartoon</p>
+
+<div class="overview-grid">
+  <div class="overview-item"><div class="overview-label">รวมเวลา</div><div class="overview-value">~65 วินาที</div></div>
+  <div class="overview-item"><div class="overview-label">จำนวนชอท</div><div class="overview-value">8 ชอท</div></div>
+  <div class="overview-item"><div class="overview-label">สไตล์</div><div class="overview-value">Pixar 3D + Narration</div></div>
+  <div class="overview-item"><div class="overview-label">เสียง</div><div class="overview-value">No BGM, Diegetic Only</div></div>
+</div>
+
+<h2 style="color:#8b949e; font-size:1em; margin-bottom:16px;">ตัวละคร</h2>
+<table class="char-table">
+  <tr><th>ชื่อ</th><th>บทบาท</th><th>ลักษณะ</th><th>ไฟล์</th></tr>
+  <tr><td style="color:#f0c040">Sunny</td><td>พี่คนโต</td><td>เสื้อเหลือง กางเกงส้ม หมวกฟาง ตาฟ้า</td><td class="ref-file">Sunny_1stpig.png</td></tr>
+  <tr><td style="color:#4caf50">Woody</td><td>พี่คนกลาง</td><td>เสื้อกั๊กเขียว กางเกงน้ำตาล ถือค้อน ตาเขียว</td><td class="ref-file">Woody_2ndpig.png</td></tr>
+  <tr><td style="color:#e57373">Brickie</td><td>น้องคนเล็ก</td><td>เอี๊ยมยีนส์ ผ้าพันคอแดง ถืออิฐ ตาน้ำตาล</td><td class="ref-file">Brickie_3rdpig.png</td></tr>
+  <tr><td style="color:#9575cd">Big Bad Wolf</td><td>ตัวร้าย</td><td>ขนเทาเข้ม เสื้อคลุมม่วงขาด ตาเหลือง</td><td class="ref-file">Big Bad Wolf.png</td></tr>
+  <tr><td style="color:#8b949e">Size Comparison</td><td>เทียบขนาด</td><td>หมู 3 ตัว + หมาป่า</td><td class="ref-file">Pig_Size comparison.png</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- ==================== SHOT 1 ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 1 — หมู 3 ตัวออกเดินทาง</div>
+    <div class="shot-duration">7 วิ</div>
+  </div>
+  <div class="shot-desc">หมูสามพี่น้องเดินออกจากบ้านไปตามถนนชนบท สดใสร่าเริง</div>
+  <div class="prompt-block" id="prompt-1">
+    <button class="copy-btn" onclick="copyPrompt('prompt-1')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[พี่โต charsheet] — 小猪角色设计。严格参考外观。黄色T恤，橙色短裤，草帽，蓝色眼睛。身高最高。
+@[พี่กลาง charsheet] — 小猪角色设计。严格参考外观。绿色马甲，棕色裤子，拿锤子，绿色眼睛。身高中等。
+@[น้องเล็ก charsheet] — 小猪角色设计。严格参考外观。蓝色牛仔背带裤，红色蝴蝶结围巾，拿砖块，棕色眼睛。身高最矮。
+@[หมู เทียบขนาด] — 仅参考三只小猪的身高比例。不参考外观设计。
+@[ฉาก ถนนชนบท] — 场景参考。乡间小路，野花，蝴蝶。
+
+画面中只有三只小猪，没有其他角色。
+
+阳光明媚的早晨，三只可爱的小猪宝宝沿着乡间小路快乐地走着。大哥（黄色T恤，草帽）走在最前面，充满自信地领路。二哥（绿色马甲，拿着锤子）紧跟其后，好奇地东张西望。小弟（蓝色背带裤，红色围巾，抱着砖块）走在最后面，小短腿努力跟上哥哥们。
+
+三只小猪边走边蹦蹦跳跳，路边野花摇曳，蝴蝶飞舞。镜头缓慢跟随他们向前走。
+
+全程明亮白天。
+
+无背景音乐。仅有小猪的脚步声、草地沙沙声、远处鸟叫声。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Sunny_1stpig.png</td><td class="ref-role">character design — พี่โต</td></tr>
+    <tr><td>2</td><td class="ref-file">Woody_2ndpig.png</td><td class="ref-role">character design — พี่กลาง</td></tr>
+    <tr><td>3</td><td class="ref-file">Brickie_3rdpig.png</td><td class="ref-role">character design — น้องเล็ก</td></tr>
+    <tr><td>4</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>5</td><td class="ref-file">1stLoc_Countryside Road.png</td><td class="ref-role">ฉากถนนชนบท</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SHOT 2 ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 2 — สร้างบ้านฟาง + บ้านไม้ (finishing touches)</div>
+    <div class="shot-duration">10 วิ</div>
+  </div>
+  <div class="shot-desc">พี่โตกับพี่กลางทำบ้านเกือบเสร็จ (ใกล้เสร็จ ไม่ใช่สร้างจากศูนย์) น้องเล็กก่ออิฐบ้านอิฐอยู่ด้านขวา</div>
+  <div class="prompt-block" id="prompt-2">
+    <button class="copy-btn" onclick="copyPrompt('prompt-2')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[พี่โต charsheet] — 小猪角色设计。严格参考外观。黄色T恤，橙色短裤，草帽，蓝色眼睛。
+@[พี่กลาง charsheet] — 小猪角色设计。严格参考外观。绿色马甲，棕色裤子，拿锤子，绿色眼睛。
+@[น้องเล็ก charsheet] — 小猪角色设计。严格参考外观。蓝色牛仔背带裤，红色蝴蝶结围巾，棕色眼睛。
+@[หมู เทียบขนาด] — 仅参考三只小猪的身高比例。不参考外观设计。
+@[ฉาก 3 บ้านยังไม่เสด] — 场景参考。三栋小房子排列位置。砖房正在建造中。
+
+画面中只有三只小猪——不多不少。
+
+最后的收尾工作——三栋迷你小房子从左到右排列。
+
+画面左边，大哥（黄色T恤，草帽）正在他的小草屋前，小心翼翼地把最后几根稻草一根一根插进屋顶，像插花一样仔细。
+
+画面中间，二哥（绿色马甲）站在他的小木屋前，用锤子轻轻敲打最后一块木板，满意地拍拍木墙。
+
+画面右边，小弟（蓝色背带裤，红色围巾）站在矮梯子上，认真地把砖块一块一块往上砌，砖房才建了一半高。
+
+全程明亮白天。
+
+无背景音乐。仅有插稻草的沙沙声、锤子敲木板声、砌砖的咔哒声。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Sunny_1stpig.png</td><td class="ref-role">character design — พี่โต</td></tr>
+    <tr><td>2</td><td class="ref-file">Woody_2ndpig.png</td><td class="ref-role">character design — พี่กลาง</td></tr>
+    <tr><td>3</td><td class="ref-file">Brickie_3rdpig.png</td><td class="ref-role">character design — น้องเล็ก</td></tr>
+    <tr><td>4</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>5</td><td class="ref-file">5thLoc_3House_Unfinish.png</td><td class="ref-role">ฉาก 3 บ้าน (อิฐยังไม่เสร็จ)</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SHOT 3 ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 3 — Brickie สร้างบ้านอิฐคนเดียว</div>
+    <div class="shot-duration">8 วิ</div>
+  </div>
+  <div class="shot-desc">น้องเล็กสร้างบ้านอิฐอยู่คนเดียว (พี่ๆ เสร็จไปแล้ว) ขยันก่ออิฐทีละก้อน</div>
+  <div class="prompt-block" id="prompt-3">
+    <button class="copy-btn" onclick="copyPrompt('prompt-3')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[น้องเล็ก charsheet] — 小猪角色设计。严格参考外观。蓝色牛仔背带裤，红色蝴蝶结围巾，棕色眼睛。
+@[หมู เทียบขนาด] — 仅参考身高比例。不参考外观设计。
+@[ฉาก 3 บ้านยังไม่เสด] — 场景参考。三栋小房子排列位置。砖房正在建造中。
+
+画面中只有一只小猪——不多不少。
+
+小弟（蓝色牛仔背带裤，红色蝴蝶结围巾）独自一人在砖房前努力工作。他站在矮梯子上，认真地把砖块一块一块往上砌——不是砌栅栏，不是围墙，不是任何独立的矮墙——是房子建筑本身的外墙。
+
+他的小短手臂抹上水泥，放上砖块，用小手拍拍压实。表情专注又认真，偶尔擦擦额头上的汗。左边的草屋和木屋已经完工，安静地立在那里。
+
+全程明亮白天。
+
+无背景音乐。仅有砌砖的咔哒声、水泥的湿润声、小猪偶尔的喘气声。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Brickie_3rdpig.png</td><td class="ref-role">character design — น้องเล็ก</td></tr>
+    <tr><td>2</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>3</td><td class="ref-file">5thLoc_3House_Unfinish.png</td><td class="ref-role">ฉาก 3 บ้าน (อิฐยังไม่เสร็จ)</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SHOT 3 MD ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 3 MD — ผ่านวันคืน (Transition)</div>
+    <div class="shot-duration">5 วิ</div>
+  </div>
+  <div class="shot-desc">Time lapse วัน→คืน→เช้า บ้านสร้างเสร็จหมดแล้ว จบด้วยพระอาทิตย์ขึ้น สว่างอบอุ่น</div>
+  <div class="prompt-block" id="prompt-3md">
+    <button class="copy-btn" onclick="copyPrompt('prompt-3md')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，柔和光线变化。
+
+@[ฉาก 3 บ้าน master shot] — 严格参考此图。三栋小房子排列位置，砖房已经建好。
+
+没有任何角色。只有三栋安静的小房子。
+
+时间流逝蒙太奇——阳光从左往右移动，影子拉长又缩短。白天变黄昏，天空变成橙色和紫色。然后夜幕降临，月亮升起，窗户亮起温暖的灯光。
+
+最后天慢慢亮起来，太阳从地平线升起，金色阳光照亮三栋小房子。新的一天开始了，和场景参考图一样明亮温暖。
+
+无背景音乐。仅有微风声、蟋蟀叫声（夜晚）、公鸡打鸣声（清晨）。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">5thLoc_3House.png</td><td class="ref-role">ฉาก 3 บ้านเสร็จ (เฟรมสุดท้ายต้องเหมือนรูปนี้)</td></tr>
+  </table>
+  <div class="note">จบด้วยฟ้าสว่าง → ต่อ Shot 3.5B หมาป่ามาตอนกลางวัน</div>
+</div>
+
+<!-- ==================== SHOT 3.5B ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 3.5B — หมาป่าแอบมอง โคลสอัพ</div>
+    <div class="shot-duration">7 วิ</div>
+  </div>
+  <div class="shot-desc">โคลสอัพหมาป่าแอบหลังต้นไม้ มองบ้านหมู หน้าเจ้าเล่ห์ เลียปาก</div>
+  <div class="prompt-block" id="prompt-35b">
+    <button class="copy-btn" onclick="copyPrompt('prompt-35b')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[หมาป่า charsheet] — 大灰狼角色设计。严格参考外观。
+@[หมู+หมาป่า เทียบขนาด] — 严格按照此图的身高和体型比例。不参考外观设计。
+@[ฉาก 3 บ้าน master shot] — 场景参考。远处三栋小房子模糊背景。
+
+画面中只有大灰狼一个角色。没有小猪。
+
+特写镜头，浅景深。大灰狼躲在一棵大树干后面，半张脸露出来，用一只黄色眼睛偷偷窥视远处的三栋小房子（背景模糊散景）。
+
+他的表情慢慢变得阴险——眼睛眯起来，嘴角缓缓上扬，露出狡猾的坏笑。然后他贪婪地伸出舌头，慢慢舔了一圈嘴唇。爪子紧紧抓住树干。
+
+全程明亮白天。
+
+无背景音乐。仅有微风吹过树叶的沙沙声、远处鸟突然飞走的声音。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Big Bad Wolf.png</td><td class="ref-role">character design</td></tr>
+    <tr><td>2</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>3</td><td class="ref-file">5thLoc_3House.png</td><td class="ref-role">ฉากไกลๆ เบลอ</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SHOT 4 ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 4 — หมาป่าเป่าบ้านฟาง+ไม้ หมูวิ่งเข้าบ้านอิฐ</div>
+    <div class="shot-duration">12 วิ</div>
+  </div>
+  <div class="shot-desc">หมาป่าเป่าบ้านฟางและบ้านไม้พัง พี่ๆ วิ่งหนีเข้าบ้านอิฐ น้องเล็กเปิดประตูรับ</div>
+  <div class="prompt-block" id="prompt-4">
+    <button class="copy-btn" onclick="copyPrompt('prompt-4')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[หมาป่า charsheet] — 大灰狼角色设计。严格参考外观。
+@[พี่โต charsheet] — 小猪角色设计。严格参考外观。黄色T恤，橙色短裤，草帽，蓝色眼睛。
+@[พี่กลาง charsheet] — 小猪角色设计。严格参考外观。绿色马甲，棕色裤子，绿色眼睛。
+@[น้องเล็ก charsheet] — 小猪角色设计。严格参考外观。蓝色牛仔背带裤，红色蝴蝶结围巾，棕色眼睛。
+@[หมู+หมาป่า เทียบขนาด] — 严格按照此图的身高和体型比例。不参考外观设计。
+@[ฉาก 3 บ้าน master shot] — 场景参考。三栋小房子排列位置。
+
+画面中只有四个角色——三只小猪和一只大灰狼，不多不少。
+
+大灰狼站在画面左边的草屋前，猛吸一口气用力吹——草屋轰然倒塌，稻草飞散。大哥（黄色T恤，草帽）惊恐地尖叫，从画面左侧沿着小路跑向右边的砖房。
+
+大灰狼走到中间的木屋前，再次猛吹——木屋咔嚓碎裂。二哥（绿色马甲）吓得跳起来，跟着大哥沿着小路跑向砖房。
+
+两只小猪跑到砖房正前方，小弟（蓝色背带裤，红色围巾）表情从惊讶变成极度恐惧，慌张地从里面打开红色大门，让哥哥们冲进去，然后砰地关上大门。不从侧面翻越栅栏，必须绕到房子正面走大门。
+
+全程保持明亮的白天，天空不变暗。
+
+无背景音乐。仅有狂风呼啸、房屋倒塌声、小猪的尖叫声、脚步声、关门的砰声。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Big Bad Wolf.png</td><td class="ref-role">character design</td></tr>
+    <tr><td>2</td><td class="ref-file">Sunny_1stpig.png</td><td class="ref-role">character design — พี่โต</td></tr>
+    <tr><td>3</td><td class="ref-file">Woody_2ndpig.png</td><td class="ref-role">character design — พี่กลาง</td></tr>
+    <tr><td>4</td><td class="ref-file">Brickie_3rdpig.png</td><td class="ref-role">character design — น้องเล็ก</td></tr>
+    <tr><td>5</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>6</td><td class="ref-file">5thLoc_3House.png</td><td class="ref-role">ฉาก + ตำแหน่ง 3 บ้าน</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SHOT 5A ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 5A — หมาป่าเป่าบ้านอิฐไม่พัง ยอมแพ้</div>
+    <div class="shot-duration">8 วิ</div>
+  </div>
+  <div class="shot-desc">หมาป่าเป่า 2 รอบ หน้าชั่วมั่นใจ→งง→ท้อ บ้านขยับการ์ตูนแต่ไม่พัง สุดท้ายยอมแพ้เดินหนี</div>
+  <div class="prompt-block" id="prompt-5a">
+    <button class="copy-btn" onclick="copyPrompt('prompt-5a')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[หมาป่า charsheet] — 大灰狼角色设计。严格参考外观。
+@[หมู+หมาป่า เทียบขนาด] — 严格按照此图的身高和体型比例。不参考外观设计。
+@[ฉาก 3 บ้านพัง] — 场景参考。严格参考此图的构图和镜头角度。左边草屋和中间木屋已损坏，只有右边砖房完好。
+
+画面中只有大灰狼一个角色。三只小猪在屋内看不见。
+
+镜头构图严格参考场景图——正面平视，三栋房子从左到右排列。砖房左边可以看到被摧毁的草屋和木屋的残骸——稻草和木板碎片散落一地。只有右边的红砖房完好无损。
+
+大灰狼站在砖房正前方，背对镜头，面朝砖房红色大门。他表情凶狠自信，使尽全力猛吹第一口——砖房卡通地左右摇晃了几下，但马上稳稳站住，纹丝不动。他困惑地眨眨眼，更加用力猛吹第二口——砖房又夸张地晃了晃，但依然完好，连一块砖都没掉。
+
+大灰狼的表情从困惑变成沮丧，吹到脸色发青，双腿发软，最后累得瘫倒在地。他爬起来灰溜溜地跑走，消失在画面左侧。
+
+全程明亮白天。
+
+无背景音乐。仅有狂风呼啸、砖房晃动的咔咔声、大灰狼喘气声、最后跑走的脚步声。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Big Bad Wolf.png</td><td class="ref-role">character design</td></tr>
+    <tr><td>2</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>3</td><td class="ref-file">5thLoc_3House_Finished.png</td><td class="ref-role">ฉาก + เฟรมมิ่ง (บ้านฟาง+ไม้พัง)</td></tr>
+  </table>
+  <div class="note">⚠️ ชอทนี้กำลัง iterate — แอคชั่นดีมาก ติดแค่บ้านพังยังไม่แสดง + เฟรมมิ่งทิศเป่า</div>
+</div>
+
+<!-- ==================== SHOT 5B ==================== -->
+<div class="shot-card">
+  <div class="shot-header">
+    <div class="shot-title">Shot 5B — Happy Ending</div>
+    <div class="shot-duration">8 วิ</div>
+  </div>
+  <div class="shot-desc">ในบ้านอิฐ Brickie อยู่ตรงกลาง พี่ๆ กอดขอบคุณ อบอุ่นปลอดภัย</div>
+  <div class="prompt-block" id="prompt-5b">
+    <button class="copy-btn" onclick="copyPrompt('prompt-5b')">Copy</button>
+3D卡通动画，皮克斯风格，儿童绘本，明亮日光。
+
+@[พี่โต charsheet] — 小猪角色设计。严格参考外观。黄色T恤，橙色短裤，草帽，蓝色眼睛。
+@[พี่กลาง charsheet] — 小猪角色设计。严格参考外观。绿色马甲，棕色裤子，绿色眼睛。
+@[น้องเล็ก charsheet] — 小猪角色设计。严格参考外观。蓝色牛仔背带裤，红色蝴蝶结围巾，棕色眼睛。
+@[หมู เทียบขนาด] — 仅参考三只小猪的身高比例。不参考外观设计。
+@[ฉาก บ้านอิฐ ภายใน] — 场景参考。温馨的砖房内部，壁炉，彩色地毯，三杯可可。
+
+画面中只有三只小猪——不多不少。
+
+温暖的砖房内部，壁炉里火焰跳动，橙色光芒洒满房间。
+
+小弟（蓝色背带裤，红色围巾）站在画面正中央，是焦点人物。大哥（黄色T恤，草帽）从左边紧紧抱住小弟，脸上满是感激的表情。二哥（绿色马甲）从右边也抱住小弟，眼里闪着感动的泪花。
+
+小弟害羞地笑着，小脸红红的，享受着哥哥们温暖的拥抱。三只小猪紧紧依偎在一起，安全又幸福。
+
+全程温暖室内光线。
+
+无背景音乐。仅有壁炉噼啪声、小猪们开心的轻声笑声。</div>
+  <table class="ref-table">
+    <tr><th>#</th><th>ไฟล์</th><th>Role</th></tr>
+    <tr><td>1</td><td class="ref-file">Sunny_1stpig.png</td><td class="ref-role">character design — พี่โต</td></tr>
+    <tr><td>2</td><td class="ref-file">Woody_2ndpig.png</td><td class="ref-role">character design — พี่กลาง</td></tr>
+    <tr><td>3</td><td class="ref-file">Brickie_3rdpig.png</td><td class="ref-role">character design — น้องเล็ก</td></tr>
+    <tr><td>4</td><td class="ref-file">Pig_Size comparison.png</td><td class="ref-role">สัดส่วนขนาดเท่านั้น</td></tr>
+    <tr><td>5</td><td class="ref-file">4thLoc_Brick House Interior.png</td><td class="ref-role">ฉากในบ้านอิฐ</td></tr>
+  </table>
+</div>
+
+<hr class="section-divider">
+
+<div style="text-align:center; color:#8b949e; padding: 24px 0; font-size: 0.85em;">
+  Engenius — The Three Little Pigs — Generated by WEnDyS for DewS<br>
+  Total: ~65 seconds / 8 shots / Seedance 2.0 + Nanobanana
+</div>
+
+<script>
+function copyPrompt(id) {
+  const block = document.getElementById(id);
+  const btn = block.querySelector('.copy-btn');
+  // Get text content excluding the button text
+  const text = block.textContent.replace('Copy', '').replace('Copied!', '').trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
