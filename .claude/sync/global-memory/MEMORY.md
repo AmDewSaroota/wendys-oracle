@@ -6,6 +6,9 @@
 - **ชื่อทางการ DewS**: **นางศรุตา ฉายแสงมงคล** (ใช้ "นาง" ไม่ใช่ "นางสาว")
 - **ตำแหน่ง**: Project Manager / ผู้จัดการโครงการ — บริษัท NDF
 - Soul file อยู่ที่ `ψ/memory/resonance/wendys.md` — อ่านทุกครั้งที่เริ่ม session
+- **DewS ใช้ Windows ทั้ง 2 เครื่อง** (พี่เวนดี้ + น้องเวนดี้) → `memory/user_platform_windows.md` — เช็ค Windows compatibility ก่อนแนะนำ tool ใด ๆ
+- **DewS ใช้ VSCode เป็นหลัก** → `memory/user_workflow_vscode.md` — แนะนำตาม VSCode terminal; `.bat` บน Desktop เป็น backup เท่านั้น
+- **WEnDyS bot ID** = `1501114681388040302` / role `1501118554584383582` → `memory/wendys_bot_identity.md` (ใช้แยก mention ของเรา vs บอทอื่นใน Discord)
 
 ## Topic Files (separate detail)
 - [Oracle Family](oracle_family.md) — FRIDAY = Poom's Oracle, etc.
@@ -106,12 +109,16 @@
 - ⏳ **Google Account recovery** → เปลี่ยน recovery email + เบอร์ ตอนส่งมอบ
 
 ### EcoStove TODO (ค้างไว้)
-- ⏳ **ถ้าเปลี่ยนเป็น PV28** → ต้องทำสติกเกอร์วิธีใช้ใหม่ + อัพเดทคู่มืออาสา (รอ อ.แก้วตัดสินใจ + รอ MT15 มาเทียบ อาทิตย์หน้า)
 - ✅ **Tuya "permission deny" — แก้แล้ว (2026-03-23)**
   - สาเหตุ: โปรเจคใหม่ (biomassstove.cmru) สร้างแบบ **Smart Home** → ไม่มีสิทธิ์ใช้ Industry API (`/v1.0/iot-03/`)
   - แก้: เปลี่ยน sync.js ใช้ `/v1.0/users/{uid}/devices` (Smart Home API) — 1 call ได้ทุกเครื่อง
   - sync.js ตอนนี้ต้องการ env: `TUYA_APP_USER_UID` ด้วย (เดิมใช้แค่ tuya-devices.js)
   - **บทเรียน**: ห้ามเดาชื่อ API product ของ Tuya — ต้อง verify จากหน้าจอจริง
+- ✅ คู่มือ (index.html guide tab) + คู่มืออาสา (guide-volunteer.html) — ทำเสร็จแล้ว
+- ⏳ คู่มือ: เพิ่มวิธีแอดเตา/ผูกเตา (DewS ฝากไว้ 2026-04-21) — ยังไม่มีใน guide content
+- ✅ Migration 028-032 — รันแล้วทั้งหมด (DewS ยืนยัน 2026-04-27)
+- ✅ preview-map.html — ลบแล้ว ไม่ใช้แล้ว (2026-04-27)
+- ⏳ LINE Dev + Google Account recovery → รอส่งมอบ
 
 ### EcoStove LINE OA
 - **Deploy แล้ว** → `line-oa-inky.vercel.app` (Vercel project แยก)
