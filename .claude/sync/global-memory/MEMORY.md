@@ -37,6 +37,7 @@
 
 ## Known Issues
 - **Discord MCP CRLF bug** → `memory/discord-mcp-crlf-bug.md` — ถ้า `plugin:discord:discord` fail บน Windows ให้แปลง `.env` จาก CRLF → LF
+- **maw-js + maw-ui Windows install** → `memory/maw-js-windows-symlink-fix.md` — full setup (2 repos), plugin + UI junctions, restart-by-port (process is bun.exe ไม่ใช่ maw.exe)
 
 ## Company
 - DewS's company: **NDF** (ไม่ใช่ Radical Enlighten)
@@ -197,6 +198,15 @@
 - **Vercel + Supabase** → ยังอยู่บัญชี DewS ส่วนตัว ย้ายทีหลัง UAT ได้
 - **LINE OA** → ใช้ของ DewS ไปก่อน ย้ายตอนส่งมอบ
 - **Dashboard (Basic + Deep Insights)** → รอ feedback อาจารย์แก้วก่อน ห้ามแตะ
+
+### 🚫 No praise / no sweet words (DewS, 2026-05-05)
+- → `memory/feedback_no_praise.md` — ไม่ชม ไม่หวาน ไม่ปลอบ (ยกเว้นเค้าขอ) — เน้นข้อเท็จจริงสั้น ๆ
+- ค่ะ/คะ ยังใช้ (politeness ไม่ใช่ปลอบ)
+
+### 🔒 Public channel etiquette (DewS, 2026-05-05)
+- → `memory/feedback_public_channel_etiquette.md` — ห้องรวม Discord (#mawjs, ฯลฯ) → **fact + สุภาพ เป็นทางการเท่านั้น**
+- ห้าม: machine names (DewSNitro/พี่-น้องเวนดี้), บริษัท (NDF), client work, นินทาคนอื่น, ข้อความส่วนตัวจาก DM
+- DM 1:1 = ผ่อนคลายได้ตามเดิม
 
 ### ⚠️ WEnDyS Self-Correction Rules (2026-03-20)
 - **ห้ามบอก % ความพร้อมโดยไม่ตรวจโค้ดจริง** — ต้อง audit ก่อนพูด
