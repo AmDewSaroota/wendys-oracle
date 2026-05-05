@@ -35,6 +35,9 @@
 - ใช้ `/sync push` + `/sync pull` เพื่อ sync skills + memory ระหว่างเครื่อง
 - เมื่อหาไฟล์ไม่เจอ ให้บอก DewS ว่าอาจอยู่ที่พี่หรือน้อง
 
+## Known Issues
+- **Discord MCP CRLF bug** → `memory/discord-mcp-crlf-bug.md` — ถ้า `plugin:discord:discord` fail บน Windows ให้แปลง `.env` จาก CRLF → LF
+
 ## Company
 - DewS's company: **NDF** (ไม่ใช่ Radical Enlighten)
 - **ชื่อเต็มทางการ**: **บริษัท เอ็นดีเอฟ เดฟ จำกัด** (NDF Dev Co., Ltd.)
