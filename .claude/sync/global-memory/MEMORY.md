@@ -10,6 +10,8 @@
 - [AI Video Tools](ai_video_tools.md) — Seedance (tool), Jimeng/Dreamina (providers)
 - [Seedance Dangerous Words](seedance_dangerous_words.md) — คำที่ AI ปฏิเสธ (violence, gore, blood) + คำอ้อมที่ใช้แทนได้
 - [Oracle Video Limitation](oracle_capability_no_video.md) — Oracle อ่านรูป/PDF ได้ แต่ดูวิดีโอไม่ได้ → ใช้ Gemini ช่วยบรรยาย หรือ DewS บรรยายเอง
+- [⚠️ BiomassStove Presentation — 2026-05-20 13:00](biomassstove_presentation_2026-05-20.md) — **DEADLINE 14 วัน** — ต้องเตรียมสไลด์ + demo + ซ้อมพรีเซนต์ (formal, audience จำนวนมาก)
+- [⏳ Pending: Engenius Teaching Pack for น้อง](pending_engenius_teaching_for_nong.md) — pattern เดียวกับ Oh's Seedance pack แต่เป็น Engenius (2D scene gen?) — ยังไม่มีกำหนดวัน
 - [Feedback: Open Explorer after Write](feedback_open_explorer_after_write.md) — ทุกครั้งที่สร้างไฟล์ → เปิด Explorer ทันที (PowerShell, ไม่ใช่ Bash)
 - [Feedback: Teaching = separate signal from noise](feedback_teaching_separate_signal_from_noise.md) — เอกสารสอนคนนอก → แยก universal vs project-specific ชัด ห้ามยัดกฎ project เป็นกฎทั่วไป
 - [Feedback: ไม่มี "Seedance ทำไม่ได้" — มีแต่ tradeoff](feedback_distinguish_tool_limit_vs_usage.md) — ปัญหาเกือบทั้งหมด = tradeoff strict (faithful) vs loose (free) — ทางแก้จริง = แก้ที่ Maya source

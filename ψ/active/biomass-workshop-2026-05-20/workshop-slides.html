@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>BiomassStove Workshop — 20 พฤษภาคม 2569</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #064e3b;
+    --green: #059669;
+    --green-light: #10b981;
+    --green-50: #ecfdf5;
+    --teal: #0d9488;
+    --navy: #0f172a;
+    --bg: #f0f7f4;
+    --bg-soft: #fafbfa;
+    --card: #ffffff;
+    --line: #e2e8f0;
+    --orange: #fb923c;
+    --orange-soft: #fed7aa;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --code-bg: #f1f5f9;
+    --bad: #dc2626;
+    --warn: #f59e0b;
+    --info: #2563eb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Chakra Petch', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Slide deck */
+  .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4vh 6vw 8vh;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+  /* Slide head */
+  .slide-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .slide-num {
+    background: var(--green-dark);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .slide-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--green-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .slide-tag {
+    margin-left: auto;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--orange);
+    background: var(--orange-soft);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .slide-body {
+    flex: 1;
+    overflow: auto;
+    font-size: 18px;
+    line-height: 1.7;
+  }
+
+  .slide-body p { margin: 8px 0; }
+  .slide-body ul, .slide-body ol { margin: 12px 0 12px 24px; }
+  .slide-body li { margin: 6px 0; font-size: 18px; }
+  .slide-body strong { color: var(--green-dark); }
+
+  /* Title slide */
+  .slide.title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, var(--green-50) 0%, var(--bg) 50%, #ecfeff 100%);
+    padding: 40px;
+  }
+
+  .title-slide .badge {
+    background: var(--green-dark);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+
+  .title-slide h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 16px;
+    line-height: 1.25;
+    max-width: 900px;
+    letter-spacing: -0.01em;
+  }
+
+  .title-slide .subtitle {
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 400;
+    margin-bottom: 36px;
+    max-width: 800px;
+    line-height: 1.5;
+  }
+
+  .title-slide .meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--card);
+    padding: 20px 36px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  .title-slide .meta-item { text-align: center; }
+  .title-slide .meta-item .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .title-slide .meta-item .val { font-size: 17px; color: var(--green-dark); font-weight: 600; }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 10px 0;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  }
+
+  .card.accent { border-left: 4px solid var(--orange); }
+  .card.green { border-left: 4px solid var(--green); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--green-50); color: var(--green-dark); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Code */
+  code, pre { font-family: 'JetBrains Mono', monospace; }
+  code { background: var(--code-bg); padding: 2px 8px; border-radius: 4px; color: var(--green-dark); font-size: 0.92em; }
+  pre {
+    background: var(--code-bg);
+    padding: 16px 20px;
+    border-radius: 10px;
+    border-left: 4px solid var(--green);
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 10px 0;
+  }
+  pre code { background: none; padding: 0; }
+
+  /* Callout */
+  .callout {
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+    font-size: 17px;
+  }
+  .callout.tip { background: var(--green-50); border-left: 4px solid var(--green); }
+  .callout.tip strong { color: var(--green-dark); }
+  .callout.warn { background: #fef3c7; border-left: 4px solid var(--warn); }
+  .callout.warn strong { color: #92400e; }
+  .callout.info { background: #dbeafe; border-left: 4px solid var(--info); }
+  .callout.info strong { color: #1e40af; }
+
+  /* Agenda specific */
+  .agenda {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .agenda-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px;
+    gap: 18px;
+    align-items: center;
+    background: var(--card);
+    padding: 16px 22px;
+    border-radius: 12px;
+    border-left: 4px solid var(--green);
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+  }
+
+  .agenda-row.warm { border-left-color: var(--orange); }
+  .agenda-row.discussion { border-left-color: var(--info); }
+
+  .agenda-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  .agenda-content {
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .agenda-content .icon { font-size: 22px; margin-right: 8px; }
+
+  .agenda-duration {
+    text-align: right;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Architecture flow */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+    padding: 28px 16px;
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+  }
+
+  .node {
+    background: var(--bg-soft);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    text-align: center;
+    min-width: 140px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .node:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(15,23,42,0.1); }
+  .node .ico { font-size: 38px; margin-bottom: 8px; line-height: 1; }
+  .node .lbl { font-size: 17px; font-weight: 700; color: var(--green-dark); }
+  .node .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .node.green-bg { background: var(--green-50); border-color: var(--green); }
+  .node.orange-bg { background: #fff7ed; border-color: var(--orange); }
+  .node.navy-bg { background: #f1f5f9; border-color: var(--navy); }
+
+  .arrow {
+    font-size: 24px;
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* Sensor specs */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .spec-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    border-top: 3px solid var(--green);
+  }
+
+  .spec-card h4 { color: var(--green-dark); font-size: 16px; margin-bottom: 8px; }
+  .spec-card ul { margin: 0; padding-left: 18px; font-size: 15px; }
+  .spec-card li { margin: 4px 0; }
+
+  /* Compare table */
+  .compare-table { font-size: 15px; }
+  .compare-table .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pill.good { background: #d1fae5; color: #065f46; }
+  .pill.bad { background: #fee2e2; color: #991b1b; }
+  .pill.neutral { background: #e0e7ff; color: #3730a3; }
+
+  /* Image placeholders — proper aspect ratios */
+  .img-placeholder {
+    background: var(--bg-soft);
+    border: 2px dashed var(--green);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin: 12px auto;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 4 / 3;
+    transition: background 0.2s;
+    position: relative;
+  }
+  .img-placeholder:hover { background: var(--green-50); }
+  .img-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+  .img-placeholder .ph-icon { font-size: 40px; margin-bottom: 8px; opacity: 0.6; }
+  .img-placeholder .ph-label { font-weight: 600; color: var(--green-dark); font-size: 15px; }
+  .img-placeholder .ph-desc { font-size: 13px; margin-top: 6px; max-width: 90%; line-height: 1.5; }
+  .img-placeholder .ph-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--orange); margin-top: 8px; padding: 2px 8px; background: var(--orange-soft); border-radius: 999px; font-weight: 700; letter-spacing: 0.05em; position: absolute; top: 10px; right: 10px; }
+  .img-placeholder .ph-ratio { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); position: absolute; bottom: 10px; left: 12px; opacity: 0.7; letter-spacing: 0.05em; }
+
+  /* Aspect ratio variants */
+  .img-placeholder.aspect-16-9 { aspect-ratio: 16 / 9; max-width: 720px; }
+  .img-placeholder.aspect-3-4 { aspect-ratio: 3 / 4; max-width: 360px; }
+  .img-placeholder.aspect-4-3 { aspect-ratio: 4 / 3; max-width: 560px; }
+  .img-placeholder.aspect-3-2 { aspect-ratio: 3 / 2; max-width: 660px; }
+  .img-placeholder.aspect-1-1 { aspect-ratio: 1 / 1; max-width: 420px; }
+
+  .img-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 14px 0;
+    align-items: start;
+  }
+  .img-row .img-placeholder {
+    margin: 0;
+    max-width: none;
+  }
+
+  /* Buttons grid */
+  .buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .btn-card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .btn-card:hover { border-color: var(--green); transform: translateY(-2px); }
+  .btn-card .ico { font-size: 32px; margin-bottom: 6px; }
+  .btn-card .clicks { font-size: 32px; font-weight: 700; color: var(--green-dark); line-height: 1; }
+  .btn-card .clicks small { font-size: 14px; color: var(--muted); display: block; margin-top: 2px; font-weight: 400; }
+  .btn-card .desc { margin-top: 10px; font-size: 14px; color: var(--ink); line-height: 1.4; }
+  .btn-card.calibrate { border-color: var(--orange); background: #fff7ed; }
+  .btn-card.calibrate .clicks { color: var(--orange); }
+  .btn-card.pair { border-color: var(--info); background: #eff6ff; }
+  .btn-card.pair .clicks { color: var(--info); }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(15,23,42,0.08);
+    z-index: 100;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    color: var(--green-dark);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .nav button:hover { background: var(--green-50); }
+  .nav .counter { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); min-width: 60px; text-align: center; }
+  .nav .counter .current { color: var(--green-dark); font-weight: 700; }
+
+  /* Progress */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--orange);
+    transition: width 0.4s ease;
+    z-index: 101;
+  }
+
+  .hint {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    font-size: 11px;
+    color: var(--muted);
+    z-index: 100;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hint kbd { background: var(--card); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); margin: 0 2px; }
+
+  /* Appendix style */
+  .slide-num.appendix { background: var(--info); font-size: 18px; }
+  .slide-tag.appendix { background: #dbeafe; color: #1e40af; }
+
+  /* Section break (for appendix) */
+  .slide.section-break {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  }
+  .section-break h2 { font-size: 56px; color: #1e3a8a; margin-bottom: 16px; font-weight: 700; }
+  .section-break p { font-size: 22px; color: #1e40af; max-width: 700px; }
+
+  /* Timeline for session flow */
+  .timeline {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    margin: 18px 0;
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+  }
+  .timeline-block {
+    flex: 1;
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+    color: var(--ink);
+    position: relative;
+  }
+  .timeline-block.session { background: var(--green-50); border: 2px solid var(--green); flex: 2; }
+  .timeline-block.cooldown { background: #fef3c7; border: 2px solid var(--warn); flex: 2; }
+  .timeline-block.session2 { background: var(--green-50); border: 2px solid var(--green); flex: 2; }
+  .timeline-block.limit { background: #fee2e2; border: 2px solid var(--bad); }
+  .timeline-block .lbl { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .timeline-block .dur { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* Formula display for appendix */
+  .formula-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 12px 0;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+  }
+  .formula-box .formula-name { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .formula-box .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--green-dark);
+    background: var(--code-bg);
+    padding: 14px 18px;
+    border-radius: 8px;
+    border-left: 4px solid var(--green);
+    margin: 10px 0;
+    line-height: 1.7;
+  }
+  .formula-box .example { background: #fff7ed; border-left: 4px solid var(--orange); padding: 12px 16px; border-radius: 8px; font-size: 15px; line-height: 1.7; margin-top: 10px; }
+  .formula-box .example-label { font-weight: 700; color: var(--orange); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+  /* Threshold table */
+  .threshold-table th { background: #fef3c7; color: #92400e; }
+  .threshold-table .safe { background: #d1fae5; color: #065f46; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+  .threshold-table .warn { background: #fef3c7; color: #92400e; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+  .threshold-table .danger { background: #fee2e2; color: #991b1b; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+
+  @media print {
+    .nav, .hint, .progress { display: none; }
+    .slide {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      page-break-after: always;
+      min-height: 95vh;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="hint">← → space · F = ฟูลสกรีน</div>
+
+<div class="deck" id="deck">
+
+  <!-- Slide 0: Title -->
+  <div class="slide title-slide active">
+    <div class="badge">การฝึกอบรมเชิงปฏิบัติการ</div>
+    <h1>เทคนิคการใช้งานเครื่องวัดมลพิษในอากาศ<br>และการใช้ระบบสารสนเทศ</h1>
+    <p class="subtitle">โครงการ <strong style="color:var(--green-dark)">BiomassStove</strong> · ระบบเก็บข้อมูลและประเมินผลเตาไบโอแมส</p>
+    <div class="meta">
+      <div class="meta-item">
+        <div class="lbl">วันที่</div>
+        <div class="val">20 พ.ค. 2569</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">เวลา</div>
+        <div class="val">13:00 — 14:15 น.</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">สถานที่</div>
+        <div class="val">หอประชุมบ้านนก · adiCET</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 1: Agenda -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">1</div>
+      <div class="slide-title">กำหนดการอบรม</div>
+      <div class="slide-tag">75 นาที</div>
+    </div>
+    <div class="slide-body">
+      <div class="agenda">
+        <div class="agenda-row">
+          <div class="agenda-time">13:00 — 13:10</div>
+          <div class="agenda-content"><span class="icon">🎯</span><strong>เปิดงาน · แนะนำระบบ</strong> · ภาพรวมโครงการ BiomassStove + กระบวนการทำงาน</div>
+          <div class="agenda-duration">10 นาที</div>
+        </div>
+        <div class="agenda-row warm">
+          <div class="agenda-time">13:10 — 13:35</div>
+          <div class="agenda-content"><span class="icon">🔬</span><strong>Part 1: เครื่องวัดมลพิษ MT15</strong> · สาธิตและฝึกปฏิบัติ</div>
+          <div class="agenda-duration">25 นาที</div>
+        </div>
+        <div class="agenda-row warm">
+          <div class="agenda-time">13:35 — 13:50</div>
+          <div class="agenda-content"><span class="icon">📊</span><strong>Part 2: ระบบอาสาสมัครและ Dashboard</strong> · การบันทึกและการอ่านผลข้อมูล</div>
+          <div class="agenda-duration">15 นาที</div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-time">13:50 — 14:00</div>
+          <div class="agenda-content"><span class="icon">🛡️</span><strong>Part 3: คุณภาพและความน่าเชื่อถือของข้อมูล</strong> · ระเบียบวิธีและการกลั่นกรอง</div>
+          <div class="agenda-duration">10 นาที</div>
+        </div>
+        <div class="agenda-row discussion">
+          <div class="agenda-time">14:00 — 14:15</div>
+          <div class="agenda-content"><span class="icon">💬</span><strong>ถาม-ตอบและปิดการอบรม</strong> · ข้อซักถาม + เอกสารคู่มือ</div>
+          <div class="agenda-duration">15 นาที</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2: System Architecture -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">2</div>
+      <div class="slide-title">โครงสร้างระบบ</div>
+      <div class="slide-tag">ภาพรวม</div>
+    </div>
+    <div class="slide-body">
+      <div class="flow">
+        <div class="node green-bg">
+          <div class="ico">🔬</div>
+          <div class="lbl">เซนเซอร์ MT15</div>
+          <div class="sub">ในบ้านอาสา</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node">
+          <div class="ico">📡</div>
+          <div class="lbl">Hotspot</div>
+          <div class="sub">2.4 GHz</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node navy-bg">
+          <div class="ico">☁️</div>
+          <div class="lbl">Cloud</div>
+          <div class="sub">Tuya + Supabase</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node orange-bg">
+          <div class="ico">📊</div>
+          <div class="lbl">Dashboard</div>
+          <div class="sub">biomassstove.vercel.app</div>
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>หลักการทำงาน:</strong> เซนเซอร์ส่งข้อมูลขึ้นระบบ Cloud อัตโนมัติทุก 5 นาที เมื่อตรวจพบสัญญาณ Hotspot · ไม่ต้องดำเนินการเพิ่มเติม · Dashboard ปรับปรุงข้อมูลแบบ real-time
+      </div>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>📥 ข้อมูลที่จัดเก็บโดยอัตโนมัติ (จากเซนเซอร์)</h4>
+          <ul>
+            <li>PM2.5, PM10 — ฝุ่นละอองขนาดเล็ก/หยาบ</li>
+            <li>CO, CO2 — ก๊าซคาร์บอนมอนอกไซด์/ไดออกไซด์</li>
+            <li>HCHO — ฟอร์มาลดีไฮด์</li>
+            <li>อุณหภูมิและความชื้นในอากาศ</li>
+            <li>AQI — ดัชนีคุณภาพอากาศ</li>
+          </ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--orange)">
+          <h4>✋ ข้อมูลที่อาสาสมัครบันทึกด้วยตนเอง</h4>
+          <ul>
+            <li>TVOC — สารประกอบอินทรีย์ระเหยรวม</li>
+            <li>CO เพิ่มเติมในบางช่วง (เพื่อเพิ่มความแม่นยำ)</li>
+            <li>เหตุผล: MT15 ไม่ส่ง TVOC เข้าระบบคลาวด์ จึงต้องบันทึกแยก</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3: MT15 Why this model -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">3</div>
+      <div class="slide-title">เครื่องวัด MT15 — ทำไมเลือกรุ่นนี้</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>⚡ เทคโนโลยี Laser Scattering</h4>
+          <ul>
+            <li><strong>ตอบสนองรวดเร็ว</strong> — วัดค่า PM ได้แบบทันท่วงที</li>
+            <li>ความแม่นยำสูงกว่า IR sensor (รุ่นก่อน MT13W)</li>
+            <li>เหมาะกับการวัดมลพิษช่วง spike ขณะเริ่มจุดเตา</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h4>🔋 แบตเตอรี่ 2000 mAh</h4>
+          <ul>
+            <li>ใช้งานต่อเนื่องครบ <strong>1 session (2 ชั่วโมง 10 นาที)</strong></li>
+            <li>ชาร์จเพียงครั้งเดียว ใช้งานได้หลายวัน</li>
+            <li>ไม่ต้องเชื่อมต่อไฟฟ้าตลอดเวลา</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h4>📊 วัดได้ครบ 8 พารามิเตอร์ในอุปกรณ์เดียว</h4>
+          <ul>
+            <li>PM2.5 · PM10 · CO · CO2 · HCHO</li>
+            <li>อุณหภูมิ · ความชื้น · AQI</li>
+            <li>ลดความซับซ้อนของการติดตั้งหลายอุปกรณ์</li>
+          </ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--orange)">
+          <h4>🔧 ผู้ใช้ปรับเทียบเองได้ที่ตัวเครื่อง</h4>
+          <ul>
+            <li>กดปุ่ม 4 ครั้ง → เครื่องปรับเทียบโดยอัตโนมัติ</li>
+            <li>แก้ไขปัญหา <strong>ค่าตรวจวัดค้าง</strong> หลังเจอควันเข้มข้น</li>
+            <li>ไม่ต้องส่งซ่อมหรือ factory reset</li>
+          </ul>
+        </div>
+      </div>
+      <h3 style="margin-top:20px;font-size:18px;color:var(--green-dark)">การเปรียบเทียบกับรุ่นอื่น (อ้างอิงจากการทดสอบภาคสนาม 2569)</h3>
+      <table class="compare-table">
+        <tr>
+          <th>รุ่น</th>
+          <th>เทคโนโลยี</th>
+          <th>วัด CO+PM10</th>
+          <th>วัด TVOC</th>
+          <th>เลือก?</th>
+        </tr>
+        <tr>
+          <td><strong>MT15</strong></td>
+          <td>Laser Scattering</td>
+          <td><span class="pill good">✓ มี</span></td>
+          <td><span class="pill bad">✗ ไม่มี</span></td>
+          <td><span class="pill good">★ เลือกใช้</span></td>
+        </tr>
+        <tr>
+          <td>MT13W (รุ่นก่อน)</td>
+          <td>IR sensor</td>
+          <td><span class="pill good">✓ มี</span></td>
+          <td><span class="pill bad">✗ ไม่มี</span></td>
+          <td><span class="pill neutral">PM ตอบสนองช้า</span></td>
+        </tr>
+        <tr>
+          <td>PV28</td>
+          <td>Laser Scattering</td>
+          <td><span class="pill bad">✗ ไม่มี</span></td>
+          <td><span class="pill good">✓ มี</span></td>
+          <td><span class="pill neutral">ขาด CO และ PM10</span></td>
+        </tr>
+      </table>
+      <div class="img-row">
+        <div class="img-placeholder aspect-4-3">
+          <div class="ph-icon">📷</div>
+          <div class="ph-label">รูปเซนเซอร์ MT15</div>
+          <div class="ph-desc">ภาพหน้าตรงตัวเครื่องจริง — เห็นหน้าจอแสดงค่า + ปุ่มควบคุม</div>
+          <div class="ph-tag">PHOTO #1</div>
+          <div class="ph-ratio">4:3</div>
+        </div>
+        <div class="img-placeholder aspect-4-3">
+          <div class="ph-icon">📊</div>
+          <div class="ph-label">เปรียบเทียบ 3 รุ่น</div>
+          <div class="ph-desc">ภาพ MT15 / MT13W / PV28 วางคู่กัน — เห็นขนาด หน้าจอ ฟีเจอร์ต่าง</div>
+          <div class="ph-tag">PHOTO #2</div>
+          <div class="ph-ratio">4:3</div>
+        </div>
+      </div>
+      <!-- HIDDEN — ปรัชญาเครื่องวัด (ลบ <! และ --> หัวท้ายเพื่อโชว์กลับ)
+      <div class="callout tip" style="margin-top:18px">
+        <strong>🌱 ปรัชญาการเลือกเครื่องวัด — เข้าถึงได้ ใครก็ใช้ได้</strong>
+        <ul style="margin:8px 0 0 24px;line-height:1.7">
+          <li><strong>ราคาเข้าถึงได้</strong> — ชาวบ้านและครัวเรือนหาซื้อได้เอง ไม่ต้องผ่านโครงการ</li>
+          <li><strong>ยั่งยืนหลังโครงการสิ้นสุด</strong> — ผู้ที่สนใจวัดผลต่อ ดำเนินการเองได้</li>
+          <li><strong>ทำซ้ำได้ทางวิชาการ</strong> — ระเบียบวิธีเดียวกัน ใครก็นำไปใช้ได้ → research reproducible</li>
+          <li><strong>คุณค่าของโครงการอยู่ที่ระบบ</strong> — เครื่องวัดเป็นของผู้ใช้ แต่ <strong>ระบบเก็บ-วิเคราะห์-แสดงผล</strong> เปิดให้ลงทะเบียนเข้าใช้ผ่านโครงการ</li>
+        </ul>
+      </div>
+      -->
+    </div>
+  </div>
+
+  <!-- Slide 4: Button Operations -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">4</div>
+      <div class="slide-title">การกดปุ่มบนเครื่อง MT15</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="buttons-grid">
+        <div class="btn-card">
+          <div class="ico">🌡️</div>
+          <div class="clicks">1<small>กด 1 ครั้ง</small></div>
+          <div class="desc">เปลี่ยนหน่วยอุณหภูมิ <strong>°C / °F</strong></div>
+        </div>
+        <div class="btn-card">
+          <div class="ico">🔇</div>
+          <div class="clicks">2<small>กด 2 ครั้ง</small></div>
+          <div class="desc">เปิด / ปิด <strong>เสียง</strong></div>
+        </div>
+        <div class="btn-card">
+          <div class="ico">🖥️</div>
+          <div class="clicks">3<small>กด 3 ครั้ง</small></div>
+          <div class="desc">เปลี่ยน <strong>หน้าจอแสดงผล</strong></div>
+        </div>
+        <div class="btn-card calibrate">
+          <div class="ico">⚙️</div>
+          <div class="clicks">4<small>กด 4 ครั้ง</small></div>
+          <div class="desc"><strong>Calibrate</strong> เซนเซอร์<br>(รอ 120 วินาที)</div>
+        </div>
+        <div class="btn-card pair">
+          <div class="ico">📡</div>
+          <div class="clicks">5<small>กด 5 ครั้ง</small></div>
+          <div class="desc">จับคู่ <strong>WiFi Hotspot</strong></div>
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>การเปิดเครื่อง:</strong> กดปุ่มค้างไว้ 3 วินาที → ระบบจะนับถอยหลัง 60 วินาที → เครื่องเริ่มแสดงค่าตรวจวัด
+      </div>
+      <div class="callout warn">
+        <strong>⚙️ การปรับเทียบ (Calibrate) สำคัญที่สุด:</strong> ใช้เมื่อค่าตรวจวัด <strong>ค้างไม่ลดลง</strong> (เช่น CO2 ค้างที่ระดับ 2,000+ ppm) จากการเจอควันเข้มข้นเกินขีด — กดปุ่ม 4 ครั้ง รอ 120 วินาที ค่าจะกลับสู่ระดับปกติ
+      </div>
+      <div class="img-placeholder aspect-16-9">
+        <div class="ph-icon">📷</div>
+        <div class="ph-label">ภาพหน้าจอ MT15 ก่อน-หลัง Calibrate</div>
+        <div class="ph-desc">หน้าจอเซนเซอร์ขณะค่าค้าง (CO2 = 2,000+) เทียบกับหลังกด 4 ครั้ง รอ 120 วิ → ค่ากลับสู่ระดับปกติ</div>
+        <div class="ph-tag">PHOTO #3</div>
+        <div class="ph-ratio">16:9 split</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Sensor Validation & Testing -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">5</div>
+      <div class="slide-title">การทดสอบและตรวจสอบเซนเซอร์</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <p style="margin-bottom:14px;font-size:17px">ก่อนนำไปติดตั้งภาคสนาม ทีมงานทดสอบเซนเซอร์ทุกตัวด้วยมาตรฐานเดียวกัน เพื่อยืนยันความแม่นยำและความน่าเชื่อถือของข้อมูลที่จะเก็บได้</p>
+      <div class="img-row">
+        <div class="img-placeholder aspect-4-3">
+          <div class="ph-icon">🧪</div>
+          <div class="ph-label">การทดสอบ Calibration</div>
+          <div class="ph-desc">ภาพกระบวนการทดสอบเซนเซอร์ทั้ง 12 ตัวภายใต้สภาพแวดล้อมเดียวกัน</div>
+          <div class="ph-tag">PHOTO #4</div>
+          <div class="ph-ratio">4:3</div>
+        </div>
+        <div class="img-placeholder aspect-4-3">
+          <div class="ph-icon">📈</div>
+          <div class="ph-label">เปรียบเทียบผลการตอบสนอง</div>
+          <div class="ph-desc">กราฟ/ตารางเทียบค่าระหว่าง MT15 หลายตัว เห็น variance ต่ำ</div>
+          <div class="ph-tag">PHOTO #5</div>
+          <div class="ph-ratio">4:3</div>
+        </div>
+      </div>
+      <div class="callout info">
+        <strong>หลักการทดสอบ:</strong> ทดสอบกับแหล่งกำเนิดมลพิษอ้างอิง (เช่น ท่อไอเสียมอเตอร์ไซค์) → สังเกตการตอบสนองของแต่ละตัว → ยืนยันว่า <strong>ค่าตรวจวัดสอดคล้องกัน</strong>ภายใต้เงื่อนไขเดียวกัน
+      </div>
+      <div class="img-row">
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">🔬</div>
+          <div class="ph-label">ค่า MT15 vs MT13W vs PV28</div>
+          <div class="ph-desc">ภาพ/ตาราง การทดสอบเทียบ 3 รุ่น ภายใต้เงื่อนไขเดียวกัน — เห็นข้อแตกต่าง</div>
+          <div class="ph-tag">PHOTO #6</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📋</div>
+          <div class="ph-label">บันทึกผลการทดสอบ</div>
+          <div class="ph-desc">ตารางสรุปผล หรือสถิติจากการทดสอบ pre-deployment</div>
+          <div class="ph-tag">PHOTO #7</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Hotspot Setup -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">6</div>
+      <div class="slide-title">การเชื่อมต่อ Hotspot</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">เซนเซอร์ MT15 ส่งข้อมูลเข้าระบบผ่าน <strong>Mobile Hotspot</strong> ที่อาสาสมัครเปิดจากโทรศัพท์มือถือของตน — ทุกบ้านใช้ค่าตั้งเดียวกัน</p>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>📡 ค่าตั้ง Hotspot มาตรฐาน</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>ชื่อ Wi-Fi (SSID): <code>Biomass</code></li>
+            <li>รหัสผ่าน: <code>Biomass2026</code></li>
+            <li>ย่านความถี่: <strong>2.4 GHz เท่านั้น</strong></li>
+          </ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--orange)">
+          <h4>⚠️ จุดที่ต้องระวัง</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>มือถือบางรุ่นเปิด <strong>5 GHz</strong> เป็น default — ต้องตั้งเป็น 2.4 GHz</li>
+            <li>เซนเซอร์ MT15 รองรับ 2.4 GHz เท่านั้น (ไม่รับ 5 GHz)</li>
+            <li>ตรวจสอบใน Settings → Mobile Hotspot → Band</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>💡 ประโยชน์ของการใช้ค่าตั้งมาตรฐาน:</strong> เซนเซอร์จับคู่ Wi-Fi เพียงครั้งเดียว → เมื่ออาสาเปิด Hotspot ที่ตั้งค่า "Biomass / Biomass2026" จะเชื่อมต่ออัตโนมัติ — ย้ายเซนเซอร์ระหว่างบ้านได้โดยไม่ต้องตั้งค่าใหม่
+      </div>
+      <div class="img-placeholder aspect-3-4">
+        <div class="ph-icon">📱</div>
+        <div class="ph-label">หน้าจอ Mobile Hotspot Settings</div>
+        <div class="ph-desc">ภาพการตั้งค่า Hotspot บนมือถือ — เห็น SSID, password, band 2.4 GHz</div>
+        <div class="ph-tag">PHOTO #8</div>
+        <div class="ph-ratio">3:4 phone</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7: Volunteer Page -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">7</div>
+      <div class="slide-title">หน้าอาสาสมัคร — บันทึกข้อมูลด้วยตนเอง</div>
+      <div class="slide-tag">Part 2</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">ข้อมูลบางประเภท (TVOC และ CO เพิ่มเติม) เซนเซอร์ MT15 ไม่ส่งเข้าระบบ Cloud โดยตรง — อาสาสมัครต้องบันทึกด้วยตนเองผ่านหน้าเว็บอาสา</p>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>🔗 การเข้าถึงหน้าเว็บ</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>สแกน <strong>QR code</strong> ที่ติดบนเซนเซอร์</li>
+            <li>หรือเข้า URL โดยตรง</li>
+            <li>ระบบ <strong>ตรวจจับบ้านอัตโนมัติ</strong>ผ่าน GPS</li>
+            <li>ไม่ต้อง login</li>
+          </ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--orange)">
+          <h4>📝 ข้อมูลที่ต้องบันทึก</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li><strong>TVOC</strong> — สารอินทรีย์ระเหยรวม (ค่าที่อ่านจากหน้าจอเซนเซอร์)</li>
+            <li><strong>CO</strong> — ค่าคาร์บอนมอนอกไซด์ (เพิ่มเติม)</li>
+            <li>บันทึกทุก 5 นาทีระหว่าง session</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout info">
+        <strong>📋 รูปแบบการเก็บข้อมูล 2 แบบ:</strong>
+        <ul style="margin:8px 0 0 22px">
+          <li><strong>เก็บ TVOC/CO ทุก 5 นาที</strong> — อาสาอยู่ที่บ้าน ป้อนข้อมูลตลอด session</li>
+          <li><strong>ไม่เก็บ TVOC/CO</strong> — อาสาเปิดเซนเซอร์ทิ้งไว้ ไปทำกิจกรรมอื่นได้ (ระบบเก็บเฉพาะค่าจากเซนเซอร์อัตโนมัติ)</li>
+        </ul>
+      </div>
+      <div class="img-placeholder aspect-3-4">
+        <div class="ph-icon">📱</div>
+        <div class="ph-label">หน้าจอเว็บอาสาสมัคร</div>
+        <div class="ph-desc">ภาพ screenshot หน้าเว็บ volunteer.html — ฟอร์มกรอก TVOC/CO + ป้าย GPS-detected บ้าน</div>
+        <div class="ph-tag">PHOTO #9</div>
+        <div class="ph-ratio">3:4 phone</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Dashboard Basic -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">8</div>
+      <div class="slide-title">Dashboard — ข้อมูลเบื้องต้น</div>
+      <div class="slide-tag">Part 2</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">หน้าข้อมูลเบื้องต้นแสดงภาพรวมของบ้านอาสาสมัครทั้ง 10 หลัง — ทุกคนเข้าถึงได้ ไม่ต้อง login</p>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>🗺️ มุมมองแผนที่</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>ตำแหน่งบ้านทั้ง 10 หลัง</li>
+            <li>สถานะออนไลน์/ออฟไลน์ของเซนเซอร์</li>
+            <li>ค่ามลพิษล่าสุดของแต่ละจุด</li>
+            <li>ระดับสีตาม AQI (เขียว/เหลือง/ส้ม/แดง)</li>
+          </ul>
+        </div>
+        <div class="spec-card">
+          <h4>📈 ค่ารายวัน</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>ค่าเฉลี่ยรายวันแยกตามบ้าน</li>
+            <li>ค่าสูงสุด/ต่ำสุดของวัน</li>
+            <li>จำนวน session ที่เก็บได้</li>
+            <li>ปริมาณข้อมูลที่อาสาบันทึก</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>การอ่านผล:</strong> สีเขียว = อยู่ในเกณฑ์ปลอดภัย · สีเหลือง = ควรระวัง · สีส้ม/แดง = สูงเกินมาตรฐาน · สีเทา = ไม่มีข้อมูล (offline)
+      </div>
+      <div class="img-placeholder aspect-16-9">
+        <div class="ph-icon">📊</div>
+        <div class="ph-label">Screenshot Dashboard Basic</div>
+        <div class="ph-desc">ภาพ screenshot หน้า biomassstove.vercel.app/ ส่วน "ข้อมูลเบื้องต้น" — เห็นแผนที่ + การ์ดบ้าน + ค่ารายวัน</div>
+        <div class="ph-tag">PHOTO #10</div>
+        <div class="ph-ratio">16:9 desktop</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Dashboard Deep Insights -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">9</div>
+      <div class="slide-title">Dashboard — เชิงลึก (Deep Insights)</div>
+      <div class="slide-tag">Part 2</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">หน้าเชิงลึกแสดง <strong>ผลกระทบของเตา biomass</strong> เปรียบเทียบกับเตาแบบเดิม — เน้นที่ "ความต่าง" ที่เตาใหม่สร้างขึ้น</p>
+      <div class="specs-grid">
+        <div class="spec-card" style="border-top-color:var(--green)">
+          <h4>🌱 เตา Biomass (พระเอก)</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>แสดงค่าเด่นชัด</li>
+            <li>เป็นจุดสนใจหลักของหน้านี้</li>
+            <li>ชูผลลัพธ์ของการใช้เตาใหม่</li>
+          </ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--muted)">
+          <h4>🪵 เตาเดิม (Baseline)</h4>
+          <ul style="font-size:16px;line-height:1.8">
+            <li>แสดงเป็น reference เปรียบเทียบ</li>
+            <li>บอกระดับมลพิษปกติของเตาทั่วไป</li>
+            <li>ไม่ใช่จุดเน้นของหน้า</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>คำตอบที่หน้านี้ต้องตอบ:</strong> "เตา biomass ลดมลพิษได้เท่าไร?" — ผ่านการเปรียบเทียบค่าเฉลี่ย, % การลดลง, และแนวโน้มเชิงเวลา
+      </div>
+      <div class="img-row">
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📉</div>
+          <div class="ph-label">กราฟ Eco vs Old</div>
+          <div class="ph-desc">Screenshot หน้า Deep Insights — เห็นแถบเปรียบเทียบ % การลดลงของแต่ละมลพิษ</div>
+          <div class="ph-tag">PHOTO #11</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📈</div>
+          <div class="ph-label">Trend chart รายวัน</div>
+          <div class="ph-desc">Screenshot กราฟแนวโน้มค่ามลพิษตามวัน — เห็นความแตกต่างชัดเจน</div>
+          <div class="ph-tag">PHOTO #12</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10: Anti-contamination Protocols -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">10</div>
+      <div class="slide-title">ระเบียบวิธีป้องกันการปนเปื้อนข้อมูล</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">โครงการมีระเบียบวิธี 3 ชั้นเพื่อให้ข้อมูลที่เก็บได้สะท้อนค่ามลพิษจากเตาจริง ๆ ไม่ใช่ค่าจากแหล่งอื่นปะปน</p>
+
+      <div class="card green">
+        <h4 style="color:var(--green-dark);font-size:18px;margin-bottom:6px">🌬️ ชั้นที่ 1 — Baseline Subtraction (การหักค่า ambient)</h4>
+        <p style="font-size:15px;color:var(--ink);margin:0">ทุก session เก็บค่าอากาศ <strong>10 นาทีแรก ก่อนจุดเตา</strong> เป็น baseline — แล้วหักออกจากค่า reading ตอนทำอาหาร เพื่อแยกค่ามลพิษ "จากเตา" ออกจากค่ามลพิษ "ในอากาศปกติ"</p>
+      </div>
+
+      <div class="card accent">
+        <h4 style="color:var(--orange);font-size:18px;margin-bottom:6px">⚙️ ชั้นที่ 2 — Sensor Calibration หลังเจอควันเข้มข้น</h4>
+        <p style="font-size:15px;color:var(--ink);margin:0">เมื่อเซนเซอร์เจอควันเข้มข้นเกินขีด ค่าตรวจวัดอาจค้างที่ระดับสูง (sensor saturation) — โครงการกำหนดให้ <strong>ปรับเทียบ (กด 4 ครั้ง รอ 120 วินาที)</strong> ก่อนเริ่ม session ใหม่ทุกครั้งที่ค่าค้าง</p>
+      </div>
+
+      <div class="card">
+        <h4 style="color:var(--green-dark);font-size:18px;margin-bottom:6px">🏠 ชั้นที่ 3 — Sensor Isolation ต่อบ้าน</h4>
+        <p style="font-size:15px;color:var(--ink);margin:0">แต่ละบ้านใช้เซนเซอร์ตัวเดียวอย่างคงที่ตลอดโครงการ — ป้องกันการสับสนของข้อมูล + ลด variance จากความแตกต่างระหว่างเซนเซอร์</p>
+      </div>
+
+      <div class="callout info" style="margin-top:14px">
+        <strong>📐 รายละเอียดสูตรการคำนวณ:</strong> ดู Appendix สไลด์ A1 (AQI), A5 (Baseline Subtraction)
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11: Data Filtering & Quality Control -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">11</div>
+      <div class="slide-title">การกลั่นกรองและควบคุมคุณภาพข้อมูล</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">ระบบมีกฎเกณฑ์เชิงเทคนิคหลายชั้นเพื่อกรองข้อมูลที่ไม่ถูกต้อง / ไม่ครบถ้วน ออกก่อนนำไปแสดงใน Dashboard</p>
+
+      <h3 style="font-size:18px;color:var(--green-dark);margin:14px 0 8px">⏱️ ขีดจำกัดเชิงเวลา (Session Limits)</h3>
+      <div class="timeline">
+        <div class="timeline-block session">
+          <div class="lbl">Session 1 (เช้า)</div>
+          <div class="dur">2 ชม. 10 นาที</div>
+        </div>
+        <div class="timeline-block cooldown">
+          <div class="lbl">⏸ Cooldown</div>
+          <div class="dur">5 ชั่วโมง</div>
+        </div>
+        <div class="timeline-block session2">
+          <div class="lbl">Session 2 (เย็น)</div>
+          <div class="dur">2 ชม. 10 นาที</div>
+        </div>
+        <div class="timeline-block limit">
+          <div class="lbl">🛑 Daily limit</div>
+          <div class="dur">หยุดเก็บ</div>
+        </div>
+      </div>
+
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>🔒 กฎการกลั่นกรอง</h4>
+          <ul style="font-size:15px;line-height:1.7">
+            <li><strong>เก็บได้ไม่เกิน 2 sessions/วัน</strong> ต่อเซนเซอร์</li>
+            <li>ระหว่าง session ต้อง cooldown <strong>อย่างน้อย 5 ชม.</strong></li>
+            <li>ตรวจสอบ <strong>online</strong> ก่อน sync ทุกครั้ง</li>
+            <li>ข้อมูล manual ตรวจสอบ format + range ก่อนรับเข้า</li>
+          </ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--orange)">
+          <h4>💡 ทำไมต้องตั้งกฎเหล่านี้</h4>
+          <ul style="font-size:15px;line-height:1.7">
+            <li><strong>เซนเซอร์ต้องได้พัก</strong> — ถ้าเจอควันต่อเนื่องนานเกินไป ค่าจะเพี้ยนหรือค้าง (เหมือนคนทำงานหนักต้องพัก)</li>
+            <li><strong>ระบบ Cloud มีโควตาจำกัด</strong> — รับข้อมูลได้จำนวนหนึ่งต่อเดือน ต้องบริหารให้พอดีกับ 10 บ้าน</li>
+            <li><strong>เก็บซ้ำไม่ได้ประโยชน์เพิ่ม</strong> — ข้อมูลที่ซ้ำเดิม ๆ ในวันเดียวกัน ไม่ช่วยให้เห็นภาพมากขึ้น</li>
+            <li><strong>เปรียบเทียบบ้านได้ตรง</strong> — ทุกบ้านเก็บปริมาณและรูปแบบเดียวกัน นำมาวิเคราะห์เทียบกันได้</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>📐 รายละเอียดสูตรการคำนวณ:</strong> ดู Appendix สไลด์ A3 (Session Detection logic)
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 12: Q&A + Closing -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">12</div>
+      <div class="slide-title">ถาม-ตอบ และปิดการอบรม</div>
+      <div class="slide-tag">Closing</div>
+    </div>
+    <div class="slide-body">
+      <div class="card green">
+        <h4 style="color:var(--green-dark);font-size:20px;margin-bottom:8px">🌐 ทรัพยากรสนับสนุน — ออนไลน์ในเว็บ เข้าถึงได้เสมอ</h4>
+        <ul style="font-size:16px;line-height:1.8">
+          <li><strong>คู่มือการใช้งานเซนเซอร์ MT15</strong> — เปิดดูได้ทุกเมื่อผ่าน Dashboard</li>
+          <li><strong>คู่มือหน้าเว็บอาสาสมัคร</strong> (กรอก TVOC/CO) — อยู่ในเว็บเดียวกัน</li>
+          <li><strong>Dashboard ตรวจสอบข้อมูลของบ้านตน</strong> — ดูสถานะและค่ารายวันได้ตลอด</li>
+          <li><strong>ช่องทางติดต่อทีมงาน</strong> — เมื่อเจอปัญหาในการใช้งาน</li>
+        </ul>
+      </div>
+
+      <div class="card accent" style="margin-top:14px">
+        <h4 style="color:var(--orange);font-size:20px;margin-bottom:8px">📞 ขั้นตอนถัดไป</h4>
+        <ol style="font-size:16px;line-height:1.8">
+          <li>อาสาสมัครรับเซนเซอร์กลับบ้าน</li>
+          <li>ติดตั้ง + ทดสอบที่บ้าน</li>
+          <li>เริ่มเก็บข้อมูล session แรก</li>
+          <li>ทีมงานติดตามและสนับสนุนเป็นรายสัปดาห์</li>
+        </ol>
+      </div>
+
+      <div style="text-align:center;margin-top:24px;padding:24px;background:var(--card);border-radius:14px">
+        <h2 style="color:var(--green-dark);font-size:32px;margin-bottom:8px">ขอบคุณค่ะ 🙏</h2>
+        <p style="color:var(--muted);font-size:18px">ยินดีรับข้อเสนอแนะและคำถามทุกประเด็น</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Break: Appendix -->
+  <div class="slide section-break">
+    <h2>📐 ภาคผนวก</h2>
+    <p>สูตรการคำนวณและระเบียบวิธีเชิงเทคนิค<br><span style="font-size:16px;color:var(--muted)">สำหรับการตอบคำถามเชิงลึก</span></p>
+  </div>
+
+  <!-- Appendix A1: Thai AQI -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A1</div>
+      <div class="slide-title">Thai AQI — ดัชนีคุณภาพอากาศ</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="formula-box">
+        <div class="formula-name">Linear Interpolation Formula</div>
+        <div class="formula">AQI = (aqi_hi − aqi_lo) / (pm_hi − pm_lo) × (PM2.5 − pm_lo) + aqi_lo</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง</div>
+          PM2.5 = 30 µg/m³<br>
+          อยู่ในช่วง [25.1, 37.5] → AQI [51, 100]<br>
+          AQI = (100 − 51) / (37.5 − 25.1) × (30 − 25.1) + 51 ≈ <strong>71</strong>
+        </div>
+      </div>
+      <h3 style="font-size:18px;color:var(--green-dark);margin-top:18px">ตาราง Breakpoints (Thai PCD)</h3>
+      <table>
+        <tr><th>PM2.5 (µg/m³)</th><th>AQI</th><th>ระดับ</th></tr>
+        <tr><td>0 — 15</td><td>0 — 25</td><td>🟢 ดีมาก</td></tr>
+        <tr><td>15.1 — 25</td><td>26 — 50</td><td>🟢 ดี</td></tr>
+        <tr><td>25.1 — 37.5</td><td>51 — 100</td><td>🟡 ปานกลาง</td></tr>
+        <tr><td>37.6 — 75</td><td>101 — 200</td><td>🟠 มีผลต่อสุขภาพ</td></tr>
+        <tr><td>75.1 — 150</td><td>201 — 300</td><td>🔴 มีผลต่อสุขภาพมาก</td></tr>
+        <tr><td>&gt; 150</td><td>300 (capped)</td><td>🟣 อันตรายร้ายแรง</td></tr>
+      </table>
+      <div class="callout info"><strong>มาตรฐานอ้างอิง:</strong> ราชกิจจานุเบกษา (กรมควบคุมมลพิษ) 2566 — แตกต่างจาก US EPA AQI ในช่วง breakpoints</div>
+    </div>
+  </div>
+
+  <!-- Appendix A2: Daily Aggregations -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A2</div>
+      <div class="slide-title">Daily Aggregations — การรวมข้อมูลรายวัน</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:16px;margin-bottom:12px">ข้อมูลที่เซนเซอร์ส่งทุก 5 นาที (สูงสุด ~52 จุด/วัน) ถูกนำมารวมเป็นค่ารายวันแยกตามบ้านและประเภทเตา</p>
+      <div class="formula-box">
+        <div class="formula-name">Operations</div>
+        <div class="formula">average = sum / count
+min = cumulative Math.min
+max = cumulative Math.max
+count = จำนวน reading ที่ไม่เป็น null</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง — PM2.5</div>
+          5 readings: [42, 65, 88, 71, 50]<br>
+          sum = 316 · count = 5<br>
+          <strong>average = 63.2 µg/m³</strong> · min = 42 · max = 88
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>การจัดการข้อมูลที่ขาดหาย:</strong> Reading ที่เป็น null จะไม่ถูกนับใน count — ค่า average จึงสะท้อนข้อมูลที่มีอยู่จริง ไม่ถูกบิดเบือนโดยค่าศูนย์
+      </div>
+      <h3 style="font-size:17px;color:var(--green-dark);margin-top:14px">พารามิเตอร์ที่รวมรายวัน</h3>
+      <p style="font-size:15px">PM2.5 · PM10 · CO · CO2 · TVOC · HCHO · อุณหภูมิ · ความชื้น · AQI</p>
+    </div>
+  </div>
+
+  <!-- Appendix A3: Session Detection -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A3</div>
+      <div class="slide-title">Session Detection Logic — การตรวจจับสถานะเซสชัน</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <h3 style="font-size:17px;color:var(--green-dark);margin-bottom:8px">ค่าคงที่ของระบบ</h3>
+      <table>
+        <tr><th>Parameter</th><th>Value</th><th>คำอธิบาย</th></tr>
+        <tr><td><code>SESSION_MAX_MINUTES</code></td><td><strong>130</strong></td><td>ความยาวสูงสุดของ 1 session (2 ชม. 10 นาที)</td></tr>
+        <tr><td><code>SESSION_COOLDOWN_MINUTES</code></td><td><strong>300</strong></td><td>ระยะเวลาพักระหว่าง session (5 ชม.)</td></tr>
+        <tr><td><code>MAX_SESSIONS_PER_DAY</code></td><td><strong>2</strong></td><td>จำนวน session สูงสุดต่อวัน</td></tr>
+        <tr><td><code>BASELINE_MINUTES</code></td><td><strong>10</strong></td><td>ระยะเวลาเก็บค่า ambient ก่อนเริ่ม session</td></tr>
+      </table>
+      <h3 style="font-size:17px;color:var(--green-dark);margin-top:14px">State Machine</h3>
+      <div class="formula-box">
+        <div class="formula">baseline (10 min)
+   ↓
+collecting (active session)
+   ↓
+complete / incomplete / cancelled
+   ↓
+cooldown (5 hours)
+   ↓
+new-session (กลับสู่ baseline)
+   หรือ
+daily-limit (ถ้าเก็บครบ 2 sessions แล้ว)</div>
+      </div>
+      <div class="callout info"><strong>Decision tree:</strong> หากมี active + เกินเวลา → auto-cutoff · หาก cooldown ยังไม่หมด → ยังไม่ให้เริ่ม · หากเก็บครบ 2/วัน → daily-limit</div>
+    </div>
+  </div>
+
+  <!-- Appendix A4: Eco vs Old -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A4</div>
+      <div class="slide-title">Eco vs Old Stove % — การคำนวณการลดมลพิษ</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="formula-box">
+        <div class="formula-name">กรณีปกติ — เตา biomass ลดมลพิษได้</div>
+        <div class="formula">Reduction % = (oldAvg − ecoAvg) / oldAvg × 100</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง</div>
+          oldAvg = 50 µg/m³ (PM2.5 ของเตาเดิม)<br>
+          ecoAvg = 15 µg/m³ (PM2.5 ของเตา biomass)<br>
+          Reduction = (50 − 15) / 50 × 100 = <strong>70%</strong>
+        </div>
+      </div>
+      <div class="formula-box" style="margin-top:14px">
+        <div class="formula-name">กรณีพิเศษ — เตา biomass ไม่ลด (ecoAvg ≥ oldAvg)</div>
+        <div class="formula">Increase % = (ecoAvg − oldAvg) / oldAvg × 100</div>
+        <div class="example">
+          <div class="example-label">การแสดงผล</div>
+          แสดงเป็นเครื่องหมาย ↑ พร้อม % เพิ่มขึ้น (ไม่ใช่ลดลง)<br>
+          เพื่อความโปร่งใสในการรายงานข้อมูล
+        </div>
+      </div>
+      <div class="callout warn"><strong>4 Scenarios ที่ระบบ render:</strong> normal (eco &lt; old) · no-eco (ยังไม่มีข้อมูลเตาใหม่) · eco-fail (eco ≥ old) · no-old (ไม่มี baseline)</div>
+    </div>
+  </div>
+
+  <!-- Appendix A5: Baseline Subtraction -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A5</div>
+      <div class="slide-title">Baseline Subtraction — การหักค่า ambient</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:16px;margin-bottom:12px">ระเบียบวิธีนี้แยกค่ามลพิษ "จากเตา" ออกจากค่ามลพิษ "ในอากาศปกติ" ของห้องครัว — เพื่อความถูกต้องในการประเมินผลกระทบของเตา</p>
+      <div class="formula-box">
+        <div class="formula-name">Cooking Phase Value</div>
+        <div class="formula">cookingValue = max(0, rawValue − baseline_avg)</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง — PM2.5</div>
+          baseline_avg = 18 µg/m³ (ค่าอากาศ 10 นาทีก่อนจุดเตา)<br>
+          rawValue = 65 µg/m³ (ค่าขณะทำอาหาร)<br>
+          cookingValue = max(0, 65 − 18) = <strong>47 µg/m³</strong>
+        </div>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>✅ พารามิเตอร์ที่ใช้ baseline</h4>
+          <ul style="font-size:15px"><li>PM2.5</li><li>CO2</li><li>อุณหภูมิ</li><li>ความชื้น</li></ul>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--muted)">
+          <h4>❌ ไม่ใช้ baseline</h4>
+          <ul style="font-size:15px"><li>CO (manual entry only)</li><li>TVOC (manual entry only)</li><li>HCHO (manual entry only)</li></ul>
+        </div>
+      </div>
+      <div class="callout info">
+        <strong>Edge cases:</strong> หาก <code>baseline_avg = null</code> → ใช้ rawValue ตรง ๆ · หาก rawValue &lt; baseline → floor เป็น 0 (ไม่อนุญาตค่าติดลบ)
+      </div>
+    </div>
+  </div>
+
+  <!-- Appendix A6: Pollutant Thresholds -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A6</div>
+      <div class="slide-title">เกณฑ์มลพิษอ้างอิง (Pollutant Thresholds)</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <table class="threshold-table">
+        <tr><th>มลพิษ</th><th>ปลอดภัย</th><th>เฝ้าระวัง</th><th>อันตราย</th><th>มาตรฐาน</th></tr>
+        <tr><td><strong>PM2.5</strong></td><td><span class="safe">≤ 15 µg/m³</span></td><td><span class="warn">≤ 25</span></td><td><span class="danger">&gt; 37.5</span></td><td>Thai PCD 2566</td></tr>
+        <tr><td><strong>PM10</strong></td><td>(reference only)</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>CO2</strong></td><td><span class="safe">&lt; 1,000 ppm</span></td><td>—</td><td><span class="danger">&gt; 1,000</span></td><td>Indoor Air Quality</td></tr>
+        <tr><td><strong>HCHO</strong></td><td><span class="safe">&lt; 0.1 mg/m³</span></td><td>—</td><td><span class="danger">≥ 0.1</span></td><td>WHO (30 นาที)</td></tr>
+        <tr><td><strong>TVOC</strong></td><td><span class="safe">&lt; 0.3 mg/m³</span></td><td><span class="warn">0.3 — 0.5</span></td><td><span class="danger">&gt; 0.5</span></td><td>WHO</td></tr>
+        <tr><td><strong>CO</strong></td><td>(manual only)</td><td>—</td><td>—</td><td>Reference</td></tr>
+      </table>
+      <h3 style="font-size:17px;color:var(--green-dark);margin-top:18px">AQI Status Brackets (Thai PCD)</h3>
+      <table>
+        <tr><th>AQI</th><th>ระดับ</th><th>สีกำกับ</th></tr>
+        <tr><td>0 — 25</td><td>ดีมาก</td><td>🟢 cyan</td></tr>
+        <tr><td>26 — 50</td><td>ดี</td><td>🟢 green</td></tr>
+        <tr><td>51 — 100</td><td>ปานกลาง</td><td>🟡 yellow</td></tr>
+        <tr><td>101 — 200</td><td>มีผลต่อสุขภาพ</td><td>🟠 orange</td></tr>
+        <tr><td>201 — 300</td><td>มีผลต่อสุขภาพมาก</td><td>🔴 red</td></tr>
+        <tr><td>&gt; 300</td><td>อันตรายร้ายแรง</td><td>🟣 purple</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Appendix A7: Manual Data Merge -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A7</div>
+      <div class="slide-title">การรวมข้อมูล Manual กับ Sensor</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:16px;margin-bottom:12px">ข้อมูล TVOC และ CO ที่อาสาสมัครบันทึกด้วยตนเอง รวมเข้ากับข้อมูลจากเซนเซอร์โดยไม่มีการแปลงหน่วยหรือ scaling — สมมติว่าหน่วยตรงกัน</p>
+      <div class="formula-box">
+        <div class="formula-name">Combined Average</div>
+        <div class="formula">tvoc_avg = (tvoc_sensor_sum + tvoc_manual_sum) / (count_sensor + count_manual)</div>
+        <div class="example">
+          <div class="example-label">หมายเหตุ</div>
+          - ระบบ tag ที่มาของข้อมูลแต่ละจุด (<code>source = sensor</code> หรือ <code>source = manual</code>)<br>
+          - ใน session summary แสดง label "sensor + manual" หรือ "manual only" ตามแหล่งที่มา<br>
+          - <strong>ไม่มี scaling/conversion</strong> — ข้อมูลถูกใช้แบบ raw
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>ข้อจำกัด:</strong> ระบบยังไม่มี Quality Control layer สำหรับข้อมูล manual — ต้องอาศัยอาสาสมัครบันทึกค่าให้ตรงตามที่อ่านจากหน้าจอเซนเซอร์ การฝึกอบรมและการตรวจสอบเป็นระยะจึงสำคัญมาก
+      </div>
+    </div>
+  </div>
+
+  <!-- Appendix A8: Summary -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A8</div>
+      <div class="slide-title">สรุปสำหรับการอ้างอิง</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <table>
+        <tr><th>หัวข้อ</th><th>หลักสำคัญ</th><th>จุดสอน</th></tr>
+        <tr><td><strong>AQI</strong></td><td>Linear piecewise interpolation, 5 breakpoints</td><td>Health impact ไม่เป็น linear</td></tr>
+        <tr><td><strong>Aggregation</strong></td><td>sum/count + rolling min/max</td><td>จัดการ missing data ผ่าน count</td></tr>
+        <tr><td><strong>Session logic</strong></td><td>130 min max · 300 min cooldown</td><td>ขีดจำกัดจาก hardware + SOP</td></tr>
+        <tr><td><strong>Comparison</strong></td><td>(Old − Eco) / Old %</td><td>Relative improvement metric</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>10 min ambient · floor-to-zero</td><td>แยกค่าเตาออกจาก ambient</td></tr>
+        <tr><td><strong>Thresholds</strong></td><td>6 มลพิษ × 3 มาตรฐาน</td><td>Thai PCD vs WHO alignment</td></tr>
+        <tr><td><strong>Manual data</strong></td><td>Merge 1:1 กับ sensor data</td><td>ยังไม่มี QC layer</td></tr>
+      </table>
+      <div class="callout tip" style="margin-top:18px">
+        <strong>📚 แหล่งอ้างอิง:</strong>
+        <ul style="margin:8px 0 0 22px;font-size:15px">
+          <li>ราชกิจจานุเบกษา (กรมควบคุมมลพิษ) 2566 — Thai AQI breakpoints + PM2.5 thresholds</li>
+          <li>WHO Air Quality Guidelines — HCHO, TVOC thresholds</li>
+          <li>BiomassStove project codebase — <code>lab/tuya-ecostove/deploy/index.html</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="ก่อนหน้า">◀</button>
+  <span class="counter"><span class="current" id="cur">1</span> / <span id="total">5</span></span>
+  <button id="next" title="ถัดไป">▶</button>
+  <button id="full" title="ฟูลสกรีน">⛶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  document.getElementById('total').textContent = total;
+  let idx = 0;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides[idx].classList.remove('active');
+    idx = i;
+    slides[idx].classList.add('active');
+    document.getElementById('cur').textContent = idx + 1;
+    document.getElementById('progress').style.width = ((idx + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('next').onclick = () => show(idx + 1);
+  document.getElementById('prev').onclick = () => show(idx - 1);
+  document.getElementById('full').onclick = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(idx - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+    else if (e.key.toLowerCase() === 'f') document.getElementById('full').click();
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>
