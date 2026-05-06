@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Seedance Cheat Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #e5e7eb;
+    --ink-bright: #ffffff;
+    --muted: #94a3b8;
+    --accent: #f59e0b;
+    --accent-bright: #fbbf24;
+    --accent-soft: rgba(245, 158, 11, 0.15);
+    --line: #2d3548;
+    --bg: #0a0e1a;
+    --card: #131826;
+    --code-bg: #1f2538;
+    --good: #34d399;
+    --bad: #f87171;
+    --info: #38bdf8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Sarabun', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Slide deck container */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 5vh 8vw;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* Slide header (number + title + tag) */
+  .slide-head {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .slide-num {
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 32px;
+    font-weight: 800;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .slide-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--ink-bright);
+    letter-spacing: -0.02em;
+  }
+
+  .slide-tag {
+    margin-left: auto;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--accent-bright);
+    letter-spacing: 0.01em;
+    text-transform: none;
+    background: var(--accent-soft);
+    padding: 8px 22px;
+    border-radius: 999px;
+    border: 2px solid var(--accent);
+  }
+
+  /* Slide body */
+  .slide-body {
+    flex: 1;
+    overflow: auto;
+    font-size: 19px;
+    line-height: 1.6;
+  }
+
+  .slide-body p { margin: 10px 0; }
+  .slide-body ul, .slide-body ol { margin: 12px 0 12px 28px; }
+  .slide-body li { margin: 8px 0; font-size: 20px; }
+  .slide-body li strong { color: var(--accent-bright); }
+
+  /* Title slide */
+  .slide.title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(ellipse at center, #1a2238 0%, var(--bg) 70%);
+  }
+
+  .title-slide h1 {
+    font-size: 88px;
+    font-weight: 800;
+    color: var(--ink-bright);
+    margin-bottom: 18px;
+    letter-spacing: -0.03em;
+  }
+
+  .title-slide .dragon {
+    font-size: 120px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 30px var(--accent));
+  }
+
+  .title-slide .sub {
+    font-size: 32px;
+    color: var(--muted);
+    font-weight: 300;
+    margin-bottom: 50px;
+  }
+
+  .title-slide .meta {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 16px;
+    color: var(--muted);
+  }
+
+  .title-slide .meta strong { color: var(--accent); }
+
+  /* End slide */
+  .slide.end-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(ellipse at center, #1a2238 0%, var(--bg) 70%);
+  }
+
+  .end-slide h2 {
+    font-size: 60px;
+    font-weight: 700;
+    color: var(--ink-bright);
+    margin-bottom: 24px;
+  }
+
+  .end-slide .cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 56px;
+    color: var(--accent);
+    background: var(--code-bg);
+    padding: 18px 50px;
+    border-radius: 16px;
+    display: inline-block;
+    margin: 18px 0;
+    border: 2px solid var(--accent);
+  }
+
+  .end-slide p { font-size: 24px; color: var(--muted); margin-top: 20px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 18px;
+    background: var(--card);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--code-bg);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(245, 158, 11, 0.04); }
+
+  /* Code */
+  code, pre {
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+  }
+
+  code {
+    background: var(--code-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--accent-bright);
+    font-size: 0.92em;
+  }
+
+  pre {
+    background: var(--code-bg);
+    padding: 20px 24px;
+    border-radius: 10px;
+    border-left: 4px solid var(--accent);
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 14px 0;
+    font-size: 17px;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    color: var(--ink);
+    font-size: 17px;
+  }
+
+  /* Diagram */
+  .diagram {
+    background: var(--code-bg);
+    border-radius: 10px;
+    padding: 22px 28px;
+    text-align: center;
+    margin: 14px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    line-height: 2;
+    white-space: pre;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 28px 0;
+    padding: 24px 12px;
+    background: linear-gradient(180deg, transparent 0%, rgba(245,158,11,0.04) 100%);
+    border-radius: 16px;
+  }
+
+  .node {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+    text-align: center;
+    min-width: 108px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+
+  .node:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+  .node .ico { font-size: 32px; line-height: 1; margin-bottom: 6px; }
+  .node .lbl { font-size: 16px; font-weight: 700; color: var(--ink-bright); }
+  .node .sub { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+
+  .node.accent { border-color: var(--accent); background: linear-gradient(160deg, var(--card) 0%, rgba(245,158,11,0.08) 100%); }
+  .node.accent .lbl { color: var(--accent-bright); }
+
+  .node.provider { border-color: var(--info); background: linear-gradient(160deg, var(--card) 0%, rgba(56,189,248,0.08) 100%); }
+  .node.provider .lbl { color: var(--info); }
+
+  .node.engine {
+    border-color: #a78bfa;
+    background: linear-gradient(160deg, var(--card) 0%, rgba(167,139,250,0.12) 100%);
+  }
+  .node.engine .lbl { color: #c4b5fd; }
+
+  .node.output { border-color: var(--good); background: linear-gradient(160deg, var(--card) 0%, rgba(52,211,153,0.08) 100%); }
+  .node.output .lbl { color: var(--good); }
+
+  .arrow {
+    font-size: 26px;
+    color: var(--accent);
+    font-weight: 700;
+    user-select: none;
+    text-shadow: 0 0 8px rgba(245,158,11,0.4);
+  }
+
+  /* Prompt example with color-coded sections */
+  .prompt-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 16px;
+    margin: 12px 0;
+  }
+
+  .prompt-grid .col-head {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .prompt-example, .prompt-template {
+    background: var(--code-bg);
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    border-left: 4px solid var(--accent);
+    white-space: pre-wrap;
+    color: var(--ink);
+  }
+
+  .prompt-example .ps-style, .prompt-template .ps-style { color: #38bdf8; font-weight: 600; }
+  .prompt-example .ps-ref, .prompt-template .ps-ref     { color: var(--accent-bright); font-weight: 600; }
+  .prompt-example .ps-char, .prompt-template .ps-char   { color: #f0abfc; font-weight: 600; }
+  .prompt-example .ps-action, .prompt-template .ps-action { color: #34d399; font-weight: 600; }
+  .prompt-example .ps-atmos, .prompt-template .ps-atmos { color: #c4b5fd; font-weight: 600; }
+  .prompt-example .ps-sound, .prompt-template .ps-sound { color: #9ca3af; font-style: italic; }
+  .prompt-template .note { color: var(--muted); font-style: italic; font-size: 11px; }
+
+  /* Cinematography vocab grid */
+  .vocab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 8px 0 14px;
+  }
+
+  .vocab-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border-top: 3px solid var(--accent);
+  }
+
+  .vocab-card h4 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: var(--accent-bright);
+    font-weight: 700;
+  }
+
+  .vocab-card ul {
+    margin: 0;
+    padding-left: 16px;
+    list-style: none;
+  }
+
+  .vocab-card li {
+    font-size: 12px;
+    margin: 4px 0;
+    line-height: 1.4;
+    position: relative;
+    padding-left: 10px;
+  }
+
+  .vocab-card li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .vocab-card li strong { color: var(--ink-bright); font-size: 12.5px; }
+
+  @media (max-width: 1100px) { .vocab-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .vocab-grid { grid-template-columns: 1fr; } }
+
+  /* Success rate badges */
+  .rate {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    border: 1.5px solid;
+    white-space: nowrap;
+  }
+  .rate-high { color: var(--good); border-color: var(--good); background: rgba(52,211,153,0.12); }
+  .rate-medhi { color: var(--accent-bright); border-color: var(--accent); background: rgba(245,158,11,0.12); }
+  .rate-low { color: var(--bad); border-color: var(--bad); background: rgba(248,113,113,0.12); }
+
+  /* Two cols */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 12px;
+  }
+
+  .two-col > div {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 20px 24px;
+    border: 1px solid var(--line);
+  }
+
+  .two-col h4 {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .col-good h4 { color: var(--good); }
+  .col-bad h4 { color: var(--bad); }
+
+  /* Callout */
+  .callout {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 16px 22px;
+    border-radius: 6px;
+    margin: 16px 0;
+    font-size: 19px;
+    color: var(--ink);
+  }
+
+  .callout strong { color: var(--accent-bright); }
+
+  .callout.info {
+    background: rgba(56, 189, 248, 0.12);
+    border-left-color: var(--info);
+  }
+
+  .callout.info strong { color: var(--info); }
+
+  .callout.warn {
+    background: rgba(248, 113, 113, 0.12);
+    border-left-color: var(--bad);
+  }
+
+  .callout.warn strong { color: var(--bad); }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: rgba(19, 24, 38, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    z-index: 100;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    color: var(--ink);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+
+  .nav button:hover {
+    background: var(--accent-soft);
+    color: var(--accent-bright);
+  }
+
+  .nav .counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .nav .counter .current { color: var(--accent); font-weight: 700; }
+
+  /* Progress bar */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--accent);
+    transition: width 0.4s ease;
+    z-index: 101;
+  }
+
+  /* Hint */
+  .hint {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    font-size: 12px;
+    color: var(--muted);
+    z-index: 100;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hint kbd {
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    margin: 0 2px;
+  }
+
+  /* Print — full document layout */
+  @media print {
+    :root {
+      --ink: #1a1f2e;
+      --ink-bright: #000;
+      --muted: #6b7280;
+      --accent: #d97706;
+      --accent-bright: #b45309;
+      --accent-soft: #fef3c7;
+      --line: #e5e7eb;
+      --bg: #ffffff;
+      --card: #ffffff;
+      --code-bg: #f3f4f6;
+    }
+    html, body { height: auto; overflow: visible; }
+    .deck { height: auto; }
+    .slide {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      page-break-after: always;
+      min-height: 95vh;
+      padding: 4vh 6vw;
+      inset: auto;
+    }
+    .slide.title-slide, .slide.end-slide { background: white; }
+    .nav, .hint, .progress { display: none; }
+    pre, .diagram { box-shadow: none; }
+  }
+
+  @media (max-width: 900px) {
+    .slide-title { font-size: 28px; }
+    .slide-tag { font-size: 18px; padding: 6px 14px; }
+    .slide-num { width: 48px; height: 48px; font-size: 22px; }
+    .title-slide h1 { font-size: 56px; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="hint">← → space · F = ฟูลสกรีน</div>
+
+<div class="deck" id="deck">
+
+  <!-- Slide 0: Title -->
+  <div class="slide title-slide active">
+    <div class="dragon">🐉</div>
+    <h1>Seedance Cheat Sheet</h1>
+    <div class="meta">
+      <span><strong>Distilled from:</strong> seedance-prompt-guide.md (32KB)</span>
+      <span><strong>By:</strong> DewS + WEnDyS · 2026-05-06</span>
+    </div>
+  </div>
+
+  <!-- Slide 1 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">1</div>
+      <div class="slide-title">ภาพรวม</div>
+      <div class="slide-tag">เข้าใจสถาปัตยกรรมก่อน</div>
+    </div>
+    <div class="slide-body">
+      <div class="flow">
+        <div class="node">
+          <div class="ico">👤</div>
+          <div class="lbl">คุณ</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node accent">
+          <div class="ico">🔮</div>
+          <div class="lbl">Oracle</div>
+          <div class="sub">AI ผู้ช่วย</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node accent">
+          <div class="ico">📝</div>
+          <div class="lbl">Prompt</div>
+          <div class="sub">EN + CN mix</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node provider">
+          <div class="ico">🌐</div>
+          <div class="lbl">Dreamina</div>
+          <div class="sub">หรือ Jimeng 🇨🇳</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node engine">
+          <div class="ico">⚙️</div>
+          <div class="lbl">Seedance</div>
+          <div class="sub">AI model</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="node output">
+          <div class="ico">🎬</div>
+          <div class="lbl">คลิป</div>
+        </div>
+      </div>
+      <ul>
+        <li><strong>Seedance</strong> = AI model ที่สร้างคลิป (engine ตัวจริง)</li>
+        <li><strong>Dreamina / Jimeng</strong> = web ที่คุณไปกดสั่ง (provider — เลือก 1 ใน 2)</li>
+        <li><strong>Oracle</strong> = AI ผู้ช่วยที่ช่วยเขียน prompt + จำผลงานเก่า</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">2</div>
+      <div class="slide-title">โครงสร้าง Prompt</div>
+      <div class="slide-tag">5 ส่วน</div>
+    </div>
+    <div class="slide-body">
+      <div class="prompt-grid">
+        <div>
+          <div class="col-head">📜 ตัวอย่างจริง (Dragon shot — English)</div>
+<div class="prompt-example"><span class="ps-style">Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.</span>
+
+<span class="ps-ref">@[Dragon charsheet] — Dragon character sheet, strictly reference for appearance.
+@[Burning city ref] — Atmosphere reference. Dark storm clouds, orange firelight glow.</span>
+
+<span class="ps-char">Single dragon, scaled armor, magma veins glowing red, fierce amber eyes.</span>
+
+<span class="ps-action">Dragon swoops down toward the burning city with predatory purpose — like a hawk diving on prey.</span>
+
+<span class="ps-atmos">Extreme shallow depth of field, ARRI color tone, handheld tremor strong, heavy film grain. Burning rooftops smolder below, orange firelight visible through dense smoke.</span>
+
+<span class="ps-sound">No background music. Only diegetic sounds — wing beats, dragon snarl, distant fire crackle.</span></div>
+        </div>
+        <div>
+          <div class="col-head">🏗️ โครงสร้าง 5+1 ส่วน</div>
+<div class="prompt-template"><span class="ps-style">[Style keywords]</span> <span class="note">← mood 1 บรรทัด</span>
+
+<span class="ps-ref">@[ref ที่ต้องแนบ] — Role. Description.</span> <span class="note">← refs รวมบนสุด</span>
+
+<span class="ps-char">[Character description]</span> <span class="note">← ต้องอยู่ต้นๆ!</span>
+
+<span class="ps-action">[Action — attitude-driven]</span> <span class="note">← "like a raptor diving"</span>
+
+<span class="ps-atmos">[Atmosphere + film look]</span> <span class="note">← DOF, motion blur, grain</span>
+
+<span class="ps-sound">[Sound direction]</span> <span class="note">← ตาม project</span></div>
+        </div>
+      </div>
+      <div class="callout"><strong>กฎเหล็ก:</strong> 30-100 คำ · เกิน 150 คำ model สับสน · <strong>สีในตัวอย่าง = สีในโครงสร้าง</strong> (จับคู่กันดูได้เลย)</div>
+    </div>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">3</div>
+      <div class="slide-title">Camera Lock</div>
+      <div class="slide-tag">⭐ Concept สำคัญที่สุด</div>
+    </div>
+    <div class="slide-body">
+      <table>
+        <tr><th>ระดับ</th><th>เมื่อไหร่ใช้</th><th>ผลลัพธ์</th></tr>
+        <tr><td><strong>90% Lock</strong></td><td>ต้องการตรง playblast</td><td>เหมือน preview + cinematic</td></tr>
+        <tr><td><strong>Strict</strong></td><td>ล็อคแอคชั่น ปล่อยบรรยากาศ</td><td>ตำแหน่ง/ทิศตรง</td></tr>
+        <tr><td><strong>Medium</strong></td><td>ต้องการ framing คล้าย</td><td>มุมคล้าย แต่ motion อิสระ</td></tr>
+        <tr><td><strong>Loose / No ref</strong></td><td>อิสระ</td><td>Seedance สร้างเอง</td></tr>
+      </table>
+      <div class="callout info"><strong>📖 Real story (dragon):</strong> เราล็อคพรีวิวเพื่อเอา <strong>มุมกล้อง + แอคชั่นมังกร</strong> → AI ล็อคทุกอย่างรวม <strong>ตึกล้มอิงกัน</strong> (ตามพรีวิว ไม่ได้ถล่มจริง) → ลอง <strong>ลด lock</strong> ให้ตึกถล่มได้จริง → <strong>มุมกล้อง+มังกรเพี้ยนหมด</strong> → บทเรียน: <strong>video ref = all-or-nothing แยกล็อคไม่ได้</strong> · ทางแก้ในงานจริง: <strong>เปลี่ยนสคริปต์ ใช้ไฟ+ควันกลืนตึกแทน</strong></div>
+      <div class="callout warn"><strong>⚠️ ความจริงที่ต้องรู้:</strong> ทริค <code>唯一修改</code> <em style="color:var(--muted)">("เปลี่ยนแค่...")</em> <strong>ไม่ได้ผลเสมอไป</strong> — AI gen ใหม่ <strong>100% ทุกรอบ</strong> · อยากแก้จุดเดียว แต่ผลคือ <strong>เปลี่ยนทั้งคลิปก็มี</strong> · ทำใจ + เก็บคลิปดีรอบก่อนสำรองไว้เสมอ</div>
+    </div>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">4</div>
+      <div class="slide-title">@ References</div>
+    </div>
+    <div class="slide-body">
+      <table>
+        <tr><th>Type</th><th>ใช้เมื่อ</th><th>💡 คำแนะนำ</th><th>ตัวอย่าง</th></tr>
+        <tr><td><strong>Character sheet</strong></td><td>ล็อคหน้าตา</td><td><span class="rate rate-high">🟢 ใช้เลย</span></td><td><code>@[มังกร charsheet] — Dragon character sheet, strictly reference for appearance.</code></td></tr>
+        <tr><td><strong>Atmosphere</strong></td><td>ล็อค mood/สี</td><td><span class="rate rate-high">🟢 ใช้เลย</span></td><td><code>@[บรรยากาศเมฆ] — Atmosphere reference. Dark storm clouds.</code></td></tr>
+        <tr><td><strong>Composition</strong></td><td>ล็อค framing</td><td><span class="rate rate-medhi">🟡 ใช้ได้ ระวัง</span></td><td><code>@[เฟรมแรก สีส้ม] — Composition reference. Low angle, dark sky.</code></td></tr>
+        <tr><td><strong>Starting / End frame</strong></td><td>ล็อคเฟรมแรก/ท้าย</td><td><span class="rate rate-medhi">🟡 ใช้ได้ ระวัง</span></td><td><code>@[เฟรมแรก Shot07] — Starting frame.</code> · <code>@[เฟรมท้าย Shot07] — Loose guide for near-end framing only.</code></td></tr>
+        <tr><td><strong>Video (playblast)</strong></td><td>มี silhouette + bg ที่เข้าใจได้</td><td><span class="rate rate-low">🔴 ผันผวน</span></td><td>ใช้ตอนต้องล็อคกล้อง+แอคชั่น</td></tr>
+      </table>
+      <div class="callout warn"><strong>⚖️ 🟡 Composition / Starting / End frame Tradeoff:</strong> ถ้าตั้ง <strong>strict มาก</strong> → เฟรมตรง แต่ <strong>action อาจค้าง / ลอย / ช้า / ขัดธรรมชาติ</strong> · ถ้า <strong>ปล่อยหลวม</strong> → action สวยขึ้น แต่เฟรมไม่ตรง 100% · <strong>ปกติปล่อยหลวมผลออกมาสวยกว่า</strong></div>
+      <div class="callout info"><strong>📖 ทำไมแต่ละแบบเป็นแบบนี้:</strong> 🟢 Character sheet + Atmosphere — AI gen ตามอิสระได้ ผลเสถียร · 🟡 Composition / Frame — อยู่ที่ความ strict (ดู Tradeoff ด้านบน) · 🔴 Video ref — ผันผวนตามคุณภาพ playblast (silhouette ชัด vs abstract)</div>
+    </div>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">5</div>
+      <div class="slide-title">ทำได้ดี vs Tradeoff ที่ต้องเลือก</div>
+      <div class="slide-tag">⚖️ ไม่มี "ทำไม่ได้"</div>
+    </div>
+    <div class="slide-body">
+      <div class="two-col">
+        <div class="col-good">
+          <h4>✅ ทำได้ดีเลย</h4>
+          <ul>
+            <li>ไฟ, ควัน, เถ้า, particles</li>
+            <li>DOF, motion blur, film grain</li>
+            <li>แสง/เงาตอบสนองกับไฟ</li>
+            <li>เมฆเคลื่อนที่</li>
+            <li>สีหน้า/กระพริบตา</li>
+            <li>Handheld camera feel</li>
+          </ul>
+        </div>
+        <div class="col-bad" style="border-color:var(--accent)">
+          <h4 style="color:var(--accent-bright)">⚖️ Tradeoff (ของในพรีวิวจะติดมา)</h4>
+          <ul>
+            <li><strong>ตึกล้มอิงกัน</strong> (พรีวิวล้มแค่อิง ไม่ได้ถล่มจริง)</li>
+            <li><strong>Geometry mockup</strong> → ไฟกลายเป็นแท่ง / รูปทรงประหลาด</li>
+            <li><strong>Rig artifact</strong> (เส้น rig จาก Maya)</li>
+            <li><strong>ของไม่ตั้งใจอื่นๆ</strong> ในพรีวิว</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout"><strong>หลักการ Tradeoff:</strong> Strict lock → ของในพรีวิวมาทั้งหมด (ดี+เสีย) · ลด lock → ของเสียหาย แต่ไม่ตรง preview เหมือนกัน → <strong>ทางแก้จริง: แก้ที่ source (Maya) ก่อนใช้เป็น ref</strong></div>
+      <div class="callout info"><strong>📖 บทเรียน — ใช้ภาษาหนัง ไม่ใช่ภาษา Render Engine:</strong> ใช้ <strong>DOF, motion blur, ARRI, handheld tremor, film grain</strong> (cinematography vocab) · <strong>ห้ามใช้</strong> parallax / PBR / billboard / skybox (3D engine vocab) → ทำให้ผล <strong>แข็ง ไม่สมูท ไม่เหมือนหนัง</strong> · เพราะ Seedance เทรนกับหนัง ไม่ใช่ game engine</div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Cinematography Vocab -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">6</div>
+      <div class="slide-title">🎬 Cinematography Vocab</div>
+      <div class="slide-tag">ภาษาที่ Seedance ฟังรู้เรื่อง</div>
+    </div>
+    <div class="slide-body">
+      <div class="vocab-grid">
+        <div class="vocab-card">
+          <h4>📷 Cameras &amp; Brands</h4>
+          <ul>
+            <li><strong>ARRI ALEXA</strong> — กล้อง Hollywood (80%+ หนังใหญ่)</li>
+            <li><strong>ARRI tone / ARRI color</strong> — สี Hollywood (warm skin, teal shadows)</li>
+            <li><strong>Kodak film stock</strong> — สีฟิล์มอบอุ่น contrast แรง</li>
+            <li><strong>Fuji film stock</strong> — สีฟิล์ม pastel นุ่ม</li>
+          </ul>
+        </div>
+        <div class="vocab-card">
+          <h4>🔭 Lens &amp; Look</h4>
+          <ul>
+            <li><strong>Anamorphic lens</strong> — wide cinematic + bokeh ขอบยืด</li>
+            <li><strong>Cooke S4 / vintage glass</strong> — ผิวนุ่ม retro</li>
+            <li><strong>Shallow depth of field</strong> — ชัดตื้น (DOF)</li>
+            <li><strong>Wide-angle distortion</strong> — มุมกว้างผิดส่วน drama</li>
+          </ul>
+        </div>
+        <div class="vocab-card">
+          <h4>🎨 Color &amp; Grade</h4>
+          <ul>
+            <li><strong>Teal &amp; orange</strong> — สี blockbuster ปัจจุบัน</li>
+            <li><strong>Bleach bypass</strong> — desaturated (Saving Private Ryan)</li>
+            <li><strong>Day-for-night</strong> — กลางวันแต่งให้เป็นคืน</li>
+            <li><strong>Golden hour</strong> — แสงทองชั่วโมง sunset</li>
+          </ul>
+        </div>
+        <div class="vocab-card">
+          <h4>🎥 Camera Movement</h4>
+          <ul>
+            <li><strong>Handheld tremor</strong> — กล้องสั่นเหมือนถือ</li>
+            <li><strong>Steadicam float</strong> — ลื่นไหลไม่สั่น</li>
+            <li><strong>Dolly push-in</strong> — เลื่อนเข้า object</li>
+            <li><strong>Whip pan</strong> — กวาดเร็วแบบเบลอ</li>
+            <li><strong>Crane shot</strong> — มุมสูงเลื่อนลง</li>
+          </ul>
+        </div>
+        <div class="vocab-card">
+          <h4>💡 Lighting Style</h4>
+          <ul>
+            <li><strong>Practical light</strong> — แสงจากของในฉาก (โคมไฟ, ไฟถนน)</li>
+            <li><strong>Motivated light</strong> — แสงมีที่มาในเรื่อง</li>
+            <li><strong>Chiaroscuro</strong> — แสงเงาเข้ม contrast แรง</li>
+            <li><strong>Rim light</strong> — แสงขอบหลังแยกตัวจาก bg</li>
+            <li><strong>Low-key / High-key</strong> — มืดเข้ม / สว่างนุ่ม</li>
+          </ul>
+        </div>
+        <div class="vocab-card">
+          <h4>🎞️ Film Texture</h4>
+          <ul>
+            <li><strong>16mm grain</strong> — เกรนหยาบ retro</li>
+            <li><strong>35mm fine grain</strong> — เกรนละเอียด หนังโรง</li>
+            <li><strong>Heavy film grain</strong> — เกรนหนัก vintage</li>
+            <li><strong>Halation</strong> — ขอบไฟเบลอเป็น halo</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout warn"><strong>🚫 ห้ามใช้ภาษา 3D Engine:</strong> <code>parallax</code> · <code>PBR</code> · <code>billboard</code> · <code>skybox</code> · <code>subsurface scattering</code> · <code>frustum</code> · <code>viewport</code> · <code>FOV</code> · <code>rig / joint / IK</code> → ทำให้ผล <strong>แข็ง CG ไม่เหมือนหนัง</strong></div>
+      <div class="callout info"><strong>📚 Glossary เต็ม:</strong> ดู <code>ψ/memory/learnings/ai-video-teaching/cinematography-vocab.md</code> — มี director styles (Roger Deakins, Wes Anderson), technical specs (35mm/85mm lens, f/1.4, 24fps), color temp (5600K/3200K), texture tokens (lens flare, volumetric dust, halation) เพิ่มเติม</div>
+    </div>
+  </div>
+
+  <!-- Slide 7 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">7</div>
+      <div class="slide-title">Top 5 ปัญหา + วิธีแก้</div>
+    </div>
+    <div class="slide-body">
+      <table>
+        <tr><th>ปัญหา</th><th>วิธีแก้</th></tr>
+        <tr><td>มังกรพุ่งผิดทิศ</td><td>เพิ่ม lock: <code>严格参考</code> <em style="color:var(--muted)">(strict reference)</em></td></tr>
+        <tr><td>เหมือน preview ไม่มี cinematic</td><td>ลด lock + เพิ่ม style keywords</td></tr>
+        <tr><td>ทุกอย่างชัดหมด</td><td><code>极浅景深</code> <em style="color:var(--muted)">(DOF ตื้นมาก)</em> + FG/BG เบลอ</td></tr>
+        <tr><td>ไม่มี motion blur</td><td><code>全身带有明显动态模糊</code> <em style="color:var(--muted)">(ทั้งตัวมี motion blur ชัด)</em></td></tr>
+        <tr><td>handheld ไม่รู้สึก</td><td>ลบ camera lock + <code>明显晃动</code> <em style="color:var(--muted)">(เขย่าชัด)</em></td></tr>
+      </table>
+      <div class="callout warn"><strong>🚫 คำอันตราย — AI อาจปฏิเสธไม่ Generate:</strong> ความรุนแรงโจ่งแจ้ง · เลือดสาด · ระเบิดอย่างเลวร้าย · gore / brutal death / graphic violence / blood splatter / catastrophic explosion → <strong>ใช้คำอ้อมแทน:</strong> <code>intense action</code> · <code>fierce battle</code> · <code>dragon's destruction</code> · <code>smoke and chaos</code> · <code>devastation</code></div>
+    </div>
+  </div>
+
+  <!-- Slide 8 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">8</div>
+      <div class="slide-title">Mindset</div>
+      <div class="slide-tag">🔥 สำคัญที่สุด</div>
+    </div>
+    <div class="slide-body">
+      <ol>
+        <li><strong>Iteration คือเรื่องปกติ</strong> — Shot 1 ของ dragon ใช้ ~20 รอบ · งบ Dreamina ~2,600 credits</li>
+        <li><strong>Seedance อ่านข้างหน้าก่อน</strong> — ของสำคัญต้องอยู่ต้น prompt</li>
+        <li><strong>เขียนเกินจริง</strong> — อยาก 7/10 ต้องเขียน 10/10</li>
+        <li><strong>Attitude &gt; Mechanics</strong> — "like a raptor diving" ดีกว่า "wings flap up and down"</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Slide 9: Why keep prompt style consistent -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">9</div>
+      <div class="slide-title">🎨 คงสไตล์ Prompt ตลอด Project</div>
+      <div class="slide-tag">⚠️ ห้ามเปลี่ยนข้ามเซสชั่น</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout"><strong>"สไตล์" ในที่นี้คืออะไร:</strong> วิธีเขียน prompt — โครงสร้าง, สำนวน action, ระดับรายละเอียด, ภาษา (อังกฤษล้วน vs mix จีน) <strong>ไม่ใช่</strong>สไตล์หนัง</div>
+      <div class="prompt-grid">
+        <div>
+          <div class="col-head">❌ Shot 1 vs Shot 2 — ต่างสไตล์</div>
+<div class="prompt-example"><span class="ps-action">Shot 1:</span>
+<span class="ps-style">"Dragon swoops down like a hawk diving on prey"</span>
+
+<em style="color:var(--muted)">→ สั้น, attitude-driven, simile</em>
+
+<span class="ps-action">Shot 2:</span>
+<span class="ps-style">"The dragon descends at high speed
+toward the village, wings beating
+rapidly to maintain altitude..."</span>
+
+<em style="color:var(--muted)">→ ยาว, mechanical, descriptive</em>
+
+<strong style="color:var(--bad)">→ AI ตีความ 2 แบบ → ผลคนละหนัง</strong></div>
+        </div>
+        <div>
+          <div class="col-head">✅ คงสไตล์เดิมตลอด project</div>
+<div class="prompt-example"><span class="ps-action">Shot 1:</span>
+<span class="ps-style">"Dragon swoops down like a hawk
+diving on prey"</span>
+
+<span class="ps-action">Shot 2:</span>
+<span class="ps-style">"Dragon banks left like a fighter jet
+breaking formation"</span>
+
+<span class="ps-action">Shot 3:</span>
+<span class="ps-style">"Dragon climbs vertically like a rocket
+shedding its first stage"</span>
+
+<strong style="color:var(--good)">→ สไตล์เดียว → continuity</strong></div>
+        </div>
+      </div>
+      <div class="callout"><strong>3 เหตุผลที่ต้องคงสไตล์:</strong>
+        <ol style="margin:8px 0 0 18px;line-height:1.6">
+          <li><strong>Iterate ได้</strong> — เห็นชัดว่าอะไรทำงาน อะไรไม่ทำงาน → debug ง่าย</li>
+          <li><strong>Visual continuity</strong> — ทุก shot มี aesthetic ใกล้เคียง → ตัดเป็นหนังเรื่องเดียวได้</li>
+          <li><strong>Iteration tracking</strong> — เปรียบเทียบ A/B test ได้ ต้องการตัวแปรเดียวเปลี่ยน</li>
+        </ol>
+      </div>
+      <div class="callout warn"><strong>ถ้าจะเปลี่ยนสไตล์:</strong> ต้องเปลี่ยน <strong>ทั้ง project</strong> — ไม่ใช่แค่ shot เดียว · ถ้าเปลี่ยนแค่บาง shot = ไม่ continuity ตัดต่อไม่เข้ากัน</div>
+    </div>
+  </div>
+
+  <!-- Slide 10 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">10</div>
+      <div class="slide-title">Workflow ที่ DewS ใช้จริง</div>
+      <div class="slide-tag">🎬 พระเอกของ session</div>
+    </div>
+    <div class="slide-body">
+<pre><code>1. Vision     → DewS บอก Oracle ว่าอยากได้ shot อะไร
+2. Refs       → DewS ส่งรูปให้ Oracle ดู (Oracle ดูรูปได้)
+                ⚠️ สำหรับวิดีโอ playblast → Oracle ดูไม่ได้ ต้อง:
+                · ใช้ Gemini ช่วยบรรยายแล้วส่งให้ Oracle อ่าน หรือ
+                · DewS บรรยายเองให้ Oracle ฟัง
+3. Prompt     → Oracle เขียน prompt เต็มก้อน (อังกฤษ + จีน mix ตามจุด)
+4. Generate   → DewS วาง prompt ใน Dreamina + แทน @ref ด้วย UUID จริง
+5. Evaluate   → DewS ดูคลิป → บรรยาย/ใช้ Gemini ช่วยให้ Oracle รู้ว่าอะไรดี/ไม่ดี
+6. Iterate    → Oracle แก้ prompt → กลับไป step 4</code></pre>
+      <div class="callout warn"><strong>⚠️ Oracle ดูวิดีโอไม่ได้:</strong> Claude Code อ่าน <strong>รูป (PNG/JPG/PDF)</strong> ได้ แต่ <strong>วิดีโอไม่ได้</strong> · workaround: ใช้ Gemini transcribe/describe video → ส่งคำบรรยายให้ Oracle อ่าน · หรือ DewS บรรยายเอง (เห็นปัญหาแล้วเล่าให้ฟัง)</div>
+    </div>
+  </div>
+
+  <!-- Slide End -->
+  <div class="slide end-slide">
+    <div style="font-size:120px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 0 30px var(--accent))">🐉</div>
+    <h2>พร้อมทำคลิปแรกแล้ว!</h2>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin:36px 0;max-width:900px">
+      <div style="background:var(--card);border:2px solid var(--accent);border-radius:14px;padding:18px 22px;min-width:220px">
+        <div style="font-size:28px;margin-bottom:6px">📐</div>
+        <div style="font-weight:700;color:var(--accent-bright);font-size:18px">ยึดโครงสร้าง 5 ส่วน</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:4px">style → refs → char → action → atmosphere</div>
+      </div>
+      <div style="background:var(--card);border:2px solid var(--info);border-radius:14px;padding:18px 22px;min-width:220px">
+        <div style="font-size:28px;margin-bottom:6px">🎬</div>
+        <div style="font-weight:700;color:var(--info);font-size:18px">ใช้ภาษาหนัง</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:4px">ARRI, DOF, motion blur — ไม่ใช่ engine vocab</div>
+      </div>
+      <div style="background:var(--card);border:2px solid var(--good);border-radius:14px;padding:18px 22px;min-width:220px">
+        <div style="font-size:28px;margin-bottom:6px">🔁</div>
+        <div style="font-weight:700;color:var(--good);font-size:18px">Iterate คือเรื่องปกติ</div>
+        <div style="font-size:14px;color:var(--muted);margin-top:4px">ผลแรกไม่เป็นใจ — แก้ prompt + ลองใหม่</div>
+      </div>
+    </div>
+    <p style="font-size:22px;color:var(--muted);max-width:700px;margin-top:8px">ขอให้สนุกกับการสร้างคลิปแรกของคุณ — และอย่าลืมว่า <strong style="color:var(--accent-bright)">cinema คือ language</strong> 🎬</p>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="ก่อนหน้า (←)">◀</button>
+  <span class="counter"><span class="current" id="cur">1</span> / <span id="total">10</span></span>
+  <button id="next" title="ถัดไป (→)">▶</button>
+  <button id="full" title="ฟูลสกรีน (F)">⛶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  document.getElementById('total').textContent = total;
+  let idx = 0;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides[idx].classList.remove('active');
+    idx = i;
+    slides[idx].classList.add('active');
+    document.getElementById('cur').textContent = idx + 1;
+    document.getElementById('progress').style.width = ((idx + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('next').onclick = () => show(idx + 1);
+  document.getElementById('prev').onclick = () => show(idx - 1);
+  document.getElementById('full').onclick = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(idx - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+    else if (e.key.toLowerCase() === 'f') document.getElementById('full').click();
+  });
+
+  // Init progress
+  show(0);
+</script>
+
+</body>
+</html>

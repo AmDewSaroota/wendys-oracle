@@ -8,9 +8,9 @@ installer: oracle-skills-cli v1.5.36
 
 # /deep-research
 
-**Alias for `/gemini research`** - Deep Research automation via Gemini.
+Deep Research automation via Gemini using **dev-browser** (Playwright).
 
-Opens new tab, selects Deep Research mode, sends prompt, and starts research.
+Opens Gemini tab, selects Deep Research mode, sends prompt, and starts research.
 
 ## Usage
 
@@ -28,31 +28,31 @@ Opens new tab, selects Deep Research mode, sends prompt, and starts research.
 
 ## Workflow
 
-1. Create new Gemini tab
-2. Select Deep Research mode (Tools → Deep Research)
-3. Send research prompt
-4. Click "Start research" button
-5. Wait for results
+1. Connect to dev-browser (Extension mode)
+2. Create/get Gemini page
+3. Navigate to gemini.google.com
+4. Select Deep Research mode via ARIA snapshot
+5. Type research prompt
+6. Click "Start research" button
 
-## Script
+## Running the Script
 
-The automation script handles the full flow:
+The script must run from the **dev-browser directory** (for `@/` import alias):
 
 ```bash
-bun ~/.claude/skills/deep-research/scripts/deep-research.ts "<topic>"
+cd skills/dev-browser && npx tsx ../deep-research/scripts/deep-research.ts "<topic>"
 ```
 
 ## Requirements
 
-- MQTT broker running (`mosquitto`)
-- Claude Browser Proxy extension installed and connected (v2.9.39+)
-- Gemini tab access
+- **dev-browser extension server** running (`cd skills/dev-browser && npm run start-extension`)
+- Chrome with dev-browser extension connected
+- Logged into Google/Gemini in Chrome
 
-## MQTT Commands Used
+## Architecture
 
-| Step | Action | Command |
-|------|--------|---------|
-| 1 | New tab | `create_tab` with gemini.google.com |
-| 2 | Select mode | `select_mode` → Deep Research |
-| 3 | Send prompt | `chat` with research topic |
-| 4 | Start | `clickText` → "Start research" |
+```
+Claude Code → dev-browser (Playwright) → Chrome Extension → Gemini Web UI
+```
+
+No MQTT or mosquitto required. Uses Playwright's ARIA snapshots for reliable element discovery.
