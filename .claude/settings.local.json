@@ -110,7 +110,9 @@
       "mcp__claude_ai_Vercel__web_fetch_vercel_url",
       "mcp__claude_ai_Vercel__deploy_to_vercel",
       "mcp__claude_ai_Vercel__check_domain_availability_and_price",
-      "mcp__claude_ai_Vercel__get_deployment"
+      "mcp__claude_ai_Vercel__get_deployment",
+      "Bash(cp -r \"d:/_DewS/_Wendys/.claude/sync/global-skills/\"* \"C:/Users/NDFlt02/.claude/skills/\")",
+      "Bash(cp -r \"d:/_DewS/_Wendys/.claude/sync/global-memory/\"* \"C:/Users/NDFlt02/.claude/projects/d---DewS--Wendys/memory/\")"
     ],
     "defaultMode": "acceptEdits"
   }
