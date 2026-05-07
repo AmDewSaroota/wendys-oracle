@@ -13238,7 +13238,7 @@
             const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
             for (let i = 0; i < 6; i++) {
                 const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const val = d.toISOString().slice(0, 7);
+                const val = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
                 const label = thaiMonths[d.getMonth()] + ' ' + (d.getFullYear() + 543);
                 const opt = document.createElement('option');
                 opt.value = val; opt.textContent = label;
@@ -13411,7 +13411,7 @@
             const thaiMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
             for (let i = 0; i < 6; i++) {
                 const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-                const val = d.toISOString().slice(0, 7);
+                const val = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
                 const label = thaiMonths[d.getMonth()] + ' ' + (d.getFullYear() + 543);
                 const opt = document.createElement('option');
                 opt.value = val; opt.textContent = label;

@@ -112,7 +112,19 @@
       "mcp__claude_ai_Vercel__check_domain_availability_and_price",
       "mcp__claude_ai_Vercel__get_deployment",
       "Bash(cp -r \"d:/_DewS/_Wendys/.claude/sync/global-skills/\"* \"C:/Users/NDFlt02/.claude/skills/\")",
-      "Bash(cp -r \"d:/_DewS/_Wendys/.claude/sync/global-memory/\"* \"C:/Users/NDFlt02/.claude/projects/d---DewS--Wendys/memory/\")"
+      "Bash(cp -r \"d:/_DewS/_Wendys/.claude/sync/global-memory/\"* \"C:/Users/NDFlt02/.claude/projects/d---DewS--Wendys/memory/\")",
+      "PowerShell(Start-Process -FilePath \"bun\" -ArgumentList \"run\",\"--cwd\",\"C:/Users/CPL/.claude/plugins/cache/claude-plugins-official/discord/0.0.4\",\"start\" -WindowStyle Hidden -PassThru | Select-Object Id, ProcessName, StartTime)",
+      "PowerShell(Get-Process *)",
+      "Bash(mkdir -p \"C:/Users/CPL/.claude/channels/discord/approved\")",
+      "Bash(echo -n \"1501123980357275790\")",
+      "Skill(discord:configure)",
+      "Skill(discord:access)",
+      "PowerShell($bytes = [System.IO.File]::ReadAllBytes\\(\"$env:USERPROFILE\\\\.claude\\\\channels\\\\discord\\\\.env\"\\); $crlf = 0; $lf = 0; for \\($i=0; $i -lt $bytes.Length; $i++\\) { if \\($bytes[$i] -eq 10\\) { if \\($i -gt 0 -and $bytes[$i-1] -eq 13\\) { $crlf++ } else { $lf++ } } }; \"CRLF: $crlf, LF: $lf\")",
+      "mcp__plugin_discord_discord__reply",
+      "mcp__plugin_discord_discord__fetch_messages",
+      "mcp__plugin_discord_discord__download_attachment",
+      "mcp__plugin_discord_discord__react",
+      "mcp__plugin_discord_discord__edit_message"
     ],
     "defaultMode": "acceptEdits"
   }
