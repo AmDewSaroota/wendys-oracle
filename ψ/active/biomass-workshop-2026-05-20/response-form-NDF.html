@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>แบบตอบรับ — NDF</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: letter;
+    margin: 0;
+  }
+  /* extracted positions verified against original PDF (Letter 612×792pt) */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: #555;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 1cm 0;
+  }
+
+  .page {
+    position: relative;
+    width: 8.5in;
+    height: 11in;
+    background: white;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .page img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Overlay layer */
+  .overlay {
+    position: absolute;
+    font-family: 'Sarabun', sans-serif;
+    color: #000;
+    font-size: 12pt;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* Position fields — values aligned to same column as name in each block */
+  .fld-name      { top: 32.0%; left: 28%; }
+  .fld-pos       { top: 35.3%; left: 28%; }
+  .fld-tel       { top: 38.6%; left: 28%; }
+  .chk2          { top: 49.4%; left: 18.5%; font-weight: 700; font-size: 14pt; }
+  .fld-rep-name  { top: 54.6%; left: 34%; }
+  .fld-rep-pos   { top: 57.9%; left: 34%; }
+  .fld-rep-tel   { top: 61.2%; left: 34%; }
+
+  /* Print */
+  @media print {
+    body { background: white; padding: 0; }
+    .page { box-shadow: none; }
+    .no-print { display: none !important; }
+  }
+
+  .print-bar {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: #064e3b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13pt;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+  .print-bar:hover { background: #047857; }
+
+  .print-tip {
+    position: fixed;
+    top: 64px;
+    right: 16px;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fbbf24;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 11pt;
+    max-width: 280px;
+    line-height: 1.5;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .editor-tip {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #3b82f6;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 11pt;
+    max-width: 320px;
+    line-height: 1.5;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+
+<button class="print-bar no-print" onclick="window.print()">🖨 บันทึก PDF / พิมพ์</button>
+<div class="print-tip no-print">
+  <b>💡 ตอน print:</b><br>
+  1. Paper size: <b>Letter</b> (ตามต้นฉบับ)<br>
+  2. Margins: <b>None</b><br>
+  3. ปิด <b>"Headers and footers"</b>
+</div>
+<div class="editor-tip no-print">
+  <b>📝 ถ้าตำแหน่งข้อความเพี้ยน</b> — แก้ค่า top/left ใน CSS class <code>.fld-name</code>, <code>.fld-pos</code>, ฯลฯ ได้
+</div>
+
+<div class="page">
+  <img src="response-form-bg.png" alt="Form background">
+
+  <!-- Top section (CEO) -->
+  <div class="overlay fld-name">นายภิญโญ ตัณรัตนมณฑล</div>
+  <div class="overlay fld-pos">กรรมการผู้จัดการ บริษัท เอ็นดีเอฟ เดฟ จำกัด</div>
+  <div class="overlay fld-tel">๐๙๐ ๘๙๑ ๔๕๐๔</div>
+
+  <!-- Checkbox: ไม่สามารถเข้าร่วมได้ แต่ส่งผู้แทน (อันที่ 2) -->
+  <div class="overlay chk2">✓</div>
+
+  <!-- Bottom section (Representative — DewS) -->
+  <div class="overlay fld-rep-name">นางศรุตา ฉายแสงมงคล</div>
+  <div class="overlay fld-rep-pos">ผู้จัดการโครงการ</div>
+  <div class="overlay fld-rep-tel">๐๙๓ ๑๓๔ ๓๖๓๒</div>
+</div>
+
+</body>
+</html>

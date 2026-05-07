@@ -3,6 +3,8 @@
 ## Identity
 - WEnDyS เป็น **ผู้หญิง** — ใช้ "ค่ะ" / "คะ" เมื่อพูดภาษาไทย (ไม่ใช่ "ครับ")
 - **DewS เป็นผู้หญิง** — เวลาเขียนข้อความแทน DewS ต้องใช้ "ค่ะ" / "คะ" (ห้ามใช้ "ครับ")
+- **ชื่อทางการ DewS**: **นางศรุตา ฉายแสงมงคล** (ใช้ "นาง" ไม่ใช่ "นางสาว")
+- **ตำแหน่ง**: Project Manager / ผู้จัดการโครงการ — บริษัท NDF
 - Soul file อยู่ที่ `ψ/memory/resonance/wendys.md` — อ่านทุกครั้งที่เริ่ม session
 
 ## Topic Files (separate detail)
@@ -10,8 +12,10 @@
 - [AI Video Tools](ai_video_tools.md) — Seedance (tool), Jimeng/Dreamina (providers)
 - [Seedance Dangerous Words](seedance_dangerous_words.md) — คำที่ AI ปฏิเสธ (violence, gore, blood) + คำอ้อมที่ใช้แทนได้
 - [Oracle Video Limitation](oracle_capability_no_video.md) — Oracle อ่านรูป/PDF ได้ แต่ดูวิดีโอไม่ได้ → ใช้ Gemini ช่วยบรรยาย หรือ DewS บรรยายเอง
-- [⚠️ BiomassStove Presentation — 2026-05-20 13:00](biomassstove_presentation_2026-05-20.md) — **DEADLINE 14 วัน** — ต้องเตรียมสไลด์ + demo + ซ้อมพรีเซนต์ (formal, audience จำนวนมาก)
+- [⚠️ BiomassStove Workshop — 2026-05-20 13:00](biomassstove_presentation_2026-05-20.md) — **DEADLINE 13 วัน** — workshop เชิงปฏิบัติการ formal (อาจารย์+อาสา)
+- [📋 Workshop Pending Tasks](workshop_pending_tasks.md) — คู่มืออาสา PDF + demo expansion + sped-up simulation + rehearsal
 - [⏳ Pending: Engenius Teaching Pack for น้อง](pending_engenius_teaching_for_nong.md) — pattern เดียวกับ Oh's Seedance pack แต่เป็น Engenius (2D scene gen?) — ยังไม่มีกำหนดวัน
+- [🐛 TODO: Rest day message bug](todo_rest_day_msg_bug.md) — LINE OA แจ้ง "วันหยุด" แม้แอดมินทดสอบเก็บ 1 session แล้ว — แก้หลัง workshop
 - [Feedback: Open Explorer after Write](feedback_open_explorer_after_write.md) — ทุกครั้งที่สร้างไฟล์ → เปิด Explorer ทันที (PowerShell, ไม่ใช่ Bash)
 - [Feedback: Teaching = separate signal from noise](feedback_teaching_separate_signal_from_noise.md) — เอกสารสอนคนนอก → แยก universal vs project-specific ชัด ห้ามยัดกฎ project เป็นกฎทั่วไป
 - [Feedback: ไม่มี "Seedance ทำไม่ได้" — มีแต่ tradeoff](feedback_distinguish_tool_limit_vs_usage.md) — ปัญหาเกือบทั้งหมด = tradeoff strict (faithful) vs loose (free) — ทางแก้จริง = แก้ที่ Maya source
@@ -19,6 +23,7 @@
 - [Feedback: Oracle prompt convention for DewS](feedback_oracle_prompt_convention_for_dews.md) — ใช้ชื่อไทยบรรยายใน `@[...]` เพื่อให้ DewS แนบรูปสะดวก (Oracle workflow ไม่ใช่หลักการ Seedance)
 - [Feedback: หลักการ vs สไตล์](feedback_principle_vs_style.md) — Framework แยก universal Seedance principles vs DewS-specific Oracle workflow conventions
 - [Feedback: ห้ามอธิบาย common sense ของ audience](feedback_dont_over_explain_common_sense.md) — ก่อนใส่คำอธิบาย ถามว่า audience รู้อยู่แล้วไหม
+- [Feedback: แจ้งเตือนเมื่อทำงานยาวเสร็จ](feedback_notify_when_long_task_done.md) — งาน > 1-2 นาที → ส่ง ✅ message ชัดเจนเมื่อเสร็จ DewS จะได้ทำอย่างอื่นคู่ขนาน
 
 ## UI Text Guidelines
 - ใช้**คำกลางๆ** เสมอ — ห้ามอ้างอิง "อาจารย์", "ชาวบ้าน", หรือบุคคลเฉพาะ
@@ -32,12 +37,15 @@
 
 ## Company
 - DewS's company: **NDF** (ไม่ใช่ Radical Enlighten)
+- **ชื่อเต็มทางการ**: **บริษัท เอ็นดีเอฟ เดฟ จำกัด** (NDF Dev Co., Ltd.)
+- **CEO/MD (ภาษาไทยทางการ)**: **กรรมการผู้จัดการ**
+- **Boss**: นายภิญโญ ตัณรัตนมณฑล (กรรมการผู้จัดการ)
 
 ## EcoStove — Tuya Sensors
 
 | Device | ID | Product | Battery | Notes |
 |--------|-----|---------|---------|-------|
-| **MT15 (หลัก)** | `a31aff2ac0acbbf911cee3` | PM2.5/PM10/CO2/CO/HCHO/Temp/Humidity/AQI | **2000mAh** | **Laser Scattering** — PM ไว, ✅ pair+สติกเกอร์แล้ว, BS 001-012 |
+| **MT15 (หลัก)** | `a31aff2ac0acbbf911cee3` | PM2.5/PM10/CO2/HCHO/Temp/Humidity/AQI (อัตโนมัติ) · CO+TVOC (กรอกมือ — แสดงบนหน้าจอแต่ **ไม่ส่งคลาวด์**) | **2000mAh** | **Laser Scattering** — PM ไว, ✅ pair+สติกเกอร์แล้ว, BS 001-012 |
 | MT13W (เดิม) | `a3d01864e463e3ede0hf0e` | PM2.5/PM10/CO2/CO/HCHO/Temp/Humidity/AQI (**ไม่ส่ง TVOC**) | **2000mAh** | **IR sensor** — PM ไม่ไว, **ไม่ใช่ตัวหลักแล้ว** |
 | PV28 Air Detector | `a39e1d85867b719abc10av` | CO2/PM2.5/VOC/HCHO/Temp/Humidity | **800mAh** | **Laser Scattering**, ไม่มี CO/PM10 |
 

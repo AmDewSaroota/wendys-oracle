@@ -9,6 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
     <style>
         * { font-family: 'Chakra Petch', sans-serif; }
         .info-btn { cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: inherit; vertical-align: middle; opacity: 0.35; transition: opacity 0.15s; margin-left: 2px; }
@@ -36,6 +39,10 @@
         .pulse-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; animation: pulse-dot 2s ease-in-out infinite; }
         .pulse-dot.collecting { background: #3b82f6; animation-duration: 1.2s; }
         .pulse-dot.baseline { background: #f59e0b; animation-duration: 1s; }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); } 70% { box-shadow: 0 0 0 24px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+        .pulse-ring { animation: pulse-ring 2s infinite; }
+        .vstep-btn { transition: all 0.15s; cursor: pointer; }
+        .vstep-btn:hover { transform: translateY(-1px); }
     </style>
 </head>
 <body class="bg-gradient-to-b from-slate-50 to-slate-100 text-gray-800 min-h-screen">
@@ -53,7 +60,7 @@
             <div class="hidden md:flex space-x-10">
                 <button onclick="showTab('basic')" id="nav-basic" class="nav-active py-2">ข้อมูลเบื้องต้น</button>
                 <button onclick="showTab('deep')" id="nav-deep" class="text-emerald-200/70 hover:text-white font-medium py-2">ข้อมูลเชิงลึก</button>
-                <span class="text-emerald-200/70 font-medium py-2">📱 อาสาสมัคร</span>
+                <button onclick="showTab('volunteer')" id="nav-volunteer" class="text-emerald-200/70 hover:text-white font-medium py-2">📱 อาสาสมัคร</button>
             </div>
         </div>
     </nav>
@@ -63,6 +70,7 @@
         <span class="font-bold text-purple-700">Mockup สถานการณ์:</span>
         <button onclick="setScenario('normal')" id="sc-normal" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-600 text-white">ปกติ (ลดได้)</button>
         <button onclick="setScenario('no-eco')" id="sc-no-eco" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-200 text-purple-700">ยังไม่มีเตาใหม่</button>
+        <button onclick="setScenario('no-old')" id="sc-no-old" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-200 text-purple-700">มีเตาใหม่ ไม่มี baseline</button>
         <button onclick="setScenario('eco-fail')" id="sc-eco-fail" class="px-3 py-1 rounded-full text-xs font-bold bg-purple-200 text-purple-700">เตาใหม่ไม่ลดมลพิษ</button>
     </div>
 
@@ -72,6 +80,9 @@
     </div>
     <div id="scenario-bar-eco-fail" class="scenario-bar items-center justify-center gap-2 text-sm text-red-800" style="background:#fee2e2; border-color:#ef4444;">
         ⚠️ <b>สถานการณ์:</b> เตาชีวมวลยังไม่สามารถลดมลพิษได้ตามเป้าหมาย
+    </div>
+    <div id="scenario-bar-no-old" class="scenario-bar items-center justify-center gap-2 text-sm text-blue-800" style="background:#dbeafe; border-color:#3b82f6;">
+        ℹ️ <b>สถานการณ์:</b> มีข้อมูลเตาชีวมวลแล้ว — กำลังเก็บข้อมูลเตาดั้งเดิมเพื่อใช้เปรียบเทียบในอนาคต
     </div>
 
     <main class="max-w-7xl mx-auto p-6 md:p-10">
@@ -128,11 +139,25 @@
                     <div class="flex justify-between text-[10px] text-slate-400 mt-1"><span>18 ม.ค. 2569</span><span>→ 18 เม.ย. 2569</span></div>
                 </div>
                 <div class="max-w-xs mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-4">
-                    <p class="text-xs font-bold text-orange-200">🪵 เตาดั้งเดิม — ค่าเฉลี่ย Baseline</p>
+                    <p class="text-xs font-bold text-orange-200">🪵 เตาดั้งเดิม — ค่าเฉลี่ย Ambient</p>
                     <p class="text-3xl font-bold text-white mt-2">85.7 <span class="text-lg text-slate-300">µg/m³</span></p>
-                    <p class="text-[10px] text-slate-300 mt-1">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Baseline)</p>
+                    <p class="text-[10px] text-slate-300 mt-1">PM2.5 เฉลี่ยขณะหุงต้ม (หลังหัก Ambient)</p>
                 </div>
                 <p class="text-slate-300/50 text-[11px] mt-4"><span class="info-btn" style="color:rgba(203,213,225,0.7)" onclick="showInfo(this,'วิธีวัด','เก็บค่า PM2.5 เฉลี่ยขณะหุงต้ม โดยหักค่า Ambient Baseline (เฉลี่ย 10 นาทีแรกก่อนจุดเตา) ออก เพื่อสร้างฐานข้อมูลอ้างอิงสำหรับเปรียบเทียบกับเตาชีวมวลในระยะถัดไป')"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/><circle cx="8" cy="5.5" r="0.75" fill="currentColor" stroke="none"/><path d="M8 7.5v4" stroke-linecap="round"/></svg></span> วิธีวัด · ข้อมูล 30 วัน · 10 ครัวเรือน</p>
+            </div>
+        </div>
+
+        <!-- HERO: No old data (can't compare) — match production -->
+        <div id="hero-no-old" class="hidden rounded-[2.5rem] shadow-2xl overflow-hidden bg-gradient-to-br from-stone-500 via-stone-400 to-amber-700/60">
+            <div class="relative z-10 p-6 md:p-8 text-center">
+                <p class="text-stone-200 text-sm tracking-wider">โครงการนวัตกรรมเพื่ออากาศสะอาด</p>
+                <div class="text-4xl mt-4 mb-2">⚠️</div>
+                <p class="text-2xl font-bold text-white">ไม่สามารถคำนวณได้</p>
+                <p class="text-stone-200 text-sm mt-2">ไม่พบข้อมูลเตาดั้งเดิม — ไม่มีค่าเปรียบเทียบ</p>
+                <div class="max-w-lg mx-auto mt-4 bg-white/10 backdrop-blur rounded-xl px-4 py-2.5">
+                    <p class="text-stone-200 text-[12px]">💡 ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน</p>
+                </div>
+                <p class="text-white/70 text-[12px] mt-4">วิธีวัด · ข้อมูลเตาชีวมวล 60 วัน · ขาดข้อมูลเตาดั้งเดิม</p>
             </div>
         </div>
 
@@ -155,7 +180,7 @@
             <div>
                 <div class="flex items-center gap-3 mb-2">
                     <p class="text-[11px] text-slate-400">📊 ข้อมูล 18 ม.ค. — 18 มี.ค. 2569 (60 วัน)</p>
-                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Baseline</span>
+                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Ambient</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
@@ -186,11 +211,11 @@
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="basicPm25Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="basicCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Ambient)</p><div class="h-[200px]"><canvas id="basicPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Ambient)</p><div class="h-[200px]"><canvas id="basicCo2Chart"></canvas></div></div>
             </div>
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
-                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">ขณะหุงต้ม · หลังหัก Baseline</span></div>
+                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">ขณะหุงต้ม · หลังหัก Ambient</span></div>
                 <div class="overflow-x-auto"><table class="w-full text-[12px]">
                     <thead><tr class="text-[10px] text-gray-400 border-b"><th class="text-left py-2">ครัวเรือน</th><th class="text-center py-2">เตา</th><th class="text-right py-2">PM2.5</th><th class="text-right py-2">CO2</th><th class="text-right py-2">เวลา</th></tr></thead>
                     <tbody>
@@ -214,7 +239,7 @@
             <div>
                 <div class="flex items-center gap-3 mb-2">
                     <p class="text-[11px] text-slate-400">📊 ข้อมูล 18 ม.ค. — 17 ก.พ. 2569 (30 วัน)</p>
-                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Baseline · เตาดั้งเดิมเท่านั้น</span>
+                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Ambient · เตาดั้งเดิมเท่านั้น</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-orange-400 text-center">
@@ -245,8 +270,8 @@
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 — เตาดั้งเดิม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="noEcoBPm25"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 — เตาดั้งเดิม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="noEcoBCo2"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 — เตาดั้งเดิม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Ambient)</p><div class="h-[200px]"><canvas id="noEcoBPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 — เตาดั้งเดิม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Ambient)</p><div class="h-[200px]"><canvas id="noEcoBCo2"></canvas></div></div>
             </div>
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
                 <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">เตาดั้งเดิมเท่านั้น</span></div>
@@ -268,12 +293,50 @@
             </div>
         </div>
 
+        <!-- ======== BASIC CONTENT: NO-OLD (eco-only) — match production ======== -->
+        <div id="basic-content-no-old" class="hidden space-y-8">
+            <div class="flex items-center gap-3 mb-2 flex-wrap">
+                <p class="text-[11px] text-slate-400">📊 ค่าเฉลี่ยเตาชีวมวล – 60 วัน</p>
+                <span class="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">⚠️ ยังไม่มีข้อมูลเตาดั้งเดิมเปรียบเทียบ</span>
+            </div>
+            <!-- 4 Stat Cards (basic view — ECO ONLY) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
+                    <p class="text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">PM 2.5</p>
+                    <div class="text-3xl font-bold text-[#0f172a]">397.3</div>
+                    <p class="text-[11px] text-gray-500 mt-1">เตาชีวมวล <span class="text-gray-400">µg/m³</span></p>
+                </div>
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-emerald-400 text-center">
+                    <p class="text-[11px] font-bold text-emerald-600 uppercase tracking-wider mb-1">CO2</p>
+                    <div class="text-3xl font-bold text-[#0f172a]">648</div>
+                    <p class="text-[11px] text-gray-500 mt-1">เตาชีวมวล <span class="text-gray-400">ppm</span></p>
+                </div>
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-amber-500 text-center">
+                    <p class="text-[11px] font-bold text-amber-600 uppercase tracking-wider mb-1">CO</p>
+                    <div class="text-3xl font-bold text-[#0f172a]">239.1</div>
+                    <p class="text-[11px] text-gray-500 mt-1">เตาชีวมวล <span class="text-gray-400">ppm</span></p>
+                </div>
+                <div class="card-styled p-6 rounded-[2rem] border-b-4 border-blue-400 text-center">
+                    <p class="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-1">อุณหภูมิ / ความชื้น</p>
+                    <div class="flex justify-center gap-3 mt-2">
+                        <div><span class="text-2xl font-bold text-gray-800">0.2</span><span class="text-gray-400 text-sm">°C</span></div>
+                        <span class="text-gray-300">/</span>
+                        <div><span class="text-2xl font-bold text-gray-800">7.4</span><span class="text-gray-400 text-sm">%</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-styled p-5 rounded-2xl border-l-4 border-amber-400 bg-amber-50/30">
+                <p class="text-sm font-bold text-amber-800 mb-1">ℹ️ ข้อมูลเตาชีวมวลพร้อมใช้งาน</p>
+                <p class="text-[12px] text-amber-700">รายการเก็บได้: <b>43 รายการ</b> · เมื่อระบบมีข้อมูลเตาดั้งเดิมครบ จะคำนวณ <b>% การลดมลพิษ</b> และ <b>การเปรียบเทียบรายวัน</b> ให้อัตโนมัติ — รายละเอียดเพิ่มเติมในหน้า <b class="text-emerald-700">"ข้อมูลเชิงลึก"</b></p>
+            </div>
+        </div>
+
         <!-- ======== BASIC CONTENT: ECO-FAIL ======== -->
         <div id="basic-content-eco-fail" class="hidden space-y-8">
             <div>
                 <div class="flex items-center gap-3 mb-2">
                     <p class="text-[11px] text-slate-400">📊 ข้อมูล 18 ม.ค. — 18 มี.ค. 2569 (60 วัน)</p>
-                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Baseline</span>
+                    <span class="text-[10px] text-gray-400 italic">ขณะหุงต้ม · หลังหัก Ambient</span>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
                     <div class="card-styled p-6 rounded-[2rem] border-b-4 border-red-400 text-center">
@@ -304,11 +367,11 @@
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="failBPm25"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Baseline)</p><div class="h-[200px]"><canvas id="failBCo2"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">ฝุ่น PM2.5 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Ambient)</p><div class="h-[200px]"><canvas id="failBPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-1">CO2 ขณะหุงต้ม</h4><p class="text-[10px] text-gray-400 mb-3">ค่าสุทธิรายวัน (หลังหัก Ambient)</p><div class="h-[200px]"><canvas id="failBCo2"></canvas></div></div>
             </div>
             <div class="card-styled p-6 rounded-[2.5rem] border-b-4 border-teal-400">
-                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">ขณะหุงต้ม · หลังหัก Baseline</span></div>
+                <div class="flex items-center justify-between mb-3"><h4 class="font-bold text-sm text-gray-800">📡 ค่าล่าสุดแต่ละครัวเรือน</h4><span class="text-[10px] text-gray-400">ขณะหุงต้ม · หลังหัก Ambient</span></div>
                 <div class="overflow-x-auto"><table class="w-full text-[12px]">
                     <thead><tr class="text-[10px] text-gray-400 border-b"><th class="text-left py-2">ครัวเรือน</th><th class="text-center py-2">เตา</th><th class="text-right py-2">PM2.5</th><th class="text-right py-2">CO2</th><th class="text-right py-2">เวลา</th></tr></thead>
                     <tbody>
@@ -362,7 +425,13 @@
         <!-- MAP + ACTIVITY (shared) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 card-styled p-2 rounded-[2.5rem]">
-                <div class="flex gap-4 text-[12px] text-slate-500 px-3 py-1.5"><span>📍 10 จุดวัด</span><span>🟢 3 ออนไลน์</span><span>⚪ 7 ออฟไลน์</span></div>
+                <div class="flex gap-4 text-[12px] text-slate-500 px-3 py-1.5 flex-wrap">
+                    <span>🔬 <b>3</b> ติดเซนเซอร์</span>
+                    <span class="text-slate-300">·</span>
+                    <span>🏠 <b>8</b> ได้รับเตา (ไม่มีเซนเซอร์)</span>
+                    <span class="text-slate-300">·</span>
+                    <span>📍 <b>11</b> จุดทั้งหมด</span>
+                </div>
                 <div id="map"></div>
             </div>
             <div class="space-y-6">
@@ -410,7 +479,7 @@
         <!-- ======== DEEP CONTENT: NORMAL ======== -->
         <div id="deep-content-normal" class="space-y-8">
             <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Baseline-subtracted · ค่าสุทธิ (Net) หลังหักค่าเฉลี่ย 10 นาทีแรกของแต่ละ session</span>
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าเฉลี่ย 10 นาทีแรกของแต่ละ session</span>
             </div>
             <!-- STAT CARDS Row 1: Pollutants -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -461,7 +530,7 @@
             <!-- STACKED BAR -->
             <div class="card-styled p-6 rounded-[2.5rem]">
                 <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</h4>
-                <p class="text-[10px] text-gray-400 mb-4">แยกค่าAmbient Baseline ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
                 <div class="space-y-4">
                     <div>
                         <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">85.7 (gross) → <span class="text-gray-900">73.4</span> (net)</span></div>
@@ -480,7 +549,7 @@
                     </div>
                 </div>
                 <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
-                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient (แวดล้อม)</span>
                     <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
                     <span><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)</span>
                 </div>
@@ -488,18 +557,18 @@
             <!-- DAILY AVG CHARTS — 6 charts grouped by type -->
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepPm25Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepPm10Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepPm25Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepPm10Chart"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepCo2Chart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepCoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepCo2Chart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepCoChart"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepHchoChart"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepTvocChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepHchoChart"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="deepTvocChart"></canvas></div></div>
             </div>
             <!-- COMPARISON TABLE -->
             <div class="card-styled p-6 rounded-[2.5rem]">
@@ -588,25 +657,25 @@
                     </div>
                 </div>
                 <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
-                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient (แวดล้อม)</span>
                     <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
                 </div>
             </div>
             <!-- CHARTS — old stove only, 6 charts grouped -->
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDPm25"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDPm10"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient</p><div class="h-[220px]"><canvas id="noEcoDPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient</p><div class="h-[220px]"><canvas id="noEcoDPm10"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDCo2"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDCo"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient</p><div class="h-[220px]"><canvas id="noEcoDCo2"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient</p><div class="h-[220px]"><canvas id="noEcoDCo"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDHcho"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline</p><div class="h-[220px]"><canvas id="noEcoDTvoc"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient</p><div class="h-[220px]"><canvas id="noEcoDHcho"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — เตาดั้งเดิม Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient</p><div class="h-[220px]"><canvas id="noEcoDTvoc"></canvas></div></div>
             </div>
             <!-- COMPARISON TABLE — old only -->
             <div class="card-styled p-6 rounded-[2.5rem]">
@@ -628,6 +697,86 @@
         </div><!-- /deep-content-no-eco -->
 
         <!-- ======== DEEP CONTENT: ECO-FAIL ======== -->
+        <!-- ======== DEEP CONTENT: NO-OLD (eco-only, no comparison) — match production ======== -->
+        <div id="deep-content-no-old" class="hidden space-y-8">
+            <div class="flex items-center gap-3 mb-1 flex-wrap">
+                <p class="text-[12px] text-slate-400">📊 ค่าเฉลี่ยเตาชีวมวล – ทั้งหมด</p>
+                <span class="text-[12px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">✓ Ambient-subtracted · ค่าสุทธิ (Net) หลังหักค่าแวดล้อม 10 นาทีแรกของแต่ละ session</span>
+                <span class="text-[12px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">⚠️ ยังไม่มีข้อมูลเตาดั้งเดิม – เทียบ % ได้เมื่อมีข้อมูลครบทั้ง 2 ประเภท</span>
+            </div>
+            <!-- 8 Stat Cards — ECO ONLY (no reduction %, no comparison) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-red-400">
+                    <p class="text-[10px] font-bold text-red-500 uppercase tracking-wider">PM 2.5</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">397.3 <span class="text-xs text-gray-400">µg/m³</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                    <p class="text-[9px] text-gray-400 mt-2">ค่าที่เตาสร้างเพิ่มจาก ambient<br>ค่าวัดจริง (Gross): <b>421.5 µg/m³</b></p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-orange-400">
+                    <p class="text-[10px] font-bold text-orange-500 uppercase tracking-wider">PM 10</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">443.4 <span class="text-xs text-gray-400">µg/m³</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-emerald-400">
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">CO2</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">648 <span class="text-xs text-gray-400">ppm</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-amber-500">
+                    <p class="text-[10px] font-bold text-amber-600 uppercase tracking-wider">CO</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">239.1 <span class="text-xs text-gray-400">ppm</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-purple-400">
+                    <p class="text-[10px] font-bold text-purple-600 uppercase tracking-wider">AQI</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">197</div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-gray-400">
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-wider">HCHO</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">729.182 <span class="text-xs text-gray-400">mg/m³</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-yellow-400">
+                    <p class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider">TVOC</p>
+                    <div class="text-2xl font-bold text-[#0f172a] mt-1">6.288 <span class="text-xs text-gray-400">mg/m³</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">เตาชีวมวล</p>
+                </div>
+                <div class="card-styled p-4 rounded-2xl border-b-4 border-teal-400">
+                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-wider">🌡 อุณหภูมิ / 💧 ความชื้น</p>
+                    <div class="text-xl font-bold text-[#0f172a] mt-1">0.2 <span class="text-xs text-gray-400">°C</span> / 7.4 <span class="text-xs text-gray-400">%</span></div>
+                    <p class="text-[10px] text-gray-500 mt-1">สภาพแวดล้อมขณะเก็บข้อมูล</p>
+                </div>
+            </div>
+            <!-- STACKED BAR (eco-only) -->
+            <div class="card-styled p-6 rounded-[2.5rem]">
+                <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</h4>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <div>
+                    <div class="flex items-center justify-between text-xs mb-1">
+                        <span class="text-gray-500">✨ เตาชีวมวล</span>
+                        <span class="font-bold text-red-600">421.5 (gross) → 397.3 (net) <span class="text-amber-500">⚠️</span></span>
+                    </div>
+                    <div class="flex h-10 rounded-lg overflow-hidden text-[10px] font-medium">
+                        <div class="bg-slate-300 flex items-center justify-center text-slate-600" style="width:6%">24.2<br>ambient</div>
+                        <div class="bg-red-400 flex items-center justify-center text-white" style="width:94%">397.3 — Stove Emission ↑</div>
+                    </div>
+                </div>
+                <div class="flex gap-4 mt-3 text-[10px] text-gray-400 flex-wrap">
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient (แวดล้อม)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-emerald-500 align-middle mr-1"></span>Stove emission (เตาชีวมวล)</span>
+                </div>
+            </div>
+
+            <div class="card-styled p-5 rounded-2xl border-l-4 border-amber-400 bg-amber-50/30">
+                <p class="text-sm font-bold text-amber-800 mb-1">ℹ️ การแสดงผลจำกัด</p>
+                <p class="text-[12px] text-amber-700">เมื่อมีข้อมูลเตาดั้งเดิม (baseline) ครบ ระบบจะแสดง <b>% การลดมลพิษ</b> · <b>กราฟเปรียบเทียบรายวัน</b> · <b>ตารางเปรียบเทียบ Gross/Ambient/Net</b> เพิ่มเติม — ตรวจสอบการตั้งค่า collection period ในหน้าแอดมิน</p>
+            </div>
+        </div>
+
         <div id="deep-content-eco-fail" class="hidden space-y-8">
             <div class="flex items-center gap-3">
                 <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200">⚠️ เตาชีวมวลยังไม่ลดมลพิษได้ตามเป้าหมาย — ค่าที่แสดงเป็นค่าสุทธิ (Net)</span>
@@ -681,7 +830,7 @@
             <!-- STACKED BAR — eco bigger -->
             <div class="card-styled p-6 rounded-[2.5rem]">
                 <h4 class="font-bold text-sm text-gray-800 mb-1">PM2.5: องค์ประกอบมลพิษขณะหุงต้ม</h4>
-                <p class="text-[10px] text-gray-400 mb-4">แยกค่าAmbient Baseline ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
+                <p class="text-[10px] text-gray-400 mb-4">แยกค่าแวดล้อม (Ambient) ออกจากมลพิษที่เกิดจากเตา (Stove Emission)</p>
                 <div class="space-y-4">
                     <div>
                         <div class="flex items-center justify-between text-xs mb-1"><span class="text-gray-500">🪵 เตาดั้งเดิม</span><span class="font-bold text-gray-700">85.7 (gross) → <span class="text-gray-900">73.4</span> (net)</span></div>
@@ -700,7 +849,7 @@
                     </div>
                 </div>
                 <div class="flex gap-4 mt-3 text-[10px] text-gray-400">
-                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient baseline</span>
+                    <span><span class="inline-block w-3 h-3 rounded bg-slate-300 align-middle mr-1"></span>Ambient (แวดล้อม)</span>
                     <span><span class="inline-block w-3 h-3 rounded bg-orange-400 align-middle mr-1"></span>Stove emission (เตาดั้งเดิม)</span>
                     <span><span class="inline-block w-3 h-3 rounded bg-red-400 align-middle mr-1"></span>Stove emission (เตาชีวมวล) ⚠️</span>
                 </div>
@@ -708,18 +857,18 @@
             <!-- CHARTS — both lines, eco higher, 6 charts grouped -->
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ฝุ่นละออง (Particulate Matter)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDPm25"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDPm10"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM2.5 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDPm25"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">PM10 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDPm10"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">ก๊าซคาร์บอน (Carbon Gases)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDCo2"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDCo"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO2 — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDCo2"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">CO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDCo"></canvas></div></div>
             </div>
             <p class="text-sm font-bold text-gray-600 tracking-wide mb-3">สารระเหย (Volatile Compounds)</p>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDHcho"></canvas></div></div>
-                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Baseline · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDTvoc"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">HCHO — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDHcho"></canvas></div></div>
+                <div class="card-styled p-6 rounded-[2.5rem]"><h4 class="font-bold text-sm text-gray-800 mb-0.5">TVOC — Net Daily Average</h4><p class="text-[10px] text-gray-400 mb-3">หลังหัก Ambient · ขณะหุงต้ม</p><div class="h-[220px]"><canvas id="failDTvoc"></canvas></div></div>
             </div>
             <!-- COMPARISON TABLE — negative reduction -->
             <div class="card-styled p-6 rounded-[2.5rem]">
@@ -740,36 +889,97 @@
             </div>
         </div><!-- /deep-content-eco-fail -->
 
-        <!-- SESSION TIMELINE (shared) -->
+        <!-- METHODOLOGY (shared, right above Session Timeline — match production order) -->
+        <div class="methodology-panel p-5">
+            <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('meth-body').classList.toggle('open'); document.getElementById('meth-arrow').style.transform = document.getElementById('meth-body').classList.contains('open') ? 'rotate(180deg)' : '';">
+                <h4 class="font-bold text-sm text-gray-700">📋 วิธีวิเคราะห์ข้อมูล (Methodology)</h4>
+                <span id="meth-arrow" class="text-gray-400 transition-transform">▼</span>
+            </div>
+            <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
+                <div><p class="font-bold text-gray-700 mb-1">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li>เซนเซอร์: MT15 (PM2.5, PM10, CO2, HCHO, Temp, Humidity, AQI ส่งอัตโนมัติ · CO+TVOC อ่านบนหน้าจอ)</li><li>ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li>10 ครัวเรือน · 2 session/วัน · เตาดั้งเดิม + เตาชีวมวล</li></ul></div>
+                <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าแวดล้อม (Ambient Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ค่าแวดล้อม (Ambient)</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − Ambient ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง Ambient ไม่นำมาวิเคราะห์</li></ul></div>
+                <div><p class="font-bold text-gray-700 mb-1">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li>เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li>Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li><li><b>MT15 ไม่ส่ง CO/TVOC</b> ขึ้น Cloud อัตโนมัติ — ต้องบันทึกด้วยมือผ่านหน้าเว็บอาสา</li></ul></div>
+            </div>
+        </div>
+
+        <!-- SESSION TIMELINE (shared) — match production layout (today only) -->
         <div class="bg-white/60 rounded-[2.5rem] shadow-sm border-b-4 border-blue-300 p-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                 <div>
                     <h4 class="font-bold text-lg text-[#0f172a]">Session Timeline</h4>
-                    <p class="text-slate-400 text-sm">120 sessions · 10 ครัวเรือน</p>
+                    <p class="text-slate-400 text-sm">วันนี้ (19 มี.ค. 2569) · 4 sessions · 4 อุปกรณ์ · อัปเดตล่าสุด <span class="text-emerald-600 font-medium">ไม่กี่วินาทีที่แล้ว</span></p>
                 </div>
-                <select class="px-4 py-2 rounded-xl border text-sm bg-white"><option selected>ทุกเครื่อง</option><option>ES-01</option><option>ES-02</option><option>ES-03</option></select>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <select class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white" style="appearance:none">
+                        <option>ทุกเครื่อง</option>
+                        <option>ES-01 ✨</option>
+                        <option>ES-02 ✨</option>
+                        <option>ES-03 ✨</option>
+                        <option>ES-06 🪵</option>
+                        <option>ES-07 🪵</option>
+                    </select>
+                    <select class="custom-select px-4 py-2 pr-10 rounded-xl border text-[13px] font-medium bg-white" style="appearance:none">
+                        <option>ทุกสถานะ</option>
+                        <option>กำลังเก็บ</option>
+                        <option>ครบ</option>
+                        <option>ขัดข้อง</option>
+                    </select>
+                </div>
             </div>
-            <div class="overflow-x-auto"><table class="w-full text-left text-[12px] min-w-[700px]">
-                <thead class="bg-slate-50 border-b">
-                    <tr>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">เริ่ม</th>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">อุปกรณ์</th>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">สถานะ</th>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">ระยะเวลา</th>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">รายการ</th>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">PM2.5 เฉลี่ย</th>
-                        <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">CO2 เฉลี่ย</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y">
-                    <tr><td class="p-2.5">19 มี.ค. 06:12</td><td class="font-medium">ES-01 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 5 นาที</td><td class="text-center">24</td><td class="text-center font-bold text-emerald-600">28.3</td><td class="text-center">480</td></tr>
-                    <tr><td class="p-2.5">19 มี.ค. 06:08</td><td class="font-medium">ES-02 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 10 นาที</td><td class="text-center">26</td><td class="text-center font-bold text-emerald-600">35.1</td><td class="text-center">552</td></tr>
-                    <tr><td class="p-2.5">19 มี.ค. 06:15</td><td class="font-medium text-gray-500">ES-06 🪵</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">1 ชม. 55 นาที</td><td class="text-center">22</td><td class="text-center text-gray-600">82.4</td><td class="text-center text-gray-600">980</td></tr>
-                    <tr><td class="p-2.5">18 มี.ค. 17:02</td><td class="font-medium">ES-01 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 8 นาที</td><td class="text-center">25</td><td class="text-center font-bold text-emerald-600">31.7</td><td class="text-center">495</td></tr>
-                    <tr><td class="p-2.5">18 มี.ค. 17:10</td><td class="font-medium text-gray-500">ES-07 🪵</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700">ไม่สมบูรณ์</span></td><td class="text-center">45 นาที</td><td class="text-center">8</td><td class="text-center text-gray-600">91.2</td><td class="text-center text-gray-600">1,043</td></tr>
-                    <tr><td class="p-2.5">18 มี.ค. 06:20</td><td class="font-medium">ES-03 ✨</td><td class="text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">เสร็จ</span></td><td class="text-center">2 ชม. 2 นาที</td><td class="text-center">24</td><td class="text-center font-bold text-emerald-600">38.9</td><td class="text-center">510</td></tr>
-                </tbody>
-            </table></div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-[12px] min-w-[800px]">
+                    <thead class="bg-slate-50 border-b">
+                        <tr>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">เริ่ม</th>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider">อุปกรณ์</th>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">สถานะ</th>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">ระยะเวลา</th>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-center">รายการ</th>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-right">PM2.5 เฉลี่ย</th>
+                            <th class="p-2.5 font-bold text-[#0f172a] uppercase text-[10px] tracking-wider text-right">CO2 เฉลี่ย</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <tr class="bg-orange-50/40">
+                            <td class="p-2.5">17:42 วันนี้</td>
+                            <td class="font-medium">ES-01 ✨</td>
+                            <td class="text-center"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold"><span class="pulse-dot collecting"></span> กำลังเก็บ</span></td>
+                            <td class="text-center text-slate-500">0:42 / 2:10</td>
+                            <td class="text-center font-mono">9</td>
+                            <td class="text-right font-mono text-slate-400">—</td>
+                            <td class="text-right font-mono text-slate-400">—</td>
+                        </tr>
+                        <tr class="bg-blue-50/40">
+                            <td class="p-2.5">17:35 วันนี้</td>
+                            <td class="font-medium">ES-02 ✨</td>
+                            <td class="text-center"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold"><span class="pulse-dot baseline"></span> Baseline</span></td>
+                            <td class="text-center text-slate-500">0:08 / 0:10</td>
+                            <td class="text-center font-mono">2</td>
+                            <td class="text-right font-mono text-slate-400">—</td>
+                            <td class="text-right font-mono text-slate-400">—</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5">06:30 วันนี้</td>
+                            <td class="font-medium">ES-01 ✨</td>
+                            <td class="text-center"><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold">✅ ครบ</span></td>
+                            <td class="text-center text-slate-500">2:10</td>
+                            <td class="text-center font-mono">26</td>
+                            <td class="text-right font-mono font-bold text-emerald-600">32.4</td>
+                            <td class="text-right font-mono">530</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5">06:15 วันนี้</td>
+                            <td class="font-medium">ES-03 ✨</td>
+                            <td class="text-center"><span class="px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[10px] font-bold">❌ ขัดข้อง</span></td>
+                            <td class="text-center text-slate-500">0:23</td>
+                            <td class="text-center font-mono">4</td>
+                            <td class="text-right font-mono text-slate-400">—</td>
+                            <td class="text-right font-mono text-slate-400">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-3">แสดงเฉพาะ session ของวันนี้ — ดูข้อมูลย้อนหลังในหน้าแอดมิน</p>
         </div>
 
         <!-- DAILY SUMMARY (shared) -->
@@ -803,28 +1013,325 @@
             </table></div>
         </div>
 
-        <!-- MAP DEEP (shared) -->
-        <div class="card-styled p-2 rounded-[2.5rem]">
-            <div class="flex gap-4 text-[12px] text-slate-500 px-3 py-1.5"><span>📍 10 จุดวัด</span><span>🟢 3 ออนไลน์</span><span>⚪ 7 ออฟไลน์</span></div>
+        <!-- MAP DEEP (shared) — match production layout with export controls -->
+        <div class="card-styled p-2 rounded-[2.5rem] border-b-0">
+            <div class="flex justify-between items-center gap-2 px-4 pt-3 pb-1 flex-wrap">
+                <div class="flex gap-4 text-[12px] text-slate-500"><span>📍 10 จุดวัด</span><span>🟢 3 ออนไลน์</span><span>⚪ 7 ออฟไลน์</span></div>
+                <div class="flex items-center gap-2">
+                    <label class="text-xs text-slate-400">อัตราส่วน:</label>
+                    <select id="export-ratio" class="text-xs border rounded-lg px-2 py-1.5 bg-white">
+                        <option value="auto">อัตโนมัติ</option>
+                        <option value="1:1">1:1</option>
+                        <option value="3:4">3:4</option>
+                        <option value="16:9">16:9</option>
+                    </select>
+                    <button class="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all">Export PNG</button>
+                </div>
+            </div>
             <div id="map-deep"></div>
-        </div>
-
-        <!-- METHODOLOGY (shared) -->
-        <div class="methodology-panel p-5">
-            <div class="flex items-center justify-between cursor-pointer" onclick="document.getElementById('meth-body').classList.toggle('open'); document.getElementById('meth-arrow').style.transform = document.getElementById('meth-body').classList.contains('open') ? 'rotate(180deg)' : '';">
-                <h4 class="font-bold text-sm text-gray-700">📋 วิธีวิเคราะห์ข้อมูล (Methodology)</h4>
-                <span id="meth-arrow" class="text-gray-400 transition-transform">▼</span>
-            </div>
-            <div id="meth-body" class="collapsible-body mt-4 space-y-3 text-[12px] text-gray-600">
-                <div><p class="font-bold text-gray-700 mb-1">1. การเก็บข้อมูล</p><ul class="list-disc ml-5 space-y-0.5"><li>เซนเซอร์: MT15 (PM2.5, PM10, CO2, CO, HCHO, TVOC, Temp, Humidity, AQI)</li><li>ความถี่: ทุก 5 นาที ตลอดช่วงหุงต้ม (~2 ชม./session)</li><li>10 ครัวเรือน (5 เตาดั้งเดิม + 5 เตาชีวมวล) · 3 เดือน/กลุ่ม</li></ul></div>
-                <div><p class="font-bold text-gray-700 mb-1">2. การหักค่าพื้นฐาน (Baseline Subtraction)</p><ul class="list-disc ml-5 space-y-0.5"><li>ค่าเฉลี่ย <b>10 นาทีแรก</b> ของแต่ละ session = ambient baseline</li><li>ค่าสุทธิ (Net) = ค่าที่วัดได้ − ambient baseline ของ session นั้น</li><li>ค่าติดลบถูกปรับเป็น 0 · Readings ช่วง baseline ไม่นำมาวิเคราะห์</li></ul></div>
-                <div><p class="font-bold text-gray-700 mb-1">3. ข้อจำกัด</p><ul class="list-disc ml-5 space-y-0.5"><li>เก็บข้อมูลคนละช่วงเวลา (ไม่ใช่ paired design)</li><li>Semiconductor sensor มีความคลาดเคลื่อนมากกว่า gravimetric method</li></ul></div>
-            </div>
         </div>
 
     </section>
 
+    <!-- ============================================================ -->
+    <!-- VOLUNTEER VIEW (full mockup of /volunteer.html flow) -->
+    <!-- ============================================================ -->
+    <section id="view-volunteer" class="hidden">
+        <div class="bg-purple-50 border-b-2 border-purple-200 py-3 px-4 mb-6 text-center">
+            <p class="text-sm text-purple-700"><b>📱 หน้าอาสาสมัคร — Mockup Flow</b> · จำลองขั้นตอนการเก็บข้อมูลในมุมของอาสาสมัคร</p>
+        </div>
+
+        <!-- Step navigation -->
+        <div class="max-w-5xl mx-auto mb-6 px-4">
+            <div class="flex items-center justify-center flex-wrap gap-2 bg-white rounded-2xl p-3 shadow-md">
+                <button onclick="setVolStep(1)" id="vstep-1-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-emerald-600 text-white">1. ตรวจ GPS</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(2)" id="vstep-2-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">2. ค้นเซนเซอร์</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(3)" id="vstep-3-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">3. Baseline</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(4)" id="vstep-4-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">4. จุดเตา</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(5)" id="vstep-5-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">5. กรอกค่า?</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(6)" id="vstep-6-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">6. บันทึก TVOC</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(7)" id="vstep-7-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">7. เสร็จสิ้น</button>
+            </div>
+            <p class="text-center text-xs text-gray-500 mt-2">คลิกแต่ละขั้นเพื่อดูหน้าจอที่อาสาสมัครจะเห็น</p>
+        </div>
+
+        <!-- Mobile phone frame -->
+        <div class="max-w-md mx-auto bg-gray-900 rounded-[2.5rem] p-3 shadow-2xl">
+            <div class="bg-white rounded-[2rem] overflow-hidden" style="min-height:680px">
+
+                <!-- Phone status bar -->
+                <div class="bg-emerald-800 text-white px-4 py-3 flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center bg-white/15 text-xl">🌿</div>
+                    <div class="flex-1">
+                        <p class="text-sm font-bold leading-tight">Biomass Stove อาสาสมัคร</p>
+                        <p class="text-emerald-200 text-[10px]">ระบบเก็บข้อมูลภาคสนาม</p>
+                    </div>
+                    <span class="bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded-md">DEMO</span>
+                </div>
+
+                <!-- Phone content (changes per step) -->
+                <div class="p-4 space-y-4 bg-gray-50" style="min-height:610px">
+
+                    <!-- VSTEP 1: GPS Detection -->
+                    <div id="vstep-1" class="vstep-content space-y-4">
+                        <div class="bg-white rounded-2xl shadow-sm p-5">
+                            <div class="text-center py-4">
+                                <div class="text-4xl mb-3">📍</div>
+                                <p class="font-bold text-gray-700">กำลังตรวจจับตำแหน่ง...</p>
+                                <p class="text-sm text-gray-400 mt-1">กรุณาอนุญาตการเข้าถึง GPS</p>
+                                <div class="mt-3 w-8 h-8 border-3 border-emerald-200 border-t-emerald-600 rounded-full mx-auto" style="border-width:3px;animation:spin 1.5s linear infinite"></div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
+                            <b>💡 Workshop note:</b> หลังจากที่อาสาสแกน QR สติกเกอร์บนเซนเซอร์ ระบบจะเปิดหน้านี้ + ตรวจตำแหน่ง GPS เพื่อจับคู่กับบ้านที่ลงทะเบียนไว้โดยอัตโนมัติ
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 2: GPS matched + Sensor polling -->
+                    <div id="vstep-2" class="vstep-content space-y-4 hidden">
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="bg-emerald-50 rounded-xl p-3 mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="text-2xl">🏠</div>
+                                    <div class="flex-1">
+                                        <p class="font-bold text-gray-800">บ้านอาสา 03</p>
+                                        <p class="text-xs text-gray-500">เซนเซอร์ BS-003 · ระยะ ~5 ม.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-sm">✅ ยืนยัน</button>
+                                <button class="px-4 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">เปลี่ยน</button>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">14:32</p>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="text-2xl">⏳</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm">กำลังตรวจสอบเซนเซอร์...</p>
+                                    <p class="text-xs text-gray-500">ตรวจสอบให้แน่ใจว่าเซนเซอร์เปิดอยู่</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 rounded-xl p-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full border-2 border-gray-200 border-t-emerald-500" style="animation:spin 1.5s linear infinite"></div>
+                                    <div class="flex-1">
+                                        <p class="text-xs font-bold text-gray-700">กำลังค้นหาเซนเซอร์...</p>
+                                        <p class="text-[10px] text-gray-500">ตรวจสอบใหม่ในอีก 15 วินาที</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-base font-bold text-emerald-600">3</p>
+                                        <p class="text-[10px] text-gray-400">ครั้งที่ตรวจ</p>
+                                    </div>
+                                </div>
+                                <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mt-2.5">
+                                    <div class="h-full bg-emerald-400 rounded-full" style="width:35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 3: Baseline collecting -->
+                    <div id="vstep-3" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">14:35</p>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="text-2xl">✅</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm text-emerald-700">เซนเซอร์เชื่อมต่อแล้ว</p>
+                                    <p class="text-xs text-gray-500">BS-003 · กำลังเก็บข้อมูล</p>
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 rounded-xl p-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-bold text-blue-800">📊 กำลังเก็บค่า Baseline</span>
+                                    <span class="text-xs text-blue-600">12 ค่า</span>
+                                </div>
+                                <div class="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500 rounded-full" style="width:60%"></div>
+                                </div>
+                                <p class="text-xs text-blue-600 mt-2">⏱ 6 / 10 นาที — ค่าอากาศปกติของห้องครัว</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
+                            <b>💡 Workshop note:</b> 10 นาทีแรกระบบเก็บค่า ambient (อากาศปกติก่อนจุดเตา) เพื่อใช้เป็นฐานเปรียบเทียบกับช่วงทำอาหาร — สำคัญสำหรับการแยกค่ามลพิษจากเตาออกจากค่ามลพิษในอากาศปกติ
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 4: Cooking button (big red) -->
+                    <div id="vstep-4" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">14:45</p>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-3">
+                            <div class="bg-emerald-50 rounded-xl p-3 text-center">
+                                <p class="text-emerald-800 font-bold text-sm">✓ Baseline เก็บครบแล้ว</p>
+                                <p class="text-emerald-600 text-xs">20 ค่า · 10 นาที</p>
+                            </div>
+                        </div>
+                        <button class="w-full bg-red-500 text-white py-7 rounded-3xl shadow-2xl pulse-ring" style="animation: pulse-ring 2s infinite">
+                            <div class="text-5xl mb-2">🔥</div>
+                            <div class="text-xl font-bold">เริ่มจุดเตาแล้ว</div>
+                            <div class="text-xs opacity-80 mt-1">กดเมื่อเริ่มจุดเตา</div>
+                        </button>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
+                            <b>💡 Workshop note:</b> อาสาสมัครกดปุ่มนี้ตอนจุดเตา — ระบบจะเริ่มเก็บข้อมูลช่วง "หุงต้ม" (cooking phase) แยกจาก baseline → ใช้คำนวณมลพิษสุทธิจากเตาในภายหลัง
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 5: TVOC Question -->
+                    <div id="vstep-5" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">14:46</p>
+                        </div>
+                        <div class="bg-orange-50 rounded-xl p-3 text-center text-sm text-orange-800 font-bold">🔥 จุดเตาแล้ว — กำลังเก็บข้อมูล</div>
+                        <div class="bg-purple-50 rounded-2xl p-4 border-2 border-purple-200">
+                            <div class="text-center mb-4">
+                                <div class="text-4xl">📝</div>
+                                <p class="font-bold text-purple-800 mt-2">วันนี้ต้องกรอกค่าด้วยมือมั้ย?</p>
+                                <p class="text-xs text-purple-500 mt-1">TVOC และ/หรือ CO เก็บตั้งแต่ Baseline เพื่อเทียบกับช่วงจุดเตา</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="flex-1 bg-purple-600 text-white py-3 rounded-xl font-bold">✅ เก็บ</button>
+                                <button class="flex-1 bg-gray-200 text-gray-600 py-3 rounded-xl font-bold">❌ ไม่เก็บ</button>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
+                            <b>💡 Workshop note:</b> 2 รูปแบบการเก็บข้อมูล — <b>เก็บ TVOC/CO</b> (อาสาอยู่กรอกทุก 5 นาที) หรือ <b>ไม่เก็บ</b> (เปิดเซนเซอร์ทิ้งไว้ ระบบเก็บเฉพาะค่าจาก sensor อัตโนมัติ)
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 6: TVOC Manual Recording -->
+                    <div id="vstep-6" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">14:51</p>
+                        </div>
+                        <div class="bg-purple-50 rounded-2xl p-4 border-2 border-purple-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <p class="font-bold text-purple-800 text-sm">📝 บันทึกค่าด้วยมือ</p>
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-purple-600">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                                    <span>ถัดไปใน 4:23</span>
+                                </div>
+                            </div>
+                            <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
+                            <input type="number" value="0.32" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-purple-200 bg-white mb-3">
+                            <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
+                            <input type="number" value="2" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-amber-200 bg-white mb-3">
+                            <button class="w-full py-2.5 bg-purple-600 text-white rounded-xl font-bold">บันทึก</button>
+                            <div class="mt-3 space-y-1.5">
+                                <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:46</span><span class="font-mono">TVOC <b>0.28</b> · CO <b>1</b></span></div>
+                                <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:41</span><span class="font-mono">TVOC <b>0.25</b> · CO <b>1</b></span></div>
+                                <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:36</span><span class="font-mono">TVOC <b>0.21</b> · CO <b>0</b></span></div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 rounded-xl p-3 text-center">
+                            <p class="text-blue-700 font-bold text-xs">⏱ เซนเซอร์ยังเก็บข้อมูลอยู่</p>
+                            <p class="text-blue-500 text-[10px] mt-0.5">เหลืออีก ~1 ชั่วโมง 40 นาที — กรุณาอยู่กรอกค่าต่อ</p>
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 7: Summary -->
+                    <div id="vstep-7" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-50 rounded-2xl p-5 border-2 border-emerald-200">
+                            <div class="text-center mb-4">
+                                <div class="text-5xl">✅</div>
+                                <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
+                                <p class="text-emerald-600 text-xs mt-1">บ้านอาสา 03 — Session 1 ของวันนี้</p>
+                            </div>
+                            <div class="space-y-2 text-sm bg-white rounded-xl p-4">
+                                <div class="flex justify-between"><span class="text-gray-500">เริ่ม:</span><span class="font-bold">14:35</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">จบ:</span><span class="font-bold">16:45</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">ระยะเวลา:</span><span class="font-bold">2 ชม. 10 นาที</span></div>
+                                <hr class="my-2">
+                                <div class="flex justify-between"><span class="text-gray-500">📊 ค่าจากเซนเซอร์:</span><span class="font-bold text-emerald-600">288 จุด</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">📝 ค่ากรอกมือ (TVOC/CO):</span><span class="font-bold text-purple-600">26 ค่า</span></div>
+                                <hr class="my-2">
+                                <div class="flex justify-between"><span class="text-gray-500">PM2.5 เฉลี่ย:</span><span class="font-bold text-red-600">42 µg/m³</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">CO2 เฉลี่ย:</span><span class="font-bold">820 ppm</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">TVOC เฉลี่ย:</span><span class="font-bold text-purple-600">0.28 mg/m³</span></div>
+                            </div>
+                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mt-3 text-center">
+                                <p class="text-amber-800 text-xs font-bold">⏸ Session ถัดไปได้ตอน 21:45</p>
+                                <p class="text-amber-600 text-[10px]">รอ cooldown 5 ชั่วโมง</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
+                            <b>💡 Workshop note:</b> หลัง session จบ — ระบบบันทึกข้อมูลเข้า Cloud อัตโนมัติ → Dashboard อัปเดท → อาสาเก็บข้อมูล session ถัดไปได้หลัง cooldown 5 ชั่วโมง (ห้ามเกิน 2 sessions/วัน)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Side notes -->
+        <div class="max-w-5xl mx-auto mt-6 px-4 grid md:grid-cols-3 gap-3 text-xs">
+            <div class="bg-white rounded-xl p-4 border-l-4 border-emerald-500">
+                <p class="font-bold text-emerald-700 mb-1">🎯 จุดประสงค์</p>
+                <p class="text-gray-600">หน้าอาสาออกแบบให้ใช้บนมือถือ — เน้นปุ่มใหญ่ ชัดเจน ไม่ต้อง login ซับซ้อน</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 border-l-4 border-purple-500">
+                <p class="font-bold text-purple-700 mb-1">🛡️ Privacy</p>
+                <p class="text-gray-600">GPS ใช้เฉพาะตอนแรก (จับคู่บ้าน) ไม่บันทึกพิกัดหลังจากนั้น — เก็บแค่ "บ้านอาสา N"</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 border-l-4 border-blue-500">
+                <p class="font-bold text-blue-700 mb-1">📞 ช่วยเหลือ</p>
+                <p class="text-gray-600">มี modal "ไม่พบเซนเซอร์" + "ข้อมูลไม่อัปเดต" พร้อมขั้นตอนแก้ปัญหาและช่องติดต่อแอดมิน</p>
+            </div>
+        </div>
+    </section>
+
     </main>
+
+    <script>
+        // ============================================================
+        // VOLUNTEER STEP NAVIGATION
+        // ============================================================
+        function setVolStep(step) {
+            for (let i = 1; i <= 7; i++) {
+                document.getElementById('vstep-' + i).classList.toggle('hidden', i !== step);
+                const btn = document.getElementById('vstep-' + i + '-btn');
+                if (btn) btn.className = 'vstep-btn px-3 py-2 rounded-lg text-xs font-bold ' + (i === step ? 'bg-emerald-600 text-white' : (i < step ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'));
+            }
+        }
+    </script>
 
     <script>
         // ============================================================
@@ -833,12 +1340,17 @@
         function showTab(tab) {
             document.getElementById('view-basic').classList.toggle('hidden', tab !== 'basic');
             document.getElementById('view-deep').classList.toggle('hidden', tab !== 'deep');
+            document.getElementById('view-volunteer').classList.toggle('hidden', tab !== 'volunteer');
             document.getElementById('nav-basic').className = tab === 'basic' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
             document.getElementById('nav-deep').className = tab === 'deep' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
+            document.getElementById('nav-volunteer').className = tab === 'volunteer' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
+            // Hide scenario switcher when on volunteer view (not relevant)
+            const scSwitcher = document.querySelector('.bg-purple-100');
+            if (scSwitcher) scSwitcher.style.display = tab === 'volunteer' ? 'none' : 'flex';
             // Init deep map on first visit (Leaflet needs visible container)
             if (tab === 'deep' && !mapDeepInited) {
                 mapDeepInited = true;
-                setTimeout(() => initMap('map-deep'), 150);
+                setTimeout(() => initMapDeep('map-deep'), 150);
             }
             setTimeout(() => initChartsForScenario(currentScenario), 100);
         }
@@ -851,7 +1363,7 @@
         function setScenario(sc) {
             currentScenario = sc;
             // Button styles
-            ['normal', 'no-eco', 'eco-fail'].forEach(s => {
+            ['normal', 'no-eco', 'no-old', 'eco-fail'].forEach(s => {
                 const btn = document.getElementById('sc-' + s);
                 if (btn) btn.className = s === sc
                     ? 'px-3 py-1 rounded-full text-xs font-bold bg-purple-600 text-white'
@@ -860,45 +1372,156 @@
             // Hero
             document.getElementById('hero-normal').classList.toggle('hidden', sc !== 'normal');
             document.getElementById('hero-no-eco').classList.toggle('hidden', sc !== 'no-eco');
+            document.getElementById('hero-no-old').classList.toggle('hidden', sc !== 'no-old');
             document.getElementById('hero-eco-fail').classList.toggle('hidden', sc !== 'eco-fail');
             // Alert bars
             document.getElementById('scenario-bar-no-eco').classList.toggle('active', sc === 'no-eco');
+            document.getElementById('scenario-bar-no-old').classList.toggle('active', sc === 'no-old');
             document.getElementById('scenario-bar-eco-fail').classList.toggle('active', sc === 'eco-fail');
             // Basic content
             document.getElementById('basic-content-normal').classList.toggle('hidden', sc !== 'normal');
             document.getElementById('basic-content-no-eco').classList.toggle('hidden', sc !== 'no-eco');
+            document.getElementById('basic-content-no-old').classList.toggle('hidden', sc !== 'no-old');
             document.getElementById('basic-content-eco-fail').classList.toggle('hidden', sc !== 'eco-fail');
             // Deep content
             document.getElementById('deep-content-normal').classList.toggle('hidden', sc !== 'normal');
             document.getElementById('deep-content-no-eco').classList.toggle('hidden', sc !== 'no-eco');
+            document.getElementById('deep-content-no-old').classList.toggle('hidden', sc !== 'no-old');
             document.getElementById('deep-content-eco-fail').classList.toggle('hidden', sc !== 'eco-fail');
-            // Init charts for newly shown scenario
-            setTimeout(() => initChartsForScenario(sc), 100);
+            // Init charts (skip no-old — has no charts, just placeholder)
+            if (sc !== 'no-old') {
+                setTimeout(() => initChartsForScenario(sc), 100);
+            }
         }
 
         // ============================================================
         // MAP (shared data + init for both basic & deep maps)
         // ============================================================
-        const MOCK_HOUSES = [
-            { name: 'บ้าน 01 ✨', lat: 18.795, lng: 98.975, online: true },
-            { name: 'บ้าน 02 ✨', lat: 18.792, lng: 98.982, online: true },
-            { name: 'บ้าน 03 ✨', lat: 18.788, lng: 98.978, online: false },
-            { name: 'บ้าน 04 ✨', lat: 18.798, lng: 98.970, online: false },
-            { name: 'บ้าน 05 ✨', lat: 18.785, lng: 98.985, online: false },
-            { name: 'บ้าน 06 🪵', lat: 18.790, lng: 98.990, online: true },
-            { name: 'บ้าน 07 🪵', lat: 18.793, lng: 98.965, online: false },
-            { name: 'บ้าน 08 🪵', lat: 18.800, lng: 98.980, online: false },
-            { name: 'บ้าน 09 🪵', lat: 18.782, lng: 98.972, online: false },
-            { name: 'บ้าน 10 🪵', lat: 18.796, lng: 98.988, online: false },
+        // Mock data — Chiang Mai area
+        // Basic map shows: sensor (3) + got-stove-no-sensor (8) = 11 จุด
+        // Deep map shows: usage frequency (color-coded)
+        const MOCK_SENSOR_HOUSES = [
+            { name: 'บ้านอาสา BS-001 ติดเซนเซอร์', lat: 18.825, lng: 99.005, usage: 28 },
+            { name: 'บ้านอาสา BS-002 ติดเซนเซอร์', lat: 18.795, lng: 98.975, usage: 22 },
+            { name: 'บ้านอาสา BS-003 ติดเซนเซอร์', lat: 18.788, lng: 98.978, usage: 17 },
         ];
+        const MOCK_GOT_STOVE = [
+            { name: 'บ้านอาสา GS-001 ได้รับเตา', lat: 18.830, lng: 99.030, usage: 0 },
+            { name: 'บ้านอาสา GS-002 ได้รับเตา', lat: 18.832, lng: 99.020, usage: 0 },
+            { name: 'บ้านอาสา GS-003 ได้รับเตา', lat: 18.808, lng: 99.030, usage: 0 },
+            { name: 'บ้านอาสา GS-004 ได้รับเตา', lat: 18.798, lng: 98.970, usage: 0 },
+            { name: 'บ้านอาสา GS-005 ได้รับเตา', lat: 18.797, lng: 98.972, usage: 0 },
+            { name: 'บ้านอาสา GS-006 ได้รับเตา', lat: 18.785, lng: 98.985, usage: 0 },
+            { name: 'บ้านอาสา GS-007 ได้รับเตา', lat: 18.768, lng: 98.965, usage: 0 },
+            { name: 'บ้านอาสา GS-008 ได้รับเตา', lat: 18.770, lng: 98.967, usage: 0 },
+        ];
+        // Combined for deep view (frequency color)
+        const MOCK_HOUSES = [
+            ...MOCK_SENSOR_HOUSES,
+            { name: 'บ้านอาสา 04 ✨', lat: 18.798, lng: 98.970, usage: 8 },
+            { name: 'บ้านอาสา 05 ✨', lat: 18.785, lng: 98.985, usage: 6 },
+            { name: 'บ้านอาสา 06 🪵', lat: 18.790, lng: 98.990, usage: 25 },
+            { name: 'บ้านอาสา 07 🪵', lat: 18.793, lng: 98.965, usage: 12 },
+            { name: 'บ้านอาสา 08 🪵', lat: 18.800, lng: 98.980, usage: 3 },
+            { name: 'บ้านอาสา 09 🪵', lat: 18.782, lng: 98.972, usage: 0 },
+            { name: 'บ้านอาสา 10 🪵', lat: 18.796, lng: 98.988, usage: 4 },
+        ];
+        const MOCK_SENSORS = [
+            { name: 'เซนเซอร์อ้างอิง CMRU', lat: 18.787, lng: 98.978 },
+            { name: 'เซนเซอร์อ้างอิง บ้านนก', lat: 18.798, lng: 98.985 },
+        ];
+        const MOCK_SMES = [
+            { name: 'ร้านอาหาร SME — ตลาดเทศบาล', lat: 18.789, lng: 98.972 },
+        ];
+
+        function freqColor(u) { if (u >= 15) return '#10b981'; if (u >= 5) return '#f97316'; return '#ef4444'; }
+        function freqLabel(u) { if (u >= 15) return 'ใช้บ่อย (' + u + ' ครั้ง/เดือน)'; if (u >= 5) return 'ปานกลาง (' + u + ' ครั้ง/เดือน)'; return 'น้อย/ไม่ใช้ (' + u + ' ครั้ง/เดือน)'; }
+
+        // Marker shape generators (match production)
+        function circleIcon(color, size) {
+            size = size || 16;
+            return L.divIcon({ html: '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:' + color + ';border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>', className: '', iconSize: [size, size] });
+        }
+        function triangleIcon(color) {
+            return L.divIcon({ html: '<svg width="22" height="22" viewBox="0 0 22 22" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4))"><polygon points="11,2 2,20 20,20" fill="' + color + '" stroke="white" stroke-width="2"/></svg>', className: '', iconSize: [22, 22], iconAnchor: [11, 11] });
+        }
+        function squareIcon(color) {
+            return L.divIcon({ html: '<div style="width:16px;height:16px;background:' + color + ';border:2px solid white;border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>', className: '', iconSize: [16, 16] });
+        }
+
+        // Sensor icon — blue circle with 🔬
+        function sensorIcon() {
+            return L.divIcon({ html: '<div style="background:#3b82f6;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔬</div>', iconSize: [28, 28], iconAnchor: [14, 14], className: '' });
+        }
+        // Got-stove (no sensor) icon — orange flame
+        function gotStoveIcon() {
+            return L.divIcon({ html: '<div style="background:#f97316;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:13px;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)">🔥</div>', iconSize: [28, 28], iconAnchor: [14, 14], className: '' });
+        }
+
+        // Basic map — clustering + sensor vs got-stove markers + legend (match production)
         function initMap(elementId) {
+            const m = L.map(elementId).setView([18.80, 99.00], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM', maxZoom: 18 }).addTo(m);
+            const cluster = L.markerClusterGroup({ maxClusterRadius: 40 });
+            MOCK_SENSOR_HOUSES.forEach(h => {
+                cluster.addLayer(L.marker([h.lat, h.lng], { icon: sensorIcon() }).bindPopup('<b>🔬 ' + h.name + '</b><br>ติดเซนเซอร์วัดค่ามลพิษ'));
+            });
+            MOCK_GOT_STOVE.forEach(h => {
+                cluster.addLayer(L.marker([h.lat, h.lng], { icon: gotStoveIcon() }).bindPopup('<b>🔥 ' + h.name + '</b><br>ได้รับเตา (ไม่มีเซนเซอร์วัดค่า)'));
+            });
+            m.addLayer(cluster);
+            // Legend (bottom-right) — match production
+            const legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function() {
+                const d = L.DomUtil.create('div');
+                d.style.cssText = 'background:white;padding:10px 14px;border-radius:8px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,0.18);font-family:Chakra Petch,sans-serif';
+                const ic = (color, emoji) => '<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;background:' + color + ';border:2px solid white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.3);color:white;font-size:11px;vertical-align:middle">' + emoji + '</span>';
+                d.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;color:#374151">สัญลักษณ์</div>'
+                    + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">' + ic('#3b82f6', '🔬') + ' ติดเซนเซอร์วัดค่า</div>'
+                    + '<div style="display:flex;align-items:center;gap:8px">' + ic('#f97316', '🔥') + ' ได้รับเตาชีวมวล (ไม่มีเซนเซอร์)</div>';
+                return d;
+            };
+            legend.addTo(m);
+            return m;
+        }
+
+        // Deep map — frequency-based + sensor triangle + SME square + legend (match production)
+        function initMapDeep(elementId) {
             const m = L.map(elementId).setView([18.79, 98.98], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OSM', maxZoom: 18 }).addTo(m);
+            // Households (color by usage frequency)
             MOCK_HOUSES.forEach(h => {
-                const color = h.online ? '#10b981' : '#9ca3af';
-                const icon = L.divIcon({ html: '<div style="width:14px;height:14px;border-radius:50%;background:' + color + ';border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3)"></div>', className: '', iconSize: [14, 14] });
-                L.marker([h.lat, h.lng], { icon }).addTo(m).bindPopup('<b>' + h.name + '</b><br>' + (h.online ? '🟢 ออนไลน์' : '⚪ ออฟไลน์'));
+                const color = freqColor(h.usage);
+                L.marker([h.lat, h.lng], { icon: circleIcon(color, 16) }).addTo(m)
+                  .bindPopup('<b>' + h.name + '</b><br>📊 ' + freqLabel(h.usage));
             });
+            // Sensors (blue triangles)
+            MOCK_SENSORS.forEach(s => {
+                L.marker([s.lat, s.lng], { icon: triangleIcon('#3b82f6') }).addTo(m)
+                  .bindPopup('<b>📡 ' + s.name + '</b>');
+            });
+            // SMEs (purple squares)
+            MOCK_SMES.forEach(s => {
+                L.marker([s.lat, s.lng], { icon: squareIcon('#a855f7') }).addTo(m)
+                  .bindPopup('<b>🏪 ' + s.name + '</b>');
+            });
+            // Legend (bottom-right) — match production
+            const legend = L.control({ position: 'bottomright' });
+            legend.onAdd = function() {
+                const d = L.DomUtil.create('div');
+                d.style.cssText = 'background:white;padding:10px 14px;border-radius:8px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,0.18);font-family:Chakra Petch,sans-serif';
+                const triSvg = '<svg width="14" height="14" viewBox="0 0 12 12" style="display:inline-block;vertical-align:middle;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))"><polygon points="6,1 1,11 11,11" fill="#3b82f6" stroke="white" stroke-width="1.5"/></svg>';
+                const dot = c => '<span style="display:inline-block;width:14px;height:14px;background:' + c + ';border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);border-radius:50%;vertical-align:middle"></span>';
+                const sq = c => '<span style="display:inline-block;width:14px;height:14px;background:' + c + ';border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);border-radius:2px;vertical-align:middle"></span>';
+                d.innerHTML = '<div style="font-weight:bold;margin-bottom:6px;color:#374151">ประเภทจุดบนแผนที่</div>'
+                    + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">' + triSvg + ' เซนเซอร์อ้างอิง</div>'
+                    + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">' + dot('#10b981') + ' บ้านใช้บ่อย (≥15)</div>'
+                    + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">' + dot('#f97316') + ' บ้านปานกลาง (5-14)</div>'
+                    + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">' + dot('#ef4444') + ' บ้านน้อย/ไม่ใช้</div>'
+                    + '<div style="display:flex;align-items:center;gap:6px">' + sq('#a855f7') + ' SME ภาคธุรกิจ</div>';
+                return d;
+            };
+            legend.addTo(m);
             return m;
         }
         let mapDeepInited = false;
