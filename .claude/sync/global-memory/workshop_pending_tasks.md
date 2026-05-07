@@ -55,9 +55,9 @@ originSessionId: d7cf0268-ff39-4bcb-8ed4-e928922852a3
   - Edit point HTML: ลบ block `<!-- Demo Mode control panel -->` ถึง `<!-- TVOC entry overlay -->` (ก่อน step navigation)
   - Edit point JS: ลบ block `// DEMO MODE — Sped-up volunteer simulation` ถึงจบฟังก์ชัน `injectSummaryStats`
 
-### 4. Response Form Final Review
-- Status: ✅ เสร็จแล้ว · รอ DewS ตรวจสุดท้าย + print
+### 4. Response Form Final Review ✅ (ส่งแล้ว 2026-05-07)
 - ตำแหน่ง overlay ตรงแล้ว · เปลี่ยนเป็น "นาง" + เพิ่มชื่อบริษัท
+- DewS print + ส่งเรียบร้อย
 
 ### 5. Rehearsal (optional)
 - Practice run timing 75 นาที
