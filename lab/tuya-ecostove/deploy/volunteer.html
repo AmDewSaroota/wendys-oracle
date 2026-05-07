@@ -22,6 +22,7 @@
   @keyframes breathe { 0%,100% { opacity:0.4; transform:scale(0.95); } 50% { opacity:1; transform:scale(1.05); } }
   .breathe { animation: breathe 2s ease-in-out infinite; }
   .poll-ring { width:40px; height:40px; border-radius:50%; border:3px solid #e5e7eb; border-top-color:#10b981; animation: spin 1.5s linear infinite; }
+  button, [onclick] { touch-action: manipulation; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen pb-8">
@@ -78,7 +79,7 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <button onclick="confirmMatchedHouse()" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">✅ ยืนยัน</button>
+        <button onclick="confirmMatchedHouse()" data-testid="confirm-matched-house" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">✅ ยืนยัน</button>
         <button onclick="showManualSelect()" class="px-4 bg-gray-100 text-gray-600 rounded-xl font-bold active:scale-95">เปลี่ยน</button>
       </div>
     </div>
@@ -89,7 +90,7 @@
       <select id="house-dropdown" class="w-full p-3 rounded-xl border-2 border-gray-200 text-lg font-bold bg-white focus:border-emerald-500 outline-none" style="-webkit-appearance:none;">
         <option value="">-- เลือกบ้าน --</option>
       </select>
-      <button onclick="confirmDropdownHouse()" class="mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">✅ ยืนยัน</button>
+      <button onclick="confirmDropdownHouse()" data-testid="confirm-dropdown-house" class="mt-3 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">✅ ยืนยัน</button>
     </div>
   </div>
 
@@ -161,6 +162,18 @@
         </div>
         <p class="text-xs text-orange-600 mt-2" id="collecting-time">⏱ 0 นาที</p>
       </div>
+    </div>
+
+    <!-- ======================= -->
+    <!-- START COLLECTION BUTTON -->
+    <!-- ======================= -->
+    <div id="start-collection-wrap" class="hidden fade-in">
+      <button id="start-collection-btn" onclick="startCollection()"
+        class="w-full bg-sky-600 text-white py-7 rounded-3xl shadow-xl active:scale-95 transition-transform">
+        <div class="text-5xl mb-2">▶</div>
+        <div class="text-2xl font-bold">เริ่มเก็บข้อมูล</div>
+        <div class="text-sm opacity-70 mt-1">กดเมื่อพร้อมเริ่มเก็บข้อมูล</div>
+      </button>
     </div>
 
     <!-- ======================= -->
@@ -254,9 +267,7 @@
       <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
     </div>
     <div id="summary-details" class="space-y-3 text-sm bg-white rounded-xl p-4"></div>
-    <button onclick="resetPage()" class="mt-5 w-full bg-emerald-600 text-white py-3 rounded-xl font-bold text-lg active:scale-95 transition-transform">
-      🔄 เริ่มใหม่
-    </button>
+    <div id="summary-status-badge" class="hidden mt-4 bg-amber-50 rounded-xl p-3 text-center border border-amber-200"></div>
   </div>
 
 </main>
@@ -307,7 +318,7 @@
     <div class="space-y-3 text-sm text-gray-700 mb-5">
       <div class="flex gap-2 items-start bg-amber-50 rounded-xl p-3">
         <span class="text-lg">1️⃣</span>
-        <div><b>กดปุ่มบนเซนเซอร์ 3 ครั้ง</b><br>เพื่อปรับเทียบค่า (Calibrate) รอ 2-3 นาที แล้วสังเกตว่าจำนวนข้อมูลเพิ่มขึ้นหรือไม่</div>
+        <div><b>กดปุ่มบนเซนเซอร์ 4 ครั้ง</b><br>เพื่อปรับเทียบค่า (Calibrate) รอ 120 วินาที แล้วสังเกตว่าจำนวนข้อมูลเพิ่มขึ้นหรือไม่</div>
       </div>
       <div class="flex gap-2 items-start bg-orange-50 rounded-xl p-3">
         <span class="text-lg">2️⃣</span>
@@ -378,6 +389,7 @@ let manualReadings = []; // combined list [{tvoc, co, time}]
 let tvocEnabled = false; // true only when volunteer chooses to record TVOC/CO
 let tvocQuestionAnswered = false; // true after volunteer answers the TVOC/CO question
 let pollTimer = null;
+let activePollFn = null;
 let timeTimer = null;
 let userGPS = null; // { lat, lng }
 let browserId = null; // unique ID for this browser/tab
@@ -789,6 +801,7 @@ async function loadPreviousTvoc() {
 // ================================================
 async function startPolling() {
   const pollFn = DEMO_MODE ? demoPollStatus : pollStatus;
+  activePollFn = pollFn;
   pollCheckCount = 0;
   pollGaveUp = false;
   await pollFn();
@@ -923,13 +936,22 @@ async function pollStatus() {
       .limit(3);
     const doneCount = todaySessions ? todaySessions.length : 0;
     if (doneCount >= 2) {
-      setSensorUI('daily-limit', '✅', 'ครบ 2 sessions แล้ววันนี้',
-        'เซนเซอร์เก็บข้อมูลครบตามกำหนด — พรุ่งนี้เก็บต่อได้');
+      const { data: lastDone } = await sb.from('sessions')
+        .select('started_at, ended_at, readings_count')
+        .eq('device_id', currentDevice.tuya_device_id)
+        .in('session_status', ['complete', 'incomplete'])
+        .gte('started_at', today + 'T00:00:00Z')
+        .order('ended_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      showReturnSummary(lastDone, '✅ ครบ quota วันนี้แล้ว', 'ระบบจะพร้อมเก็บข้อมูลอีกครั้งในวันพรุ่งนี้');
+      clearInterval(pollTimer);
+      return;
     } else {
       // Check cooldown — last ended session within 5 hours?
       const COOLDOWN_MINUTES = 300;
       const { data: lastSession } = await sb.from('sessions')
-        .select('ended_at, session_number')
+        .select('ended_at, started_at, session_number, readings_count')
         .eq('device_id', currentDevice.tuya_device_id)
         .not('ended_at', 'is', null)
         .order('ended_at', { ascending: false })
@@ -961,13 +983,11 @@ async function pollStatus() {
           } catch (_) {}
 
           if (inQuiet) {
-            setSensorUI('cooldown', '🌙', 'ครบ 1 รอบแล้ว — รอบถัดไปอยู่นอกเวลาเก็บข้อมูล',
-              'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เก็บต่อได้พรุ่งนี้ค่ะ');
+            showReturnSummary(lastSession[0], '🌙 ครบ 1 รอบแล้ว', 'รอบถัดไปอยู่นอกเวลาเก็บข้อมูล — พรุ่งนี้ค่ะ');
           } else {
-            setSensorUI('cooldown', '⏸️', 'พักเครื่อง — เปิดได้อีกครั้ง ' + nextTimeStr + ' น.',
-              'Session ' + (lastSession[0].session_number || 1) + ' เสร็จแล้ว — เหลืออีก ~' + timeStr);
+            showReturnSummary(lastSession[0], '⏸️ อยู่ในช่วงพัก', 'เปิดได้อีกครั้ง ' + nextTimeStr + ' น. (อีก ~' + timeStr + ')');
           }
-          hideAllActions();
+          clearInterval(pollTimer);
           return;
         }
       }
@@ -985,10 +1005,15 @@ async function pollStatus() {
             const pingRes = await fetch(API_BASE + '/api/volunteer?action=ping-sensor&house_id=' + selectedHouse.id);
             const ping = await pingRes.json();
             if (ping.ok && ping.online) {
-              if (ping.sessionCreated || ping.hasSession) {
-                setSensorUI('waiting', '📡', 'พบเซนเซอร์! กำลังเริ่มเก็บข้อมูล...',
+              if (ping.hasSession) {
+                setSensorUI('waiting', '📡', 'พบเซนเซอร์! กำลังเชื่อมต่อ...',
                   'รอสักครู่...');
                 return; // next poll will find the session
+              }
+              if (ping.ready) {
+                setSensorUI('ready', '📡', 'เซนเซอร์พร้อมแล้ว!', 'กดปุ่มด้านล่างเพื่อเริ่มเก็บข้อมูล');
+                showStartButton();
+                return;
               }
               if (ping.reason === 'daily-limit') {
                 setSensorUI('daily-limit', '✅', 'ครบ 2 sessions แล้ววันนี้',
@@ -1130,6 +1155,7 @@ function setSensorUI(state, emoji, text, detail) {
   const colors = {
     'no-device': 'text-red-600',
     'waiting': 'text-gray-600',
+    'ready': 'text-emerald-700',
     'give-up': 'text-red-600',
     'cooldown': 'text-amber-600',
     'daily-limit': 'text-emerald-700',
@@ -1252,6 +1278,48 @@ function updateSessionRemaining() {
 // ================================================
 // UI State Control
 // ================================================
+async function startCollection() {
+  if (!selectedHouse) return;
+  const btn = document.getElementById('start-collection-btn');
+  if (btn) { btn.disabled = true; btn.querySelector('div:nth-child(2)').textContent = 'กำลังเริ่ม...'; }
+  try {
+    const res = await fetch(API_BASE + '/api/volunteer?action=start-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ house_id: selectedHouse.id }),
+    });
+    const data = await res.json();
+    if (data.ok && data.sessionCreated) {
+      hideStartButton();
+      if (!sensorFoundAlerted) {
+        sensorFoundAlerted = true;
+        playBeep();
+        try { navigator.vibrate?.([200, 100, 200]); } catch (_) {}
+      }
+      showToast('✅ เริ่มเก็บข้อมูลแล้ว — กำลังเก็บ Baseline');
+      if (activePollFn) activePollFn();
+    } else if (data.reason === 'daily-limit') {
+      setSensorUI('daily-limit', '✅', 'ครบ 2 sessions แล้ววันนี้', 'เก็บข้อมูลครบตามกำหนด');
+      hideStartButton(); hideAllActions();
+    } else if (data.reason === 'cooldown') {
+      setSensorUI('cooldown', '⏸️', 'อยู่ในช่วงพัก', 'รอสักครู่แล้วลองใหม่');
+      hideStartButton(); hideAllActions();
+    } else {
+      showToast('⚠️ ไม่สามารถเริ่มได้ — ' + (data.error || 'ลองใหม่อีกครั้ง'));
+      if (btn) {
+        btn.disabled = false;
+        btn.querySelector('div:nth-child(2)').textContent = 'เริ่มเก็บข้อมูล';
+      }
+    }
+  } catch (e) {
+    showToast('⚠️ การเชื่อมต่อขัดข้อง — ลองใหม่');
+    if (btn) {
+      btn.disabled = false;
+      btn.querySelector('div:nth-child(2)').textContent = 'เริ่มเก็บข้อมูล';
+    }
+  }
+}
+
 function showCookingButton() {
   document.getElementById('cooking-btn-wrap').classList.remove('hidden');
   // TVOC is shown only after volunteer answers the TVOC question (after cooking start)
@@ -1274,6 +1342,7 @@ function showEndButton() {
 }
 
 function hideAllActions() {
+  document.getElementById('start-collection-wrap').classList.add('hidden');
   document.getElementById('cooking-btn-wrap').classList.add('hidden');
   document.getElementById('tvoc-section').classList.add('hidden');
   document.getElementById('tvoc-question').classList.add('hidden');
@@ -1282,6 +1351,13 @@ function hideAllActions() {
   document.getElementById('baseline-progress').classList.add('hidden');
   document.getElementById('collecting-progress').classList.add('hidden');
   stopTvocReminder();
+}
+
+function showStartButton() {
+  document.getElementById('start-collection-wrap').classList.remove('hidden');
+}
+function hideStartButton() {
+  document.getElementById('start-collection-wrap').classList.add('hidden');
 }
 
 function answerTvoc(yes) {
@@ -1329,14 +1405,16 @@ async function markCookingStart() {
   btn.innerHTML = '<div class="text-4xl mb-2 spin" style="display:inline-block;">⏳</div><div class="text-xl font-bold">กำลังบันทึก...</div>';
 
   try {
-    const params = new URLSearchParams({
-      action: 'cooking-start',
-      session_id: activeSession.id,
-      house_id: selectedHouse.id,
-      gps_lat: userGPS?.lat || '',
-      gps_lng: userGPS?.lng || '',
+    const res = await fetch(API_BASE + '/api/volunteer?action=cooking-start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: activeSession.id,
+        house_id: selectedHouse.id,
+        gps_lat: userGPS?.lat || '',
+        gps_lng: userGPS?.lng || '',
+      }),
     });
-    const res = await fetch(API_BASE + '/api/volunteer?' + params.toString(), { method: 'POST' });
     const result = await res.json();
 
     if (result.ok) {
@@ -1558,6 +1636,40 @@ function showAutoSessionSummary() {
 
   items.push('<div class="text-center text-emerald-600 font-bold pt-2">ขอบคุณที่ช่วยเก็บข้อมูลค่ะ!</div>');
   det.innerHTML = items.join('');
+}
+
+function showReturnSummary(session, badgeText, badgeDetail) {
+  clearInterval(pollTimer);
+  clearInterval(timeTimer);
+  clearInterval(lockPingTimer);
+  clearInterval(pollCountdownTimer);
+  stopTvocReminder();
+
+  document.getElementById('step-session').classList.add('hidden');
+  document.getElementById('step-summary').classList.remove('hidden');
+
+  const det = document.getElementById('summary-details');
+  const items = [];
+  if (selectedHouse) {
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">' + esc(selectedHouse.full_name) + '</span></div>');
+  }
+  if (session) {
+    items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">' + (session.readings_count || 0) + ' ค่า</span></div>');
+    if (session.started_at && session.ended_at) {
+      const elapsed = Math.floor((new Date(session.ended_at) - new Date(session.started_at)) / 60000);
+      const hrs = Math.floor(elapsed / 60);
+      const mins = elapsed % 60;
+      items.push('<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">⏱ เวลารวม</span><span class="font-bold">' + (hrs > 0 ? hrs + ' ชม. ' : '') + mins + ' นาที</span></div>');
+    }
+  }
+  items.push('<div class="text-center text-emerald-600 font-bold pt-2">ขอบคุณที่ช่วยเก็บข้อมูลค่ะ!</div>');
+  det.innerHTML = items.join('');
+
+  const badge = document.getElementById('summary-status-badge');
+  if (badge) {
+    badge.innerHTML = '<p class="font-bold text-amber-700">' + badgeText + '</p><p class="text-xs text-gray-500 mt-1">' + badgeDetail + '</p>';
+    badge.classList.remove('hidden');
+  }
 }
 
 // ================================================

@@ -1,6 +1,6 @@
 /**
  * Biomass Stove Volunteer API
- * Handles volunteer actions: cooking-start, status, ping-sensor
+ * Handles volunteer actions: cooking-start, status, ping-sensor, start-session
  *
  * Env vars (same as sync.js):
  *   SUPABASE_URL, SUPABASE_SERVICE_KEY (or SUPABASE_KEY)
@@ -45,6 +45,13 @@ function getThaiDate() {
   return new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
 }
 
+// Read param from body (POST) first, fallback to query (legacy GET clients).
+// `action` always stays in query for routing.
+function getParam(req, name) {
+  if (req.body && req.body[name] != null) return req.body[name];
+  return req.query[name];
+}
+
 module.exports = async function handler(req, res) {
   // CORS
   const corsOrigin = process.env.CORS_ORIGIN || 'https://biomassstove.vercel.app';
@@ -68,10 +75,13 @@ module.exports = async function handler(req, res) {
   // → Transition session from baseline → collecting
   // ========================================
   if (action === 'cooking-start') {
-    const sessionId = req.query.session_id;
-    const houseId = req.query.house_id;
-    const gpsLat = req.query.gps_lat || null;
-    const gpsLng = req.query.gps_lng || null;
+    if (req.method !== 'POST') {
+      return res.status(405).json({ ok: false, error: 'POST required' });
+    }
+    const sessionId = getParam(req, 'session_id');
+    const houseId = getParam(req, 'house_id');
+    const gpsLat = getParam(req, 'gps_lat') || null;
+    const gpsLng = getParam(req, 'gps_lng') || null;
 
     if (!sessionId) {
       return res.json({ ok: false, error: 'session_id required' });
@@ -326,7 +336,74 @@ module.exports = async function handler(req, res) {
         }
       }
 
-      // 5. Get stove_type + project_id for session
+      // 5. Online + ready — let volunteer press "เริ่มเก็บข้อมูล" button
+      console.log('[ping-sensor] sensor ready for', deviceId, 'house', houseId);
+      return res.json({ ok: true, online: true, ready: true });
+    } catch (e) {
+      console.error('[ping-sensor] error:', e);
+      return res.json({ ok: false, error: e.message });
+    }
+  }
+
+  // ========================================
+  // ACTION: start-session
+  // Called when volunteer presses "เริ่มเก็บข้อมูล" button
+  // ========================================
+  if (action === 'start-session') {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ ok: false, error: 'POST required' });
+    }
+    const houseId = getParam(req, 'house_id');
+    if (!houseId) return res.json({ ok: false, error: 'house_id required' });
+
+    try {
+      const devRes = await fetch(
+        sbUrl + '/rest/v1/devices?subject_id=eq.' + houseId + '&is_active=eq.true&limit=1',
+        { headers: sbHeaders(sbKey) }
+      );
+      const devices = devRes.ok ? await devRes.json() : [];
+      if (!devices.length) return res.json({ ok: false, error: 'no-device' });
+      const device = devices[0];
+      const deviceId = device.tuya_device_id;
+
+      // Guard: already has active session?
+      const sessRes = await fetch(
+        sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
+          '&session_status=in.(baseline,collecting)&order=started_at.desc&limit=1',
+        { headers: sbHeaders(sbKey) }
+      );
+      const sessions = sessRes.ok ? await sessRes.json() : [];
+      if (sessions.length) return res.json({ ok: true, sessionCreated: false, hasSession: true });
+
+      // Daily limit check
+      const thaiDate = getThaiDate();
+      const dayStart = new Date(thaiDate + 'T00:00:00+07:00').toISOString();
+      const dayEnd = new Date(new Date(thaiDate + 'T00:00:00+07:00').getTime() + 86400000).toISOString();
+      const countRes = await fetch(
+        sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
+          '&started_at=gte.' + dayStart + '&started_at=lt.' + dayEnd + '&select=id',
+        { headers: sbHeaders(sbKey) }
+      );
+      const todaySessions = countRes.ok ? await countRes.json() : [];
+      if (todaySessions.length >= MAX_SESSIONS_PER_DAY) {
+        return res.json({ ok: true, reason: 'daily-limit' });
+      }
+
+      // Cooldown check
+      const lastRes = await fetch(
+        sbUrl + '/rest/v1/sessions?device_id=eq.' + deviceId +
+          '&session_status=in.(complete,incomplete,cancelled)&order=ended_at.desc&limit=1',
+        { headers: sbHeaders(sbKey) }
+      );
+      const lastSessions = lastRes.ok ? await lastRes.json() : [];
+      if (lastSessions.length && lastSessions[0].ended_at) {
+        const elapsed = (Date.now() - new Date(lastSessions[0].ended_at).getTime()) / 60000;
+        if (elapsed < SESSION_COOLDOWN_MINUTES) {
+          return res.json({ ok: true, reason: 'cooldown', minutesLeft: Math.ceil(SESSION_COOLDOWN_MINUTES - elapsed) });
+        }
+      }
+
+      // Get stove_type + project_id
       let stoveType = null;
       try {
         const cpRes = await fetch(
@@ -350,7 +427,7 @@ module.exports = async function handler(req, res) {
         if (spData.length) projectId = spData[0].project_id;
       } catch (_) {}
 
-      // 6. Create session
+      // Create session
       const newSession = {
         device_id: deviceId,
         session_status: 'baseline',
@@ -361,69 +438,70 @@ module.exports = async function handler(req, res) {
         started_at: new Date().toISOString(),
         readings_count: 0,
       };
-
       const createRes = await fetch(sbUrl + '/rest/v1/sessions', {
         method: 'POST',
         headers: { ...sbHeaders(sbKey), 'Prefer': 'return=representation' },
         body: JSON.stringify(newSession),
       });
-
       if (!createRes.ok) {
-        console.error('[ping-sensor] session create failed:', createRes.status);
-        return res.json({ ok: true, online: true, reason: 'session-create-failed' });
+        console.error('[start-session] create failed:', createRes.status);
+        return res.json({ ok: false, error: 'session-create-failed' });
       }
-
       const created = (await createRes.json())[0];
 
-      // 7. Fetch first sensor reading and insert log
+      // Fetch first reading from Tuya
       try {
-        const ts2 = Date.now().toString();
-        const statusPath = '/v1.0/devices/' + deviceId + '/status';
-        const sign2 = generateSign(tuyaId, tuyaSecret, 'GET', statusPath, ts2, token);
-        const statusRes = await fetch(TUYA_BASE + statusPath, {
-          headers: { client_id: tuyaId, access_token: token, sign: sign2, t: ts2, sign_method: 'HMAC-SHA256' },
-        });
-        const statusData = await statusRes.json();
-        if (statusData.success && statusData.result) {
-          const readings = {};
-          for (const item of statusData.result) readings[item.code] = item.value;
-          const log = {
-            pm25_value: readings.pm25_value ?? null,
-            pm10_value: readings.pm10 ?? null,
-            co2_value: readings.co2_value ?? null,
-            co_value: readings.co_value ?? null,
-            temperature: readings.temp_current ?? null,
-            humidity: readings.humidity_value ?? null,
-            hcho_value: readings.ch2o_value ?? null,
-            tvoc_value: readings.tvoc_value ?? null,
-            data_source: 'sensor',
-            tuya_device_id: deviceId,
-            stove_type: stoveType,
-            status: 'pending',
-            recorded_at: new Date().toISOString(),
-            session_id: created.id,
-          };
-          await fetch(sbUrl + '/rest/v1/pollution_logs', {
-            method: 'POST',
-            headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal' },
-            body: JSON.stringify(log),
-          });
-          // Update session readings_count
-          await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + created.id, {
-            method: 'PATCH',
-            headers: sbHeaders(sbKey),
-            body: JSON.stringify({ readings_count: 1, updated_at: new Date().toISOString() }),
-          });
+        const tuyaId = process.env.TUYA_ACCESS_ID;
+        const tuyaSecret = process.env.TUYA_ACCESS_SECRET;
+        if (tuyaId && tuyaSecret) {
+          const token = await getTuyaToken(tuyaId, tuyaSecret);
+          if (token) {
+            const ts2 = Date.now().toString();
+            const statusPath = '/v1.0/devices/' + deviceId + '/status';
+            const sign2 = generateSign(tuyaId, tuyaSecret, 'GET', statusPath, ts2, token);
+            const statusRes = await fetch(TUYA_BASE + statusPath, {
+              headers: { client_id: tuyaId, access_token: token, sign: sign2, t: ts2, sign_method: 'HMAC-SHA256' },
+            });
+            const statusData = await statusRes.json();
+            if (statusData.success && statusData.result) {
+              const readings = {};
+              for (const item of statusData.result) readings[item.code] = item.value;
+              await fetch(sbUrl + '/rest/v1/pollution_logs', {
+                method: 'POST',
+                headers: { ...sbHeaders(sbKey), 'Prefer': 'return=minimal' },
+                body: JSON.stringify({
+                  pm25_value: readings.pm25_value ?? null,
+                  pm10_value: readings.pm10 ?? null,
+                  co2_value: readings.co2_value ?? null,
+                  co_value: readings.co_value ?? null,
+                  temperature: readings.temp_current ?? null,
+                  humidity: readings.humidity_value ?? null,
+                  hcho_value: readings.ch2o_value ?? null,
+                  tvoc_value: readings.tvoc_value ?? null,
+                  data_source: 'sensor',
+                  tuya_device_id: deviceId,
+                  stove_type: stoveType,
+                  status: 'pending',
+                  recorded_at: new Date().toISOString(),
+                  session_id: created.id,
+                }),
+              });
+              await fetch(sbUrl + '/rest/v1/sessions?id=eq.' + created.id, {
+                method: 'PATCH',
+                headers: sbHeaders(sbKey),
+                body: JSON.stringify({ readings_count: 1, updated_at: new Date().toISOString() }),
+              });
+            }
+          }
         }
       } catch (e) {
-        console.warn('[ping-sensor] first reading insert failed:', e.message);
-        // Non-fatal — session is created, sync.js will collect data next cycle
+        console.warn('[start-session] first reading failed:', e.message);
       }
 
-      console.log('[ping-sensor] session created for', deviceId, 'house', houseId);
-      return res.json({ ok: true, online: true, sessionCreated: true });
+      console.log('[start-session] session created for', deviceId, 'house', houseId);
+      return res.json({ ok: true, sessionCreated: true });
     } catch (e) {
-      console.error('[ping-sensor] error:', e);
+      console.error('[start-session] error:', e);
       return res.json({ ok: false, error: e.message });
     }
   }
@@ -431,5 +509,5 @@ module.exports = async function handler(req, res) {
   // ========================================
   // Unknown action
   // ========================================
-  return res.json({ ok: false, error: 'Unknown action. Use: cooking-start, status, ping-sensor' });
+  return res.json({ ok: false, error: 'Unknown action. Use: cooking-start, status, ping-sensor, start-session' });
 };

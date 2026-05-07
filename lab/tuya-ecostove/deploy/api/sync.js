@@ -839,12 +839,12 @@ async function manageSession(sbUrl, sbKey, deviceId, stoveType, isOnline, houseI
       if (countToday >= MAX_SESSIONS_PER_DAY) {
         return { action: 'daily-limit', sessionsToday: countToday };
       }
-      // Online check — don't create phantom session if device is offline
+      // No active session — wait for volunteer to press "เริ่มเก็บข้อมูล" button
+      // (sync.js no longer auto-creates sessions — prevents unintended sessions on home WiFi)
       if (!isOnline) {
         return { action: 'device-offline' };
       }
-      const newSession = await createSession(sbUrl, sbKey, deviceId, stoveType, houseId, projectId);
-      return { action: 'new', sessionId: newSession?.id };
+      return { action: 'waiting-for-start' };
     }
   } catch (err) {
     return { action: 'error', message: err.message };
@@ -1088,7 +1088,7 @@ module.exports = async function handler(req, res) {
           : !!(deviceInfoMap[sensor.id] && deviceInfoMap[sensor.id].online);
 
         const session = await manageSession(sbUrl, sbKey, sensor.id, sensor.stoveType, isOnline, sensor.houseId, cachedSessions[sensor.id], sensor.projectId, closedMap[sensor.id] || null, countMap[sensor.id] || 0);
-        const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline'];
+        const skipActions = ['cooldown', 'cooldown (after close)', 'auto-cutoff', 'daily-limit', 'device-offline', 'waiting-for-start'];
 
         if (skipActions.includes(session.action)) {
           results.push({ sensor: sensor.name, status: session.action === 'device-offline' ? 'offline' : 'skipped', reason: session.action, session });

@@ -2787,7 +2787,7 @@
                             <b>💡 ทั้งสองวิธีใช้ร่วมกันได้:</b> กรอกบ้านแรก คลิกออก → บันทึกทันที กรอกอีก 3 บ้าน กดบันทึกทั้งหมด → บันทึก 3 บ้านที่เหลือ
                         </div>
                         <div class="guide-important">
-                            <b>⚠️ บ้านที่มีเซนเซอร์:</b> แสดงค่าอัตโนมัติจากระบบ (กรอกไม่ได้)
+                            <b>⚠️ บ้านที่มีเซนเซอร์:</b> แสดงค่าอัตโนมัติจากระบบ (กรอกไม่ได้) — ระบบนับจาก <b>จำนวน session ในเดือนนั้น</b> — <b>1 session = 1 ครั้ง</b> (วันที่มี 2 session = นับ 2 ครั้ง)
                         </div>
 
                         <hr class="my-3 border-slate-200">
@@ -5043,7 +5043,7 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">4</div>
-                            <div><b>รอระบบค้นหาเซนเซอร์</b> — จะขึ้น "📊 กำลังเก็บค่า Baseline" เมื่อเจอเซนเซอร์และเริ่มเก็บข้อมูลแล้ว</div>
+                            <div><b>รอระบบค้นหาเซนเซอร์</b> — จะขึ้นว่า <b>"✅ เซนเซอร์พร้อมแล้ว!"</b> เมื่อเจอเซนเซอร์แล้ว (ยังไม่เริ่มเก็บข้อมูล ต้องกดปุ่มในขั้นตอนถัดไป)</div>
                         </div>
                         </div>
                         <div class="guide-en">
@@ -5061,16 +5061,62 @@
                         </div>
                         <div class="guide-step">
                             <div class="guide-step-num bg-blue-600">4</div>
-                            <div><b>Wait for sensor detection</b> — "📊 Collecting Baseline" will appear when the sensor is found and data collection begins</div>
+                            <div><b>Wait for sensor detection</b> — <b>"✅ Sensor ready!"</b> will appear when the sensor is found (data collection has not started yet — press the button in the next step)</div>
                         </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- B4: Baseline + TVOC -->
+                <!-- B4: กดเริ่มเก็บข้อมูล (NEW) -->
+                <div class="guide-section bg-white/60 border border-emerald-300 shadow-sm">
+                    <div class="guide-header bg-emerald-50" onclick="toggleGuideSection(this)">
+                        <span class="guide-th">▶ ขั้นตอนที่ 4: กดเริ่มเก็บข้อมูล</span><span class="guide-en">▶ Step 4: Press "Start Data Collection"</span>
+                        <span class="guide-arrow">▼</span>
+                    </div>
+                    <div class="guide-body text-slate-700 leading-relaxed">
+                        <div class="guide-th">
+                        <p class="mb-3">เมื่อเซนเซอร์พร้อมแล้ว ระบบจะแสดงปุ่มสีฟ้า <b>"▶ เริ่มเก็บข้อมูล"</b> — <b>อาสาต้องกดปุ่มนี้เพื่อเริ่ม session</b></p>
+
+                        <div class="bg-sky-50 rounded-2xl p-4 mb-3 border border-sky-200 text-center" style="max-width:280px;">
+                            <div class="bg-sky-600 text-white py-4 rounded-xl">
+                                <div class="text-3xl mb-1">▶</div>
+                                <div class="font-bold">เริ่มเก็บข้อมูล</div>
+                                <div class="text-xs opacity-70 mt-0.5">กดเมื่อพร้อมเริ่มเก็บข้อมูล</div>
+                            </div>
+                        </div>
+
+                        <div class="guide-important">
+                            <b>⚠️ ระบบไม่เริ่ม session อัตโนมัติแล้ว</b> — ต้องกดปุ่มนี้ก่อนเท่านั้น เพื่อป้องกัน session ที่ไม่ต้องการ (เช่น เซนเซอร์ต่อ WiFi บ้านโดยไม่ได้เก็บข้อมูล)
+                        </div>
+
+                        <p class="font-bold text-navy mt-3 mb-1">ถ้าปุ่มไม่ขึ้น หรือขึ้นข้อความอื่น:</p>
+                        <ul class="text-[12px] space-y-1 text-slate-600 ml-4 list-disc">
+                            <li><b>เซนเซอร์ยังไม่ออนไลน์</b> — รอ Hotspot เชื่อมต่อสมบูรณ์</li>
+                            <li><b>"ครบ quota วันนี้แล้ว"</b> — เก็บครบ 2 รอบแล้ว ต้องรอพรุ่งนี้</li>
+                            <li><b>"กำลังพัก (Cooldown)"</b> — รอให้ครบ 5 ชั่วโมงหลัง session ก่อน</li>
+                        </ul>
+                        </div>
+                        <div class="guide-en">
+                        <p class="mb-3">When the sensor is ready, a blue <b>"▶ Start Data Collection"</b> button will appear — <b>the volunteer must press this button to start a session</b></p>
+
+                        <div class="guide-important">
+                            <b>⚠️ Sessions no longer start automatically</b> — The volunteer must press this button. This prevents unintended sessions (e.g. sensor connects to home WiFi without actually collecting data).
+                        </div>
+
+                        <p class="font-bold text-navy mt-3 mb-1">If the button doesn't appear or a different message shows:</p>
+                        <ul class="text-[12px] space-y-1 text-slate-600 ml-4 list-disc">
+                            <li><b>Sensor not yet online</b> — Wait for Hotspot to connect fully</li>
+                            <li><b>"Daily quota reached"</b> — 2 sessions already done today, must wait until tomorrow</li>
+                            <li><b>"Cooldown in progress"</b> — Wait 5 hours after the previous session</li>
+                        </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- B5: Baseline + TVOC -->
                 <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
                     <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
-                        <span class="guide-th">🔥 ขั้นตอนที่ 4: Baseline + เลือกกรอก TVOC/CO</span><span class="guide-en">🔥 Step 4: Baseline + TVOC/CO Option</span>
+                        <span class="guide-th">🔥 ขั้นตอนที่ 5: Baseline + เลือกกรอก TVOC/CO</span><span class="guide-en">🔥 Step 5: Baseline + TVOC/CO Option</span>
                         <span class="guide-arrow">▼</span>
                     </div>
                     <div class="guide-body text-slate-700 leading-relaxed">
@@ -5135,10 +5181,10 @@
                     </div>
                 </div>
 
-                <!-- B5: ระหว่างเก็บข้อมูล -->
+                <!-- B6: ระหว่างเก็บข้อมูล -->
                 <div class="guide-section bg-white/60 border border-slate-200 shadow-sm">
                     <div class="guide-header bg-blue-50" onclick="toggleGuideSection(this)">
-                        <span class="guide-th">⏱️ ขั้นตอนที่ 5: ระหว่างเก็บข้อมูล (130 นาที)</span><span class="guide-en">⏱️ Step 5: During Collection (130 min)</span>
+                        <span class="guide-th">⏱️ ขั้นตอนที่ 6: ระหว่างเก็บข้อมูล (130 นาที)</span><span class="guide-en">⏱️ Step 6: During Collection (130 min)</span>
                         <span class="guide-arrow">▼</span>
                     </div>
                     <div class="guide-body text-slate-700 leading-relaxed">
@@ -5177,7 +5223,7 @@
                     </div>
                 </div>
 
-                <!-- B6: สถานการณ์พิเศษ -->
+                <!-- B7: สถานการณ์พิเศษ -->
                 <div class="guide-section bg-white/60 border border-indigo-200 shadow-sm">
                     <div class="guide-header bg-indigo-50" onclick="toggleGuideSection(this)">
                         <span class="guide-th">❓ สถานการณ์พิเศษ</span><span class="guide-en">❓ Special Situations</span>
@@ -5255,7 +5301,7 @@
                     </div>
                 </div>
 
-                <!-- B7: ข้อควรระวัง -->
+                <!-- B8: ข้อควรระวัง -->
                 <div class="guide-section bg-white/60 border border-red-200 shadow-sm">
                     <div class="guide-header bg-red-50" onclick="toggleGuideSection(this)">
                         <span class="guide-th">🛑 ข้อควรระวัง</span><span class="guide-en">🛑 Precautions</span>
@@ -5424,7 +5470,7 @@
                     </div>
                 </div>
 
-                <p class="text-[12px] text-slate-400 text-center mt-4">คู่มือ v1.1 — ปรับปรุงล่าสุด: เมษายน 2569 (เซนเซอร์ MT15)</p>
+                <p class="text-[12px] text-slate-400 text-center mt-4">คู่มือ v1.2 — ปรับปรุงล่าสุด: พฤษภาคม 2569 (เพิ่มขั้นตอนกดเริ่มเก็บข้อมูล)</p>
                 </div>
                 <div class="guide-en">
                 <!-- C1: Key Parameters -->
@@ -5530,7 +5576,7 @@
                     </div>
                 </div>
 
-                <p class="text-[12px] text-slate-400 text-center mt-4">Guide v1.1 — Last updated: April 2026 (Sensor MT15)</p>
+                <p class="text-[12px] text-slate-400 text-center mt-4">Guide v1.2 — Last updated: May 2026 (Added start data collection step)</p>
                 </div>
             </div>
 
@@ -14014,14 +14060,14 @@
                 if (!sid) return;
                 const bl = sessionBaselines[d.session_id];
                 if (bl && bl.baseline_ended_at && d.recorded_at < bl.baseline_ended_at) return;
-                if (!houseStats[sid]) houseStats[sid] = { pm25T: 0, pm25N: 0, co2T: 0, co2N: 0, sess: new Set(), monthDays: new Set() };
+                if (!houseStats[sid]) houseStats[sid] = { pm25T: 0, pm25N: 0, co2T: 0, co2N: 0, sess: new Set(), monthSessions: new Set() };
                 houseStats[sid].pm25T += d.pm25_value;
                 houseStats[sid].pm25N++;
                 if (d.co2_value != null) { houseStats[sid].co2T += d.co2_value; houseStats[sid].co2N++; }
                 if (d.session_id) houseStats[sid].sess.add(d.session_id);
-                // Track unique days in current month for sensor-based frequency
-                if (d.recorded_at && d.recorded_at.slice(0, 7) === thaiMonth) {
-                    houseStats[sid].monthDays.add(d.recorded_at.slice(0, 10));
+                // Track unique sessions in current month for sensor-based frequency (1 session = 1 ครั้ง)
+                if (d.session_id && d.recorded_at && d.recorded_at.slice(0, 7) === thaiMonth) {
+                    houseStats[sid].monthSessions.add(d.session_id);
                 }
             });
 
@@ -14052,7 +14098,7 @@
                     const hs = houseStats[s.id];
                     const avgPm25 = hs && hs.pm25N ? +(hs.pm25T / hs.pm25N).toFixed(0) : null;
                     const avgCo2 = hs && hs.co2N ? +(hs.co2T / hs.co2N).toFixed(0) : null;
-                    const sensorFreq = hs && hs.monthDays ? hs.monthDays.size : 0;
+                    const sensorFreq = hs && hs.monthSessions ? hs.monthSessions.size : 0;
                     popupContent = '<b>' + esc(s.full_name) + '</b>' +
                         '<br><span style="color:#3b82f6;font-weight:bold">📡 ' + esc(deviceName) + '</span>' +
                         '<br>' + (subjectType === 'sme' ? '🏭 SME' : '🏠 ครัวเรือน') +

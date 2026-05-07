@@ -1072,6 +1072,7 @@
                             <button id="demo-start-btn" onclick="startDemoSim()" class="px-4 py-2 rounded-lg text-xs font-bold bg-emerald-600 text-white">▶ เริ่ม</button>
                             <button id="demo-pause-btn" onclick="pauseDemoSim()" class="px-4 py-2 rounded-lg text-xs font-bold bg-yellow-500 text-white hidden">⏸ หยุด</button>
                             <button id="demo-resume-btn" onclick="resumeDemoSim()" class="px-4 py-2 rounded-lg text-xs font-bold bg-emerald-600 text-white hidden">▶ ต่อ</button>
+                            <button id="demo-next-btn" onclick="jumpToNextStep()" class="px-4 py-2 rounded-lg text-xs font-bold bg-sky-600 text-white">⏭ ขั้นถัดไป</button>
                             <button id="demo-reset-btn" onclick="resetDemoSim()" class="px-4 py-2 rounded-lg text-xs font-bold bg-gray-500 text-white">↺ รีเซ็ต</button>
                         </div>
                     </div>
@@ -1088,23 +1089,42 @@
             </div>
         </div>
 
-        <!-- TVOC entry overlay (shown during demo at every 5 sim min) -->
-        <div id="tvoc-overlay" class="hidden fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-5">
-                <div class="text-center mb-4">
-                    <div class="text-4xl">📝</div>
-                    <p class="font-bold text-gray-800 mt-2">ถึงเวลากรอกค่า!</p>
-                    <p class="text-xs text-gray-500 mt-1">เวลาจำลอง <span id="tvoc-overlay-time">--:--</span> · กรอกค่าจากหน้าจอเซนเซอร์</p>
+        <!-- TVOC reminder overlay — matches volunteer.html #tvoc-modal exactly (เตือน, ไม่ใช่กรอกในตัว) -->
+        <div id="tvoc-overlay" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center">
+                <div class="text-6xl mb-4">📝</div>
+                <h2 class="text-2xl font-bold text-purple-800 mb-2">ได้เวลากรอกค่าแล้ว!</h2>
+                <p class="text-gray-500 mb-6">ครบ 5 นาทีแล้ว กรุณาอ่านค่า TVOC / CO<br>จากเครื่องวัด</p>
+                <button onclick="submitTvocEntry()" class="w-full py-4 bg-purple-600 text-white text-lg font-bold rounded-2xl active:scale-95 transition-transform">
+                    กรอกค่า
+                </button>
+                <!-- Workshop-only fast-skip (subtle, not part of real UI) -->
+                <button onclick="skipAllTvocPrompts()" class="w-full mt-3 py-1.5 text-gray-400 text-[11px] hover:text-gray-600 transition">
+                    ⏩ ข้ามการเตือนทั้งหมด (โหมด workshop)
+                </button>
+            </div>
+        </div>
+
+        <!-- Edge cases panel — separated from happy-path flow (above step nav) -->
+        <div class="max-w-5xl mx-auto mb-4 px-4">
+            <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-1 cursor-pointer" onclick="toggleEdgeCases()">
+                    <p class="font-bold text-amber-800">⚠️ เหตุการณ์พิเศษ — ระบบจัดการอย่างไร <span class="text-xs font-normal text-amber-600">(แยกจาก flow ปกติ)</span></p>
+                    <button id="edge-toggle-btn" class="text-xs font-bold text-amber-700 px-3 py-1 bg-amber-200 rounded-lg">▼ เปิดดู</button>
                 </div>
-                <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
-                <input type="number" step="0.01" id="tvoc-input-overlay" placeholder="เช่น 0.32" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-purple-200 bg-white mb-3">
-                <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
-                <input type="number" id="co-input-overlay" placeholder="เช่น 2" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-amber-200 bg-white mb-4">
-                <div class="flex gap-2">
-                    <button onclick="submitTvocEntry()" class="flex-1 py-2.5 bg-purple-600 text-white rounded-xl font-bold text-sm">บันทึกและไปต่อ</button>
-                    <button onclick="skipTvocEntry()" class="px-4 py-2.5 bg-gray-200 text-gray-600 rounded-xl font-bold text-sm">ข้าม</button>
+                <div id="edge-cases-content" class="hidden mt-3">
+                    <p class="text-xs text-amber-700 mb-3">กดเลือกเหตุการณ์ → หน้าจอด้านล่างจะเปลี่ยนเป็น mockup ของเหตุการณ์นั้น (กลับสู่ flow ปกติได้โดยกดขั้นด้านบน)</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="showEdge('notfound')" id="edge-btn-notfound" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">❌ ไม่พบเซนเซอร์</button>
+                        <button onclick="showEdge('quota')" id="edge-btn-quota" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">🚫 ครบ quota</button>
+                        <button onclick="showEdge('cooldown')" id="edge-btn-cooldown" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">⏸️ รอ cooldown</button>
+                        <button onclick="showEdge('quiet')" id="edge-btn-quiet" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">🌙 ครบ 1 รอบ (กลางคืน)</button>
+                        <button onclick="showEdge('quietnow')" id="edge-btn-quietnow" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">😴 เปิดแอปกลางคืน</button>
+                        <button onclick="showEdge('holiday')" id="edge-btn-holiday" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">📅 วันหยุด</button>
+                        <button onclick="showEdge('stall')" id="edge-btn-stall" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">⚠️ ข้อมูลค้าง</button>
+                        <button onclick="showEdge('lock')" id="edge-btn-lock" class="edge-btn px-3 py-2 bg-white rounded-lg text-xs font-bold border-2 border-amber-200 hover:border-amber-400 transition">🔒 มีคนใช้แล้ว</button>
+                    </div>
                 </div>
-                <p class="text-[10px] text-gray-400 text-center mt-2">การจำลองหยุดอยู่จนกว่าจะกดปุ่ม</p>
             </div>
         </div>
 
@@ -1113,17 +1133,21 @@
             <div class="flex items-center justify-center flex-wrap gap-2 bg-white rounded-2xl p-3 shadow-md">
                 <button onclick="setVolStep(1)" id="vstep-1-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-emerald-600 text-white">1. ตรวจ GPS</button>
                 <span class="text-gray-300">→</span>
-                <button onclick="setVolStep(2)" id="vstep-2-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">2. ค้นเซนเซอร์</button>
+                <button onclick="setVolStep(2)" id="vstep-2-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">2. ยืนยันบ้าน</button>
                 <span class="text-gray-300">→</span>
-                <button onclick="setVolStep(3)" id="vstep-3-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">3. Baseline</button>
+                <button onclick="setVolStep(3)" id="vstep-3-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">3. ค้นเซนเซอร์</button>
                 <span class="text-gray-300">→</span>
-                <button onclick="setVolStep(4)" id="vstep-4-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">4. จุดเตา</button>
+                <button onclick="setVolStep(4)" id="vstep-4-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">4. กดเริ่ม</button>
                 <span class="text-gray-300">→</span>
-                <button onclick="setVolStep(5)" id="vstep-5-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">5. กรอกค่า?</button>
+                <button onclick="setVolStep(5)" id="vstep-5-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">5. Baseline + กรอกค่า?</button>
                 <span class="text-gray-300">→</span>
                 <button onclick="setVolStep(6)" id="vstep-6-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">6. บันทึก TVOC</button>
                 <span class="text-gray-300">→</span>
-                <button onclick="setVolStep(7)" id="vstep-7-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">7. เสร็จสิ้น</button>
+                <button onclick="setVolStep(7)" id="vstep-7-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">7. จุดเตา</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(8)" id="vstep-8-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">8. เก็บค่าจริง 🔥</button>
+                <span class="text-gray-300">→</span>
+                <button onclick="setVolStep(9)" id="vstep-9-btn" class="vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600">9. เสร็จสิ้น</button>
             </div>
             <p class="text-center text-xs text-gray-500 mt-2">คลิกแต่ละขั้นเพื่อดูหน้าจอที่อาสาสมัครจะเห็น</p>
         </div>
@@ -1155,12 +1179,9 @@
                                 <div class="mt-3 w-8 h-8 border-3 border-emerald-200 border-t-emerald-600 rounded-full mx-auto" style="border-width:3px;animation:spin 1.5s linear infinite"></div>
                             </div>
                         </div>
-                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
-                            <b>💡 Workshop note:</b> หลังจากที่อาสาสแกน QR สติกเกอร์บนเซนเซอร์ ระบบจะเปิดหน้านี้ + ตรวจตำแหน่ง GPS เพื่อจับคู่กับบ้านที่ลงทะเบียนไว้โดยอัตโนมัติ
-                        </div>
                     </div>
 
-                    <!-- VSTEP 2: GPS matched + Sensor polling -->
+                    <!-- VSTEP 2: GPS matched — confirm house only -->
                     <div id="vstep-2" class="vstep-content space-y-4 hidden">
                         <div class="bg-white rounded-2xl shadow-sm p-4">
                             <div class="bg-emerald-50 rounded-xl p-3 mb-3">
@@ -1177,6 +1198,10 @@
                                 <button class="px-4 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">เปลี่ยน</button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- VSTEP 3: Sensor polling (after confirm house) -->
+                    <div id="vstep-3" class="vstep-content space-y-4 hidden">
                         <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
                             <div class="text-xl">🏠</div>
                             <div class="flex-1">
@@ -1212,8 +1237,34 @@
                         </div>
                     </div>
 
-                    <!-- VSTEP 3: Baseline collecting -->
-                    <div id="vstep-3" class="vstep-content space-y-4 hidden">
+                    <!-- VSTEP 4: Sensor ready — press start button -->
+                    <div id="vstep-4" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">14:34</p>
+                        </div>
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="flex items-center gap-3">
+                                <div class="text-3xl">📡</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-emerald-700">เซนเซอร์พร้อมแล้ว!</p>
+                                    <p class="text-xs text-gray-500">กดปุ่มด้านล่างเพื่อเริ่มเก็บข้อมูล</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="w-full bg-sky-600 text-white py-7 rounded-3xl shadow-xl">
+                            <div class="text-5xl mb-2">▶</div>
+                            <div class="text-2xl font-bold">เริ่มเก็บข้อมูล</div>
+                            <div class="text-sm opacity-70 mt-1">กดเมื่อพร้อมเริ่มเก็บข้อมูล</div>
+                        </button>
+                    </div>
+
+                    <!-- VSTEP 5: Baseline + TVOC question (both shown together — matches volunteer.html line 1088-1106) -->
+                    <div id="vstep-5" class="vstep-content space-y-4 hidden">
                         <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
                             <div class="text-xl">🏠</div>
                             <div class="flex-1">
@@ -1222,32 +1273,42 @@
                             </div>
                             <p class="text-[10px] text-emerald-200">14:35</p>
                         </div>
+                        <!-- Sensor card — Baseline state, ทันทีหลังกดเริ่ม (0 ค่า) -->
                         <div class="bg-white rounded-2xl shadow-sm p-4">
                             <div class="flex items-center gap-3 mb-3">
-                                <div class="text-2xl">✅</div>
+                                <div class="text-2xl">📊</div>
                                 <div class="flex-1">
-                                    <p class="font-bold text-sm text-emerald-700">เซนเซอร์เชื่อมต่อแล้ว</p>
-                                    <p class="text-xs text-gray-500">BS-003 · กำลังเก็บข้อมูล</p>
+                                    <p class="font-bold text-sm text-blue-700">กำลังเก็บค่า Baseline...</p>
+                                    <p class="text-xs text-gray-500">เก็บได้ 0/2 ค่า — รออีก 2 ค่า</p>
                                 </div>
                             </div>
                             <div class="bg-blue-50 rounded-xl p-3">
                                 <div class="flex justify-between items-center mb-2">
                                     <span class="text-sm font-bold text-blue-800">📊 กำลังเก็บค่า Baseline</span>
-                                    <span class="text-xs text-blue-600">12 ค่า</span>
+                                    <span class="text-xs text-blue-600">0 ค่า</span>
                                 </div>
                                 <div class="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-                                    <div class="h-full bg-blue-500 rounded-full" style="width:60%"></div>
+                                    <div class="h-full bg-blue-500 rounded-full" style="width:0%"></div>
                                 </div>
-                                <p class="text-xs text-blue-600 mt-2">⏱ 6 / 10 นาที — ค่าอากาศปกติของห้องครัว</p>
+                                <p class="text-xs text-blue-600 mt-2">⏱ 0 / 10 นาที (sensor sync ทุก 5 นาที)</p>
                             </div>
                         </div>
-                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
-                            <b>💡 Workshop note:</b> 10 นาทีแรกระบบเก็บค่า ambient (อากาศปกติก่อนจุดเตา) เพื่อใช้เป็นฐานเปรียบเทียบกับช่วงทำอาหาร — สำคัญสำหรับการแยกค่ามลพิษจากเตาออกจากค่ามลพิษในอากาศปกติ
+                        <!-- TVOC question — inline section, ขึ้นพร้อม Baseline ทันที (matches volunteer.html #tvoc-question) -->
+                        <div class="bg-purple-50 rounded-2xl p-5 border-2 border-purple-200">
+                            <div class="text-center mb-4">
+                                <div class="text-4xl">📝</div>
+                                <p class="font-bold text-lg text-purple-800 mt-2">วันนี้ต้องกรอกค่าด้วยมือมั้ย?</p>
+                                <p class="text-sm text-purple-500 mt-1">TVOC และ/หรือ CO — เก็บตั้งแต่ช่วง Baseline เพื่อเทียบกับตอนจุดเตา</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="answerTvocQuestion(true)" class="flex-1 bg-purple-600 text-white py-3 rounded-xl font-bold">✅ เก็บ</button>
+                                <button onclick="answerTvocQuestion(false)" class="flex-1 bg-gray-200 text-gray-600 py-3 rounded-xl font-bold">❌ ไม่เก็บ</button>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- VSTEP 4: Cooking button (big red) -->
-                    <div id="vstep-4" class="vstep-content space-y-4 hidden">
+                    <!-- VSTEP 7: Baseline ready → press cooking button (matches volunteer.html line 1098-1101) -->
+                    <div id="vstep-7" class="vstep-content space-y-4 hidden">
                         <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
                             <div class="text-xl">🏠</div>
                             <div class="flex-1">
@@ -1256,10 +1317,24 @@
                             </div>
                             <p class="text-[10px] text-emerald-200">14:45</p>
                         </div>
-                        <div class="bg-white rounded-2xl shadow-sm p-3">
-                            <div class="bg-emerald-50 rounded-xl p-3 text-center">
-                                <p class="text-emerald-800 font-bold text-sm">✓ Baseline เก็บครบแล้ว</p>
-                                <p class="text-emerald-600 text-xs">20 ค่า · 10 นาที</p>
+                        <!-- Sensor card — still 'baseline' state, just text changed to "Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้" -->
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="text-2xl">📊</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm text-blue-700">Baseline พร้อมแล้ว — กดเริ่มจุดเตาได้</p>
+                                    <p class="text-xs text-gray-500">เก็บได้ 2 ค่า</p>
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 rounded-xl p-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-bold text-blue-800">📊 กำลังเก็บค่า Baseline</span>
+                                    <span class="text-xs text-blue-600">2 ค่า</span>
+                                </div>
+                                <div class="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500 rounded-full" style="width:100%"></div>
+                                </div>
+                                <p class="text-xs text-blue-600 mt-2">⏱ 10 / 10 นาที</p>
                             </div>
                         </div>
                         <button class="w-full bg-red-500 text-white py-7 rounded-3xl shadow-2xl pulse-ring" style="animation: pulse-ring 2s infinite">
@@ -1267,39 +1342,9 @@
                             <div class="text-xl font-bold">เริ่มจุดเตาแล้ว</div>
                             <div class="text-xs opacity-80 mt-1">กดเมื่อเริ่มจุดเตา</div>
                         </button>
-                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
-                            <b>💡 Workshop note:</b> อาสาสมัครกดปุ่มนี้ตอนจุดเตา — ระบบจะเริ่มเก็บข้อมูลช่วง "หุงต้ม" (cooking phase) แยกจาก baseline → ใช้คำนวณมลพิษสุทธิจากเตาในภายหลัง
-                        </div>
                     </div>
 
-                    <!-- VSTEP 5: TVOC Question -->
-                    <div id="vstep-5" class="vstep-content space-y-4 hidden">
-                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
-                            <div class="text-xl">🏠</div>
-                            <div class="flex-1">
-                                <p class="font-bold text-sm">บ้านอาสา 03</p>
-                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
-                            </div>
-                            <p class="text-[10px] text-emerald-200">14:46</p>
-                        </div>
-                        <div class="bg-orange-50 rounded-xl p-3 text-center text-sm text-orange-800 font-bold">🔥 จุดเตาแล้ว — กำลังเก็บข้อมูล</div>
-                        <div class="bg-purple-50 rounded-2xl p-4 border-2 border-purple-200">
-                            <div class="text-center mb-4">
-                                <div class="text-4xl">📝</div>
-                                <p class="font-bold text-purple-800 mt-2">วันนี้ต้องกรอกค่าด้วยมือมั้ย?</p>
-                                <p class="text-xs text-purple-500 mt-1">TVOC และ/หรือ CO เก็บตั้งแต่ Baseline เพื่อเทียบกับช่วงจุดเตา</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <button class="flex-1 bg-purple-600 text-white py-3 rounded-xl font-bold">✅ เก็บ</button>
-                                <button class="flex-1 bg-gray-200 text-gray-600 py-3 rounded-xl font-bold">❌ ไม่เก็บ</button>
-                            </div>
-                        </div>
-                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
-                            <b>💡 Workshop note:</b> 2 รูปแบบการเก็บข้อมูล — <b>เก็บ TVOC/CO</b> (อาสาอยู่กรอกทุก 5 นาที) หรือ <b>ไม่เก็บ</b> (เปิดเซนเซอร์ทิ้งไว้ ระบบเก็บเฉพาะค่าจาก sensor อัตโนมัติ)
-                        </div>
-                    </div>
-
-                    <!-- VSTEP 6: TVOC Manual Recording -->
+                    <!-- VSTEP 6: TVOC Manual Recording (sensor card + baseline progress + tvoc-section below) -->
                     <div id="vstep-6" class="vstep-content space-y-4 hidden">
                         <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
                             <div class="text-xl">🏠</div>
@@ -1309,62 +1354,144 @@
                             </div>
                             <p class="text-[10px] text-emerald-200">14:51</p>
                         </div>
-                        <div class="bg-purple-50 rounded-2xl p-4 border-2 border-purple-200">
-                            <div class="flex items-center justify-between mb-3">
-                                <p class="font-bold text-purple-800 text-sm">📝 บันทึกค่าด้วยมือ</p>
-                                <div class="flex items-center gap-1.5 text-xs font-bold text-purple-600">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
-                                    <span>ถัดไปใน 4:23</span>
+                        <!-- Sensor card with baseline progress (matches volunteer.html #sensor-card) -->
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="text-2xl">📊</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm text-blue-700">กำลังเก็บค่า Baseline...</p>
+                                    <p class="text-xs text-gray-500">เก็บได้ 1/2 ค่า · BS-003</p>
                                 </div>
                             </div>
-                            <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
-                            <input type="number" value="0.32" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-purple-200 bg-white mb-3">
-                            <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
-                            <input type="number" value="2" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-amber-200 bg-white mb-3">
-                            <button class="w-full py-2.5 bg-purple-600 text-white rounded-xl font-bold">บันทึก</button>
-                            <div class="mt-3 space-y-1.5">
-                                <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:46</span><span class="font-mono">TVOC <b>0.28</b> · CO <b>1</b></span></div>
-                                <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:41</span><span class="font-mono">TVOC <b>0.25</b> · CO <b>1</b></span></div>
-                                <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:36</span><span class="font-mono">TVOC <b>0.21</b> · CO <b>0</b></span></div>
+                            <div class="bg-blue-50 rounded-xl p-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-bold text-blue-800">📊 กำลังเก็บค่า Baseline</span>
+                                    <span class="text-xs text-blue-600">1 ค่า</span>
+                                </div>
+                                <div class="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500 rounded-full" style="width:50%"></div>
+                                </div>
+                                <p class="text-xs text-blue-600 mt-2">⏱ 6 / 10 นาที</p>
                             </div>
                         </div>
-                        <div class="bg-blue-50 rounded-xl p-3 text-center">
-                            <p class="text-blue-700 font-bold text-xs">⏱ เซนเซอร์ยังเก็บข้อมูลอยู่</p>
-                            <p class="text-blue-500 text-[10px] mt-0.5">เหลืออีก ~1 ชั่วโมง 40 นาที — กรุณาอยู่กรอกค่าต่อ</p>
+                        <!-- TVOC manual entry — toggleable for workshop ("ถ้าไม่เก็บ จะเห็นแบบไหน") -->
+                        <div class="tvoc-wrapper">
+                            <div class="tvoc-stub hidden bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl p-3 text-center cursor-pointer hover:bg-gray-200 transition" onclick="toggleTvoc(this)">
+                                <p class="text-xs text-gray-500 font-bold">📝 ไม่กรอก TVOC/CO <span class="text-gray-400">(กดเพื่อแสดง)</span></p>
+                            </div>
+                            <div class="tvoc-section bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 cursor-pointer" onclick="toggleTvoc(this)" title="กดเพื่อซ่อน — ดูว่าถ้าไม่กรอก หน้าจะเป็นยังไง">
+                                <div class="flex items-center justify-between mb-3">
+                                    <p class="font-bold text-purple-800">📝 บันทึกค่าด้วยมือ</p>
+                                    <div class="flex items-center gap-1.5 text-xs font-bold text-purple-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                                        <span>ถัดไปใน 4:23</span>
+                                    </div>
+                                </div>
+                                <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
+                                <input type="number" value="0.32" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-purple-200 bg-white mb-3" onclick="event.stopPropagation()">
+                                <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
+                                <input type="number" value="2" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-amber-200 bg-white mb-3" onclick="event.stopPropagation()">
+                                <button class="w-full py-2.5 bg-purple-600 text-white rounded-xl font-bold" onclick="event.stopPropagation()">บันทึก</button>
+                                <div class="mt-3 space-y-1.5">
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:46</span><span class="font-mono">TVOC <b>0.28</b> · CO <b>1</b></span></div>
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:41</span><span class="font-mono">TVOC <b>0.25</b> · CO <b>1</b></span></div>
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>14:36</span><span class="font-mono">TVOC <b>0.21</b> · CO <b>0</b></span></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- VSTEP 7: Summary -->
-                    <div id="vstep-7" class="vstep-content space-y-4 hidden">
-                        <div class="bg-emerald-50 rounded-2xl p-5 border-2 border-emerald-200">
-                            <div class="text-center mb-4">
+                    <!-- VSTEP 8: Cooking phase — sensor collecting + TVOC continues (longest period ~2 hr) -->
+                    <div id="vstep-8" class="vstep-content space-y-4 hidden">
+                        <div class="bg-emerald-700 text-white rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                            <div class="text-xl">🏠</div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm">บ้านอาสา 03</p>
+                                <p class="text-emerald-200 text-[10px]">นางสาวมาลี — อาสา</p>
+                            </div>
+                            <p class="text-[10px] text-emerald-200">15:35</p>
+                        </div>
+                        <!-- Sensor card — collecting state (matches volunteer.html setSensorUI('collecting', '🔥', ...)) -->
+                        <div class="bg-white rounded-2xl shadow-sm p-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="text-2xl">🔥</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-sm text-orange-700">กำลังเก็บข้อมูลการใช้เตา</p>
+                                    <p class="text-xs text-gray-500">เก็บได้ 12 ค่า</p>
+                                </div>
+                            </div>
+                            <div class="bg-orange-50 rounded-xl p-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-bold text-orange-800">🔥 กำลังเก็บข้อมูลการใช้เตา</span>
+                                    <span class="text-xs text-orange-600">12 ค่า</span>
+                                </div>
+                                <div class="w-full h-2 bg-orange-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-orange-500 rounded-full" style="width:46%"></div>
+                                </div>
+                                <p class="text-xs text-orange-600 mt-2">⏱ 60 / 130 นาที</p>
+                            </div>
+                        </div>
+                        <!-- TVOC manual entry — toggleable -->
+                        <div class="tvoc-wrapper">
+                            <div class="tvoc-stub hidden bg-gray-100 border-2 border-dashed border-gray-300 rounded-xl p-3 text-center cursor-pointer hover:bg-gray-200 transition" onclick="toggleTvoc(this)">
+                                <p class="text-xs text-gray-500 font-bold">📝 ไม่กรอก TVOC/CO <span class="text-gray-400">(กดเพื่อแสดง)</span></p>
+                            </div>
+                            <div class="tvoc-section bg-purple-50 rounded-2xl p-5 border-2 border-purple-200 cursor-pointer" onclick="toggleTvoc(this)" title="กดเพื่อซ่อน">
+                                <div class="flex items-center justify-between mb-3">
+                                    <p class="font-bold text-purple-800">📝 บันทึกค่าด้วยมือ</p>
+                                    <div class="flex items-center gap-1.5 text-xs font-bold text-purple-600">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span>
+                                        <span>ถัดไปใน 2:14</span>
+                                    </div>
+                                </div>
+                                <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
+                                <input type="number" value="0.41" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-purple-200 bg-white mb-3" onclick="event.stopPropagation()">
+                                <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
+                                <input type="number" value="3" class="w-full text-center text-lg font-bold p-2.5 rounded-xl border-2 border-amber-200 bg-white mb-3" onclick="event.stopPropagation()">
+                                <button class="w-full py-2.5 bg-purple-600 text-white rounded-xl font-bold" onclick="event.stopPropagation()">บันทึก</button>
+                                <div class="mt-3 space-y-1.5 max-h-32 overflow-y-auto">
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>15:30</span><span class="font-mono">TVOC <b>0.38</b> · CO <b>3</b></span></div>
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>15:25</span><span class="font-mono">TVOC <b>0.36</b> · CO <b>2</b></span></div>
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>15:20</span><span class="font-mono">TVOC <b>0.35</b> · CO <b>2</b></span></div>
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between"><span>15:15</span><span class="font-mono">TVOC <b>0.32</b> · CO <b>2</b></span></div>
+                                    <div class="bg-white rounded-lg px-3 py-1.5 text-xs flex justify-between text-gray-400"><span>...</span><span class="font-mono">เก็บมาแล้ว 12 ค่า</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VSTEP 9: Summary — matches volunteer.html #step-summary exactly -->
+                    <div id="vstep-9" class="vstep-content space-y-4 hidden">
+                        <!-- Workshop-only toggle (subtle so it doesn't look like part of the real UI) -->
+                        <div class="flex gap-1 justify-center text-[10px] opacity-30 hover:opacity-100 transition">
+                            <button onclick="setSummaryMode('with-tvoc')" id="sum-mode-with" class="px-2 py-0.5 rounded text-gray-500 hover:bg-gray-100">กรอก TVOC</button>
+                            <span class="text-gray-300">·</span>
+                            <button onclick="setSummaryMode('no-tvoc')" id="sum-mode-without" class="px-2 py-0.5 rounded text-gray-500 hover:bg-gray-100">ไม่กรอก</button>
+                        </div>
+                        <div class="bg-emerald-50 rounded-2xl p-6 border-2 border-emerald-200">
+                            <div class="text-center mb-3">
                                 <div class="text-5xl">✅</div>
                                 <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
-                                <p class="text-emerald-600 text-xs mt-1">บ้านอาสา 03 — Session 1 ของวันนี้</p>
                             </div>
-                            <div class="space-y-2 text-sm bg-white rounded-xl p-4">
-                                <div class="flex justify-between"><span class="text-gray-500">เริ่ม:</span><span class="font-bold">14:35</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">จบ:</span><span class="font-bold">16:45</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">ระยะเวลา:</span><span class="font-bold">2 ชม. 10 นาที</span></div>
-                                <hr class="my-2">
-                                <div class="flex justify-between"><span class="text-gray-500">📊 ค่าจากเซนเซอร์:</span><span class="font-bold text-emerald-600">288 จุด</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">📝 ค่ากรอกมือ (TVOC/CO):</span><span class="font-bold text-purple-600">26 ค่า</span></div>
-                                <hr class="my-2">
-                                <div class="flex justify-between"><span class="text-gray-500">PM2.5 เฉลี่ย:</span><span class="font-bold text-red-600">42 µg/m³</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">CO2 เฉลี่ย:</span><span class="font-bold">820 ppm</span></div>
-                                <div class="flex justify-between"><span class="text-gray-500">TVOC เฉลี่ย:</span><span class="font-bold text-purple-600">0.28 mg/m³</span></div>
-                            </div>
-                            <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mt-3 text-center">
-                                <p class="text-amber-800 text-xs font-bold">⏸ Session ถัดไปได้ตอน 21:45</p>
-                                <p class="text-amber-600 text-[10px]">รอ cooldown 5 ชั่วโมง</p>
+                            <div id="summary-details" class="space-y-0 text-sm bg-white rounded-xl p-4">
+                                <!-- Items injected by setSummaryMode() to match real volunteer.html output -->
                             </div>
                         </div>
-                        <div class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
-                            <b>💡 Workshop note:</b> หลัง session จบ — ระบบบันทึกข้อมูลเข้า Cloud อัตโนมัติ → Dashboard อัปเดท → อาสาเก็บข้อมูล session ถัดไปได้หลัง cooldown 5 ชั่วโมง (ห้ามเกิน 2 sessions/วัน)
-                        </div>
+                    </div>
+
+                    <!-- VSTEP EDGE: Alternative screens for edge cases (shown via Edge cases panel) -->
+                    <div id="vstep-edge" class="vstep-content space-y-4 hidden">
+                        <div id="vstep-edge-content"></div>
                     </div>
 
                 </div>
+            </div>
+        </div>
+
+        <!-- Workshop note panel — separated from phone screen so the phone matches real-world UI exactly -->
+        <div class="max-w-md mx-auto mt-3 px-4">
+            <div id="workshop-note-panel" class="bg-blue-50 border-l-4 border-blue-400 rounded-xl p-3 text-xs text-blue-800">
+                <p id="workshop-note-text"><b>💡 Workshop note:</b> หลังอาสาสแกน QR สติกเกอร์บนเซนเซอร์ ระบบเปิดหน้านี้ + ตรวจตำแหน่ง GPS เพื่อจับคู่กับบ้านที่ลงทะเบียนไว้</p>
             </div>
         </div>
 
@@ -1383,6 +1510,7 @@
                 <p class="text-gray-600">มี modal "ไม่พบเซนเซอร์" + "ข้อมูลไม่อัปเดต" พร้อมขั้นตอนแก้ปัญหาและช่องติดต่อแอดมิน</p>
             </div>
         </div>
+
     </section>
 
     </main>
@@ -1391,28 +1519,61 @@
         // ============================================================
         // VOLUNTEER STEP NAVIGATION
         // ============================================================
+        // Workshop notes — kept outside phone screen so the phone matches the real volunteer UI
+        const STEP_NOTES = {
+            1: 'หลังอาสาสแกน QR สติกเกอร์บนเซนเซอร์ ระบบเปิดหน้านี้ + ตรวจตำแหน่ง GPS เพื่อจับคู่กับบ้านที่ลงทะเบียนไว้โดยอัตโนมัติ',
+            2: 'ระบบจับบ้านอัตโนมัติจาก GPS — อาสากด <b>ยืนยัน</b> ถ้าถูก หรือ <b>เปลี่ยน</b> เพื่อเลือกบ้านเอง (กรณี GPS เพี้ยน)',
+            3: 'ระบบ ping เซนเซอร์ผ่าน Tuya Cloud ทุก 15 วินาที — รอจนเซนเซอร์ออนไลน์ก่อน (อาสาต้องเปิดเซนเซอร์ + เชื่อม WiFi)',
+            4: 'ระบบ <b>ไม่</b> เริ่มอัตโนมัติ — อาสาต้องกดปุ่มนี้ก่อน เพื่อให้แน่ใจว่าอาสาอยู่หน้างานจริง (ป้องกันการสร้าง session ขยะจาก background polling)',
+            5: 'ทันทีหลังกดเริ่ม — Sensor card (Baseline) + TVOC question section <b>ขึ้นพร้อมกัน</b> เพราะการคำนวณต้องใช้ baseline ของ TVOC/CO ด้วย — อาสาเลือก <b>เก็บ</b> หรือ <b>ไม่เก็บ</b>',
+            6: 'ฟอร์มกรอก TVOC/CO อยู่ใต้ sensor card — เริ่มกรอกตั้งแต่ Baseline (ทุก 5 นาที, ระบบเตือนอัตโนมัติ)',
+            7: 'อาสาสมัครกดปุ่มนี้ตอนจุดเตา — ระบบเปลี่ยน session จาก baseline → cooking phase (สีเปลี่ยนจาก ฟ้า → ส้ม)',
+            8: '⏰ <b>ช่วงที่ยาวที่สุด ~2 ชม.</b> — Sensor card 🔥 ส้ม + อาสากรอก TVOC/CO ต่อเนื่องทุก 5 นาที จนครบ 130 นาที',
+            9: 'หลัง session จบ — ระบบบันทึกเข้า Cloud อัตโนมัติ → Dashboard อัปเดต → เก็บ session ถัดไปได้หลัง cooldown 5 ชม. (ห้ามเกิน 2/วัน)',
+        };
+
         function setVolStep(step) {
-            for (let i = 1; i <= 7; i++) {
+            for (let i = 1; i <= 9; i++) {
                 document.getElementById('vstep-' + i).classList.toggle('hidden', i !== step);
                 const btn = document.getElementById('vstep-' + i + '-btn');
                 if (btn) btn.className = 'vstep-btn px-3 py-2 rounded-lg text-xs font-bold ' + (i === step ? 'bg-emerald-600 text-white' : (i < step ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600'));
+            }
+            // Hide edge case view if showing
+            const edgeView = document.getElementById('vstep-edge');
+            if (edgeView) edgeView.classList.add('hidden');
+            // Update workshop note panel
+            const noteText = document.getElementById('workshop-note-text');
+            if (noteText) noteText.innerHTML = '<b>💡 Workshop note:</b> ' + (STEP_NOTES[step] || '');
+            // Clear edge button highlights
+            document.querySelectorAll('.edge-btn').forEach(b => {
+                b.classList.remove('bg-amber-200', 'border-amber-500');
+                b.classList.add('bg-white', 'border-amber-200');
+            });
+            // Render summary the first time user navigates to step 9
+            if (step === 9 && document.getElementById('summary-details').innerHTML.trim() === '') {
+                setSummaryMode('with-tvoc');
             }
         }
 
         // ============================================================
         // DEMO MODE — Sped-up volunteer simulation
         // 130 sim minutes total (real session = 2h10m)
-        // Timeline:
-        //   0:00–0:30  vstep1 GPS detect
-        //   0:30–1:30  vstep2 sensor poll
-        //   1:30–11:30 vstep3 baseline collecting (10 min)
-        //  11:30       vstep4 cooking button (auto-press at 12:00)
-        //  12:00       vstep5 TVOC question (pause for click)
-        //  12:00–130   vstep6 manual TVOC entry every 5 sim-min
-        // 130:00       vstep7 summary
+        // Timeline (9 steps — Baseline + TVOC question merged into vstep-5):
+        //   0:00–0:30    vstep1 GPS detect
+        //   0:30–1:00    vstep2 confirm house
+        //   1:00–1:30    vstep3 sensor poll
+        //   1:30–2:00    vstep4 sensor ready → press start
+        //   2:00–4:30    vstep5 Baseline + TVOC question (pause until answered)
+        //   4:30–10:00   vstep6 TVOC entry during baseline
+        //  10:00–12:00   vstep7 cooking button (press)
+        //  12:00–130     vstep8 cooking phase (longest — sensor 🔥 + TVOC continues)
+        // 130:00         vstep9 summary
         // ============================================================
         const SIM_DURATION_MIN = 130;
         const TICK_REAL_MS = 200; // real-time tick interval
+        // TVOC popup schedule — 2 ครั้งพอใน demo (จริงทุก 5 นาที แต่ workshop ไม่ต้องดูซ้ำ)
+        // [0] = ระหว่าง baseline (~5 min), [1] = ระหว่าง cooking (~60 min)
+        const TVOC_DEMO_PROMPTS = [5, 60];
 
         let demoState = {
             on: false,
@@ -1422,7 +1583,10 @@
             simMin: 0,
             tvocCount: 0,
             tvocLog: [],
-            lastTvocPromptMin: 0,
+            tvocPromptIdx: 0,
+            tvocQuestionAnswered: false,
+            pausedForTvocQuestion: false,
+            lastStep: 0,
             sessionStartHHMM: '14:35',
             tickHandle: null,
         };
@@ -1465,7 +1629,10 @@
             demoState.paused = false;
             demoState.tvocCount = 0;
             demoState.tvocLog = [];
-            demoState.lastTvocPromptMin = 0;
+            demoState.tvocPromptIdx = 0;
+            demoState.tvocQuestionAnswered = false;
+            demoState.pausedForTvocQuestion = false;
+            demoState.lastStep = 1; // start at step 1 — no auto-pause on initial enter
             document.getElementById('demo-progress').classList.remove('hidden');
             document.getElementById('demo-start-btn').classList.add('hidden');
             document.getElementById('demo-pause-btn').classList.remove('hidden');
@@ -1490,12 +1657,36 @@
             scheduleTick();
         }
 
+        // User clicks "เก็บ" or "ไม่เก็บ" in vstep-5 — answers question and resumes sim
+        function answerTvocQuestion(yes) {
+            demoState.tvocQuestionAnswered = true;
+            demoState.pausedForTvocQuestion = false;
+            // tvocPromptIdx tracking: yes → 0 (will trigger first popup later), no → skip all
+            if (!yes) {
+                demoState.tvocPromptIdx = TVOC_DEMO_PROMPTS.length;
+            }
+            // Restore controls hidden during TVOC question pause
+            document.getElementById('demo-next-btn').classList.remove('hidden');
+            if (demoState.running) {
+                demoState.paused = false;
+                document.getElementById('demo-pause-btn').classList.remove('hidden');
+                document.getElementById('demo-resume-btn').classList.add('hidden');
+                scheduleTick();
+            }
+        }
+
         function resetDemoSim() {
             demoState.running = false;
             demoState.paused = false;
             demoState.simMin = 0;
             demoState.tvocCount = 0;
             demoState.tvocLog = [];
+            demoState.tvocPromptIdx = 0;
+            demoState.tvocQuestionAnswered = false;
+            demoState.pausedForTvocQuestion = false;
+            demoState.lastStep = 0;
+            // Restore controls (in case reset while paused for TVOC question)
+            document.getElementById('demo-next-btn').classList.remove('hidden');
             clearTimeout(demoState.tickHandle);
             document.getElementById('tvoc-overlay').classList.add('hidden');
             document.getElementById('demo-progress').classList.add('hidden');
@@ -1521,10 +1712,10 @@
             if (demoState.simMin >= SIM_DURATION_MIN) {
                 demoState.simMin = SIM_DURATION_MIN;
                 demoState.running = false;
-                setVolStep(7);
+                setVolStep(9);
                 injectSummaryStats();
                 updateDemoDisplay();
-                document.getElementById('demo-step-label').textContent = '7. เสร็จสิ้น';
+                document.getElementById('demo-step-label').textContent = '9. เสร็จสิ้น';
                 document.getElementById('demo-pause-btn').classList.add('hidden');
                 document.getElementById('demo-start-btn').classList.remove('hidden');
                 document.getElementById('demo-start-btn').textContent = '▶ เริ่มใหม่';
@@ -1539,48 +1730,69 @@
         function advanceStepBySimTime() {
             const m = demoState.simMin;
             let step = 1;
-            if (m < 0.5) step = 1;
-            else if (m < 1.5) step = 2;
-            else if (m < 11.5) step = 3;
-            else if (m < 12.0) step = 4;
-            else step = 6; // skip vstep5 (handled as auto-confirmation in demo)
-            // First time entering step 6: show TVOC prompt immediately
-            if (step === 6 && demoState.lastTvocPromptMin === 0 && demoState.tvocCount === 0) {
-                demoState.lastTvocPromptMin = m;
-                pauseAndPromptTvoc();
+            if (m < 0.5) step = 1;          // GPS detect
+            else if (m < 1.0) step = 2;     // confirm house
+            else if (m < 1.5) step = 3;     // sensor poll
+            else if (m < 2.0) step = 4;     // sensor ready (press start)
+            else if (m < 4.5) step = 5;     // Baseline + TVOC question (merged)
+            else if (m < 10.0) step = 6;    // TVOC entry during baseline
+            else if (m < 12.0) step = 7;    // cooking button visible
+            else step = 8;                  // cooking phase (sensor 🔥 + TVOC continues)
+            const stepLabels = {
+                1:'1. ตรวจ GPS', 2:'2. ยืนยันบ้าน', 3:'3. ค้นเซนเซอร์',
+                4:'4. กดเริ่ม', 5:'5. Baseline + กรอกค่า?',
+                6:'6. กรอก TVOC (Baseline)', 7:'7. จุดเตา', 8:'8. เก็บค่าจริง 🔥'
+            };
+            const previousStep = demoState.lastStep;
+            // Pause on Baseline+TVOC question step until user answers — hide resume/next so they can't bypass
+            if (step === 5 && !demoState.tvocQuestionAnswered && demoState.running && !demoState.paused) {
+                demoState.pausedForTvocQuestion = true;
+                demoState.lastStep = step;
+                pauseDemoSim();
+                document.getElementById('demo-resume-btn').classList.add('hidden');
+                document.getElementById('demo-next-btn').classList.add('hidden');
+                setVolStep(step);
+                document.getElementById('demo-step-label').textContent = '⬆ กดตอบในจอ: ✅ เก็บ / ❌ ไม่เก็บ';
+                return;
             }
+            // Auto-pause on step transition — give DewS time to explain each step in workshop
+            if (previousStep > 0 && previousStep !== step && demoState.running && !demoState.paused) {
+                demoState.lastStep = step;
+                setVolStep(step);
+                pauseDemoSim();
+                document.getElementById('demo-step-label').textContent = (stepLabels[step] || '—') + ' — กด ▶ ต่อ';
+                return;
+            }
+            demoState.lastStep = step;
             setVolStep(step);
-            const stepLabels = {1:'1. ตรวจ GPS', 2:'2. ค้นเซนเซอร์', 3:'3. Baseline', 4:'4. จุดเตา', 6:'6. กรอก TVOC/CO'};
             document.getElementById('demo-step-label').textContent = stepLabels[step] || '—';
         }
 
         function maybePromptTvoc() {
-            // Trigger every 5 sim minutes after the first prompt at 12:00
-            if (demoState.simMin >= 12 && demoState.simMin - demoState.lastTvocPromptMin >= 5) {
-                demoState.lastTvocPromptMin = demoState.simMin;
+            // Demo: trigger only at scheduled moments (TVOC_DEMO_PROMPTS) — not every 5 min
+            if (demoState.tvocPromptIdx >= TVOC_DEMO_PROMPTS.length) return;
+            const target = TVOC_DEMO_PROMPTS[demoState.tvocPromptIdx];
+            if (demoState.simMin >= target) {
+                demoState.tvocPromptIdx++;
                 pauseAndPromptTvoc();
             }
         }
 
         function pauseAndPromptTvoc() {
             pauseDemoSim();
-            // Mark UI as paused-for-input (different from manual pause)
-            const overlay = document.getElementById('tvoc-overlay');
-            const tvocVal = (0.20 + Math.random() * 0.15).toFixed(2);
-            const coVal = Math.floor(Math.random() * 4);
-            document.getElementById('tvoc-input-overlay').value = '';
-            document.getElementById('co-input-overlay').value = '';
-            document.getElementById('tvoc-input-overlay').placeholder = 'ค่าจริงประมาณ ' + tvocVal;
-            document.getElementById('co-input-overlay').placeholder = 'ค่าจริงประมาณ ' + coVal;
-            document.getElementById('tvoc-overlay-time').textContent = formatSimClock(demoState.simMin);
-            overlay.classList.remove('hidden');
+            // Reminder popup only — no inputs (matches volunteer.html #tvoc-modal behavior)
+            document.getElementById('tvoc-overlay').classList.remove('hidden');
         }
 
+        // "กรอกค่า" button — closes reminder; in real flow user would scroll to TVOC section
+        // and fill it there. In demo we simulate by counting +1 and resuming sim.
         function submitTvocEntry() {
-            const tvoc = parseFloat(document.getElementById('tvoc-input-overlay').value) || (0.20 + Math.random() * 0.15);
-            const co = parseInt(document.getElementById('co-input-overlay').value) || 0;
             demoState.tvocCount++;
-            demoState.tvocLog.push({ time: formatSimClock(demoState.simMin), tvoc: tvoc.toFixed(2), co });
+            demoState.tvocLog.push({
+                time: formatSimClock(demoState.simMin),
+                tvoc: (0.20 + Math.random() * 0.15).toFixed(2),
+                co: Math.floor(Math.random() * 4)
+            });
             document.getElementById('tvoc-overlay').classList.add('hidden');
             // Resume sim
             demoState.paused = false;
@@ -1589,8 +1801,55 @@
             scheduleTick();
         }
 
-        function skipTvocEntry() {
+        // Step boundaries (sim minutes) — must mirror advanceStepBySimTime() thresholds
+        const STEP_BOUNDARIES = [0.5, 1.0, 1.5, 2.0, 4.5, 10.0, 12.0, SIM_DURATION_MIN];
+
+        // Workshop control — warp simMin to next step boundary so DewS can skip ahead without waiting
+        function jumpToNextStep() {
+            // Close any open TVOC reminder popup first
             document.getElementById('tvoc-overlay').classList.add('hidden');
+            // Find first boundary greater than current simMin
+            const target = STEP_BOUNDARIES.find(t => t > demoState.simMin + 0.001);
+            if (target == null) return; // already past last boundary
+            demoState.simMin = target;
+            // If sim hadn't started, start it (so tickDemo runs and applies state changes)
+            if (!demoState.running) {
+                demoState.running = true;
+                demoState.paused = false;
+                document.getElementById('demo-progress').classList.remove('hidden');
+                document.getElementById('demo-start-btn').classList.add('hidden');
+                document.getElementById('demo-pause-btn').classList.remove('hidden');
+                document.getElementById('demo-resume-btn').classList.add('hidden');
+            } else {
+                demoState.paused = false;
+                document.getElementById('demo-pause-btn').classList.remove('hidden');
+                document.getElementById('demo-resume-btn').classList.add('hidden');
+            }
+            // Apply step + display update immediately, then tick
+            advanceStepBySimTime();
+            maybePromptTvoc();
+            updateDemoDisplay();
+            // If we warped past end, trigger end-of-sim summary
+            if (demoState.simMin >= SIM_DURATION_MIN) {
+                demoState.simMin = SIM_DURATION_MIN;
+                demoState.running = false;
+                setVolStep(9);
+                injectSummaryStats();
+                document.getElementById('demo-step-label').textContent = '9. เสร็จสิ้น';
+                document.getElementById('demo-pause-btn').classList.add('hidden');
+                document.getElementById('demo-start-btn').classList.remove('hidden');
+                document.getElementById('demo-start-btn').textContent = '▶ เริ่มใหม่';
+                return;
+            }
+            scheduleTick();
+        }
+
+        // Skip ALL remaining TVOC prompts AND warp to end of session — for fast workshop demos
+        function skipAllTvocPrompts() {
+            demoState.tvocPromptIdx = TVOC_DEMO_PROMPTS.length;
+            document.getElementById('tvoc-overlay').classList.add('hidden');
+            // Warp to end
+            demoState.simMin = SIM_DURATION_MIN;
             demoState.paused = false;
             document.getElementById('demo-pause-btn').classList.remove('hidden');
             document.getElementById('demo-resume-btn').classList.add('hidden');
@@ -1609,20 +1868,262 @@
             document.getElementById('demo-progress-bar').style.width = pct + '%';
         }
 
+        // Render summary exactly as volunteer.html builds #summary-details (line ~1568-1594)
+        // Items in real code: บ้าน, ข้อมูลเซนเซอร์, เวลารวม, จุดเตาเวลา, TVOC, CO
+        // TVOC/CO lines only appear when readings exist
+        function renderSummary(opts) {
+            const items = [];
+            const row = (label, val, valClass) =>
+                `<div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">${label}</span><span class="font-bold ${valClass||''}">${val}</span></div>`;
+            items.push(row('🏠 บ้าน', 'บ้านอาสา 03 (BS-003)'));
+            // sensor sync ทุก 5 นาที × 130 นาที ≈ 26 ค่า (ของจริง อาจขาดหายบ้างจาก WiFi/cron miss)
+            items.push(row('📊 ข้อมูลเซนเซอร์', (opts.sensorCount || 26) + ' ค่า'));
+            items.push(row('⏱ เวลารวม', '2 ชม. 10 นาที'));
+            items.push(row('🔥 จุดเตาเวลา', '14:45'));
+            if (opts.withTvoc) {
+                // อาสากรอกทุก 5 นาที — ใน 130 นาที ~ 26 ค่า ถ้าอยู่ครบ
+                items.push(row('📝 TVOC', '24 ค่า (เฉลี่ย 0.283 mg/m³)', 'text-purple-700'));
+                items.push(row('📝 CO', '24 ค่า (เฉลี่ย 2 ppm)', 'text-amber-600'));
+            }
+            return items.join('');
+        }
+
+        function setSummaryMode(mode) {
+            const withTvoc = mode === 'with-tvoc';
+            const det = document.getElementById('summary-details');
+            if (det) det.innerHTML = renderSummary({ withTvoc, sensorCount: demoState.sensorReadings || 26 });
+            // Subtle active indicator — underline only, no bold/colored background
+            const w = document.getElementById('sum-mode-with');
+            const wo = document.getElementById('sum-mode-without');
+            if (w) w.className = 'px-2 py-0.5 rounded hover:bg-gray-100 ' + (withTvoc ? 'text-gray-700 underline' : 'text-gray-500');
+            if (wo) wo.className = 'px-2 py-0.5 rounded hover:bg-gray-100 ' + (!withTvoc ? 'text-gray-700 underline' : 'text-gray-500');
+        }
+
         function injectSummaryStats() {
-            // Update vstep-7 with actual demo stats (find first match inside vstep-7)
-            const root = document.getElementById('vstep-7');
-            if (!root) return;
-            // Update TVOC count
-            const rows = root.querySelectorAll('.flex.justify-between');
-            rows.forEach(r => {
-                const label = r.querySelector('span:first-child');
-                const val = r.querySelector('span:last-child');
-                if (!label || !val) return;
-                if (label.textContent.includes('ค่ากรอกมือ')) {
-                    val.textContent = demoState.tvocCount + ' ค่า';
-                }
+            // Default to "with TVOC" if user answered "เก็บ" during demo
+            const mode = (demoState.tvocCount > 0 || demoState.tvocPromptIdx > 0) ? 'with-tvoc' : 'no-tvoc';
+            setSummaryMode(mode);
+        }
+
+        // Toggle TVOC manual section — workshop-only, lets DewS demo "ถ้าไม่กรอก จะเห็นแบบไหน"
+        function toggleTvoc(el) {
+            const wrapper = el.closest('.tvoc-wrapper');
+            if (!wrapper) return;
+            wrapper.querySelector('.tvoc-section').classList.toggle('hidden');
+            wrapper.querySelector('.tvoc-stub').classList.toggle('hidden');
+        }
+
+        // ============================================================
+        // EDGE CASES SHOWCASE — alternative phone screens
+        // ============================================================
+        function toggleEdgeCases() {
+            const content = document.getElementById('edge-cases-content');
+            const btn = document.getElementById('edge-toggle-btn');
+            const isHidden = content.classList.contains('hidden');
+            content.classList.toggle('hidden');
+            btn.textContent = isHidden ? '▲ ปิด' : '▼ เปิดดู';
+        }
+
+        const EDGE_MOCKUPS = {
+            notfound: {
+                title: '❌ ไม่พบเซนเซอร์ (troubleshoot-modal)',
+                html: `
+                    <div class="bg-white rounded-2xl shadow-lg p-5">
+                        <div class="text-4xl text-center mb-3">🔍</div>
+                        <h2 class="text-lg font-bold text-red-700 text-center mb-4">ไม่พบเซนเซอร์</h2>
+                        <div class="space-y-2 text-xs text-gray-700 mb-4">
+                            <div class="flex gap-2 items-start bg-blue-50 rounded-xl p-2.5">
+                                <span class="text-base">📶</span>
+                                <div><b>ตรวจสอบ Hotspot</b><br>ชื่อ: <b>Biomass</b> / รหัส: <b>Biomass2026</b><br>ใช้ 2.4 GHz เท่านั้น</div>
+                            </div>
+                            <div class="flex gap-2 items-start bg-amber-50 rounded-xl p-2.5">
+                                <span class="text-base">🔌</span>
+                                <div><b>ปิด-เปิดเซนเซอร์ใหม่</b><br>กดปุ่มเปิด-ปิด รอ 10 วินาที แล้วเปิดอีกครั้ง</div>
+                            </div>
+                            <div class="flex gap-2 items-start bg-green-50 rounded-xl p-2.5">
+                                <span class="text-base">🏠</span>
+                                <div><b>ตรวจสอบว่าเลือกบ้านถูกต้อง</b><br>เซนเซอร์ต้องตรงกับบ้านที่เลือก</div>
+                            </div>
+                            <div class="flex gap-2 items-start bg-purple-50 rounded-xl p-2.5">
+                                <span class="text-base">📞</span>
+                                <div><b>ติดต่อแอดมิน</b><br>หากยังไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ</div>
+                            </div>
+                        </div>
+                        <button class="w-full py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl mb-1.5">ลองใหม่อีกครั้ง</button>
+                        <button class="w-full py-1.5 text-gray-400 text-xs font-medium">ปิด</button>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> ping เซนเซอร์ผ่าน Tuya 20 ครั้ง (~5 นาที) ยังไม่ออนไลน์ — เปิด troubleshoot-modal เป็น popup overlay บนหน้า session'
+            },
+            quota: {
+                title: '🚫 ครบ quota — showReturnSummary',
+                html: `
+                    <!-- Real UI: step-summary view + amber badge below (matches volunteer.html line 1649-1681) -->
+                    <div class="bg-emerald-50 rounded-2xl p-5 border-2 border-emerald-200">
+                        <div class="text-center mb-3">
+                            <div class="text-5xl">✅</div>
+                            <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
+                        </div>
+                        <div class="space-y-0 text-sm bg-white rounded-xl p-4">
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">บ้านอาสา 03</span></div>
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">26 ค่า</span></div>
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">⏱ เวลารวม</span><span class="font-bold">2 ชม. 10 นาที</span></div>
+                            <div class="text-center text-emerald-600 font-bold pt-2">ขอบคุณที่ช่วยเก็บข้อมูลค่ะ!</div>
+                        </div>
+                        <div class="mt-4 bg-amber-50 rounded-xl p-3 text-center border border-amber-200">
+                            <p class="font-bold text-amber-700">✅ ครบ quota วันนี้แล้ว</p>
+                            <p class="text-xs text-gray-500 mt-1">ระบบจะพร้อมเก็บข้อมูลอีกครั้งในวันพรุ่งนี้</p>
+                        </div>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> ทำครบ 2 sessions/วัน แล้วกลับมาเปิดแอป → ระบบเรียก <code>showReturnSummary(lastDone, "✅ ครบ quota วันนี้แล้ว", ...)</code><br><b>ไม่ใช่</b> popup ใหม่ — เป็น step-summary view เหมือนตอนจบ session ปกติ + badge สีอำพันด้านล่าง'
+            },
+            cooldown: {
+                title: '⏸️ Cooldown — showReturnSummary',
+                html: `
+                    <!-- Real UI: step-summary view + amber badge "อยู่ในช่วงพัก" -->
+                    <div class="bg-emerald-50 rounded-2xl p-5 border-2 border-emerald-200">
+                        <div class="text-center mb-3">
+                            <div class="text-5xl">✅</div>
+                            <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
+                        </div>
+                        <div class="space-y-0 text-sm bg-white rounded-xl p-4">
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">บ้านอาสา 03</span></div>
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">26 ค่า</span></div>
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">⏱ เวลารวม</span><span class="font-bold">2 ชม. 10 นาที</span></div>
+                            <div class="text-center text-emerald-600 font-bold pt-2">ขอบคุณที่ช่วยเก็บข้อมูลค่ะ!</div>
+                        </div>
+                        <div class="mt-4 bg-amber-50 rounded-xl p-3 text-center border border-amber-200">
+                            <p class="font-bold text-amber-700">⏸️ อยู่ในช่วงพัก</p>
+                            <p class="text-xs text-gray-500 mt-1">เปิดได้อีกครั้ง 20:45 น. (อีก ~3 ชม. 20 นาที)</p>
+                        </div>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> Session ก่อนจบไม่ถึง 5 ชม. แล้วเปิดแอปอีกครั้ง → <code>showReturnSummary(lastSession, "⏸️ อยู่ในช่วงพัก", "เปิดได้อีกครั้ง HH:MM น. (อีก ~X ชม. Y นาที)")</code><br><b>ไม่ใช่</b> popup สีอำพันเต็มจอ — เป็น summary + badge'
+            },
+            quiet: {
+                title: '🌙 ครบ 1 รอบ — showReturnSummary',
+                html: `
+                    <!-- Real UI: step-summary view + amber badge "🌙 ครบ 1 รอบแล้ว" (cooldown ตกในช่วง quiet hours) -->
+                    <div class="bg-emerald-50 rounded-2xl p-5 border-2 border-emerald-200">
+                        <div class="text-center mb-3">
+                            <div class="text-5xl">✅</div>
+                            <p class="font-bold text-xl text-emerald-800 mt-2">เก็บข้อมูลเสร็จ!</p>
+                        </div>
+                        <div class="space-y-0 text-sm bg-white rounded-xl p-4">
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">🏠 บ้าน</span><span class="font-bold">บ้านอาสา 03</span></div>
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">📊 ข้อมูลเซนเซอร์</span><span class="font-bold">26 ค่า</span></div>
+                            <div class="flex justify-between py-2 border-b border-gray-100"><span class="text-gray-500">⏱ เวลารวม</span><span class="font-bold">2 ชม. 10 นาที</span></div>
+                            <div class="text-center text-emerald-600 font-bold pt-2">ขอบคุณที่ช่วยเก็บข้อมูลค่ะ!</div>
+                        </div>
+                        <div class="mt-4 bg-amber-50 rounded-xl p-3 text-center border border-amber-200">
+                            <p class="font-bold text-amber-700">🌙 ครบ 1 รอบแล้ว</p>
+                            <p class="text-xs text-gray-500 mt-1">รอบถัดไปอยู่นอกเวลาเก็บข้อมูล — พรุ่งนี้ค่ะ</p>
+                        </div>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> session ก่อนจบ + รอบถัดไปจะตกในช่วง quiet hours (กลางคืน) → <code>showReturnSummary(lastSession, "🌙 ครบ 1 รอบแล้ว", "รอบถัดไปอยู่นอกเวลาเก็บข้อมูล — พรุ่งนี้ค่ะ")</code><br><b>ไม่ใช่</b> popup กลางคืนเต็มจอ — เป็น summary + badge เดียวกับ cooldown แต่เปลี่ยน wording'
+            },
+            quietnow: {
+                title: '😴 เปิดแอปกลางคืน — rest-day-warning',
+                html: `
+                    <!-- Real UI: #rest-day-warning shown before house select (volunteer.html:51-56) -->
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl shadow-md p-6 text-center">
+                        <div class="text-5xl mb-3">😴</div>
+                        <p class="font-bold text-lg text-amber-800">วันนี้ระบบหยุดพัก</p>
+                        <p class="text-sm text-amber-600 mt-2">ขณะนี้อยู่ในช่วงพักระบบ (22:00-05:00 น.)</p>
+                        <p class="text-xs text-gray-400 mt-3">ระบบเก็บข้อมูลเฉพาะวันที่กำหนดไว้<br>หากต้องการเก็บข้อมูลวันนี้ กรุณาติดต่อผู้ดูแลระบบ</p>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> เปิดแอปในช่วง quiet hours (เช่น 22:00–05:00) <b>โดยยังไม่มี session ใดๆ</b> วันนี้ → block ก่อนหน้าเลือกบ้าน → เห็นแค่ rest-day-warning<br><b>ต่างจาก "ครบ 1 รอบ":</b> case นี้ยังไม่ได้เก็บอะไรเลย — ของ "ครบ 1 รอบ" คือเก็บแล้ว 1 session แล้ว cooldown ตกใน quiet'
+            },
+            holiday: {
+                title: '📅 วันหยุด — rest-day-warning',
+                html: `
+                    <!-- Real UI: #rest-day-warning shown when today is not in active_days (volunteer.html:439-449) -->
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl shadow-md p-6 text-center">
+                        <div class="text-5xl mb-3">😴</div>
+                        <p class="font-bold text-lg text-amber-800">วันนี้ระบบหยุดพัก</p>
+                        <p class="text-sm text-amber-600 mt-2">วันนี้วันเสาร์ — ระบบเก็บข้อมูลเฉพาะวันจันทร์, อังคาร, พุธ, พฤหัสบดี, ศุกร์</p>
+                        <p class="text-xs text-gray-400 mt-3">ระบบเก็บข้อมูลเฉพาะวันที่กำหนดไว้<br>หากต้องการเก็บข้อมูลวันนี้ กรุณาติดต่อผู้ดูแลระบบ</p>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> เปิดแอปในวันที่ไม่ใช่ <code>active_days</code> (เก็บจาก <code>sync_config</code> ใน Supabase) — แอดมินตั้งได้ว่าวันไหนเก็บข้อมูลบ้าง (เช่น เก็บแค่จันทร์–ศุกร์, หยุดเสาร์-อาทิตย์) → block ก่อนหน้าเลือกบ้าน<br><b>Override:</b> แอดมินเปิด <code>override_date</code> เพื่อเก็บข้อมูลในวันหยุดได้ 1 วัน'
+            },
+            stall: {
+                title: '⚠️ ข้อมูลไม่อัปเดต (stall-modal)',
+                html: `
+                    <div class="bg-white rounded-2xl shadow-lg p-5">
+                        <div class="text-4xl text-center mb-3">⚠️</div>
+                        <h2 class="text-lg font-bold text-amber-700 text-center mb-2">ข้อมูลไม่มีการอัปเดต</h2>
+                        <p class="text-xs text-gray-600 text-center mb-3">เซนเซอร์อาจหลุดการเชื่อมต่อ กรุณาลองแก้ไขตามขั้นตอน</p>
+                        <div class="space-y-2 text-xs text-gray-700 mb-4">
+                            <div class="flex gap-2 items-start bg-amber-50 rounded-xl p-2.5">
+                                <span class="text-base">1️⃣</span>
+                                <div><b>กดปุ่มบนเซนเซอร์ 4 ครั้ง</b><br>เพื่อปรับเทียบค่า (Calibrate) รอ 120 วินาที</div>
+                            </div>
+                            <div class="flex gap-2 items-start bg-orange-50 rounded-xl p-2.5">
+                                <span class="text-base">2️⃣</span>
+                                <div><b>ปิดเซนเซอร์แล้วเปิดใหม่</b><br>กดปุ่มเปิด-ปิด รอ 10 วินาที แล้วเปิดอีกครั้ง</div>
+                            </div>
+                            <div class="flex gap-2 items-start bg-blue-50 rounded-xl p-2.5">
+                                <span class="text-base">3️⃣</span>
+                                <div><b>ตรวจสอบ Hotspot</b><br>ชื่อ: <b>Biomass</b> / รหัส: <b>Biomass2026</b><br>ต้อง 2.4 GHz + เปิด Mobile Data</div>
+                            </div>
+                            <div class="flex gap-2 items-start bg-purple-50 rounded-xl p-2.5">
+                                <span class="text-base">📞</span>
+                                <div><b>ติดต่อผู้ดูแลระบบ</b><br>หากยังไม่สำเร็จ กรุณาแจ้งผู้ดูแล</div>
+                            </div>
+                        </div>
+                        <button class="w-full py-2.5 bg-amber-500 text-white text-sm font-bold rounded-xl">รับทราบ</button>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> sensor count ไม่เพิ่มใน 15 นาที (ปกติเก็บทุก ~5 นาที) — ป๊อบ stall-modal เพื่อให้อาสารู้ก่อน session ค้างทั้งวัน'
+            },
+            lock: {
+                title: '🔒 มีคนใช้แล้ว (toast)',
+                html: `
+                    <!-- Real UI: gray toast at top of screen, background stays as "ยืนยันบ้าน" view -->
+                    <div class="bg-gray-800 text-white px-4 py-3 rounded-xl text-center text-sm font-bold shadow-2xl">
+                        🚫 มีอาสาคนอื่นเก็บข้อมูลบ้านนี้อยู่ (ล่าสุด 2 นาทีก่อน)
+                    </div>
+                    <!-- Background: confirm house view (toast appears on top of this) -->
+                    <div class="bg-white rounded-2xl shadow-sm p-4 mt-4">
+                        <div class="bg-emerald-50 rounded-xl p-3 mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="text-2xl">🏠</div>
+                                <div class="flex-1">
+                                    <p class="font-bold text-gray-800">บ้านอาสา 03</p>
+                                    <p class="text-xs text-gray-500">เซนเซอร์ BS-003 · ระยะ ~5 ม.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-sm">✅ ยืนยัน</button>
+                            <button class="px-4 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">เปลี่ยน</button>
+                        </div>
+                    </div>`,
+                note: '<b>เกิดเมื่อ:</b> อาสากด ยืนยันบ้าน แต่มี browser อื่น active < 3 นาทีที่บ้านเดียวกัน → toast สีเทาเด้งบน (auto-dismiss) ไม่บล็อกหน้า แต่ไม่อนุญาตเข้า session<br><b>หมายเหตุ:</b> ของจริงเป็นแค่ toast — ไม่มีหน้าเต็มจอแสดงข้อมูล browser/เวลา'
+            },
+        };
+
+        function showEdge(name) {
+            const data = EDGE_MOCKUPS[name];
+            if (!data) return;
+            // Hide all happy-path vsteps + show edge view in main phone
+            for (let i = 1; i <= 9; i++) {
+                document.getElementById('vstep-' + i).classList.add('hidden');
+                const btn = document.getElementById('vstep-' + i + '-btn');
+                if (btn) btn.className = 'vstep-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 text-gray-600';
+            }
+            document.getElementById('vstep-edge-content').innerHTML = data.html;
+            document.getElementById('vstep-edge').classList.remove('hidden');
+            // Update workshop note panel
+            const noteText = document.getElementById('workshop-note-text');
+            if (noteText) noteText.innerHTML = '<b>⚠️ ' + data.title + '</b> — ' + data.note;
+            // Highlight active edge button
+            document.querySelectorAll('.edge-btn').forEach(b => {
+                b.classList.remove('bg-amber-200', 'border-amber-500');
+                b.classList.add('bg-white', 'border-amber-200');
             });
+            const activeBtn = document.getElementById('edge-btn-' + name);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'border-amber-200');
+                activeBtn.classList.add('bg-amber-200', 'border-amber-500');
+            }
         }
     </script>
 
