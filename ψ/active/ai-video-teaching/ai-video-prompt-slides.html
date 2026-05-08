@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>AI Video Prompt — หลักการที่ใช้ได้ตลอด</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* DARK THEME — DewS preference (2026-05-08) */
+    --indigo-dark: #a5b4fc;       /* bright indigo for headings on dark */
+    --indigo: #818cf8;            /* main accent */
+    --indigo-light: #c7d2fe;      /* bright highlights */
+    --indigo-50: #1e1b4b;         /* dark indigo bg for highlights */
+    --violet: #a78bfa;
+    --navy: #020617;
+    --bg: #0a0e1a;                /* main bg */
+    --bg-soft: #131826;
+    --card: #131826;              /* cards */
+    --line: #2d3548;              /* borders */
+    --orange: #fb923c;
+    --orange-soft: rgba(251, 146, 60, 0.18);
+    --ink: #e5e7eb;               /* main text */
+    --ink-bright: #ffffff;
+    --muted: #94a3b8;
+    --code-bg: #1f2538;
+    --bad: #f87171;
+    --warn: #fbbf24;
+    --info: #38bdf8;
+    --good: #34d399;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Chakra Petch', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 3.5vh 5vw 9vh;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+  .slide-head {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .slide-num {
+    background: var(--indigo-dark);
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .slide-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--indigo-dark);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .slide-tag {
+    margin-left: auto;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--orange);
+    background: var(--orange-soft);
+    padding: 8px 22px;
+    border-radius: 999px;
+  }
+
+  .slide-body {
+    flex: 1;
+    overflow: auto;
+    font-size: 24px;
+    line-height: 1.6;
+  }
+
+  .slide-body p { margin: 10px 0; }
+  .slide-body ul, .slide-body ol { margin: 14px 0 14px 28px; }
+  .slide-body li { margin: 8px 0; font-size: 24px; }
+  .slide-body strong { color: var(--indigo-dark); }
+  .slide-body h3 { font-size: 28px; }
+  .slide-body h4 { font-size: 22px; }
+
+  /* Mobile-friendly responsive */
+  @media (max-width: 900px) {
+    .slide { padding: 3vh 4vw 9vh; }
+    .slide-title { font-size: 32px; }
+    .slide-num { width: 48px; height: 48px; font-size: 22px; }
+    .slide-body { font-size: 20px; }
+    .slide-body li { font-size: 20px; }
+  }
+
+  /* Title slide */
+  .slide.title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(ellipse at center, #1a2238 0%, var(--bg) 70%);
+    padding: 40px;
+  }
+  .title-slide .badge {
+    background: var(--indigo);
+    color: white;
+    padding: 10px 22px;
+    border-radius: 999px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+  .title-slide h1 {
+    font-size: 64px;
+    font-weight: 700;
+    color: var(--ink-bright);
+    margin-bottom: 14px;
+    line-height: 1.2;
+    max-width: 1000px;
+    letter-spacing: -0.01em;
+  }
+  .title-slide .subtitle {
+    font-size: 26px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 36px;
+    max-width: 900px;
+    line-height: 1.5;
+  }
+  .title-slide .meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 22px 38px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+  .title-slide .meta-item { text-align: center; }
+  .title-slide .meta-item .lbl { font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .title-slide .meta-item .val { font-size: 20px; color: var(--indigo-light); font-weight: 600; }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 10px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  .card.accent { border-left: 4px solid var(--orange); }
+  .card.indigo { border-left: 4px solid var(--indigo); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 20px; }
+  th { background: var(--indigo-50); color: var(--indigo-dark); font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Code */
+  code, pre { font-family: 'JetBrains Mono', monospace; }
+  code { background: var(--code-bg); padding: 3px 10px; border-radius: 4px; color: var(--indigo-dark); font-size: 0.92em; }
+  pre {
+    background: var(--code-bg);
+    padding: 18px 22px;
+    border-radius: 10px;
+    border-left: 4px solid var(--indigo);
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 12px 0;
+    font-size: 18px;
+  }
+  pre code { background: none; padding: 0; }
+
+  /* Callout */
+  .callout {
+    padding: 16px 22px;
+    border-radius: 10px;
+    margin: 12px 0;
+    font-size: 22px;
+    line-height: 1.55;
+  }
+  .callout.tip { background: rgba(129, 140, 248, 0.12); border-left: 4px solid var(--indigo); }
+  .callout.tip strong { color: var(--indigo-light); }
+  .callout.warn { background: rgba(251, 191, 36, 0.12); border-left: 4px solid var(--warn); }
+  .callout.warn strong { color: var(--warn); }
+  .callout.bad { background: rgba(248, 113, 113, 0.12); border-left: 4px solid var(--bad); }
+  .callout.bad strong { color: var(--bad); }
+  .callout.good { background: rgba(52, 211, 153, 0.12); border-left: 4px solid var(--good); }
+  .callout.good strong { color: var(--good); }
+  .callout.info { background: rgba(56, 189, 248, 0.12); border-left: 4px solid var(--info); }
+  .callout.info strong { color: var(--info); }
+
+  /* Big idea slide */
+  .big-idea {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .big-idea .lead { font-size: 26px; color: var(--muted); margin-bottom: 20px; font-weight: 500; }
+  .big-idea .quote { font-size: 44px; color: var(--indigo-dark); font-weight: 700; max-width: 900px; margin: 0 auto 24px; line-height: 1.3; letter-spacing: -0.01em; }
+  .big-idea .footnote { font-size: 18px; color: var(--ink); max-width: 700px; margin: 24px auto 0; }
+  .big-idea .arrow-down { font-size: 36px; color: var(--orange); margin: 16px 0; }
+
+  /* Section break */
+  .slide.section-break {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(ellipse at center, #1e1b4b 0%, #0a0e1a 70%);
+  }
+  .section-break .sec-num { font-size: 22px; color: var(--indigo-light); letter-spacing: 0.2em; margin-bottom: 18px; font-weight: 600; }
+  .section-break h2 { font-size: 72px; color: var(--ink-bright); margin-bottom: 18px; font-weight: 700; line-height: 1.2; }
+  .section-break p { font-size: 26px; color: var(--muted); max-width: 800px; }
+
+  /* Lock cards grid */
+  .locks-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .lock-card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .lock-card:hover { border-color: var(--indigo); transform: translateY(-2px); }
+  .lock-card .ico { font-size: 36px; margin-bottom: 6px; }
+  .lock-card .label { font-size: 16px; font-weight: 700; color: var(--indigo-dark); }
+  .lock-card .desc { margin-top: 8px; font-size: 13px; color: var(--ink); line-height: 1.4; }
+
+  /* Compare grid */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0;
+  }
+  .compare-col {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+  }
+  .compare-col.bad { border-top: 4px solid var(--bad); background: rgba(248, 113, 113, 0.06); }
+  .compare-col.good { border-top: 4px solid var(--good); background: rgba(52, 211, 153, 0.06); }
+  .compare-col h4 { color: var(--indigo-light); margin-bottom: 10px; font-size: 16px; }
+  .compare-col.bad h4 { color: var(--bad); }
+  .compare-col.good h4 { color: var(--good); }
+  .compare-col code { font-size: 13px; }
+
+  /* Anatomy block */
+  .anatomy {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+    margin: 14px 0;
+  }
+  .anatomy-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 18px;
+    align-items: start;
+    font-size: 15px;
+  }
+  .anatomy-row:last-child { border-bottom: none; }
+  .anatomy-row .part { font-weight: 700; color: var(--indigo-dark); font-size: 14px; }
+  .anatomy-row .part .num { display: inline-block; width: 22px; height: 22px; background: var(--indigo); color: white; border-radius: 50%; text-align: center; line-height: 22px; font-size: 12px; margin-right: 8px; }
+  .anatomy-row .desc { color: var(--ink); }
+  .anatomy-row .desc code { font-size: 13px; }
+  .anatomy-row.highlight { background: var(--indigo-50); }
+
+  /* Two-col list */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin: 12px 0;
+  }
+  .two-col h4 { color: var(--indigo-dark); margin-bottom: 8px; font-size: 16px; }
+
+  /* Cheat sheet */
+  .cheat {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 24px 28px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    border-top: 6px solid var(--indigo);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .cheat h3 { font-family: 'Chakra Petch', sans-serif; color: var(--indigo-dark); font-size: 22px; margin: 16px 0 8px; }
+  .cheat h3:first-child { margin-top: 0; }
+  .cheat .rule { color: var(--indigo); font-weight: 700; }
+  .cheat .arrow { color: var(--orange); }
+
+  /* Checklist */
+  .checklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+    margin: 14px 0;
+  }
+  .check-item {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    padding: 8px 14px;
+    background: var(--card);
+    border-radius: 8px;
+    border-left: 3px solid var(--indigo);
+    font-size: 15px;
+  }
+  .check-item .box { width: 18px; height: 18px; border: 2px solid var(--indigo); border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(19, 24, 38, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+  .nav button {
+    background: none;
+    border: none;
+    color: var(--indigo-light);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .nav button:hover { background: rgba(129, 140, 248, 0.15); }
+  .nav .counter { font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--muted); min-width: 70px; text-align: center; }
+  .nav .counter .current { color: var(--indigo-light); font-weight: 700; }
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--orange);
+    transition: width 0.4s ease;
+    z-index: 101;
+  }
+
+  .hint {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    font-size: 14px;
+    color: var(--muted);
+    z-index: 100;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hint kbd { background: var(--code-bg); padding: 3px 8px; border-radius: 4px; border: 1px solid var(--line); margin: 0 2px; color: var(--ink); }
+
+  /* Problem card layout */
+  .problem-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 10px 0;
+    border-left: 5px solid var(--orange);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  .problem-card .symptom { font-weight: 700; color: var(--bad); font-size: 17px; margin-bottom: 4px; }
+  .problem-card .cause { color: var(--muted); font-size: 15px; margin-bottom: 8px; font-style: italic; }
+  .problem-card .fix { color: var(--good); font-weight: 600; font-size: 16px; }
+  .problem-card .fix-detail { font-size: 15px; color: var(--ink); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress" style="width: 4%"></div>
+<div class="hint"><kbd>←</kbd><kbd>→</kbd> เลื่อน · <kbd>F</kbd> ฟูลสกรีน</div>
+
+<div class="deck">
+
+  <!-- 1. Title -->
+  <div class="slide title-slide active">
+    <div class="badge">AI VIDEO PROMPT — KNOWLEDGE TRANSFER</div>
+    <h1>เขียน Prompt ให้ AI สร้างวิดีโอ<br>แบบที่ใช้ได้ทุก project</h1>
+    <p class="subtitle">หลักการ Lock → Copy → Paste — ทำงานได้กับทุก tool ทุกแนว ตั้งแต่ cartoon dialogue จนถึง cinematic cutscene</p>
+    <div class="meta">
+      <div class="meta-item">
+        <div class="lbl">Format</div>
+        <div class="val">1-on-1 Session</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">Audience</div>
+        <div class="val">มือใหม่ → Intermediate</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">Duration</div>
+        <div class="val">~60 นาที</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">Tools covered</div>
+        <div class="val">Universal — ใช้ได้ทุกตัว</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Why this matters -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">2</div>
+      <div class="slide-title">ทำไมต้องมีหลักการ — ไม่ใช่แค่จำคำสั่ง</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:18px;margin-bottom:14px">AI video tools เปลี่ยนทุก 3-6 เดือน — Jimeng → Dreamina → Seedance → Veo → ของใหม่ที่ยังไม่ออก</p>
+      <div class="callout tip"><strong>ถ้าจำเฉพาะคำสั่งของ tool เดียว</strong> → tool เปลี่ยนปุ๊บ ความรู้หมดอายุปั๊บ</div>
+      <div class="callout good"><strong>ถ้าเข้าใจหลักการว่าทำไม AI behave แบบนั้น</strong> → ใช้ tool ไหนก็ปรับได้ใน 1 วัน</div>
+      <p style="margin-top:20px;font-size:18px"><strong>หลักการในเซสชั่นนี้ทดสอบมาแล้วกับ:</strong></p>
+      <ul>
+        <li><strong>Engenius</strong> — ทำทั้ง 2D + 3D
+          <ul style="margin-top:6px;margin-left:20px">
+            <li><em>Three Little Pigs</em> — 3D Pixar storybook (Seedance 2.0 + Nanobanana) · 8 shots · location anchor</li>
+            <li><em>My Friend / Convenience Store</em> — 2D cartoon dialogue (Jimeng/Dreamina) · หลายตอน หลายซีน</li>
+          </ul>
+        </li>
+        <li style="margin-top:8px"><strong>Fortal Dragon</strong> — 3D cinematic cutscene (Seedance 2.0) — หลาย shot ที่ต้อง iterate (ลองวนปรับซ้ำๆ)</li>
+      </ul>
+      <p style="margin-top:14px;font-size:18px">→ คนละแนวเลย แต่หลักการ <strong>เดียวกัน</strong> ทั้งหมด</p>
+    </div>
+  </div>
+
+  <!-- 3. The 3 Truths -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">3</div>
+      <div class="slide-title">ความจริง 3 ข้อที่ต้องเข้าใจก่อนเริ่ม</div>
+    </div>
+    <div class="slide-body">
+      <div class="card indigo" style="padding:18px 24px;margin-bottom:12px">
+        <h3 style="color:var(--indigo-dark);font-size:22px;margin-bottom:6px">1. AI ไม่มีความจำข้ามรอบ</h3>
+        <p style="font-size:19px">ทุกครั้งที่ generate = AI <strong>เริ่มใหม่จากศูนย์</strong> ไม่รู้ว่าเคยทำคลิปก่อนหน้ามาแล้ว</p>
+        <p style="margin-top:6px;color:var(--muted);font-size:17px">→ ทุกอย่างที่อยากให้ "เหมือนเดิม" ต้องเขียนใส่ทุกครั้ง — ทุก prompt ทุก shot</p>
+      </div>
+      <div class="card indigo" style="padding:18px 24px;margin-bottom:12px">
+        <h3 style="color:var(--indigo-dark);font-size:22px;margin-bottom:6px">2. AI ไม่ "edit" — AI "สร้างใหม่"</h3>
+        <p style="font-size:19px">แม้แนบ ref image ดีแค่ไหน AI ก็ generate ภาพใหม่ทุกครั้ง ไม่ใช่แก้ภาพเดิม</p>
+        <p style="margin-top:6px;color:var(--muted);font-size:17px">→ ภาพหลาย shot ไม่เป็นเรื่องเดียวกันโดยอัตโนมัติ — เป็นเรื่องปกติของ AI</p>
+      </div>
+      <div class="card indigo" style="padding:18px 24px">
+        <h3 style="color:var(--indigo-dark);font-size:22px;margin-bottom:6px">3. AI สุ่มในตัว — เดิมเป๊ะก็ยังต่างได้</h3>
+        <p style="font-size:19px">ยิงพรอมท์เดิมเป๊ะๆ 2 ครั้ง <strong>ผลลัพธ์ก็ยังต่าง</strong> — เพราะ AI generation มี randomness ในตัว (stochastic)</p>
+        <p style="margin-top:6px;color:var(--muted);font-size:17px">→ Lock-Copy-Paste ทำให้ <strong>ใกล้เคียง</strong>เดิมที่สุด ไม่ใช่ <strong>เหมือน</strong>เดิม 100% — ต้อง iterate + เลือก best-of-N เสมอ</p>
+      </div>
+      <div class="callout warn" style="margin-top:14px;font-size:17px;line-height:1.7">
+        ตัวละครเปลี่ยนหน้า สไตล์เพี้ยน ฉากต่างกัน — มันจะเป็นแบบนี้เสมอถ้าเราไม่ทำอะไรเพิ่ม<br>
+        ไม่ใช่ "AI พัง" ไม่ใช่ "ซวย" ไม่ใช่ "เคสพิเศษ"<br>
+        <strong>มันคือพฤติกรรมพื้นฐานของ AI</strong> — ต้องคาดเดาไว้เลย แล้วค่อยหาทางป้องกัน
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Golden rule -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">4</div>
+      <div class="slide-title">กฎทอง</div>
+    </div>
+    <div class="slide-body big-idea">
+      <p class="lead">วิธีต่อสู้กับ AI ที่ไม่มีความจำ คือ:</p>
+      <p class="quote"><span class="rule">Lock</span> <span style="color:var(--orange)">→</span> <span class="rule">Copy</span> <span style="color:var(--orange)">→</span> <span class="rule">Paste</span> <span style="color:var(--orange)">→</span> <span class="rule">ซ้ำ</span></p>
+      <p class="footnote">ทุก shot ทุก scene ทุก episode — ห้ามย่อ ห้ามเปลี่ยนคำ ห้ามเรียบเรียงใหม่</p>
+      <div class="arrow-down">↓</div>
+      <p style="font-size:20px;color:var(--ink);max-width:700px;margin:0 auto;font-weight:500">ยิ่งเขียน <strong>เหมือนเดิม</strong> มากเท่าไหร่ → AI ยิ่ง generate <strong>ใกล้เคียงเดิม</strong>มากที่สุด<br><span style="font-size:17px;color:var(--muted);font-weight:400">(ไม่ใช่ "เหมือนเดิม 100%" — เพราะ AI สุ่มในตัว · แต่ใกล้สุดเท่าที่ทำได้)</span></p>
+    </div>
+  </div>
+
+  <!-- 5. 5 Locks -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">5</div>
+      <div class="slide-title">มีอะไรต้อง Lock บ้าง — 5 Layers</div>
+    </div>
+    <div class="slide-body">
+      <p style="margin-bottom:8px">ทุก project ต้อง lock ทั้ง 5 layer — Lock ครบ → drift (ค่อยๆ เพี้ยน — ตัวละคร/สี/ฉาก ผิดเดิมไปทีละนิด) <strong>น้อย</strong> · ไม่ Lock → drift <strong>มาก</strong></p>
+      <div class="locks-grid">
+        <div class="lock-card">
+          <div class="ico">👤</div>
+          <div class="label">Character</div>
+          <div class="desc">ผม ตา ผิว เสื้อผ้า รองเท้า</div>
+        </div>
+        <div class="lock-card">
+          <div class="ico">🗣️</div>
+          <div class="label">Voice</div>
+          <div class="desc">เพศ อายุ บุคลิก น้ำเสียง</div>
+        </div>
+        <div class="lock-card">
+          <div class="ico">🎨</div>
+          <div class="label">Style</div>
+          <div class="desc">ลายเส้น สีพาเลตต์ texture</div>
+        </div>
+        <div class="lock-card">
+          <div class="ico">🏠</div>
+          <div class="label">Environment</div>
+          <div class="desc">ห้อง โซฟา แสง เวลาวัน</div>
+        </div>
+        <div class="lock-card">
+          <div class="ico">🎥</div>
+          <div class="label">Camera</div>
+          <div class="desc">มุม motion lock level</div>
+        </div>
+      </div>
+      <div class="callout tip" style="margin-top:18px"><strong>เจอมาแล้ว:</strong> เคยลืมแค่ layer เดียว → drift หนักในคลิปถัดไป — ตรวจครบทุกครั้ง</div>
+    </div>
+  </div>
+
+  <!-- 6. Lock 1: Character -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">6</div>
+      <div class="slide-title">Lock 1: Character — เขียนละเอียด เขียนซ้ำ</div>
+    </div>
+    <div class="slide-body">
+      <div class="compare-grid">
+        <div class="compare-col bad">
+          <h4>❌ กว้าง — drift แน่นอน</h4>
+          <pre style="background:#1f2538;border-color:rgba(248,113,113,0.35)"><code>Boy with pink hair</code></pre>
+          <p style="font-size:20px;color:var(--muted);margin-top:8px">AI จะ random ทรงผม สีโทน เสื้อผ้า ทุกคลิป</p>
+        </div>
+        <div class="compare-col good">
+          <h4>✅ ละเอียด — ล็อคแน่น</h4>
+          <pre style="background:#1f2538;border-color:rgba(52,211,153,0.35)"><code>Leah — curly magenta-pink hair,
+yellow hair clip, big pink eyes,
+rosy cheeks, yellow overalls,
+white shirt</code></pre>
+        </div>
+      </div>
+      <div class="callout warn"><strong>กฎเหล็ก:</strong> Copy-paste description นี้ <strong>ทุก shot</strong> — ห้ามย่อ ห้ามเขียนใหม่ ห้ามคิดว่า "shot ต่อไปก็คนเดิม ไม่ต้องเขียนซ้ำ"</div>
+      <div class="callout info" style="font-size:18px"><strong>คำที่ต้องเลี่ยง</strong> (เช่น <code>sparkling eyes</code>, <code>big eyes</code> ไม่ระบุสี, <code>pink hair</code> ไม่บอกทรง) → ดูรายการเต็มใน slide 22</div>
+    </div>
+  </div>
+
+  <!-- 7. Lock 2: Voice -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">7</div>
+      <div class="slide-title">Lock 2: Voice — descriptor (คำกำกับเสียง) เดียวกันทุกบรรทัด</div>
+    </div>
+    <div class="slide-body">
+      <p>AI voice gen ก็เหมือน image gen — <strong>ไม่มีความจำข้ามครั้ง</strong> ต้อง lock ทุกบรรทัดที่มี dialogue</p>
+      <div class="compare-grid">
+        <div class="compare-col bad">
+          <h4>❌ ไม่ lock — เสียงเปลี่ยนทุกคลิป</h4>
+          <pre style="background:#1f2538;border-color:rgba(248,113,113,0.35)"><code>Boy: "Where are we going?"
+Boy speaks: "Look at this!"
+Child says: "I'm hungry."</code></pre>
+        </div>
+        <div class="compare-col good">
+          <h4>✅ Lock — เสียงเดียวกัน</h4>
+          <pre style="background:#1f2538;border-color:rgba(52,211,153,0.35)"><code>Boy (lively young boy voice):
+  "Where are we going?"
+Boy (lively young boy voice):
+  "Look at this!"
+Boy (lively young boy voice):
+  "I'm hungry."</code></pre>
+        </div>
+      </div>
+      <div class="callout tip"><strong>ภาษาจีน (Jimeng):</strong> <code>男孩（活泼男童声）</code> — pattern เดียวกัน ทุกบรรทัด</div>
+      <div class="callout info"><strong>เหตุผล:</strong> Tool หลายตัวมี internal voice presets (เสียงสำเร็จในระบบ) — descriptor เดียวกันเป๊ะ = match preset เดียวกัน = เสียงเหมือนกัน</div>
+    </div>
+  </div>
+
+  <!-- 8. Lock 3: Style -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">8</div>
+      <div class="slide-title">Lock 3: Style — บรรทัดเดียว ใช้ตลอดทั้ง project</div>
+    </div>
+    <div class="slide-body">
+      <p>เลือก style line <strong>1 บรรทัด</strong> ตอนเริ่ม project แล้ว copy-paste ทุก prompt ห้ามเขียนใหม่</p>
+      <div class="two-col" style="margin:18px 0">
+        <div>
+          <h4>2D Cartoon</h4>
+          <pre><code>Flat 2D cartoon style, NO line art,
+NO outlines, only soft flat color
+shapes with smooth gradients</code></pre>
+        </div>
+        <div>
+          <h4>3D Cinematic</h4>
+          <pre><code>Game CG cutscene cinematic,
+photorealistic film-quality,
+epic dark fantasy</code></pre>
+        </div>
+      </div>
+      <div class="callout warn"><strong>เหตุผลที่ห้ามเขียนใหม่:</strong> AI ตีความ <code>flat 2D</code> กับ <code>2D flat shading</code> ต่างกัน — แม้ความหมายเดียวกัน ผลออกมาก็คนละแบบ</div>
+      <div class="callout bad" style="font-size:21px"><strong>+ ห้าม Mix Categories</strong> — Style keywords แต่ละคำเรียก aesthetic system (ระบบภาพรวมของสไตล์) ทั้งระบบมาด้วย — ผสมข้าม category = AI conflict
+        <table style="margin:10px 0;font-size:18px;background:#1f2538">
+          <tr><th style="width:38%">5 Categories</th><th>ผสมข้ามแล้วเกิดอะไร</th></tr>
+          <tr><td><strong>Cinema</strong><br><span style="color:var(--muted);font-size:16px">ARRI, film grain, IMAX, naturalistic</span></td><td><span style="color:var(--good);font-size:14px;font-weight:600">✓ ลองจริง</span><br>ใส่ Game keywords ลงใน Cinema prompt → ออกมา <strong>feel game cutscene ไม่ใช่หนัง</strong> — motion blur แข็งๆ + dynamic move แบบเกม ไม่ organic</td></tr>
+          <tr><td><strong>Game CG</strong><br><span style="color:var(--muted);font-size:16px">real-time stylized, AAA, epic fantasy</span></td><td><span style="color:var(--muted);font-size:14px;font-style:italic">(ทฤษฎี)</span><br>ใส่ Cinema keywords ลงใน Game prompt → คาดว่า<strong>เสีย fantasy mood</strong></td></tr>
+          <tr><td><strong>2D Cartoon</strong><br><span style="color:var(--muted);font-size:16px">flat, no line art, Pixar</span></td><td><span style="color:var(--muted);font-size:14px;font-style:italic">(ทฤษฎี)</span><br>Cartoon + ARRI camera/IMAX format → cartoon ไม่ได้ถ่ายจริง → คาดว่า<strong>look ครึ่ง real ครึ่ง cartoon ตีกัน</strong></td></tr>
+          <tr><td><strong>2D Anime</strong><br><span style="color:var(--muted);font-size:16px">cel-shading (สีเป็นบล็อก ไม่ไล่เฉด), line art, manga</span></td><td><span style="color:var(--muted);font-size:14px;font-style:italic">(ทฤษฎี)</span><br>Anime + photorealistic → คาดว่า<strong>cel-shade ตีกับ photoreal</strong> — ครึ่งเซลครึ่งจริง</td></tr>
+          <tr><td><strong>Stop motion</strong><br><span style="color:var(--muted);font-size:16px">claymation, paper craft, Wes Anderson</span></td><td><span style="color:var(--muted);font-size:14px;font-style:italic">(ทฤษฎี)</span><br>Stop motion + smooth motion blur → คาดว่า<strong>เสีย texture หยาบที่เป็นเสน่ห์</strong></td></tr>
+        </table>
+      </div>
+      <div class="callout good" style="font-size:20px"><strong>✅ ยืมข้าม category ได้ — ถ้าอยู่ family เดียวกัน:</strong>
+        <ul style="margin:6px 0 0 22px;font-size:19px">
+          <li><code>Game CG + film grain</code> ✅ — modern AAA game ใช้ film techniques อยู่แล้ว</li>
+          <li><code>Cinema + handheld</code> ✅ — handheld เป็น cinema technique เดิม</li>
+        </ul>
+      </div>
+      <div class="callout tip" style="font-size:20px"><strong>วิธีใช้จริง:</strong> เขียน style line ของ project เก็บไว้ใน .txt ไฟล์เดียว → ทุกครั้งที่จะเขียน prompt ใหม่ → เปิดไฟล์ → copy → paste (ไม่ควรพิมพ์ใหม่ — เพราะแม้พิมพ์เหมือนเดิมเป๊ะ AI ก็ยังออกมาต่างได้)</div>
+    </div>
+  </div>
+
+  <!-- 9. Lock 4: Environment -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">9</div>
+      <div class="slide-title">Lock 4: Environment — มี 2 ทางเลือก</div>
+    </div>
+    <div class="slide-body">
+      <p>โซฟาเปลี่ยนสี ห้องเปลี่ยน layout บ้านย้ายตำแหน่ง — ปัญหาคลาสสิกที่ "ตามแก้" ทำได้ยาก</p>
+      <div class="callout bad"><strong>ทางที่ผิด:</strong> ใส่ <code>same sofa, same room</code> ทุก prompt → AI ก็ยังเปลี่ยนอยู่ดี เพราะสร้างใหม่ทุกครั้ง</div>
+      <div class="compare-grid" style="margin-top:14px">
+        <div class="compare-col good">
+          <h4>✅ Approach A: Split Concern</h4>
+          <p style="font-size:20px">ออกแบบให้แต่ละ shot <strong>ไม่ต้องแชร์ env</strong> กัน</p>
+          <p style="font-size:18px;color:var(--muted);margin-top:6px"><em>ตัวอย่าง Engenius "My Friend":</em><br>Scene 1 ยืน (ไม่มีโซฟา) → Scene 2-5 นั่งโซฟา (ref จาก scene 2)</p>
+          <p style="font-size:18px;margin-top:6px"><strong>ใช้เมื่อ:</strong> env เรียบง่าย, focus ที่ตัวละคร</p>
+        </div>
+        <div class="compare-col good">
+          <h4>✅ Approach B: Location Anchor</h4>
+          <p style="font-size:20px">สร้าง <strong>ภาพ Overall BG</strong> ขึ้นก่อน 1 ภาพ → ใช้เป็น location ref ในทุก shot</p>
+          <p style="font-size:18px;color:var(--muted);margin-top:6px"><em>ตัวอย่าง 3 Little Pigs:</em><br><code>5thLoc_3House.png</code> = ภาพ 3 บ้านครบ → shot 7, 8 ref ภาพนี้ → ตำแหน่งบ้านคงเดิม</p>
+          <p style="font-size:18px;margin-top:6px"><strong>ใช้เมื่อ:</strong> env ซับซ้อน, หลาย object ต้องอยู่ตำแหน่งเดิม</p>
+        </div>
+      </div>
+      <div class="callout tip"><strong>Decision tree (ผังเลือกแนวทาง):</strong> env ง่าย (1-2 ของ) → Split · env ซับซ้อน (landscape, หลาย building) → Location anchor · ทำได้ทั้งคู่ → Location anchor robust (เพี้ยนยากกว่า) แต่ต้องลงแรงสร้าง BG ก่อน</div>
+    </div>
+  </div>
+
+  <!-- 10. Lock 5: Camera + Lock Levels -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">10</div>
+      <div class="slide-title">Lock 5: Camera — มี 5 ระดับให้เลือก</div>
+    </div>
+    <div class="slide-body">
+      <p>เมื่อใช้ video reference (เช่น playblast) ต้องเลือกว่าจะให้ AI ตามแค่ไหน</p>
+      <table>
+        <tr><th>ระดับ</th><th>ใช้เมื่อ</th><th>ผลลัพธ์</th></tr>
+        <tr><td><strong>Full lock (90%+)</strong></td><td>ต้องการตรง playblast</td><td>เหมือน preview + cinematic ผิวๆ</td></tr>
+        <tr><td><strong>Strict</strong></td><td>ล็อคแอคชั่น ปล่อยบรรยากาศ</td><td>ตำแหน่งตรง ref motion ใกล้เคียง</td></tr>
+        <tr><td><strong>Medium</strong></td><td>ต้องการ framing ใกล้เคียง</td><td>มุมคล้าย movement อิสระ</td></tr>
+        <tr><td><strong>Loose</strong></td><td>ref แค่คร่าวๆ</td><td>AI สร้างเกือบเอง</td></tr>
+        <tr><td><strong>No ref</strong></td><td>ไม่ต้องการ source อ้างอิง</td><td>อิสระ 100%</td></tr>
+      </table>
+      <div class="callout tip"><strong>วิธี Diagnose (วินิจฉัยและแก้):</strong> ตัวละครพุ่งผิดทิศ → เพิ่ม lock · เหมือน preview ไม่มี cinematic → ลด lock + เพิ่ม style keywords · กล้องนิ่งเกิน → ลด lock + เพิ่ม handheld</div>
+    </div>
+  </div>
+
+  <!-- 11. 2 Paradigms (bridge) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">11</div>
+      <div class="slide-title">2 ทาง Generate — Workflow ต่างกันสิ้นเชิง</div>
+      <div class="slide-tag">Foundational</div>
+    </div>
+    <div class="slide-body">
+      <p style="margin-bottom:8px"><strong>สำคัญมาก</strong> — ก่อนเขียน prompt ต้องรู้ว่ากำลังทำ paradigm (แนวทาง) ไหน — workflow + lock + ปัญหาที่จะเจอ ต่างกันคนละโลก</p>
+      <div class="compare-grid" style="margin-top:12px">
+        <div class="compare-col" style="border-top:4px solid var(--violet);background:rgba(167,139,250,0.08)">
+          <h4 style="color:#a78bfa">🎬 Paradigm 1: From Preview (Video Ref)</h4>
+          <p style="font-size:18px;margin:4px 0"><strong>Source:</strong> Playblast video จาก 3D (Maya, Blender)</p>
+          <p style="font-size:18px;margin:4px 0"><strong>AI ทำอะไร:</strong> Style transfer + cinematic conversion</p>
+          <p style="font-size:18px;margin:4px 0"><strong>Lock:</strong> Camera lock levels (Full/Strict/Medium/Loose)</p>
+          <p style="font-size:18px;margin:4px 0"><strong>Granularity (ระดับการล็อค):</strong> All-or-nothing เด็ดขาด — ไม่มีทาง override</p>
+          <p style="font-size:18px;margin:4px 0;color:var(--bad)"><strong>ปัญหาเฉพาะ:</strong> Geometry mockup เป็นพิษ · camera+handheld ตีกัน · เปลี่ยนจุดเดียวทำไม่ได้ ต้อง regenerate ใหม่</p>
+          <p style="font-size:18px;margin:4px 0;color:var(--good)"><strong>Example:</strong> Fortal Dragon — มี Maya playblast → Seedance + cinematic style</p>
+        </div>
+        <div class="compare-col" style="border-top:4px solid var(--orange);background:rgba(251,146,60,0.08)">
+          <h4 style="color:#fb923c">🖼️ Paradigm 2: From Still Images</h4>
+          <p style="font-size:18px;margin:4px 0"><strong>Source:</strong> Character sheet + location refs (รูปนิ่งล้วน)</p>
+          <p style="font-size:18px;margin:4px 0"><strong>AI ทำอะไร:</strong> Animate from still — สร้าง motion เอง</p>
+          <p style="font-size:18px;margin:4px 0"><strong>Lock:</strong> Multi-image refs + char desc + location anchor</p>
+          <p style="font-size:18px;margin:4px 0"><strong>Granularity (ระดับการล็อค):</strong> แยกได้ — ล็อคหน้าตา ปล่อย motion</p>
+          <p style="font-size:18px;margin:4px 0;color:var(--bad)"><strong>ปัญหาเฉพาะ:</strong> AI random camera · char drift · env ข้าม shot · ดูรูปในรูปไม่ได้</p>
+          <p style="font-size:18px;margin:4px 0;color:var(--good)"><strong>Example:</strong> Engenius My Friend, 3 Little Pigs (ใช้ <code>5thLoc_3House.png</code> เป็น location anchor)</p>
+        </div>
+      </div>
+      <div class="callout warn" style="margin-top:14px;font-size:20px"><strong>ขึ้นกับ paradigm (แนวทาง):</strong> Camera lock levels + <code>ONLY MODIFY</code> + Geometry pollution → Paradigm 1 · Location anchor + Multi-image ref → Paradigm 2 · ส่วน Lock-Copy-Paste + 5 Layers + Anatomy ใช้ได้ทั้งคู่</div>
+    </div>
+  </div>
+
+  <!-- 12. Section break: Anatomy -->
+  <div class="slide section-break">
+    <div class="sec-num">PART 2</div>
+    <h2>Anatomy<br>ของ Prompt</h2>
+    <p>โครงสร้างที่ใช้ได้ทุก tool — Style → Refs → Character → Action → Atmosphere → Sound</p>
+  </div>
+
+  <!-- 12. Anatomy template -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">12</div>
+      <div class="slide-title">โครงสร้าง Prompt ที่ใช้ได้ทุก tool</div>
+    </div>
+    <div class="slide-body">
+      <div class="anatomy">
+        <div class="anatomy-row">
+          <div class="part"><span class="num">1</span>Style line</div>
+          <div class="desc">1 บรรทัด lock สไตล์ทั้ง project — copy-paste จากไฟล์</div>
+        </div>
+        <div class="anatomy-row">
+          <div class="part"><span class="num">2</span>References</div>
+          <div class="desc">แต่ละตัวมี <strong>บทบาทชัด</strong> (charsheet / first frame / playblast) + คำบรรยายว่าเป็นรูปอะไร</div>
+        </div>
+        <div class="anatomy-row highlight">
+          <div class="part"><span class="num">3</span>Character desc</div>
+          <div class="desc"><strong>ต้องอยู่ต้นๆ prompt!</strong> AI ให้น้ำหนักข้อความต้นมากกว่าท้าย</div>
+        </div>
+        <div class="anatomy-row">
+          <div class="part"><span class="num">4</span>Action</div>
+          <div class="desc">Simple > Complex — ห้ามเขียน mechanics (ขั้นตอนกล้ามเนื้อ/กลไก) ยาว ใช้ <strong>simile/metaphor</strong> (เปรียบเทียบ "ราวกับ.../เหมือน...") แทน</div>
+        </div>
+        <div class="anatomy-row">
+          <div class="part"><span class="num">5</span>Atmosphere</div>
+          <div class="desc">smoke, dust, particles, light, mood</div>
+        </div>
+        <div class="anatomy-row">
+          <div class="part"><span class="num">6</span>Film look</div>
+          <div class="desc">DOF, motion blur, grain, color tone (ARRI, teal-orange, etc.)</div>
+        </div>
+        <div class="anatomy-row">
+          <div class="part"><span class="num">7</span>Sound</div>
+          <div class="desc"><code>No background music. Only diegetic sounds.</code> — ใส่ทุก prompt ถ้าจะอัด BGM เอง</div>
+        </div>
+      </div>
+      <div class="callout tip"><strong>เว้นบรรทัดแบ่งโซน</strong> — ห้ามอัดก้อนเดียว · <strong>Sweet spot (ช่วงที่ AI ทำงานดีที่สุด):</strong> 30-100 คำจีน / 80-200 คำอังกฤษ — เกินนี้ AI สับสน</div>
+    </div>
+  </div>
+
+  <!-- 13. Anatomy walkthrough example -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">13</div>
+      <div class="slide-title">ตัวอย่าง Prompt ที่ทำตามโครงสร้าง</div>
+    </div>
+    <div class="slide-body">
+      <pre style="font-size:18px;line-height:1.7"><code><span style="color:var(--violet);font-weight:700">// 1. STYLE LINE</span>
+Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
+
+<span style="color:var(--violet);font-weight:700">// 2. REFERENCES</span>
+@[มังกร charsheet] — Dragon character sheet, strictly reference for appearance.
+@[เฟรมแรก สีส้ม] — Composition reference. Low angle, dark sky.
+Strictly follow @[video] for camera movement.
+
+<span style="color:var(--violet);font-weight:700">// 3. CHARACTER (top of prompt!)</span>
+A single dragon — black scales with magma veins glowing red,
+bat-like wings, amber eyes, leathery hide.
+The dragon feels alive — occasionally blinks, nostrils flare.
+
+<span style="color:var(--violet);font-weight:700">// 4. ACTION (attitude > mechanics)</span>
+Dragon rushes toward the left of frame with urgent purpose
+— like a predator racing to its destination.
+
+<span style="color:var(--violet);font-weight:700">// 5. ATMOSPHERE</span>
+Thin clouds drift across foreground, embers float through air.
+
+<span style="color:var(--violet);font-weight:700">// 6. FILM LOOK</span>
+Shallow depth of field, motion blur on wing tips, ARRI color tone,
+warm orange firelight, deep teal shadows, subtle vignette.
+
+<span style="color:var(--violet);font-weight:700">// 7. SOUND</span>
+No background music. Only diegetic sounds (เสียงในฉากจริง — ลม/ฝีก้าว/ไฟ ไม่ใช่ BGM) — wing beats, wind, distant fire.</code></pre>
+      <div class="callout good"><strong>หมายเหตุ:</strong> เห็น character ขึ้นต้น? Reference ระบุ role ชัด? Action เป็น simile ไม่ใช่ list ของ mechanic? — ครบทั้งหมด</div>
+    </div>
+  </div>
+
+  <!-- 14. References strategy -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">14</div>
+      <div class="slide-title">Reference Strategy — Image vs Text</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout tip" style="font-size:18px"><strong>กฎ:</strong> Image ref + Text — ใช้คู่เสมอ ห้ามเลือกอย่างเดียว</div>
+      <table>
+        <tr><th></th><th>หน้าที่</th><th>ข้อจำกัด</th></tr>
+        <tr><td><strong>Image ref</strong></td><td>ตัวยึดหลัก — กำหนดหน้าตา/composition (การจัดวางในเฟรม) แม่นกว่า text</td><td>AI ไม่อ่าน 100% drift ได้</td></tr>
+        <tr><td><strong>Text desc</strong></td><td>Safety net — กันกรณี AI ตีความ ref ผิด</td><td>กว้างกว่าภาพ</td></tr>
+      </table>
+      <div class="callout warn" style="margin-top:14px"><strong>อันตราย — ขัดกัน:</strong> ถ้า ref ชี้ซ้าย แต่ text เขียน "ชี้ขวา" → ตัวละครกระตุก/เปลี่ยนรูประหว่างคลิป — <strong>ต้องเช็คให้ตรงกัน</strong>ก่อน generate</div>
+      <div class="callout info" style="margin-top:14px;font-size:18px"><strong>หน้าที่คน vs Oracle:</strong> เตรียมรูปและบอกว่ามันคืออะไร = หน้าที่คน · จัดระเบียบ ref ในพรอมท์ + ตั้งชื่อให้ AI อ่านรู้เรื่อง = หน้าที่ Oracle (อยู่ใน MD reference)</div>
+    </div>
+  </div>
+
+  <!-- 15. Image vs Video ref -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">15</div>
+      <div class="slide-title">Image ref ≠ Video ref — ต่างกันสำคัญ</div>
+    </div>
+    <div class="slide-body">
+      <table>
+        <tr><th></th><th>Image ref</th><th>Video ref</th></tr>
+        <tr><td><strong>Lock granularity</strong></td><td>แยกล็อคได้ — ล็อค composition ปล่อย motion</td><td><strong>All-or-nothing</strong> — ล็อคทุกอย่างพร้อมกัน</td></tr>
+        <tr><td><strong>เหมาะเมื่อ</strong></td><td>ต้องการ aesthetic + composition</td><td>มี playblast ครบ + environment ชัดเจน</td></tr>
+        <tr><td><strong>อันตราย</strong></td><td>ขัดกับ text เมื่อท่าทางต่างกัน</td><td>Geometry mockup เป็นพิษ (ลูกกลม → ไฟทรงกระบอก)</td></tr>
+      </table>
+      <div class="callout bad" style="margin-top:14px"><strong>กับดักจาก Dragon project:</strong> ใช้ playblast ที่มี geometry placeholder (ลูกกลม = ตำแหน่งไฟ) เป็น video ref → AI ก๊อป geometry มาเป็นไฟทรงกระบอก ลามทั้งคลิป — แก้โดยทิ้ง video ref ใช้ image ref + text แทน</div>
+      <div class="callout tip"><strong>กฎ:</strong> Video ref ใช้ดีเมื่อ playblast มี environment จริง (ตึก ไฟ ของ) — ใช้ผิดเมื่อ playblast เป็น abstract/geometry</div>
+    </div>
+  </div>
+
+  <!-- 16. Reality of Video Ref Lock -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">16</div>
+      <div class="slide-title">Video Ref Strict Lock = All-or-Nothing (ไม่มีทางออก)</div>
+    </div>
+    <div class="slide-body">
+      <p><strong>สถานการณ์:</strong> ใช้ video ref strict lock อยู่ — อยากเปลี่ยนแค่ 1 จุด (เช่น ท่าตัวละคร) แต่ไม่อยากเปลี่ยนกล้อง/ฉาก</p>
+      <div class="callout bad" style="font-size:18px"><strong>⚠️ ความจริง:</strong> ทำไม่ได้ — ทุกวิธีที่พยายาม "เจาะรู" บนพื้นฐาน video ref strict lock <strong>มักจะเฟล</strong></div>
+      <div class="compare-grid">
+        <div class="compare-col bad">
+          <h4>❌ ลด lock level</h4>
+          <p style="font-size:18px">→ AI เปลี่ยน <strong>ทุกอย่าง</strong> — กล้อง ฉาก composition หลุดหมด</p>
+        </div>
+        <div class="compare-col bad">
+          <h4>❌ <code>ONLY MODIFY:</code> / 唯一修改</h4>
+          <p style="font-size:18px">→ Seedance ตีความ override ไม่สม่ำเสมอ — ผลส่วนใหญ่ไม่ตรง prompt</p>
+        </div>
+      </div>
+      <div class="card indigo" style="margin-top:14px">
+        <h4 style="color:var(--indigo-dark);margin-bottom:8px">✅ ทางที่ใช้ได้จริง — เลือก 1 ใน 3</h4>
+        <ol style="font-size:21px;margin-left:20px">
+          <li><strong>Regenerate full prompt</strong> — เริ่มใหม่จาก blank โดยทิ้ง video ref ใช้ image refs + text แทน → ปล่อย AI สร้างใหม่หมด</li>
+          <li><strong>Accept video ref ตามเดิม</strong> — ยอมรับว่าเปลี่ยนไม่ได้ → ทำงาน VFX ใน post production แทน</li>
+          <li><strong>Iterate + pick best-of-N</strong> — เจน 5-10 ครั้ง ยอมรับว่าได้ ~70% ตามใจ ที่เหลือ compromise</li>
+        </ol>
+      </div>
+      <div class="callout warn"><strong>กฎ:</strong> ONLY MODIFY ไม่ได้ช่วยให้ AI แก้เฉพาะจุด — อย่าคาดหวัง · Video ref ทำงานแบบ <strong>all-or-nothing</strong> ล็อคทั้งก้อน หรือไม่ล็อคเลย ไม่มีทางสายกลาง</div>
+    </div>
+  </div>
+
+  <!-- 17. Section break: Problems -->
+  <div class="slide section-break">
+    <div class="sec-num">PART 3</div>
+    <h2>ปัญหาที่เจอ<br>กับวิธีแก้</h2>
+    <p>11 patterns ที่จะเจอแน่ๆ ไม่ว่าจะทำ project แนวไหน — รู้แล้วเตรียมรับมือ</p>
+    <p style="font-size:18px;color:var(--muted);margin-top:14px;max-width:700px"><em>Note: "วิธีแก้" ในที่นี้ = <strong>ลด chance</strong>ของปัญหา ไม่ใช่ลบสิ้น (เพราะ AI สุ่มในตัว) — ทำให้ปัญหาเกิดน้อยลง ไม่ใช่ไม่เกิดเลย</em></p>
+  </div>
+
+  <!-- 18. P1-P3: Drift problems -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">18</div>
+      <div class="slide-title">P1-P3: Drift — ตัวละคร / สไตล์ / ฉาก เปลี่ยน</div>
+    </div>
+    <div class="slide-body">
+      <div class="problem-card">
+        <div class="symptom">P1. Character Drift — ผม/ตา/เสื้อผ้าเปลี่ยนระหว่างคลิป แม้แนบ ref</div>
+        <div class="cause">สาเหตุ: AI ไม่อ่าน ref 100% + text ระบุไม่พอ</div>
+        <div class="fix">✅ แก้: เขียน text description ละเอียด <strong>ทุก shot</strong> — ครบทุกครั้ง ห้ามคิดว่า "ก็คนเดิม"</div>
+      </div>
+      <div class="problem-card">
+        <div class="symptom">P2. Style Drift — คลิปต่างกันมีลายเส้น/ไม่มีลายเส้น สีโทนต่าง</div>
+        <div class="cause">สาเหตุ: เขียน style line ต่างกันแต่ละคลิป</div>
+        <div class="fix">✅ แก้: Copy-paste style line <strong>เดิมเป๊ะๆ</strong> ทุกคลิป ห้ามเขียนใหม่ ห้ามใช้คำอื่นแทน</div>
+      </div>
+      <div class="problem-card">
+        <div class="symptom">P3. Environment Drift — โซฟา/ห้อง/ของ/ตำแหน่งบ้านเปลี่ยนทุก shot</div>
+        <div class="cause">สาเหตุ: AI สร้างใหม่ทุกครั้ง — ไม่รู้ว่าก่อนหน้าทำอะไรไว้</div>
+        <div class="fix">✅ แก้: <strong>Split concern</strong> (env ง่าย) <strong>หรือ Location anchor</strong> (env ซับซ้อน — สร้างภาพ Overall BG ก่อน ใช้เป็น ref ทุก shot ในฉากเดียวกัน)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 19. P4-P5: Voice + Audio -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">19</div>
+      <div class="slide-title">P4-P5: Voice & Audio — เสียงไม่ตรงคลิป</div>
+    </div>
+    <div class="slide-body">
+      <div class="problem-card">
+        <div class="symptom">P4. Voice Mismatch — เสียงตัวละครเปลี่ยนทุกคลิป</div>
+        <div class="cause">สาเหตุ: ไม่ระบุ voice descriptor หรือเขียนต่างกันแต่ละคลิป</div>
+        <div class="fix">✅ แก้: <code>Boy (lively young boy voice): "..."</code> — descriptor เดียวเป๊ะ ทุกบรรทัด</div>
+      </div>
+      <div class="problem-card">
+        <div class="symptom">P5. Audio Sync Mismatch — dialogue ไม่ตรงคลิป overlap หรือเร่ง/ช้า</div>
+        <div class="cause">สาเหตุ (เรียงตามน้ำหนัก):</div>
+        <div class="fix-detail" style="margin-top:8px">
+          <table style="margin:6px 0;font-size:20px">
+            <tr><th style="width:80px">น้ำหนัก</th><th>ปัญหา</th><th>แก้</th></tr>
+            <tr><td><strong>50%</strong></td><td>Timeline แน่นเกิน — 7 ประโยคใน 7 วินาที</td><td>ลดประโยค หรือ ขยาย duration</td></tr>
+            <tr><td><strong>30%</strong></td><td>Multi-speaker turn-taking</td><td>ใช้ marker <code>Speaker A:</code> / <code>Speaker B:</code> ชัดเจน แยกบรรทัด</td></tr>
+            <tr><td><strong>20%</strong></td><td>Voice ไม่ lock + ไม่ระบุ no-BGM</td><td>เพิ่ม voice descriptor + <code>No background music</code></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 20. P6: Negative -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">20</div>
+      <div class="slide-title">P6: Negative ไม่ได้ผล — ใช้ Positive แทน</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout bad"><strong>อาการ:</strong> เขียน "ห้ามมี X" แต่ AI ก็ generate X อยู่ดี</div>
+      <p><strong>สาเหตุ:</strong> AI tokenize (อ่านแยกเป็นคำๆ) — มองคำว่า "X" เด่นกว่าคำว่า "ห้าม/no/not" — บางทีเห็น X แล้วทำเลย ไม่สนคำห้าม</p>
+      <div class="compare-grid">
+        <div class="compare-col bad">
+          <h4>❌ Negative ลอย ไม่ได้ผล</h4>
+          <pre style="background:#1f2538;border-color:rgba(248,113,113,0.35);font-size:18px"><code>not cartoonish
+no blue colors
+NEVER make smiling
+DON'T use bright lighting</code></pre>
+        </div>
+        <div class="compare-col good">
+          <h4>✅ Positive — บอกสิ่งที่อยากได้</h4>
+          <pre style="background:#1f2538;border-color:rgba(52,211,153,0.35);font-size:18px"><code>photorealistic, cinematic
+warm orange and amber tones
+serious expression, mouth closed
+moody low-key lighting</code></pre>
+        </div>
+      </div>
+      <div class="callout tip"><strong>ข้อยกเว้น — Negative ที่ <em>ใช้ได้</em>:</strong> ต้องเป็น "แทน X ด้วย Y" ที่ชี้เฉพาะ — เช่น <code>flames spread like waterfall — NOT a solid cylindrical beam</code> ✅ (เพราะระบุชัดทั้งสิ่งที่อยากได้และสิ่งที่ไม่อยาก)</div>
+    </div>
+  </div>
+
+  <!-- 21. P7: Intensity Scale -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">21</div>
+      <div class="slide-title">P7: Intensity Scale — เขียน 7 ได้ 4</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout warn" style="font-size:20px;text-align:center;padding:24px"><strong>กฎ:</strong> AI ตอบสนองต่อ intensity <strong>ต่ำกว่ามนุษย์</strong> — อยากได้ 7/10 ต้องเขียน 10/10</div>
+      <table>
+        <tr><th>อยากได้</th><th>เขียนแล้วไม่พอ</th><th>ต้องเขียน</th></tr>
+        <tr>
+          <td>กางปีกเร็ว+แรง</td>
+          <td><code>opens wings quickly</code></td>
+          <td><code>bursts open like a spring releasing — wing skin snaps taut and trembles violently</code></td>
+        </tr>
+        <tr>
+          <td>มีจังหวะหยุดก่อน action</td>
+          <td>(ไม่ได้เขียน — AI ไม่ทำ)</td>
+          <td><code>sudden pause then halt before motion</code></td>
+        </tr>
+        <tr>
+          <td>แรงกระทบ</td>
+          <td><code>impact disperses clouds</code></td>
+          <td><code>shockwave tears clouds apart, visible air ripples, atmosphere ripped by wing span</code></td>
+        </tr>
+      </table>
+      <div class="callout tip" style="margin-top:14px"><strong>ข้อสังเกต:</strong> ใช้ simile/metaphor — "like a spring", "like a predator", "like thunder cracking" — เกินจริงเสมอ</div>
+    </div>
+  </div>
+
+  <!-- 22. P8: Limits + Anti-patterns (merged) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">22</div>
+      <div class="slide-title">P8: ขีดจำกัด + นิสัยที่ห้ามทำ</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:18px;margin-bottom:8px"><strong>ขีดจำกัด:</strong> บางอย่างทำไม่ได้เลย · บางอย่างทำได้แต่มีเงื่อนไข — รู้ก่อน ประหยัดเวลา</p>
+      <table style="font-size:18px">
+        <tr><th>เคส</th><th>เหตุผล</th><th>ทางออก</th></tr>
+        <tr>
+          <td><strong>ตึกแตก/ถล่มตอน strict lock</strong></td>
+          <td>ของไม่ได้อยู่ใน playblast — strict lock บังคับตามเฟรม</td>
+          <td><strong>ลด lock</strong> ให้ AI สร้างเอง · หรือไฟ+ควันกลืน · หรือ VFX post</td>
+        </tr>
+        <tr>
+          <td><strong>Edit ภาพ ref</strong></td>
+          <td>Text สู้ visual reference ไม่ได้</td>
+          <td>แก้ที่ source (Maya/Photoshop) ก่อน</td>
+        </tr>
+        <tr>
+          <td><strong>Edit จุดเดียว</strong> (เช่นเปลี่ยนแค่มุมกล้อง)</td>
+          <td>AI สร้างใหม่ทุกครั้ง</td>
+          <td>Generate ใหม่ + lock ref แน่น · split concept</td>
+        </tr>
+      </table>
+      <div class="callout bad" style="margin-top:14px;font-size:18px"><strong>❌ คำต้องห้ามใน character description</strong>
+        <table style="margin-top:6px;font-size:17px;background:#1f2538">
+          <tr><th>คำ</th><th>เหตุผล</th><th>ใช้แทน</th></tr>
+          <tr><td><code>sparkling eyes</code></td><td>ทำตาบวม/ผิดรูป</td><td><code>bright clear eyes</code></td></tr>
+          <tr><td><code>big eyes</code> (ไม่ระบุสี)</td><td>drift สีตาทุกคลิป</td><td><code>big blue eyes</code></td></tr>
+          <tr><td><code>pink hair</code> (ไม่บอกทรง)</td><td>drift ทรงผม</td><td><code>curly magenta-pink hair with yellow clip</code></td></tr>
+        </table>
+      </div>
+      <div class="callout bad" style="margin-top:10px;font-size:18px"><strong>❌ พฤติกรรมที่ห้าม</strong>
+        <ul style="margin:6px 0 0 22px;font-size:17px">
+          <li>เขียน <strong>mechanics</strong> ยาว (กล้ามเนื้อไหล่หด ข้อศอกงอ ปลายปีกยกขึ้น...) → ใช้ simile แทน</li>
+          <li>ใส่รายละเอียดเกิน <strong>sweet spot</strong> (200 คำอังกฤษ / 100 คำจีน) → AI สับสน</li>
+          <li>ใช้ <strong>ศัพท์ 3D engine</strong> (PBR, skybox, parallax, rig) → ใช้ภาษาหนังแทน <span style="color:var(--muted)">(ดูเต็ม slide A6)</span></li>
+        </ul>
+      </div>
+      <div class="callout warn" style="font-size:18px"><strong>กฎ:</strong> ถ้าลอง 3 ครั้งแล้วยังไม่ได้ → อย่าฝืน เปลี่ยน approach</div>
+    </div>
+  </div>
+
+  <!-- 23. P9-P11 -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">23</div>
+      <div class="slide-title">P9-P11: Concept / Camera / Overload</div>
+    </div>
+    <div class="slide-body">
+      <div class="problem-card">
+        <div class="symptom">P9. เปลี่ยน Concept = Restart Prompt</div>
+        <div class="cause">ถ้า patch prompt เก่า (แก้เพิ่มต่อจากอันเดิม ไม่เริ่มใหม่) → AI สับสน ส่วนเก่าทับส่วนใหม่</div>
+        <div class="fix">✅ แก้: เริ่มเขียนใหม่จาก blank — แต่ <strong>copy-paste</strong> Character description + Style line เดิมมาใส่</div>
+      </div>
+      <div class="problem-card">
+        <div class="symptom">P10. Camera + Handheld ตีกัน</div>
+        <div class="cause">Strict camera lock + obvious handheld shake = ขัดกันโดยตรง</div>
+        <div class="fix">✅ แก้: ลด handheld เป็น <code>subtle tremor</code> เมื่อ lock แน่น · หรือลด lock เมื่อต้องการ handheld ชัด · หรือทำในโปรแกรมอื่น (After Effects / Premiere) <strong>ต้องเลือกเอา</strong></div>
+      </div>
+      <div class="problem-card">
+        <div class="symptom">P11. Multi-element Overload — ท่าซับซ้อน + props เยอะ</div>
+        <div class="cause">ยิ่งซับซ้อน drift ยิ่งมาก</div>
+        <div class="fix">✅ แก้: ทำท่า simple (ชี้, ยิ้ม, โบกมือ) · ถ้าจำเป็นต้องท่าซับซ้อน → split เป็นหลายคลิปสั้นๆ คลิปละท่า</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 24. Section break: Workflow -->
+  <div class="slide section-break">
+    <div class="sec-num">PART 4</div>
+    <h2>Workflow<br>& Best Practices</h2>
+    <p>ลำดับการทำงานและนิสัยที่ช่วยประหยัดเวลา + เครดิต</p>
+  </div>
+
+  <!-- 25. Workflow tips -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">25</div>
+      <div class="slide-title">Workflow ที่ทำให้ไม่เปลือง</div>
+    </div>
+    <div class="slide-body">
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">🎯 Prototype 1 shot ก่อนเขียน 4 shot</h4>
+        <p style="font-size:21px">ห้ามเขียน prompt ทั้ง episode แล้วค่อย generate — เจน 1 shot ก่อน → verify (ยืนยันว่า) approach (แนวทาง) ใช้ได้ → ค่อยเขียน shot ที่เหลือ</p>
+        <p style="font-size:18px;color:var(--muted);margin-top:6px"><em>กรณีจริง:</em> เขียน over-shoulder 4 ซีนรวด → เจนแล้วล้มเหลวทั้ง 4 → ต้องทิ้งทั้งก้อน</p>
+      </div>
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">📁 Save Successful Prompts as Templates</h4>
+        <p style="font-size:21px">prompt ที่เจนผลออกมาดี → save แยกใน .txt — ใช้เป็น <strong>starting point</strong> สำหรับ shot ถัดไป</p>
+        <p style="font-size:17px;color:var(--muted);margin-top:6px"><em>Note: template ≠ จะเวิร์คซ้ำเสมอ — AI สุ่มในตัว ต้อง iterate ใหม่ทุกครั้ง · template แค่ช่วยลด iteration ไม่ใช่ตัด iteration ออก</em></p>
+      </div>
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">🔍 Cross-reference Canonical Values (เช็คค่าหลักจากหลายที่)</h4>
+        <p style="font-size:21px">ห้ามเชื่อ source (แหล่งข้อมูล) เดียว — ถ้า script บอก "3 ครั้ง" แต่ที่อื่นใน project บอก "4 ครั้ง" → grep (ค้นข้อความ) หาหลายที่ก่อนเชื่อ</p>
+      </div>
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">✍️ Attitude > Mechanics</h4>
+        <p style="font-size:21px">เขียนน้ำเสียงที่ AI "รู้สึก" ได้ — simile/metaphor — ไม่ใช่ list ของ mechanic</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 26. Checklist (was 27) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">26</div>
+      <div class="slide-title">Checklist ก่อน Generate — แบ่งหน้าที่ คน + Oracle</div>
+    </div>
+    <div class="slide-body">
+      <p style="margin-bottom:12px;font-size:18px">งานเขียน prompt = งานทีม · คนทำส่วนที่ Oracle ทำไม่ได้ · Oracle ทำส่วนที่เป็น mechanic ของ prompt</p>
+      <div class="compare-grid">
+        <div class="compare-col" style="border-top:4px solid var(--orange);background:rgba(251,146,60,0.08)">
+          <h4 style="color:#fb923c">👤 คนตรวจ</h4>
+          <div class="checklist" style="margin-top:6px">
+            <div class="check-item"><div class="box"></div><div>Vision/concept ของ shot นี้ชัดในใจ</div></div>
+            <div class="check-item"><div class="box"></div><div>Ref image ที่ส่งให้ Oracle = ตรงกับสิ่งที่อยากได้</div></div>
+            <div class="check-item"><div class="box"></div><div>Character sheet ครบมุม (หน้า/ข้าง/หลัง ถ้ามี)</div></div>
+            <div class="check-item"><div class="box"></div><div>Style ตรงกับ project เดิม (ถ้าต่อ episode)</div></div>
+            <div class="check-item"><div class="box"></div><div>Duration ที่ตั้งใจ พอกับเนื้อหา</div></div>
+            <div class="check-item"><div class="box"></div><div>เปลี่ยน concept จาก shot ก่อน → บอก Oracle ให้ <em>restart prompt</em></div></div>
+            <div class="check-item"><div class="box"></div><div>หลัง generate: ตัวละคร/style/env ตรงกับ vision</div></div>
+          </div>
+        </div>
+        <div class="compare-col" style="border-top:4px solid var(--violet);background:rgba(167,139,250,0.08)">
+          <h4 style="color:#a78bfa">🤖 Oracle ตรวจ (อยู่ใน MD reference)</h4>
+          <div class="checklist" style="margin-top:6px">
+            <div class="check-item"><div class="box"></div><div>Character description ครบทุก layer</div></div>
+            <div class="check-item"><div class="box"></div><div>Voice descriptor lock (ถ้ามี dialogue)</div></div>
+            <div class="check-item"><div class="box"></div><div>Style line copy-paste จากของเดิม</div></div>
+            <div class="check-item"><div class="box"></div><div>Environment description match กับ ref</div></div>
+            <div class="check-item"><div class="box"></div><div>Camera lock level เหมาะกับ goal</div></div>
+            <div class="check-item"><div class="box"></div><div>Ref image + text prompt ไม่ขัดกัน</div></div>
+            <div class="check-item"><div class="box"></div><div>ท่าทาง simple ไม่ overload</div></div>
+            <div class="check-item"><div class="box"></div><div>No prohibited words</div></div>
+            <div class="check-item"><div class="box"></div><div>No BGM ถ้าจะใส่เสียงเอง</div></div>
+            <div class="check-item"><div class="box"></div><div>Timeline พอดีกับจำนวนประโยค</div></div>
+            <div class="check-item"><div class="box"></div><div>Word count ใน sweet spot (30-100 จีน / 80-200 อังกฤษ)</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout info" style="margin-top:10px;font-size:18px"><strong>คน + Oracle = ทีม:</strong> คนรู้ว่าอยากได้อะไร · Oracle รู้ว่าจะเขียน prompt ยังไงให้ AI เข้าใจ · ทั้งคู่ตรวจกันและกัน</div>
+    </div>
+  </div>
+
+  <!-- 27. Cheat sheet (was 28) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">27</div>
+      <div class="slide-title">Cheat Sheet — เก็บไว้ดูตลอด</div>
+    </div>
+    <div class="slide-body">
+      <div class="cheat">
+<h3>Golden Rule</h3>
+<span class="rule">Lock</span> <span class="arrow">→</span> <span class="rule">Copy</span> <span class="arrow">→</span> <span class="rule">Paste</span> <span class="arrow">→</span> <span class="rule">ซ้ำ</span>  — ทุก shot ทุก scene
+
+<h3>5 Locks</h3>
+Character / Voice / Style / Environment / Camera
+
+<h3>Anatomy</h3>
+1. Style line  ·  2. References  ·  3. Character (top!)
+4. Action (simple)  ·  5. Atmosphere  ·  6. Film look  ·  7. Sound
+
+<h3>References</h3>
+Image + Text — ใช้คู่ ห้ามเลือกอย่างเดียว
+Video ref = all-or-nothing — ไม่มีทางเจาะรู
+อยากเปลี่ยน 1 จุด <span class="arrow">→</span> regenerate full prompt หรือ accept ทั้งก้อน
+
+<h3>Negative</h3>
+ใช้ <span class="rule">positive form</span> เสมอ — บอกสิ่งที่อยากได้ ไม่ใช่ห้าม
+
+<h3>Intensity</h3>
+อยาก 7 ต้องเขียน 10 — ใช้ simile/metaphor
+
+<h3>เมื่อเปลี่ยน Concept</h3>
+<span class="rule">Restart prompt</span> — ห้าม patch (แต่ keep character + style)
+
+<h3>เมื่อเจอปัญหา</h3>
+AI ไม่ edit, AI สร้างใหม่ <span class="arrow">→</span> Split concern แทนสู้
+Prototype 1 ก่อนเขียน 4
+ลอง 3 ครั้งไม่ได้ <span class="arrow">→</span> เปลี่ยน approach
+      </div>
+    </div>
+  </div>
+
+  <!-- 28. Practice (was 29) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">28</div>
+      <div class="slide-title">Practice — ลองเอง</div>
+    </div>
+    <div class="slide-body">
+      <p>เพื่อทดลอง principles ในเซสชั่นนี้ ลองทำ exercise สั้นๆ:</p>
+      <div class="card accent" style="margin-top:14px">
+        <h4 style="color:var(--orange);margin-bottom:8px">🎯 Exercise 1: Character Lock</h4>
+        <p style="font-size:21px">เขียน character description ของตัวการ์ตูนที่นึกถึง — ครบทุก layer (ผม สี ตา ผิว เสื้อ รองเท้า) ใน 1 บรรทัด</p>
+      </div>
+      <div class="card accent">
+        <h4 style="color:var(--orange);margin-bottom:8px">🎯 Exercise 2: Style Line</h4>
+        <p style="font-size:21px">ลองเขียน style line สำหรับ project ที่จะทำ — 1 บรรทัด เก็บไว้ใน .txt</p>
+      </div>
+      <div class="card accent">
+        <h4 style="color:var(--orange);margin-bottom:8px">🎯 Exercise 3: เขียน Prompt เต็ม</h4>
+        <p style="font-size:21px">เลือก scene 1 — เขียน prompt ตาม anatomy 7 ส่วน — ใช้ checklist verify ก่อน generate</p>
+      </div>
+      <div class="card accent">
+        <h4 style="color:var(--orange);margin-bottom:8px">🎯 Exercise 4: Diagnose ปัญหา</h4>
+        <p style="font-size:21px">ดูคลิปเก่าของตัวเอง (ถ้ามี) — บอกได้ไหมว่า drift มาจาก lock layer ไหน?</p>
+      </div>
+      <div class="callout tip" style="margin-top:18px"><strong>กฎสำคัญ:</strong> Iterate (ลองวนปรับซ้ำๆ) คือเรื่องปกติ — เจนผิดไม่ใช่ข้อผิดพลาด มันคือ feedback loop (วงจรเรียนรู้จากผลลัพธ์) · เก็บ prompt ที่เวิร์คไว้ใช้ต่อ ไม่ทิ้ง</div>
+    </div>
+  </div>
+
+  <!-- 29. Bonus Techniques (was 30) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">29</div>
+      <div class="slide-title">Bonus Techniques — 4 อันที่ pro ใช้</div>
+      <div class="slide-tag">Pro</div>
+    </div>
+    <div class="slide-body">
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">⭐ B1. Object Highlight on Mention (Educational Signature)</h4>
+        <p style="font-size:20px">ตัวละคร mention object → object glow soft — <strong>powerful สำหรับ educational/dialogue</strong></p>
+        <pre style="font-size:18px;margin-top:6px"><code>Sam points to papaya — named fruit glows softly.
+Sam: "I like papaya!"</code></pre>
+      </div>
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">⭐ B2. First-Frame Composition Anchor (Paradigm 2)</h4>
+        <p style="font-size:20px">บังคับ AI keep composition ของ ref first frame → AI เล่น motion ภายใน</p>
+        <pre style="font-size:18px;margin-top:6px"><code>保持参考首帧的精确构图:
+- Character A on left, [action]
+- Character B on right, [action]</code></pre>
+      </div>
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">B3. Mood + Camera Summary Lines (ปิดท้าย prompt)</h4>
+        <pre style="font-size:18px"><code>Camera: eye-level wide to medium, slight push-in.
+Mood: surprise, excitement, friendly.
+Aspect ratio: 16:9. Duration: 10s.</code></pre>
+      </div>
+      <div class="card indigo">
+        <h4 style="color:var(--indigo-dark);margin-bottom:6px">B4. Style-Appropriate Effects Vocabulary</h4>
+        <p style="font-size:20px">Cartoon FX (glow/sparkle/halo) ≠ Photoreal FX (lens flare/particle sim/god rays) — match style category</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 31. Section break: Appendix -->
+  <div class="slide section-break">
+    <div class="sec-num">APPENDIX</div>
+    <h2>Vocabulary<br>Reference</h2>
+    <p>Quick reference สำหรับ camera, lens, effects — เพิ่มเติมใน MD</p>
+  </div>
+
+  <!-- 32. Camera + Lens Vocabulary -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A1</div>
+      <div class="slide-title">Camera + Lens — Quick Reference</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="two-col">
+        <div>
+          <h4>Shot Types (Distance)</h4>
+          <table style="font-size:18px">
+            <tr><td>EWS / Extreme Wide</td><td>大全景</td></tr>
+            <tr><td>WS / Wide</td><td>广角 / 远景</td></tr>
+            <tr><td>MS / Medium</td><td>中景</td></tr>
+            <tr><td>CU / Close-Up</td><td>特写</td></tr>
+            <tr><td>ECU / Extreme Close-Up</td><td>大特写</td></tr>
+            <tr><td>OTS / Over-shoulder</td><td>过肩镜头</td></tr>
+            <tr><td>POV</td><td>第一视角</td></tr>
+            <tr><td>Insert (macro)</td><td>插入镜头</td></tr>
+          </table>
+        </div>
+        <div>
+          <h4>Angles</h4>
+          <table style="font-size:18px">
+            <tr><td>Eye level</td><td>平视</td></tr>
+            <tr><td>Low angle (hero)</td><td>低角度仰拍</td></tr>
+            <tr><td>High angle (vulnerable)</td><td>高角度俯拍</td></tr>
+            <tr><td>Bird's eye / Top-down</td><td>鸟瞰</td></tr>
+            <tr><td>Dutch angle (chaos)</td><td>倾斜镜头</td></tr>
+            <tr><td>Worm's eye</td><td>虫眼视角</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:8px">
+        <div>
+          <h4>Movement</h4>
+          <table style="font-size:18px">
+            <tr><td>Tracking</td><td>跟拍</td></tr>
+            <tr><td>Dolly in / Push-in</td><td>推镜</td></tr>
+            <tr><td>Dolly out / Pull-back</td><td>拉镜</td></tr>
+            <tr><td>Whip pan</td><td>速摇</td></tr>
+            <tr><td>Steadicam</td><td>稳定器跟拍</td></tr>
+            <tr><td>Handheld</td><td>手持摄影</td></tr>
+            <tr><td>Crash zoom / Dolly zoom</td><td>极速变焦 / 推拉变焦</td></tr>
+            <tr><td>Orbit</td><td>环绕镜头</td></tr>
+            <tr><td>Rack focus</td><td>焦点拉移</td></tr>
+          </table>
+        </div>
+        <div>
+          <h4>Lens (Focal × Use)</h4>
+          <table style="font-size:18px">
+            <tr><td>12-16mm Ultra wide</td><td>establishing, chase</td></tr>
+            <tr><td>24mm Wide</td><td>POV, low angle hero</td></tr>
+            <tr><td>35mm Moderate wide</td><td>group + env</td></tr>
+            <tr><td>50mm Standard</td><td>OTS, confrontation</td></tr>
+            <tr><td>85mm Tele</td><td>face CU, reaction</td></tr>
+            <tr><td>100mm Macro</td><td>insert detail</td></tr>
+            <tr><td>200mm Telephoto</td><td>compression, sniper</td></tr>
+            <tr><td>Anamorphic</td><td>"หนังจริง" feel</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="callout warn" style="font-size:18px"><strong>กฎ Lens:</strong> ใส่ <code>[X]mm lens</code> ทุก prompt — ห้ามซ้ำเลนส์ติดกันใน sequence (เช่น 85→50→16→135 ✅ vs 85→85→50 ❌)</div>
+    </div>
+  </div>
+
+  <!-- 33. Effects Vocabulary by Category -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A2</div>
+      <div class="slide-title">Effects Vocabulary — แบ่งตาม Style (ห้ามผสม!)</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="compare-grid">
+        <div class="compare-col" style="border-top:4px solid var(--orange);background:rgba(251,146,60,0.08)">
+          <h4 style="color:#fb923c">🎨 2D Cartoon Effects</h4>
+          <table style="font-size:18px;background:#1f2538">
+            <tr><td>Soft glow</td><td>柔和发光</td></tr>
+            <tr><td>Sparkle</td><td>闪光 / 闪烁</td></tr>
+            <tr><td>Halo</td><td>光晕</td></tr>
+            <tr><td>Motion lines</td><td>卡通运动线</td></tr>
+            <tr><td>Star burst</td><td>星形爆裂</td></tr>
+            <tr><td>Action puff</td><td>卡通烟雾</td></tr>
+            <tr><td>Object highlight ⭐</td><td>被点名XXX柔和发光</td></tr>
+          </table>
+        </div>
+        <div class="compare-col" style="border-top:4px solid var(--violet);background:rgba(167,139,250,0.08)">
+          <h4 style="color:#a78bfa">🎬 Cinema / Photoreal Effects</h4>
+          <table style="font-size:18px;background:#1f2538">
+            <tr><td>Lens flare</td><td>镜头光晕</td></tr>
+            <tr><td>God rays</td><td>丁达尔光</td></tr>
+            <tr><td>Atmospheric haze</td><td>大气朦胧</td></tr>
+            <tr><td>Particle simulation</td><td>粒子特效</td></tr>
+            <tr><td>Lens dust</td><td>镜头沾染烟灰</td></tr>
+            <tr><td>Embers floating</td><td>火星飘浮</td></tr>
+            <tr><td>Heat distortion</td><td>热浪扭曲</td></tr>
+            <tr><td>Volumetric light</td><td>体积光</td></tr>
+            <tr><td>DOF bokeh</td><td>景深焦外光斑</td></tr>
+            <tr><td>Shockwave</td><td>能量波纹</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="compare-grid" style="margin-top:8px">
+        <div class="compare-col" style="border-top:4px solid #ec4899;background:rgba(236,72,153,0.08)">
+          <h4 style="color:#f9a8d4">🌸 Anime Effects</h4>
+          <table style="font-size:18px;background:#1f2538">
+            <tr><td>Speed lines</td><td>速度线</td></tr>
+            <tr><td>Sweat drop (chibi)</td><td>汗珠</td></tr>
+            <tr><td>Sparkle eyes</td><td>星星眼</td></tr>
+            <tr><td>Focus lines</td><td>集中线</td></tr>
+          </table>
+        </div>
+        <div class="compare-col" style="border-top:4px solid #06b6d4;background:rgba(6,182,212,0.08)">
+          <h4 style="color:#22d3ee">🎮 Game CG Effects</h4>
+          <table style="font-size:18px;background:#1f2538">
+            <tr><td>Energy aura</td><td>能量光环</td></tr>
+            <tr><td>Magic glow</td><td>魔法光辉</td></tr>
+            <tr><td>Screen shake</td><td>屏幕震动</td></tr>
+            <tr><td>Power-up flash</td><td>蓄力闪光</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="callout bad" style="font-size:18px;margin-top:6px"><strong>❌ ห้ามผสม:</strong> Cartoon glow + Photoreal lens flare = AI conflict สีเพี้ยน · เลือก 1 category, stick to it</div>
+    </div>
+  </div>
+
+  <!-- 34. Action / Cinematic Patterns -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A3</div>
+      <div class="slide-title">Action Patterns — Intercut + Speed + Sound</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <h4 style="color:var(--indigo-dark)">7-Stage Pattern: Tension → Impact → Reaction</h4>
+      <ol style="font-size:20px;margin-left:22px">
+        <li>SETUP — สลับ CU 2 ฝ่าย</li>
+        <li>INSERT — macro detail (มือ/อาวุธ/ตา) 100mm</li>
+        <li>SILENCE 0.3s — tension peak</li>
+        <li>ATTACK — wide 24mm</li>
+        <li>MACRO IMPACT — ultra slo-mo 100mm</li>
+        <li>ECU REACTION — 135mm ตา + reflection</li>
+        <li>PAYOFF — wide 24mm + FREEZE</li>
+      </ol>
+      <div class="callout warn" style="font-size:18px"><strong>Rules:</strong> ≥ 8 cuts/15 sec · Reaction <strong>BEFORE</strong> payoff · ห้ามซ้ำเลนส์ติดกัน · จบด้วย FREEZE</div>
+      <h4 style="color:var(--indigo-dark);margin-top:10px">Speed Map</h4>
+      <pre style="font-size:17px;line-height:1.4"><code>0:00 ████████░░ ปกติ      — setup
+0:03 ██████████ เร็วมาก   — attack
+0:05 ░░░░░░░░░░ ULTRA SLO ← MACRO impact (always slo-mo)
+0:09 ██████████ เร็วจัด   — payoff
+0:14 ░░░░░░░░░░ FREEZE    — end</code></pre>
+      <h4 style="color:var(--indigo-dark);margin-top:8px">Sound Design</h4>
+      <ul style="font-size:18px">
+        <li>Silence 0.3s ก่อน impact = ตื่นเต้นกว่า · Heartbeat = tension marker</li>
+        <li>ทุก impact ต้องมี THUD/CLANG/CRACK · จบด้วย silence เสมอ</li>
+        <li>Sound ดิบๆ &gt; เพลงประกอบ สำหรับฉาก fight</li>
+      </ul>
+      <div class="callout info" style="font-size:18px"><strong>Source:</strong> สังเคราะห์จาก <code>SKILL_actionMovie Gen.md</code> (น้องภูมิ) — patterns ใช้ได้ทุก action sequence ไม่ขึ้นกับ project</div>
+    </div>
+  </div>
+
+  <!-- 35. Seedance Content Filter -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A4</div>
+      <div class="slide-title">Seedance Content Filter — คำที่ติด + วิธีแก้</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout warn" style="font-size:20px"><strong>ปัญหา:</strong> Seedance มี content filter ทั้ง <strong>text</strong> และ <strong>image</strong> — โดน reject บ่อยถ้าไม่รู้ workaround</div>
+      <h4 style="color:var(--indigo-dark)">Text Filter — คำ → คำแทน</h4>
+      <table style="font-size:18px">
+        <tr><th>❌ Block</th><th>✅ ใช้แทน</th></tr>
+        <tr><td>血 (blood)</td><td>红色光芒 (red light)</td></tr>
+        <tr><td>死 (die)</td><td>倒下 (fall down)</td></tr>
+        <tr><td>杀 (kill)</td><td>击中 (hit)</td></tr>
+        <tr><td>暴力 (violence)</td><td>激烈对决 (intense duel)</td></tr>
+        <tr><td>枪 (gun)</td><td>武器 (weapon)</td></tr>
+        <tr><td>爆炸 (explosion)</td><td>能量释放 (energy release)</td></tr>
+        <tr><td>冲击波 (shockwave)</td><td>能量波纹 (energy ripple)</td></tr>
+        <tr><td>破坏 / 摧毁 (destroy)</td><td>改变 (change)</td></tr>
+        <tr><td>废墟 (ruins)</td><td>古代建筑群 (ancient architecture)</td></tr>
+      </table>
+      <h4 style="color:var(--indigo-dark);margin-top:10px">Image Filter</h4>
+      <ul style="font-size:18px">
+        <li>รูปมีอาวุธ → crop เฉพาะหน้า หรือไม่แนบ ref</li>
+        <li>โทนมืด/น่ากลัว → brighten + desaturate ก่อนอัพ</li>
+        <li>ท่าก้าวร้าว → ใช้ท่า neutral/ยืนปกติ</li>
+        <li>Error: <code>"你上传的图片不符合平台规则"</code> = image rejected</li>
+      </ul>
+      <div class="callout tip" style="font-size:18px"><strong>Hologram Trick:</strong> ถ้า scene ติด filter → ใช้ <code>全息投影</code> (hologram) + <code>光幕</code> (light screen) + สี blue/gold/cyan = safe abstract แทน character</div>
+    </div>
+  </div>
+
+  <!-- A5. Architecture Overview (จากพี่โอ) -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A5</div>
+      <div class="slide-title">ภาพรวม — สถาปัตยกรรมก่อนเริ่ม</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p>เข้าใจชั้นต่างๆ ก่อนเริ่มเขียน prompt — ใครทำหน้าที่อะไร</p>
+      <pre style="font-size:20px;line-height:2"><code>คุณ → Oracle → English prompt → Dreamina (web) → Seedance model → คลิป
+                                          ↑
+                          Jimeng (จีน) ส่งเข้า Seedance ตัวเดียวกัน</code></pre>
+      <table style="margin-top:14px">
+        <tr><th>Layer</th><th>หน้าที่</th></tr>
+        <tr><td><strong>Seedance</strong></td><td>AI model ที่สร้างคลิป (engine จริง)</td></tr>
+        <tr><td><strong>Dreamina / Jimeng</strong></td><td>Web UI ที่ไปกดสั่ง · Jimeng = Dreamina จีน (free credit รีทุกวัน)</td></tr>
+        <tr><td><strong>Oracle (เรา)</strong></td><td>AI ผู้ช่วยเขียน prompt + จำผลงานเก่า + iterate</td></tr>
+        <tr><td><strong>You</strong></td><td>Vision + Generate + Evaluate</td></tr>
+      </table>
+      <div class="callout info" style="margin-top:14px"><strong>กฎ:</strong> Dreamina/Jimeng เปลี่ยน provider ได้ — Seedance เป็น engine จริง · prompt ใช้ได้ทั้ง 2 platform เพราะส่งเข้า Seedance เดียวกัน</div>
+    </div>
+  </div>
+
+  <!-- A6. 3D Engine Vocab — ห้ามใช้! -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A6</div>
+      <div class="slide-title">ภาษา 3D Engine — ห้ามใช้! ใช้ภาษาหนังแทน</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout warn" style="font-size:20px"><strong>Why:</strong> Seedance trained จากหนังจริง ไม่ใช่ game engine — พูด<strong>ภาษา cinematography</strong> = ผลออกมา <strong>เหมือนหนัง</strong> · พูดภาษา 3D engine = ผลออกมา <strong>แข็ง CG</strong></div>
+      <table>
+        <tr><th>❌ 3D Engine Vocab</th><th>✅ Cinematography Vocab</th></tr>
+        <tr><td><code>parallax</code></td><td><code>depth</code> / <code>layered background</code></td></tr>
+        <tr><td><code>PBR material</code></td><td><code>realistic surface</code> / <code>physically lit</code></td></tr>
+        <tr><td><code>billboard</code></td><td><code>flat plane</code> / <code>2D element</code></td></tr>
+        <tr><td><code>skybox</code></td><td><code>sky background</code> / <code>cloudscape</code></td></tr>
+        <tr><td><code>subsurface scattering</code></td><td><code>translucent skin</code> / <code>glowing flesh</code></td></tr>
+        <tr><td><code>frustum / FOV (numeric)</code></td><td><code>wide-angle</code> / <code>telephoto</code></td></tr>
+        <tr><td><code>viewport</code></td><td><code>frame</code> / <code>shot</code></td></tr>
+        <tr><td><code>rig / joint / IK</code></td><td>(ไม่ใช้เลย — character description)</td></tr>
+        <tr><td><code>keyframe</code></td><td><code>at 0:02 — at 0:04 —</code> (timestamp)</td></tr>
+        <tr><td><code>LOD / texture map</code></td><td><code>detailed</code> / <code>high resolution</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- A7. Cinema Deep Vocab — Director / Genre / Realism -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A7</div>
+      <div class="slide-title">Cinema Deep Vocab — Director / Genre / Realism</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <h4 style="color:var(--indigo-dark)">🎭 Director / DP Style — ใช้ชื่อเป็น aesthetic shortcut</h4>
+      <table style="font-size:18px">
+        <tr><th>Name</th><th>Style</th></tr>
+        <tr><td><strong>Roger Deakins style</strong></td><td>natural light, careful composition (1917, Blade Runner 2049)</td></tr>
+        <tr><td><strong>Emmanuel Lubezki style</strong></td><td>long takes, available light (Birdman, Revenant)</td></tr>
+        <tr><td><strong>Wes Anderson style</strong></td><td>symmetrical, locked frame, pastel palette</td></tr>
+        <tr><td><strong>Christopher Doyle style</strong></td><td>handheld dreamy, neon-soaked (Wong Kar-wai)</td></tr>
+        <tr><td><strong>Hoyte van Hoytema style</strong></td><td>IMAX large format, natural light (Interstellar, Tenet)</td></tr>
+        <tr><td><strong>Christopher Nolan style</strong></td><td>IMAX scale, practical effects, dark tone</td></tr>
+        <tr><td><strong>Denis Villeneuve style</strong></td><td>epic minimalism, atmospheric, slow burns</td></tr>
+        <tr><td><strong>Stanley Kubrick style</strong></td><td>symmetrical, one-point perspective, slow zooms</td></tr>
+      </table>
+      <h4 style="color:var(--indigo-dark);margin-top:12px">🎬 Genre Tags</h4>
+      <p style="font-size:20px"><code>film noir</code> · <code>spaghetti western</code> · <code>neo-noir</code> · <code>cyberpunk</code> · <code>cottagecore</code> · <code>brutalism</code> · <code>solarpunk</code> · <code>A24 indie aesthetic</code> · <code>Studio Ghibli aesthetic</code></p>
+      <h4 style="color:var(--indigo-dark);margin-top:12px">🌡️ Realism Tokens (กัน "AI plastic" look)</h4>
+      <p style="font-size:20px"><code>micro-imperfections</code> · <code>chromatic aberration</code> · <code>volumetric dust</code> · <code>light leaks</code> · <code>vignette</code> · <code>film grain</code> · <code>halation</code> · <code>practical effects</code></p>
+      <h4 style="color:var(--indigo-dark);margin-top:12px">🌡️ Color Temperature</h4>
+      <p style="font-size:20px"><code>5600K daylight</code> · <code>3200K tungsten</code> · <code>4000K fluorescent</code> · <code>1800K candle/fire</code></p>
+      <div class="callout info" style="font-size:18px;margin-top:10px"><strong>Source:</strong> สังเคราะห์จาก <code>cinematography-vocab.md</code> (พี่โอ + DewS, 2026-05-06)</div>
+    </div>
+  </div>
+
+  <!-- A8. DewS Workflow with Oracle -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">A8</div>
+      <div class="slide-title">Workflow ที่ DewS ใช้จริง (6 ขั้น)</div>
+      <div class="slide-tag">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <pre style="font-size:18px;line-height:1.9"><code>1. Vision     → DewS บอก Oracle ว่าอยากได้ shot อะไร
+2. Refs       → DewS ส่งรูปให้ Oracle ดู (Oracle ดูรูปได้)
+                ⚠️ playblast video → Oracle ดูไม่ได้ ต้อง:
+                · ใช้ Gemini บรรยาย → ส่งให้ Oracle อ่าน หรือ
+                · DewS บรรยายเองให้ Oracle ฟัง
+3. Prompt     → Oracle เขียน prompt เต็มก้อน (อังกฤษ + จีน mix)
+4. Generate   → DewS วาง prompt ใน Dreamina + แทน @ref ด้วย UUID
+5. Evaluate   → DewS ดูคลิป → บรรยายให้ Oracle รู้ว่าอะไรดี/ไม่ดี
+6. Iterate    → Oracle แก้ prompt → กลับไป step 4</code></pre>
+      <div class="callout warn" style="margin-top:12px;font-size:20px"><strong>⚠️ Oracle ดูวิดีโอไม่ได้:</strong> Claude Code อ่าน รูป (PNG/JPG/PDF) ได้ แต่<strong>วิดีโอไม่ได้</strong> · workaround: ใช้ Gemini transcribe/describe video → ส่งคำบรรยายให้ Oracle อ่าน · หรือ DewS บรรยายเอง</div>
+      <div class="callout tip" style="font-size:20px"><strong>Iteration คือเรื่องปกติ:</strong> Shot 1 ของ Dragon ใช้ ~20 รอบกว่าจะได้ · งบ Dreamina ~2,600 credits · เก็บ prompt ที่เวิร์คไว้ใช้ต่อ ไม่ทิ้ง</div>
+    </div>
+  </div>
+
+  <!-- 36. End -->
+  <div class="slide title-slide">
+    <div class="badge">END OF SESSION</div>
+    <h1 style="font-size:48px">เริ่มเขียน Prompt แรกได้เลย</h1>
+    <p class="subtitle">หลักการครบแล้ว — ที่เหลือคือ practice<br>เจนผิดบ่อยตอนแรกเป็นเรื่องปกติ — เก็บ prompt ที่เวิร์คไว้ใช้ต่อ</p>
+    <div class="meta">
+      <div class="meta-item">
+        <div class="lbl">Reference doc</div>
+        <div class="val">2026-05-08_ai-video-prompt-principles.md</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">Source ที่รวม</div>
+        <div class="val">Engenius + Dragon + น้องภูมิ /action</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">Questions?</div>
+        <div class="val">ถามได้ตลอด</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="ก่อนหน้า">◀</button>
+  <span class="counter"><span class="current" id="cur">1</span> / <span id="total">30</span></span>
+  <button id="next" title="ถัดไป">▶</button>
+  <button id="full" title="ฟูลสกรีน">⛶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  document.getElementById('total').textContent = total;
+  let idx = 0;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides[idx].classList.remove('active');
+    idx = i;
+    slides[idx].classList.add('active');
+    document.getElementById('cur').textContent = idx + 1;
+    document.getElementById('progress').style.width = ((idx + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('next').onclick = () => show(idx + 1);
+  document.getElementById('prev').onclick = () => show(idx - 1);
+  document.getElementById('full').onclick = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(idx - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+    else if (e.key.toLowerCase() === 'f') document.getElementById('full').click();
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>

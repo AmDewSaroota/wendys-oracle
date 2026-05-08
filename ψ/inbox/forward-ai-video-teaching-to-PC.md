@@ -11,21 +11,24 @@
 
 วันนี้ DewS เปิดไฟล์ `D:\_DewS\AI\ai-video-prompt-slides.html` ที่พี่เวนดี้ (copy มาจาก `E:\02_AI\ai-video-teaching\` ที่น้อง) แล้วแก้หลายจุด
 
-**ไฟล์ master อยู่ที่น้อง**: `E:\02_AI\ai-video-teaching\ai-video-prompt-slides.html`
-**ไฟล์ที่แก้แล้ว**: `D:\_DewS\AI\ai-video-prompt-slides.html` (ที่พี่)
+**ไฟล์ master อยู่ที่น้อง (เดิม)**: `E:\02_AI\ai-video-teaching\ai-video-prompt-slides.html`
+**ไฟล์ที่แก้แล้ว** (อยู่ใน repo, /sync pull จะได้): `ψ/active/ai-video-teaching/ai-video-prompt-slides.html`
 
 ---
 
 ## งานที่ต้องทำที่น้อง
 
-### 1. Sync ไฟล์ slide ใหม่ทับของเดิม
+### 1. Copy slide ที่แก้แล้วทับของเดิม
+
+หลัง `/sync pull` ที่น้องเวนดี้:
 
 ```powershell
-# DewS copy ไฟล์ slide ใหม่จากพี่ (อาจส่งผ่าน USB / cloud / OneDrive)
-# วางทับที่ E:\02_AI\ai-video-teaching\ai-video-prompt-slides.html
+# Copy ไฟล์ที่แก้ล่าสุดจาก repo → ทับ master ที่ folder ทีม
+Copy-Item "D:\_DewS\_Wendys\ψ\active\ai-video-teaching\ai-video-prompt-slides.html" `
+          "E:\02_AI\ai-video-teaching\ai-video-prompt-slides.html" -Force
 ```
 
-⚠️ **ระวัง**: ไฟล์ที่น้องตอนนี้ยังเป็น version 2026-05-08 ก่อนแก้ — ต้องทับด้วยของใหม่
+⚠️ **ระวัง**: ไฟล์ master ที่น้องตอนนี้ยังเป็น version ก่อนแก้ — ต้องทับด้วยของใหม่จาก repo
 
 ### 2. อัพเดท MD reference
 
