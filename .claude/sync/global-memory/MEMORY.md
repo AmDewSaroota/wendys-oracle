@@ -10,6 +10,7 @@
 
 ## Quick-Start Commands
 - **"มังกร"** หรือ **"Seedance"** → โหลด `ψ/lab/vdrama/seedance-prompt-guide.md` ทันที
+  - ⚠️ **Video ref strict lock = all-or-nothing เด็ดขาด** → `memory/feedback_video_ref_no_partial_override.md` — ห้ามแนะนำ ONLY MODIFY / 唯一修改 (มันเฟล)
 - **"xskill"** หรือ **"ยิง API"** → โหลด `ψ/lab/vdrama/xskill-seedance-api.md` แล้วพร้อมยิง API สร้างวิดีโอ
 - ใช้ **English prompts** ผ่าน **Dreamina web UI** (dreamina.capcut.com)
 - **Jimeng** (即梦) = Dreamina เวอร์ชันจีน — DewS ใช้สลับกัน (jimeng รีทุกวัน ได้ credit ฟรี)
@@ -67,7 +68,7 @@
 
 ### EcoStove TODO (ค้างไว้)
 - ✅ คู่มือ (index.html guide tab) + คู่มืออาสา (guide-volunteer.html) — ทำเสร็จแล้ว
-- ⏳ คู่มือ: เพิ่มวิธีแอดเตา/ผูกเตา (DewS ฝากไว้ 2026-04-21) — ยังไม่มีใน guide content
+- ✅ คู่มือ: วิธีเพิ่มบ้าน/ผูกเซนเซอร์กับบ้าน — มีใน index.html guide แล้ว (verify 2026-05-07: line 2430+3491)
 - ✅ Migration 028-032 — รันแล้วทั้งหมด (DewS ยืนยัน 2026-04-27)
 - ✅ preview-map.html — ลบแล้ว ไม่ใช้แล้ว (2026-04-27)
 - ⏳ LINE Dev + Google Account recovery → รอส่งมอบ
@@ -75,8 +76,15 @@
 ### EcoStove Project Account
 - Email: `biomassstove.cmru@gmail.com` / `BioMass@cmru2026`
 
+### 🚀 EcoStove deploy ไม่ต้องถาม
+- → `memory/feedback_ecostove_deploy_no_confirm.md` — `npx vercel --prod --yes` รันได้เลย ไม่ต้อง confirm
+
 ### 📂 เปิด Explorer หลังสร้างไฟล์ใหม่ (DewS)
 - → `memory/feedback_open_explorer_on_new_file.md` — ทุกครั้งที่สร้างไฟล์ใหม่ ต้อง `Start-Process explorer` ไปที่ folder ทันที
+
+### 🌙 Default Dark Theme (DewS, 2026-05-08)
+- → `memory/feedback_default_dark_theme.md` — ทุกไฟล์ที่ DewS ไม่ได้กำหนดธีม → ใช้ Dark เสมอ
+- Reference palette: bg `#0a0e1a` / card `#131826` / text `#e5e7eb` / muted `#94a3b8`
 
 ### 🚫 No praise / no sweet words (DewS, 2026-05-05)
 - → `memory/feedback_no_praise.md` — ไม่ชม ไม่หวาน ไม่ปลอบ (ยกเว้นเค้าขอ) — เน้นข้อเท็จจริงสั้น ๆ

@@ -401,27 +401,39 @@ Seedance ให้ความสำคัญกับข้อความต�
 
 ---
 
-## 17. Lock Override Pattern — 唯一修改 (Session 2026-04-20)
+## 17. Video Ref Lock = All-or-Nothing (UPDATED 2026-05-08 — เก่าผิด)
+
+> ⚠️ **อัปเดตจากประสบการณ์จริง (DewS, 2026-05-08)**: section นี้เคยเขียนไว้ตอน 2026-04-20 ว่า `唯一修改` / `ONLY MODIFY:` "ใช้ได้" แต่**ในทางปฏิบัติมันเฟลเสมอ** — Seedance ตีความ override ไม่สม่ำเสมอ ผลส่วนใหญ่ไม่ตรง prompt
+> ดู feedback memory: `memory/feedback_video_ref_no_partial_override.md`
 
 ### ปัญหา
 ต้องการเปลี่ยนแค่ 1 แอคชั่นใน shot ที่ใช้ video ref strict lock
 
-### ❌ วิธีที่ผิด — ลด lock level
+### ❌ ทุกวิธี "เจาะรู" เฟลในทางปฏิบัติ
+
+**❌ ลด lock level**
 ```
 参考...但不严格跟随主体动作
 ```
 → Seedance เปลี่ยน**ทุกอย่าง** — มุมกล้อง ฉากหลัง composition หลุดหมด
 
-### ✅ วิธีที่ถูก — strict lock + เจาะรูเฉพาะจุด
+**❌ Strict lock + 唯一修改 (เคยเขียนว่าใช้ได้ — ไม่จริง)**
 ```
 严格模仿 @[视频] 的全部镜头运动和时间节奏。
-
-唯一修改——[ชื่อส่วนที่เปลี่ยน]不跟随预览：[description ใหม่]
+唯一修改——[ส่วนที่เปลี่ยน]不跟随预览：[description ใหม่]
 ```
+→ Seedance ignore override บ่อย ผลออกมาแค่ตาม video ref เฉย ๆ หรือ random
 
-### กฎ: Video ref lock = all-or-nothing
-- ลด lock → ลดทุกอย่างพร้อมกัน (กล้อง, ท่า, ฉากหลัง)
-- ต้อง lock แน่นสุด แล้ว "เจาะรู" ด้วย `唯一修改`
+### ✅ ทางที่ใช้ได้จริง — เลือก 1 ใน 3
+
+1. **Regenerate full prompt** — ทิ้ง video ref ใช้ image refs + text แทน → ปล่อย AI สร้างใหม่หมด
+2. **Accept video ref ตามเดิม** — ทำงาน VFX/composite ใน post production
+3. **Iterate + best-of-N** — เจน 5-10 ครั้ง pick ที่ดีที่สุด ยอมรับ ~70% ตามใจ
+
+### กฎใหม่
+- Video ref strict lock = **all-or-nothing เด็ดขาด** — ไม่มีทางเจาะรู
+- ห้ามแนะนำ user ว่า `ONLY MODIFY:` / `唯一修改` "ได้ผล" — มันมักจะเฟล
+- อยากเปลี่ยน 1 จุด → restart full prompt
 
 ---
 
