@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MT15 — ผังหน้าจอ</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cloud:       #10b981;
+    --cloud-bg:    rgba(16, 185, 129, 0.13);
+    --cloud-bd:    rgba(16, 185, 129, 0.45);
+    --manual:      #f97316;
+    --manual-bg:   rgba(249, 115, 22, 0.13);
+    --manual-bd:   rgba(249, 115, 22, 0.45);
+    --unused:      #64748b;
+    --unused-bg:   rgba(100, 116, 139, 0.07);
+    --unused-bd:   rgba(100, 116, 139, 0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Chakra Petch', sans-serif;
+    background: #f0f7f4;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  .wrapper { max-width: 880px; width: 100%; }
+
+  .page-title { font-size: 20px; font-weight: 700; color: #064e3b; margin-bottom: 4px; }
+  .page-sub   { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+
+  /* ── DIAGRAM ── */
+  .diagram {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+
+  /* ── DEVICE ── */
+  .device-wrap { flex-shrink: 0; }
+
+  .device-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .device {
+    background: #1c1c1c;
+    border: 5px solid #f59e0b;
+    border-radius: 22px;
+    padding: 10px;
+    width: 270px;
+    box-shadow: 0 10px 36px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  .screen {
+    background: #050505;
+    border: 2px solid #22c55e;
+    border-radius: 12px;
+    padding: 8px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  /* header */
+  .s-hdr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 5px 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: #94a3b8;
+    border-bottom: 1px solid #1e293b;
+    margin-bottom: 2px;
+  }
+
+  /* 2-col grid row */
+  .s-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+
+  /* individual cell */
+  .sc {
+    border-radius: 7px;
+    padding: 5px 7px 6px;
+    position: relative;
+  }
+  .sc .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    color: #94a3b8;
+    display: block;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .sc .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    line-height: 1;
+    color: #22c55e;
+  }
+  .sc .val.lg  { font-size: 22px; }
+  .sc .val.md  { font-size: 16px; }
+  .sc .val.sm  { font-size: 13px; }
+
+  /* category colors */
+  .sc.cloud  { background: var(--cloud-bg);  border: 1px solid var(--cloud-bd); }
+  .sc.manual { background: var(--manual-bg); border: 1px solid var(--manual-bd); }
+  .sc.unused { background: var(--unused-bg); border: 1px solid var(--unused-bd); }
+  .sc.manual .val { color: #fb923c; }
+  .sc.unused .val { color: #475569; }
+
+  /* category dot */
+  .dot {
+    position: absolute;
+    top: 5px; right: 5px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+  }
+  .cloud  .dot { background: var(--cloud); }
+  .manual .dot { background: var(--manual); }
+  .unused .dot { background: var(--unused); }
+
+  /* AQI full-width */
+  .s-aqi {
+    border-radius: 7px;
+    padding: 6px 8px;
+    background: var(--cloud-bg);
+    border: 1px solid var(--cloud-bd);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  .aqi-left .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .aqi-left .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 28px;
+    color: #22c55e;
+    line-height: 1;
+  }
+  .aqi-bar {
+    flex: 1;
+    margin-left: 12px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #22c55e, #eab308, #ef4444);
+    position: relative;
+  }
+  .aqi-needle {
+    position: absolute;
+    left: 3%;
+    top: -4px;
+    width: 2px;
+    height: 16px;
+    background: white;
+    border-radius: 1px;
+  }
+
+  /* badge strip under device */
+  .badge-strip {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .badge.cloud  { background: #d1fae5; color: #065f46; }
+  .badge.manual { background: #ffedd5; color: #9a3412; }
+  .badge.unused { background: #f1f5f9; color: #475569; }
+
+  /* ── LEGEND ── */
+  .legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .leg {
+    background: white;
+    border-radius: 12px;
+    padding: 13px 15px;
+    border-left: 4px solid;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .leg.cloud  { border-left-color: var(--cloud); }
+  .leg.manual { border-left-color: var(--manual); }
+  .leg.unused { border-left-color: var(--unused); }
+
+  .leg-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 9px;
+  }
+  .leg-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .leg.cloud  .leg-dot { background: var(--cloud); }
+  .leg.manual .leg-dot { background: var(--manual); }
+  .leg.unused .leg-dot { background: var(--unused); }
+  .leg.cloud  .leg-head { color: #065f46; }
+  .leg.manual .leg-head { color: #9a3412; }
+  .leg.unused .leg-head { color: #475569; }
+
+  .leg-rows { display: flex; flex-direction: column; gap: 5px; }
+
+  .leg-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .leg-param {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    width: 68px;
+    flex-shrink: 0;
+  }
+  .leg.cloud  .leg-param { color: #059669; }
+  .leg.manual .leg-param { color: #ea580c; }
+  .leg.unused .leg-param { color: #64748b; }
+  .leg-desc { font-size: 12px; color: #64748b; line-height: 1.45; }
+
+  .leg-note {
+    margin-top: 8px;
+    padding: 6px 9px;
+    background: #f8fafc;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.55;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="page-title">MT15 — ผังหน้าจอและการทำงานของระบบ</div>
+  <div class="page-sub">ค่าทั้งหมดที่แสดงบนหน้าจอ · สีระบุว่าข้อมูลถูกส่งอย่างไร</div>
+
+  <div class="diagram">
+
+    <!-- Device mockup -->
+    <div class="device-wrap">
+      <div class="device-label">หน้าจอ MT15 (จำลอง)</div>
+      <div class="device">
+        <div class="screen">
+
+          <div class="s-hdr">
+            <span>2026.05.09 &nbsp; 11:07</span>
+            <span>📶 🔋</span>
+          </div>
+
+          <!-- Temp + Humidity -->
+          <div class="s-row">
+            <div class="sc cloud">
+              <div class="dot"></div>
+              <span class="lbl">🌡️ Temp</span>
+              <div class="val md">27°C</div>
+            </div>
+            <div class="sc cloud">
+              <div class="dot"></div>
+              <span class="lbl">💧 Humidity</span>
+              <div class="val md">35%</div>
+            </div>
+          </div>
+
+          <!-- AQI -->
+          <div class="s-aqi">
+            <div class="dot" style="position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:var(--cloud)"></div>
+            <div class="aqi-left">
+              <span class="lbl">AQI</span>
+              <div class="val">010</div>
+            </div>
+            <div class="aqi-bar">
+              <div class="aqi-needle"></div>
+            </div>
+          </div>
+
+          <!-- CO2 + HCHO -->
+          <div class="s-row">
+            <div class="sc cloud">
+              <div class="dot"></div>
+              <span class="lbl">CO₂ ppm</span>
+              <div class="val lg">0402</div>
+            </div>
+            <div class="sc cloud">
+              <div class="dot"></div>
+              <span class="lbl">HCHO mg/m³</span>
+              <div class="val md">0.031</div>
+            </div>
+          </div>
+
+          <!-- CO + TVOC -->
+          <div class="s-row">
+            <div class="sc manual">
+              <div class="dot"></div>
+              <span class="lbl">CO ppm</span>
+              <div class="val lg">000</div>
+            </div>
+            <div class="sc manual">
+              <div class="dot"></div>
+              <span class="lbl">TVOC mg/m³</span>
+              <div class="val md">0.137</div>
+            </div>
+          </div>
+
+          <!-- PM2.5 + PM1.0 -->
+          <div class="s-row">
+            <div class="sc cloud">
+              <div class="dot"></div>
+              <span class="lbl">PM2.5 µg/m³</span>
+              <div class="val lg">004</div>
+            </div>
+            <div class="sc unused">
+              <div class="dot"></div>
+              <span class="lbl">PM1.0 µg/m³</span>
+              <div class="val sm">003</div>
+            </div>
+          </div>
+
+          <!-- PM10 + PM0.3 -->
+          <div class="s-row">
+            <div class="sc cloud">
+              <div class="dot"></div>
+              <span class="lbl">PM10 µg/m³</span>
+              <div class="val md">004</div>
+            </div>
+            <div class="sc unused">
+              <div class="dot"></div>
+              <span class="lbl">PM0.3 µg/m³</span>
+              <div class="val sm">003</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="badge-strip">
+        <span class="badge cloud">🟢 Cloud อัตโนมัติ</span>
+        <span class="badge manual">🟠 บันทึกเอง</span>
+        <span class="badge unused">⚫ ไม่ใช้</span>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+
+      <div class="leg cloud">
+        <div class="leg-head"><span class="leg-dot"></span>ส่งขึ้น Cloud อัตโนมัติ (ทุก 5 นาที)</div>
+        <div class="leg-rows">
+          <div class="leg-row"><span class="leg-param">PM2.5</span><span class="leg-desc">ฝุ่นละอองขนาดเล็กมาก — ตัวชี้วัดหลักของโครงการ</span></div>
+          <div class="leg-row"><span class="leg-param">PM10</span><span class="leg-desc">ฝุ่นละอองขนาดหยาบ</span></div>
+          <div class="leg-row"><span class="leg-param">CO₂</span><span class="leg-desc">คาร์บอนไดออกไซด์ (ppm)</span></div>
+          <div class="leg-row"><span class="leg-param">HCHO</span><span class="leg-desc">ฟอร์มาลดีไฮด์ (mg/m³)</span></div>
+          <div class="leg-row"><span class="leg-param">Temp</span><span class="leg-desc">อุณหภูมิในห้องครัว (°C)</span></div>
+          <div class="leg-row"><span class="leg-param">Humidity</span><span class="leg-desc">ความชื้นสัมพัทธ์ (%)</span></div>
+          <div class="leg-row"><span class="leg-param">AQI</span><span class="leg-desc">ดัชนีคุณภาพอากาศ (คำนวณอัตโนมัติจาก PM2.5)</span></div>
+        </div>
+        <div class="leg-note">เซนเซอร์เชื่อมต่อ Hotspot → ส่งข้อมูลขึ้น Cloud Tuya → Dashboard รับโดยอัตโนมัติ · ไม่ต้องทำอะไรเพิ่ม</div>
+      </div>
+
+      <div class="leg manual">
+        <div class="leg-head"><span class="leg-dot"></span>อาสาสมัครบันทึกด้วยตนเอง</div>
+        <div class="leg-rows">
+          <div class="leg-row"><span class="leg-param">CO</span><span class="leg-desc">คาร์บอนมอนอกไซด์ — อ่านจากหน้าจอ แล้วกรอกในเว็บ</span></div>
+          <div class="leg-row"><span class="leg-param">TVOC</span><span class="leg-desc">สารอินทรีย์ระเหยรวม — อ่านจากหน้าจอ แล้วกรอกในเว็บ</span></div>
+        </div>
+        <div class="leg-note">MT15 แสดงค่า CO และ TVOC บนหน้าจอได้ แต่โปรโตคอล Tuya ไม่ส่ง 2 ค่านี้ขึ้น Cloud · ต้องอ่านเองและบันทึกผ่าน biomassstove.vercel.app</div>
+      </div>
+
+      <div class="leg unused">
+        <div class="leg-head"><span class="leg-dot"></span>ไม่ใช้ในระบบ</div>
+        <div class="leg-rows">
+          <div class="leg-row"><span class="leg-param">PM1.0</span><span class="leg-desc">ซ้ำซ้อนกับ PM2.5 — ไม่เก็บ</span></div>
+          <div class="leg-row"><span class="leg-param">PM0.3</span><span class="leg-desc">ละเอียดเกินกว่าที่ protocol กำหนด — ไม่เก็บ</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>

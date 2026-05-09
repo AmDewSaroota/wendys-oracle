@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>BiomassStove Workshop — 20 พฤษภาคม 2569</title>
-<script id="embedded-image-store" type="application/json">{}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -288,16 +287,13 @@
     min-width: 0;
   }
 
-  .node:hover { filter: brightness(0.92); }
+  .node:hover { filter: brightness(0.96); }
   .node .ico { font-size: 60px; margin-bottom: 18px; line-height: 1; }
-  .node .lbl { font-size: 22px; font-weight: 700; color: white; }
-  .node .sub { font-size: 14px; color: rgba(255,255,255,0.75); margin-top: 8px; line-height: 1.5; }
-  .node.green-bg { background: var(--green-dark); }
-  .node.orange-bg { background: var(--orange); }
-  .node.navy-bg { background: var(--navy); }
-  .node:not(.green-bg):not(.orange-bg):not(.navy-bg) { background: var(--teal); }
-  .node:not(.green-bg):not(.orange-bg):not(.navy-bg) .lbl { color: white; }
-  .node:not(.green-bg):not(.orange-bg):not(.navy-bg) .sub { color: rgba(255,255,255,0.75); }
+  .node .lbl { font-size: 22px; font-weight: 700; color: var(--green-dark); }
+  .node .sub { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  .node.green-bg { background: var(--green-50); }
+  .node.orange-bg { background: #fff7ed; }
+  .node.navy-bg { background: #f1f5f9; }
 
   .flow-arrow {
     display: flex;
@@ -348,7 +344,7 @@
   /* Image placeholders — proper aspect ratios */
   .img-placeholder {
     background: var(--bg-soft);
-    border: 1px dashed #cbd5e1;
+    border: 2px dashed var(--green);
     border-radius: 12px;
     padding: 16px;
     text-align: center;
@@ -363,7 +359,6 @@
     aspect-ratio: 4 / 3;
     transition: background 0.2s;
     position: relative;
-    overflow: hidden;
   }
   .img-placeholder:hover { background: var(--green-50); }
   .img-placeholder::before {
@@ -586,7 +581,7 @@
   /* ── Button Screen Switcher ── */
   .bsw-wrap { display: flex; flex-direction: column; gap: 10px; height: 100%; }
   .bsw-tabs { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
-  .bsw-btn { padding: 10px 22px; border-radius: 8px; border: 2px solid var(--line); background: white; font-size: 18px; font-weight: 600; font-family: 'Chakra Petch', sans-serif; cursor: pointer; transition: all 0.15s; color: var(--ink); }
+  .bsw-btn { padding: 8px 18px; border-radius: 8px; border: 2px solid var(--line); background: white; font-size: 15px; font-weight: 600; font-family: 'Chakra Petch', sans-serif; cursor: pointer; transition: all 0.15s; color: var(--ink); }
   .bsw-btn:hover { border-color: var(--green-light); }
   .bsw-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
   .bsw-btn.bsw-warn.active { background: var(--orange); border-color: var(--orange); }
@@ -638,16 +633,16 @@
 
 
   /* ── Step cards (calibration guide) ── */
-  .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; flex: 1; min-height: 0; }
-  .step-card { background: white; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; }
-  .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-  .step-badge { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; flex-shrink: 0; background: var(--green-dark); }
+  .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex: 1; min-height: 0; }
+  .step-card { background: white; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; }
+  .step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .step-badge { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 700; color: white; flex-shrink: 0; background: var(--green-dark); }
   .step-badge.warn { background: var(--orange); }
   .step-badge.ok   { background: var(--green-light); }
-  .step-name { font-size: 16px; font-weight: 700; color: var(--green-dark); line-height: 1.35; }
+  .step-name { font-size: 13px; font-weight: 700; color: var(--green-dark); line-height: 1.3; }
   .step-card.warn .step-name { color: #9a3412; }
   .step-card.ok   .step-name { color: #065f46; }
-  .step-desc { font-size: 14px; color: #475569; line-height: 1.55; margin-bottom: 10px; }
+  .step-desc { font-size: 12px; color: #475569; line-height: 1.4; margin-bottom: 6px; }
   .step-card .img-placeholder { max-width: none; margin: 0; flex: 1; min-height: 50px; height: auto; width: 100%; aspect-ratio: auto; }
 
   /* ── Two-column photo layout ── */
@@ -723,8 +718,7 @@
   .img-placeholder.filled .ph-icon,
   .img-placeholder.filled .ph-label,
   .img-placeholder.filled .ph-desc,
-  .img-placeholder.filled .ph-ratio,
-  .img-placeholder.filled .ph-tag { display: none; }
+  .img-placeholder.filled .ph-ratio { display: none; }
   .img-placeholder.filled img.ph-img {
     position: absolute;
     inset: 0;
@@ -801,7 +795,11 @@
         <span style="font-size:28px">📊</span>
         <span style="font-size:20px;font-weight:600;color:var(--green-dark)">ระบบอาสาสมัครและ Dashboard</span>
       </div>
-<div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:16px">
+      <div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:16px">
+        <span style="font-size:28px">🛡️</span>
+        <span style="font-size:20px;font-weight:600;color:var(--ink)">คุณภาพและความน่าเชื่อถือของข้อมูล</span>
+      </div>
+      <div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:16px">
         <span style="font-size:28px">💬</span>
         <span style="font-size:20px;font-weight:600;color:var(--ink)">ถาม-ตอบ</span>
       </div>
@@ -831,7 +829,7 @@
         <div class="flow-arrow">→</div>
         <div class="node navy-bg">
           <div class="ico">☁️</div>
-          <div class="lbl">ระบบ</div>
+          <div class="lbl">Cloud</div>
           <div class="sub">Tuya + Supabase</div>
         </div>
         <div class="flow-arrow">→</div>
@@ -842,9 +840,6 @@
         </div>
       </div>
       <p style="text-align:center;font-size:15px;color:var(--muted);margin-top:14px;flex-shrink:0">ส่งข้อมูลอัตโนมัติทุก 5 นาที · ไม่ต้องดำเนินการเพิ่มเติม</p>
-      <div class="callout info" style="margin-top:12px;flex-shrink:0">
-        <strong>สีบน Dashboard:</strong> 🟢 ปลอดภัย · 🟡 ควรระวัง · 🟠 สูง · 🔴 เกินมาตรฐาน · ⬜ offline
-      </div>
     </div>
   </div>
 
@@ -861,10 +856,10 @@
         <!-- Left: Cloud Auto -->
         <div class="mt15-ann-l">
           <div class="mt15-ann-block mt15-ann-auto">
-            <h4>🟢 ส่งระบบอัตโนมัติ</h4>
+            <h4>🟢 ส่ง Cloud อัตโนมัติ</h4>
             <div class="ann-chips">
-              <span class="ann-chip">อุณหภูมิ</span>
-              <span class="ann-chip">ความชื้น</span>
+              <span class="ann-chip">°C</span>
+              <span class="ann-chip">%RH</span>
               <span class="ann-chip">AQI</span>
               <span class="ann-chip">CO₂</span>
               <span class="ann-chip">HCHO</span>
@@ -893,7 +888,7 @@
             <ul>
               <li>ไอคอนนิ่ง = เชื่อมต่อแล้ว ✅</li>
               <li>ไอคอนกระพริบ = กำลังค้นหาและเชื่อมต่อ WiFi</li>
-              <li style="color:#9a3412">ถ้าไม่เชื่อมต่อ ข้อมูลไม่ส่งขึ้นระบบ ⚠️</li>
+              <li style="color:#9a3412">ถ้าไม่เชื่อมต่อ ข้อมูลไม่ส่งขึ้น Cloud ⚠️</li>
             </ul>
           </div>
           <div class="mt15-ann-block mt15-ann-manual">
@@ -931,15 +926,21 @@
 
         <div class="bsw-img-area">
           <div class="bsw-slot active" id="bslot-0">
-            <div class="img-placeholder aspect-3-4 filled">
+            <div class="img-placeholder aspect-3-4">
+              <div class="ph-icon">📱</div>
+              <div class="ph-label">หน้าจอปกติ</div>
+              <div class="ph-desc">กดปุ่มค้าง 3 วิ เพื่อเปิดเครื่อง</div>
               <div class="ph-tag">BTN #0</div>
-              <img class="ph-img" src="./MT15_Screen_1.png">
+              <div class="ph-ratio">3:4</div>
             </div>
           </div>
           <div class="bsw-slot" id="bslot-1">
-            <div class="img-placeholder aspect-3-4 filled">
+            <div class="img-placeholder aspect-3-4">
+              <div class="ph-icon">🌡️</div>
+              <div class="ph-label">กด 1 — สลับ °C/°F</div>
+              <div class="ph-desc">ค่าอุณหภูมิเปลี่ยนหน่วย</div>
               <div class="ph-tag">BTN #1</div>
-              <img class="ph-img" src="./MT15_Screen_2.png">
+              <div class="ph-ratio">3:4</div>
             </div>
           </div>
           <div class="bsw-slot" id="bslot-2">
@@ -952,21 +953,30 @@
             </div>
           </div>
           <div class="bsw-slot" id="bslot-3">
-            <div class="img-placeholder aspect-3-4 filled">
+            <div class="img-placeholder aspect-3-4">
+              <div class="ph-icon">🖥️</div>
+              <div class="ph-label">กด 3 — หน้าจอ 2</div>
+              <div class="ph-desc">ค่าหลักแสดงขนาดใหญ่ขึ้น</div>
               <div class="ph-tag">BTN #3</div>
-              <img class="ph-img" src="./MT15_Screen_3.png">
+              <div class="ph-ratio">3:4</div>
             </div>
           </div>
           <div class="bsw-slot" id="bslot-4">
-            <div class="img-placeholder aspect-3-4 filled">
+            <div class="img-placeholder aspect-3-4">
+              <div class="ph-icon">⚙️</div>
+              <div class="ph-label">กด 4 — Calibrate</div>
+              <div class="ph-desc">หน้าจอ Calibrating รอ 120 วิ อย่าขยับเครื่อง</div>
               <div class="ph-tag">BTN #4</div>
-              <img class="ph-img" src="./MT15_Screen_4.png">
+              <div class="ph-ratio">3:4</div>
             </div>
           </div>
           <div class="bsw-slot" id="bslot-5">
-            <div class="img-placeholder aspect-3-4 filled">
+            <div class="img-placeholder aspect-3-4">
+              <div class="ph-icon">📡</div>
+              <div class="ph-label">กด 5 — WiFi Pairing</div>
+              <div class="ph-desc">หน้าจอเหมือนปกติ — ไอคอน WiFi กะพริบขณะจับคู่ / นิ่งเมื่อต่อได้</div>
               <div class="ph-tag">BTN #5</div>
-              <img class="ph-img" src="./MT15_Screen_5.png">
+              <div class="ph-ratio">3:4</div>
             </div>
           </div>
         </div>
@@ -1003,9 +1013,12 @@
             <div class="step-name">สังเกตอาการ — ค่าไม่ลดลง</div>
           </div>
           <div class="step-desc">หน้าจอแสดงค่าสูงผิดปกติหลังดับเตาแล้ว เช่น CO2 ยังค้างที่ 2,000+ ppm นานเกิน 15 นาที</div>
-          <div class="img-placeholder aspect-4-3 filled">
+          <div class="img-placeholder aspect-4-3">
+            <div class="ph-icon">📷</div>
+            <div class="ph-label">หน้าจอค่าค้าง</div>
+            <div class="ph-desc">ค่าสูงผิดปกติ — CO2 หรือ PM ค้าง</div>
             <div class="ph-tag">PHOTO #C1</div>
-            <img class="ph-img" src="./MT15_Screen_6.png">
+            <div class="ph-ratio">4:3</div>
           </div>
         </div>
 
@@ -1015,9 +1028,12 @@
             <div class="step-name">กดปุ่มด้านข้าง 4 ครั้ง ติดกัน</div>
           </div>
           <div class="step-desc">กดปุ่มข้างเครื่อง 4 ครั้งติดกัน ไม่ต้องรีบ — หน้าจอจะแสดง "Calibrating..."</div>
-          <div class="img-placeholder aspect-4-3 filled">
+          <div class="img-placeholder aspect-4-3">
+            <div class="ph-icon">👆</div>
+            <div class="ph-label">กดปุ่ม 4 ครั้ง</div>
+            <div class="ph-desc">มือกดปุ่มด้านข้างเครื่อง</div>
             <div class="ph-tag">PHOTO #C2</div>
-            <img class="ph-img" src="./Side.png">
+            <div class="ph-ratio">4:3</div>
           </div>
         </div>
 
@@ -1027,9 +1043,12 @@
             <div class="step-name">วางนิ่ง รอ 120 วินาที</div>
           </div>
           <div class="step-desc">ห้ามเคลื่อนย้ายเครื่องระหว่างรอ — เครื่องกำลังวัดค่าอากาศปกติเป็น baseline ใหม่</div>
-          <div class="img-placeholder aspect-4-3 filled">
+          <div class="img-placeholder aspect-4-3">
+            <div class="ph-icon">⏱️</div>
+            <div class="ph-label">หน้าจอ Calibrating...</div>
+            <div class="ph-desc">Countdown บนหน้าจอขณะรอ 120 วิ</div>
             <div class="ph-tag">PHOTO #C3</div>
-            <img class="ph-img" src="./MT15_Screen_4.png">
+            <div class="ph-ratio">4:3</div>
           </div>
         </div>
 
@@ -1039,9 +1058,12 @@
             <div class="step-name">ค่ากลับสู่ระดับปกติ ✅</div>
           </div>
           <div class="step-desc">หน้าจอแสดงค่าในระดับปกติของอากาศห้อง — พร้อมเริ่ม session ใหม่ได้</div>
-          <div class="img-placeholder aspect-4-3 filled">
+          <div class="img-placeholder aspect-4-3">
+            <div class="ph-icon">✅</div>
+            <div class="ph-label">หน้าจอหลัง Calibrate</div>
+            <div class="ph-desc">ค่ากลับสู่ระดับปกติ</div>
             <div class="ph-tag">PHOTO #C4</div>
-            <img class="ph-img" src="./MT15_Screen.png">
+            <div class="ph-ratio">4:3</div>
           </div>
         </div>
 
@@ -1049,29 +1071,91 @@
     </div>
   </div>
 
-  <!-- Slide 6: Hotspot Setup -->
+  <!-- Slide 7: Sensor Validation & Testing -->
   <div class="slide">
     <div class="slide-head">
       <div class="slide-num">6</div>
+      <div class="slide-title">การทดสอบเซนเซอร์ก่อนติดตั้ง</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <p style="margin-bottom:10px;font-size:21px">ก่อนนำไปติดตั้งภาคสนาม ทีมงานทดสอบเซนเซอร์ทุกตัวด้วยมาตรฐานเดียวกัน เพื่อยืนยันความแม่นยำและความน่าเชื่อถือ</p>
+      <div class="callout info" style="margin-bottom:10px;font-size:18px">
+        <strong>หลักการทดสอบ:</strong> ทดสอบกับแหล่งกำเนิดมลพิษอ้างอิง → สังเกตการตอบสนองของแต่ละตัว → ยืนยันว่า <strong>ค่าตรวจวัดสอดคล้องกัน</strong>ภายใต้เงื่อนไขเดียวกัน
+      </div>
+      <div class="img-row">
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">🧪</div>
+          <div class="ph-label">การทดสอบ Calibration</div>
+          <div class="ph-desc">ทดสอบเซนเซอร์ทั้ง 12 ตัวภายใต้สภาพแวดล้อมเดียวกัน</div>
+          <div class="ph-tag">PHOTO #4</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📈</div>
+          <div class="ph-label">เปรียบเทียบผลการตอบสนอง</div>
+          <div class="ph-desc">กราฟเทียบค่าระหว่าง MT15 หลายตัว — เห็น variance ต่ำ</div>
+          <div class="ph-tag">PHOTO #5</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Model Comparison Test Results -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">7</div>
+      <div class="slide-title">ผลการทดสอบเปรียบเทียบ 3 รุ่น</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="img-row-stack">
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">🔬</div>
+          <div class="ph-label">ค่า MT15 vs MT13W vs PV28</div>
+          <div class="ph-desc">การทดสอบเทียบ 3 รุ่น ภายใต้เงื่อนไขเดียวกัน</div>
+          <div class="ph-tag">PHOTO #6</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📋</div>
+          <div class="ph-label">บันทึกผลการทดสอบ</div>
+          <div class="ph-desc">ตารางสรุปผลและสถิติ pre-deployment</div>
+          <div class="ph-tag">PHOTO #7</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Hotspot Setup -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">8</div>
       <div class="slide-title">การเชื่อมต่อ Hotspot</div>
       <div class="slide-tag">Part 1</div>
     </div>
     <div class="slide-body">
       <div class="photo-layout">
         <div class="photo-layout-text">
-          <div class="callout tip" style="margin-bottom:12px;font-size:18px">
-            <strong style="font-size:22px">📡 ค่าตั้ง Hotspot มาตรฐาน</strong><br>
-            SSID: <code>Biomass</code> · รหัสผ่าน: <code>Biomass2026</code> · Band: <strong>2.4 GHz</strong> · จับคู่ครั้งเดียวแล้วเชื่อมต่ออัตโนมัติ
+          <div class="callout tip" style="margin-bottom:10px">
+            <strong>📡 ค่าตั้ง Hotspot มาตรฐาน</strong><br>
+            SSID: <code>Biomass</code> · รหัสผ่าน: <code>Biomass2026</code> · ย่านความถี่: <strong>2.4 GHz</strong><br>
+            <span style="font-size:14px;color:var(--muted)">จับคู่ครั้งเดียว — เปิด Hotspot ก็เชื่อมต่ออัตโนมัติ</span>
           </div>
-          <div class="callout warn" style="font-size:18px">
-            <strong style="font-size:22px">⚠️ ตั้ง Band เป็น 2.4 GHz เท่านั้น</strong><br>
+          <div class="callout warn">
+            <strong>⚠️ ตั้ง Band เป็น 2.4 GHz เท่านั้น</strong><br>
             MT15 ไม่รองรับ 5 GHz — Settings → Mobile Hotspot → Band
           </div>
         </div>
         <div class="photo-layout-photo">
-          <div class="img-placeholder aspect-3-4 filled">
+          <div class="img-placeholder aspect-3-4">
+            <div class="ph-icon">📱</div>
+            <div class="ph-label">Hotspot Settings</div>
+            <div class="ph-desc">หน้าตั้งค่า Hotspot — SSID, password, band 2.4 GHz</div>
             <div class="ph-tag">PHOTO #8</div>
-            <img class="ph-img" src="./Hotspot.png">
+            <div class="ph-ratio">3:4</div>
           </div>
         </div>
       </div>
@@ -1081,222 +1165,196 @@
   <!-- Slide 10: Volunteer Page -->
   <div class="slide">
     <div class="slide-head">
-      <div class="slide-num">7</div>
+      <div class="slide-num">9</div>
       <div class="slide-title">หน้าอาสาสมัคร — บันทึกข้อมูลด้วยตนเอง</div>
       <div class="slide-tag">Part 2</div>
     </div>
     <div class="slide-body">
       <div class="photo-layout">
         <div class="photo-layout-text">
-          <div style="font-size:76px;line-height:1;margin-bottom:16px">📲</div>
-          <div class="callout tip" style="margin-bottom:18px;font-size:19px">
-            <strong style="font-size:23px">🔗 วิธีเข้าเว็บอาสา</strong> — ไม่ต้อง login ไม่ต้องจำ URL
+          <div class="callout tip" style="margin-bottom:10px">
+            <strong>📝 บันทึก CO + TVOC ทุก 5 นาที</strong><br>
+            อ่านค่าจากหน้าจอ MT15 → กรอกผ่านเว็บอาสา<br>
+            MT15 <strong>ไม่ส่งทั้ง 2 ค่านี้</strong>เข้าคลาวด์อัตโนมัติ
           </div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div class="callout tip" style="margin:0;display:flex;align-items:center;gap:16px;padding:16px 20px">
-              <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dark);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex-shrink:0">1</div>
-              <div>
-                <div style="font-weight:700;font-size:20px">สแกน QR code จากสติกเกอร์</div>
-                <div style="font-size:16px;color:var(--muted);margin-top:2px">ติดอยู่ที่ด้านหลังเครื่อง MT15</div>
-              </div>
-            </div>
-            <div class="callout tip" style="margin:0;display:flex;align-items:center;gap:16px;padding:16px 20px">
-              <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dark);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex-shrink:0">2</div>
-              <div>
-                <div style="font-weight:700;font-size:20px">ระบบตรวจจับบ้านอัตโนมัติ</div>
-                <div style="font-size:16px;color:var(--muted);margin-top:2px">ผ่าน GPS — ไม่ต้องเลือกเอง</div>
-              </div>
-            </div>
-            <div class="callout tip" style="margin:0;display:flex;align-items:center;gap:16px;padding:16px 20px">
-              <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dark);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex-shrink:0">3</div>
-              <div>
-                <div style="font-weight:700;font-size:20px">กรอกค่า CO + TVOC ได้เลย</div>
-              </div>
-            </div>
+          <div class="callout info" style="margin-bottom:10px">
+            <strong>🔗 เข้าถึงด้วย QR code</strong> ที่ติดบนเซนเซอร์<br>
+            ระบบ <strong>ตรวจจับบ้านอัตโนมัติ</strong>ผ่าน GPS — ไม่ต้อง login
+          </div>
+          <div class="callout tip">
+            <strong>💡 เก็บข้อมูล 2 แบบ:</strong><br>
+            อยู่บ้าน → กรอก TVOC/CO ทุก 5 นาที<br>
+            ไม่อยู่ → ทิ้งเซนเซอร์ไว้ ระบบเก็บค่าอัตโนมัติ
           </div>
         </div>
         <div class="photo-layout-photo">
-          <div class="img-placeholder aspect-3-4 filled">
-            <div class="ph-tag">PHOTO #V1</div>
-            <img class="ph-img" src="./Back_side.png">
+          <div class="img-placeholder aspect-3-4">
+            <div class="ph-icon">📱</div>
+            <div class="ph-label">หน้าเว็บอาสาสมัคร</div>
+            <div class="ph-desc">volunteer.html — ฟอร์มกรอก TVOC/CO + GPS-detected บ้าน</div>
+            <div class="ph-tag">PHOTO #9</div>
+            <div class="ph-ratio">3:4</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Slide: Session Limits -->
-  <div class="slide">
-    <div class="slide-head">
-      <div class="slide-num">8</div>
-      <div class="slide-title">ขีดจำกัดการเก็บข้อมูล (Session Limits)</div>
-      <div class="slide-tag">Part 3</div>
-    </div>
-    <div class="slide-body" style="justify-content:center;gap:16px">
-      <p style="font-size:19px;color:var(--muted);flex-shrink:0;text-align:center">แต่ละบ้านเก็บได้ <strong style="color:var(--ink)">วันละ 2 ครั้ง</strong> มีช่วงพักบังคับระหว่างกัน</p>
-      <div style="display:flex;gap:12px;flex:1;min-height:0;align-items:stretch">
-        <div style="flex:2;background:var(--green-50);border:2px solid var(--green);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 20px;text-align:center">
-          <div style="font-size:68px;line-height:1">☀️</div>
-          <div style="font-weight:700;font-size:24px;color:var(--green-dark)">Session 1</div>
-          <div style="font-size:52px;font-weight:700;color:var(--green-dark);line-height:1">2:10</div>
-          <div style="font-size:16px;color:var(--muted)">ชั่วโมง</div>
-          <div style="font-size:15px;color:var(--green-dark);background:white;border-radius:10px;padding:8px 16px;margin-top:4px;line-height:1.6">เก็บค่าต่อเนื่อง<br>ขณะทำอาหาร</div>
-        </div>
-        <div style="flex:2;background:#fef3c7;border:2px solid var(--warn);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 20px;text-align:center">
-          <div style="font-size:68px;line-height:1">⏸️</div>
-          <div style="font-weight:700;font-size:24px;color:#92400e">Cooldown</div>
-          <div style="font-size:52px;font-weight:700;color:#92400e;line-height:1">5</div>
-          <div style="font-size:16px;color:var(--muted)">ชั่วโมง (บังคับ)</div>
-          <div style="font-size:15px;color:#92400e;background:white;border-radius:10px;padding:8px 16px;margin-top:4px;line-height:1.6">เซนเซอร์พัก<br>ระบบจะไม่เริ่ม session ใหม่</div>
-        </div>
-        <div style="flex:2;background:var(--green-50);border:2px solid var(--green);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 20px;text-align:center">
-          <div style="font-size:68px;line-height:1">🌙</div>
-          <div style="font-weight:700;font-size:24px;color:var(--green-dark)">Session 2</div>
-          <div style="font-size:52px;font-weight:700;color:var(--green-dark);line-height:1">2:10</div>
-          <div style="font-size:16px;color:var(--muted)">ชั่วโมง</div>
-          <div style="font-size:15px;color:var(--green-dark);background:white;border-radius:10px;padding:8px 16px;margin-top:4px;line-height:1.6">เก็บได้อีกครั้ง<br>ช่วงเย็น</div>
-        </div>
-        <div style="flex:1;background:#fee2e2;border:2px solid var(--bad);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 12px;text-align:center">
-          <div style="font-size:68px;line-height:1">🛑</div>
-          <div style="font-weight:700;font-size:19px;color:var(--bad)">เกินโควต้า</div>
-          <div style="font-size:13px;color:var(--muted)">daily limit</div>
-          <div style="font-size:13px;color:var(--bad);background:white;border-radius:10px;padding:8px 10px;margin-top:4px;line-height:1.7">ระบบปิดรับข้อมูล<br>จนถึงวันถัดไป</div>
-        </div>
-      </div>
-      <div class="callout warn" style="flex-shrink:0;font-size:17px">
-        <strong>ทำไม?</strong> เซนเซอร์ต้องพักหลังเจอควัน · ทุกบ้านเก็บเท่ากันเพื่อเปรียบเทียบได้
-      </div>
-    </div>
-  </div>
-
-  <!-- Slide: Data Quality -->
-  <div class="slide">
-    <div class="slide-head">
-      <div class="slide-num">9</div>
-      <div class="slide-title">คุณภาพข้อมูล — แนวปฏิบัติและการกลั่นกรอง</div>
-      <div class="slide-tag">Part 3</div>
-    </div>
-    <div class="slide-body" style="gap:12px">
-      <div class="callout tip" style="flex-shrink:0;font-size:18px">
-        <strong>🏠 Sensor Isolation</strong> — แต่ละบ้านใช้เซนเซอร์ตัวเดียวตลอดโครงการ · ป้องกันการสับสนของข้อมูล + ลด variance ระหว่างเซนเซอร์
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0">
-        <div style="display:flex;flex-direction:column;gap:10px;min-height:0">
-          <div style="font-weight:700;font-size:17px;color:var(--green-dark);background:var(--green-50);padding:8px 18px;border-radius:999px;text-align:center;flex-shrink:0">🙋 อาสาดูแล</div>
-          <div class="callout tip" style="flex:1;min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center;gap:6px">
-            <strong style="font-size:20px">🌬️ รอ 10 นาที ก่อนจุดเตา</strong>
-            <span style="font-size:15px;line-height:1.7">วางเซนเซอร์ที่ตำแหน่งปกติ ห่างจากเตา · อย่าขยับ<br>ค่าช่วงนี้ = <strong>ค่า ambient</strong> อากาศในบ้านก่อนทำอาหาร<br>ระบบหักออกเพื่อให้เห็นผลกระทบจากควันเตาจริงๆ</span>
-          </div>
-          <div class="callout warn" style="flex:1;min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center;gap:6px">
-            <strong style="font-size:20px">⚙️ Calibrate ถ้าค่าค้าง</strong>
-            <span style="font-size:15px;line-height:1.7">อาการ: CO₂ หรือ PM2.5 ค้างสูง &gt;15 นาทีหลังดับเตา<br>กด 4 ครั้ง → รอ 120 วิ อย่าขยับเครื่อง<br>หลัง Calibrate: ค่ากลับปกติ พร้อมเริ่ม session ใหม่</span>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:10px;min-height:0">
-          <div style="font-weight:700;font-size:17px;color:#6b21a8;background:#fdf4ff;padding:8px 18px;border-radius:999px;text-align:center;flex-shrink:0">⚙️ ระบบตรวจอัตโนมัติ</div>
-          <div class="callout info" style="flex:1;min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center;gap:6px">
-            <strong style="font-size:20px">📋 Format + Range</strong>
-            <span style="font-size:15px;line-height:1.7">ค่ากรอกเองต้องอยู่ในช่วงที่เป็นไปได้จริง<br>เช่น TVOC &gt; 50 mg/m³ หรือ CO &lt; 0 = ผิดปกติ<br>ระบบ reject อัตโนมัติ ไม่บันทึกจุดนั้น</span>
-          </div>
-          <div class="callout tip" style="flex:1;min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center;gap:6px">
-            <strong style="font-size:20px">🌬️ Baseline ครบ</strong>
-            <span style="font-size:15px;line-height:1.7">10 นาทีก่อนเริ่มทำอาหาร ต้องมีข้อมูลจากเซนเซอร์<br>ถ้าขาด → ไม่มี reference ค่า ambient<br>session ถูก flag สีเหลือง รอทีมพิจารณา</span>
-          </div>
-          <div class="callout warn" style="flex:1;min-height:0;margin:0;display:flex;flex-direction:column;justify-content:center;gap:6px">
-            <strong style="font-size:20px">🚩 ตรวจค่าค้าง</strong>
-            <span style="font-size:15px;line-height:1.7">PM2.5 = 999 µg/m³ ทุกจุด หรือ CO₂ ไม่เปลี่ยนเลย<br>= สัญญาณเซนเซอร์ผิดปกติ<br>session ถูก flag → manual review ก่อนนำไปใช้</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Slide 10: Admin Review -->
+  <!-- Slide 11: Dashboard Basic -->
   <div class="slide">
     <div class="slide-head">
       <div class="slide-num">10</div>
-      <div class="slide-title">ทีมวิจัยตรวจสอบและนำข้อมูลไปใช้</div>
-      <div class="slide-tag">Part 3</div>
+      <div class="slide-title">Dashboard — ข้อมูลเบื้องต้น</div>
+      <div class="slide-tag">Part 2</div>
     </div>
-    <div class="slide-body" style="gap:12px">
-      <div class="callout info" style="flex-shrink:0;font-size:17px">
-        <strong>ทุก session ที่เก็บได้</strong> — ทีมวิจัยตรวจ PM2.5 พีค · CO₂ เฉลี่ย · ความสมบูรณ์ข้อมูล ก่อนอนุมัติเข้าสู่การวิเคราะห์เปรียบเทียบเตา Biomass vs เดิม
+    <div class="slide-body">
+      <div class="callout tip" style="margin-bottom:10px">
+        <strong>🗺️ แผนที่ + ค่ารายวัน</strong> — แสดงบ้านทั้ง 10 หลัง · ตำแหน่ง, สถานะออนไลน์, ค่ามลพิษล่าสุด · ทุกคนเข้าถึงได้ ไม่ต้อง login
       </div>
-      <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);background:white;box-shadow:0 2px 12px rgba(15,23,42,0.08)">
-        <img src="dash-admin-sessions.png" style="width:100%;height:100%;object-fit:contain;display:block">
+      <div class="callout info" style="margin-bottom:14px">
+        <strong>สีบ่งบอกระดับ AQI:</strong> 🟢 ปลอดภัย · 🟡 ควรระวัง · 🟠 สูง · 🔴 เกินมาตรฐาน · ⬜ offline
+      </div>
+      <div class="photo-full-16-9">
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📊</div>
+          <div class="ph-label">Dashboard Basic — หน้าข้อมูลเบื้องต้น</div>
+          <div class="ph-desc">biomassstove.vercel.app/ — แผนที่ + การ์ดบ้าน + ค่ารายวัน</div>
+          <div class="ph-tag">PHOTO #10</div>
+          <div class="ph-ratio">16:9</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Slide 11: Data Visualization -->
+  <!-- Slide 12: Dashboard Deep Insights -->
   <div class="slide">
     <div class="slide-head">
       <div class="slide-num">11</div>
-      <div class="slide-title">ข้อมูลที่ส่งมา — กลายเป็นกราฟแบบนี้</div>
-      <div class="slide-tag">Part 3</div>
+      <div class="slide-title">Dashboard — เชิงลึก (Deep Insights)</div>
+      <div class="slide-tag">Part 2</div>
     </div>
-    <div class="slide-body" style="gap:12px">
-      <div class="callout tip" style="flex-shrink:0;font-size:17px">
-        <strong>ข้อมูล 2 แหล่งรวมกันในกราฟเดียว</strong> — เซนเซอร์ส่งอัตโนมัติทุก 5 นาที + CO · TVOC ที่กรอกเอง · แสดงรายบ้าน รายวัน รายเซสชัน
+    <div class="slide-body">
+      <div class="callout tip" style="margin-bottom:10px">
+        <strong>🌱 เตา Biomass vs 🪵 เตาเดิม</strong> — "ลดมลพิษได้เท่าไร?" เปรียบเทียบค่าเฉลี่ย, % การลดลง, แนวโน้มเชิงเวลา
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0">
-        <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
-          <div style="font-weight:700;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 16px;flex-shrink:0">📡 PM2.5 · PM10 · CO₂ <span style="font-size:13px;font-weight:400;color:var(--muted)">(เซนเซอร์ส่งเอง)</span></div>
-          <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);background:white;box-shadow:0 2px 12px rgba(15,23,42,0.08)">
-            <img src="dash-graph-pm.png" style="width:100%;height:100%;object-fit:contain;display:block">
-          </div>
+      <div class="img-row-stack">
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📉</div>
+          <div class="ph-label">กราฟ Eco vs Old</div>
+          <div class="ph-desc">Screenshot หน้า Deep Insights — เห็นแถบเปรียบเทียบ % การลดลงของแต่ละมลพิษ</div>
+          <div class="ph-tag">PHOTO #11</div>
+          <div class="ph-ratio">16:9</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
-          <div style="font-weight:700;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 16px;flex-shrink:0">✏️ HCHO · TVOC · CO <span style="font-size:13px;font-weight:400;color:var(--muted)">(กรอกเองทุก 5 นาที)</span></div>
-          <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);background:white;box-shadow:0 2px 12px rgba(15,23,42,0.08)">
-            <img src="dash-graph-tvoc.png" style="width:100%;height:100%;object-fit:contain;display:block">
-          </div>
+        <div class="img-placeholder aspect-16-9">
+          <div class="ph-icon">📈</div>
+          <div class="ph-label">Trend chart รายวัน</div>
+          <div class="ph-desc">Screenshot กราฟแนวโน้มค่ามลพิษตามวัน — เห็นความแตกต่างชัดเจน</div>
+          <div class="ph-tag">PHOTO #12</div>
+          <div class="ph-ratio">16:9</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Slide Demo: Dashboard Live Demo -->
+  <!-- Slide 13: Anti-contamination Protocols -->
   <div class="slide">
     <div class="slide-head">
-      <div class="slide-num" style="background:var(--orange);font-size:20px">🚀</div>
-      <div class="slide-title">Dashboard และระบบอาสาสมัคร</div>
-      <div class="slide-tag" style="background:#fed7aa;color:#9a3412">Demo</div>
+      <div class="slide-num">12</div>
+      <div class="slide-title">ระเบียบวิธีป้องกันการปนเปื้อนข้อมูล</div>
+      <div class="slide-tag">Part 3</div>
     </div>
-    <div class="slide-body" style="gap:14px">
-      <p style="font-size:17px;color:var(--muted);flex-shrink:0">ระบบจริง · ข้อมูลสด · 10 บ้าน — <strong style="color:var(--ink)">กดเพื่อทดลองใช้งานด้วยตัวเอง</strong></p>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex-shrink:0">
-        <div style="background:#fdf4ff;border:2px solid #d8b4fe;border-radius:16px;padding:20px 22px">
-          <div style="font-size:32px;margin-bottom:10px">⚖️</div>
-          <div style="font-weight:700;font-size:18px;color:#6b21a8;margin-bottom:6px">เปรียบเทียบเตา</div>
-          <div style="font-size:15px;color:var(--muted);line-height:1.65">Biomass vs เตาเดิม<br>% ลดมลพิษ หลัง baseline<br>ผลรวมทุกบ้าน / รายบ้าน</div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:14px">โครงการมีระเบียบวิธี 3 ชั้นเพื่อให้ข้อมูลที่เก็บได้สะท้อนค่ามลพิษจากเตาจริง ๆ ไม่ใช่ค่าจากแหล่งอื่นปะปน</p>
+
+      <div class="card green">
+        <h4 style="color:var(--green-dark);font-size:18px;margin-bottom:6px">🌬️ ชั้นที่ 1 — Baseline Subtraction (การหักค่า ambient)</h4>
+        <p style="font-size:15px;color:var(--ink);margin:0">ทุก session เก็บค่าอากาศ <strong>10 นาทีแรก ก่อนจุดเตา</strong> เป็น baseline — แล้วหักออกจากค่า reading ตอนทำอาหาร เพื่อแยกค่ามลพิษ "จากเตา" ออกจากค่ามลพิษ "ในอากาศปกติ"</p>
+      </div>
+
+      <div class="card accent">
+        <h4 style="color:var(--orange);font-size:18px;margin-bottom:6px">⚙️ ชั้นที่ 2 — Sensor Calibration หลังเจอควันเข้มข้น</h4>
+        <p style="font-size:15px;color:var(--ink);margin:0">เมื่อเซนเซอร์เจอควันเข้มข้นเกินขีด ค่าตรวจวัดอาจค้างที่ระดับสูง (sensor saturation) — โครงการกำหนดให้ <strong>ปรับเทียบ (กด 4 ครั้ง รอ 120 วินาที)</strong> ก่อนเริ่ม session ใหม่ทุกครั้งที่ค่าค้าง</p>
+      </div>
+
+      <div class="card">
+        <h4 style="color:var(--green-dark);font-size:18px;margin-bottom:6px">🏠 ชั้นที่ 3 — Sensor Isolation ต่อบ้าน</h4>
+        <p style="font-size:15px;color:var(--ink);margin:0">แต่ละบ้านใช้เซนเซอร์ตัวเดียวอย่างคงที่ตลอดโครงการ — ป้องกันการสับสนของข้อมูล + ลด variance จากความแตกต่างระหว่างเซนเซอร์</p>
+      </div>
+
+      <div class="callout info" style="margin-top:14px">
+        <strong>📐 รายละเอียดสูตรการคำนวณ:</strong> ดู Appendix สไลด์ A1 (AQI), A5 (Baseline Subtraction)
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 14: Session Limits -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">13</div>
+      <div class="slide-title">ขีดจำกัดการเก็บข้อมูล (Session Limits)</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:17px;margin-bottom:18px">แต่ละบ้านเก็บได้สูงสุด <strong>2 sessions ต่อวัน</strong> โดยมีช่วงพักบังคับระหว่าง session</p>
+      <div class="timeline">
+        <div class="timeline-block session">
+          <div class="lbl">Session 1 (เช้า)</div>
+          <div class="dur">2 ชม. 10 นาที</div>
         </div>
-        <div style="background:#eff6ff;border:2px solid #93c5fd;border-radius:16px;padding:20px 22px">
-          <div style="font-size:32px;margin-bottom:10px">📈</div>
-          <div style="font-weight:700;font-size:18px;color:#1e40af;margin-bottom:6px">กราฟรายวัน</div>
-          <div style="font-size:15px;color:var(--muted);line-height:1.65">PM2.5 · CO₂ · CO · TVOC<br>เลือก session / ช่วงเวลา<br>ดูแนวโน้มได้ทันที</div>
+        <div class="timeline-block cooldown">
+          <div class="lbl">⏸ Cooldown</div>
+          <div class="dur">5 ชั่วโมง</div>
         </div>
-        <div style="background:var(--green-50);border:2px solid var(--green);border-radius:16px;padding:20px 22px">
-          <div style="font-size:32px;margin-bottom:10px">🗺️</div>
-          <div style="font-weight:700;font-size:18px;color:var(--green-dark);margin-bottom:6px">แผนที่บ้าน</div>
-          <div style="font-size:15px;color:var(--muted);line-height:1.65">จุดสีบอกระดับมลพิษล่าสุด<br>สถานะออนไลน์ / offline<br>ไม่ต้อง login</div>
+        <div class="timeline-block session2">
+          <div class="lbl">Session 2 (เย็น)</div>
+          <div class="dur">2 ชม. 10 นาที</div>
+        </div>
+        <div class="timeline-block limit">
+          <div class="lbl">🛑 Daily limit</div>
+          <div class="dur">หยุดเก็บ</div>
         </div>
       </div>
-      <a href="system-demo.html"
-         style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--green-dark);color:white;border-radius:20px;text-decoration:none;box-shadow:0 8px 32px rgba(6,78,59,0.40);transition:transform 0.2s,box-shadow 0.2s"
-         onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 40px rgba(6,78,59,0.50)'"
-         onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 32px rgba(6,78,59,0.40)'">
-        <div style="font-size:52px;line-height:1">🚀</div>
-        <div style="font-size:34px;font-weight:700;letter-spacing:-0.01em">เปิด Dashboard Demo</div>
-        <div style="font-size:15px;font-weight:400;opacity:0.65">กด ← Back เพื่อกลับสไลด์</div>
-      </a>
+      <div class="callout warn" style="margin-top:20px">
+        <strong>สาเหตุที่มี Session Limit:</strong> เซนเซอร์ต้องพักหลังเจอควันนาน · ระบบ Cloud มีโควตาจำกัด · ทุกบ้านเก็บแบบเดียวกันเพื่อเปรียบเทียบได้
+      </div>
+      <div class="callout info" style="margin-top:8px">
+        <strong>📐 รายละเอียดเชิงเทคนิค:</strong> ดู Appendix A3 (Session Detection Logic)
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 15: Data Filtering Rules -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">14</div>
+      <div class="slide-title">กฎการกลั่นกรองข้อมูล</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body">
+      <div class="card green" style="margin-bottom:12px">
+        <h4 style="font-size:17px;color:var(--green-dark);margin-bottom:8px">🔒 กฎอัตโนมัติของระบบ</h4>
+        <ul>
+          <li>เก็บได้ไม่เกิน <strong>2 sessions / วัน</strong> ต่อเซนเซอร์</li>
+          <li>ระหว่าง session ต้อง cooldown <strong>อย่างน้อย 5 ชั่วโมง</strong></li>
+          <li>session ที่เกินเวลา 2 ชม. 10 นาที → ตัดอัตโนมัติ</li>
+          <li>ข้อมูล manual ตรวจสอบ format + range ก่อนรับเข้าระบบ</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h4 style="font-size:17px;color:var(--orange);margin-bottom:8px">💡 ทำไมต้องมีกฎเหล่านี้</h4>
+        <ul>
+          <li><strong>เซนเซอร์ต้องพัก</strong> — เจอควันต่อเนื่องนาน ค่าเพี้ยนหรือค้าง</li>
+          <li><strong>Cloud มีโควตาจำกัด</strong> — บริหารให้พอดีกับ 10 บ้าน</li>
+          <li><strong>เปรียบเทียบบ้านได้ตรง</strong> — ทุกบ้านเก็บปริมาณเดียวกัน</li>
+        </ul>
+      </div>
     </div>
   </div>
 
   <!-- Slide 12: Q&A + Closing -->
   <div class="slide">
     <div class="slide-head">
-      <div class="slide-num">13</div>
+      <div class="slide-num">15</div>
       <div class="slide-title">ถาม-ตอบ และปิดการอบรม</div>
       <div class="slide-tag">Closing</div>
     </div>
@@ -1328,6 +1386,258 @@
     </div>
   </div>
 
+  <!-- Section Break: Appendix -->
+  <div class="slide section-break">
+    <h2>📐 ภาคผนวก</h2>
+    <p>สูตรการคำนวณและระเบียบวิธีเชิงเทคนิค<br><span style="font-size:16px;color:var(--muted)">สำหรับการตอบคำถามเชิงลึก</span></p>
+  </div>
+
+  <!-- Appendix A1: Thai AQI -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A1</div>
+      <div class="slide-title">Thai AQI — ดัชนีคุณภาพอากาศ</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="formula-box">
+        <div class="formula-name">Linear Interpolation Formula</div>
+        <div class="formula">AQI = (aqi_hi − aqi_lo) / (pm_hi − pm_lo) × (PM2.5 − pm_lo) + aqi_lo</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง</div>
+          PM2.5 = 30 µg/m³<br>
+          อยู่ในช่วง [25.1, 37.5] → AQI [51, 100]<br>
+          AQI = (100 − 51) / (37.5 − 25.1) × (30 − 25.1) + 51 ≈ <strong>71</strong>
+        </div>
+      </div>
+      <h3 style="font-size:18px;color:var(--green-dark);margin-top:18px">ตาราง Breakpoints (Thai PCD)</h3>
+      <table>
+        <tr><th>PM2.5 (µg/m³)</th><th>AQI</th><th>ระดับ</th></tr>
+        <tr><td>0 — 15</td><td>0 — 25</td><td>🟢 ดีมาก</td></tr>
+        <tr><td>15.1 — 25</td><td>26 — 50</td><td>🟢 ดี</td></tr>
+        <tr><td>25.1 — 37.5</td><td>51 — 100</td><td>🟡 ปานกลาง</td></tr>
+        <tr><td>37.6 — 75</td><td>101 — 200</td><td>🟠 มีผลต่อสุขภาพ</td></tr>
+        <tr><td>75.1 — 150</td><td>201 — 300</td><td>🔴 มีผลต่อสุขภาพมาก</td></tr>
+        <tr><td>&gt; 150</td><td>300 (capped)</td><td>🟣 อันตรายร้ายแรง</td></tr>
+      </table>
+      <div class="callout info"><strong>มาตรฐานอ้างอิง:</strong> ราชกิจจานุเบกษา (กรมควบคุมมลพิษ) 2566 — แตกต่างจาก US EPA AQI ในช่วง breakpoints</div>
+    </div>
+  </div>
+
+  <!-- Appendix A2: Daily Aggregations -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A2</div>
+      <div class="slide-title">Daily Aggregations — การรวมข้อมูลรายวัน</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:16px;margin-bottom:12px">ข้อมูลที่เซนเซอร์ส่งทุก 5 นาที (สูงสุด ~52 จุด/วัน) ถูกนำมารวมเป็นค่ารายวันแยกตามบ้านและประเภทเตา</p>
+      <div class="formula-box">
+        <div class="formula-name">Operations</div>
+        <div class="formula">average = sum / count
+min = cumulative Math.min
+max = cumulative Math.max
+count = จำนวน reading ที่ไม่เป็น null</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง — PM2.5</div>
+          5 readings: [42, 65, 88, 71, 50]<br>
+          sum = 316 · count = 5<br>
+          <strong>average = 63.2 µg/m³</strong> · min = 42 · max = 88
+        </div>
+      </div>
+      <div class="callout tip">
+        <strong>การจัดการข้อมูลที่ขาดหาย:</strong> Reading ที่เป็น null จะไม่ถูกนับใน count — ค่า average จึงสะท้อนข้อมูลที่มีอยู่จริง ไม่ถูกบิดเบือนโดยค่าศูนย์
+      </div>
+      <h3 style="font-size:17px;color:var(--green-dark);margin-top:14px">พารามิเตอร์ที่รวมรายวัน</h3>
+      <p style="font-size:15px">PM2.5 · PM10 · CO · CO2 · TVOC · HCHO · อุณหภูมิ · ความชื้น · AQI</p>
+    </div>
+  </div>
+
+  <!-- Appendix A3: Session Detection -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A3</div>
+      <div class="slide-title">Session Detection Logic — การตรวจจับสถานะเซสชัน</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <h3 style="font-size:17px;color:var(--green-dark);margin-bottom:8px">ค่าคงที่ของระบบ</h3>
+      <table>
+        <tr><th>Parameter</th><th>Value</th><th>คำอธิบาย</th></tr>
+        <tr><td><code>SESSION_MAX_MINUTES</code></td><td><strong>130</strong></td><td>ความยาวสูงสุดของ 1 session (2 ชม. 10 นาที)</td></tr>
+        <tr><td><code>SESSION_COOLDOWN_MINUTES</code></td><td><strong>300</strong></td><td>ระยะเวลาพักระหว่าง session (5 ชม.)</td></tr>
+        <tr><td><code>MAX_SESSIONS_PER_DAY</code></td><td><strong>2</strong></td><td>จำนวน session สูงสุดต่อวัน</td></tr>
+        <tr><td><code>BASELINE_MINUTES</code></td><td><strong>10</strong></td><td>ระยะเวลาเก็บค่า ambient ก่อนเริ่ม session</td></tr>
+      </table>
+      <h3 style="font-size:17px;color:var(--green-dark);margin-top:14px">State Machine</h3>
+      <div class="formula-box">
+        <div class="formula">baseline (10 min)
+   ↓
+collecting (active session)
+   ↓
+complete / incomplete / cancelled
+   ↓
+cooldown (5 hours)
+   ↓
+new-session (กลับสู่ baseline)
+   หรือ
+daily-limit (ถ้าเก็บครบ 2 sessions แล้ว)</div>
+      </div>
+      <div class="callout info"><strong>Decision tree:</strong> หากมี active + เกินเวลา → auto-cutoff · หาก cooldown ยังไม่หมด → ยังไม่ให้เริ่ม · หากเก็บครบ 2/วัน → daily-limit</div>
+    </div>
+  </div>
+
+  <!-- Appendix A4: Eco vs Old -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A4</div>
+      <div class="slide-title">Eco vs Old Stove % — การคำนวณการลดมลพิษ</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <div class="formula-box">
+        <div class="formula-name">กรณีปกติ — เตา biomass ลดมลพิษได้</div>
+        <div class="formula">Reduction % = (oldAvg − ecoAvg) / oldAvg × 100</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง</div>
+          oldAvg = 50 µg/m³ (PM2.5 ของเตาเดิม)<br>
+          ecoAvg = 15 µg/m³ (PM2.5 ของเตา biomass)<br>
+          Reduction = (50 − 15) / 50 × 100 = <strong>70%</strong>
+        </div>
+      </div>
+      <div class="formula-box" style="margin-top:14px">
+        <div class="formula-name">กรณีพิเศษ — เตา biomass ไม่ลด (ecoAvg ≥ oldAvg)</div>
+        <div class="formula">Increase % = (ecoAvg − oldAvg) / oldAvg × 100</div>
+        <div class="example">
+          <div class="example-label">การแสดงผล</div>
+          แสดงเป็นเครื่องหมาย ↑ พร้อม % เพิ่มขึ้น (ไม่ใช่ลดลง)<br>
+          เพื่อความโปร่งใสในการรายงานข้อมูล
+        </div>
+      </div>
+      <div class="callout warn"><strong>4 Scenarios ที่ระบบ render:</strong> normal (eco &lt; old) · no-eco (ยังไม่มีข้อมูลเตาใหม่) · eco-fail (eco ≥ old) · no-old (ไม่มี baseline)</div>
+    </div>
+  </div>
+
+  <!-- Appendix A5: Baseline Subtraction -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A5</div>
+      <div class="slide-title">Baseline Subtraction — การหักค่า ambient</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:16px;margin-bottom:12px">ระเบียบวิธีนี้แยกค่ามลพิษ "จากเตา" ออกจากค่ามลพิษ "ในอากาศปกติ" ของห้องครัว — เพื่อความถูกต้องในการประเมินผลกระทบของเตา</p>
+      <div class="formula-box">
+        <div class="formula-name">Cooking Phase Value</div>
+        <div class="formula">cookingValue = max(0, rawValue − baseline_avg)</div>
+        <div class="example">
+          <div class="example-label">ตัวอย่าง — PM2.5</div>
+          baseline_avg = 18 µg/m³ (ค่าอากาศ 10 นาทีก่อนจุดเตา)<br>
+          rawValue = 65 µg/m³ (ค่าขณะทำอาหาร)<br>
+          cookingValue = max(0, 65 − 18) = <strong>47 µg/m³</strong>
+        </div>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-card">
+          <h4>✅ พารามิเตอร์ที่ใช้ baseline</h4>
+          <div class="spec-note">PM2.5 · CO₂ · อุณหภูมิ · ความชื้น</div>
+        </div>
+        <div class="spec-card" style="border-top-color:var(--muted)">
+          <h4>❌ ไม่ใช้ baseline</h4>
+          <div class="spec-note">CO · TVOC · HCHO (manual entry only)</div>
+        </div>
+      </div>
+      <div class="callout info">
+        <strong>Edge cases:</strong> หาก <code>baseline_avg = null</code> → ใช้ rawValue ตรง ๆ · หาก rawValue &lt; baseline → floor เป็น 0 (ไม่อนุญาตค่าติดลบ)
+      </div>
+    </div>
+  </div>
+
+  <!-- Appendix A6: Pollutant Thresholds -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A6</div>
+      <div class="slide-title">เกณฑ์มลพิษอ้างอิง (Pollutant Thresholds)</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <table class="threshold-table">
+        <tr><th>มลพิษ</th><th>ปลอดภัย</th><th>เฝ้าระวัง</th><th>อันตราย</th><th>มาตรฐาน</th></tr>
+        <tr><td><strong>PM2.5</strong></td><td><span class="safe">≤ 15 µg/m³</span></td><td><span class="warn">≤ 25</span></td><td><span class="danger">&gt; 37.5</span></td><td>Thai PCD 2566</td></tr>
+        <tr><td><strong>PM10</strong></td><td>(reference only)</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><strong>CO2</strong></td><td><span class="safe">&lt; 1,000 ppm</span></td><td>—</td><td><span class="danger">&gt; 1,000</span></td><td>Indoor Air Quality</td></tr>
+        <tr><td><strong>HCHO</strong></td><td><span class="safe">&lt; 0.1 mg/m³</span></td><td>—</td><td><span class="danger">≥ 0.1</span></td><td>WHO (30 นาที)</td></tr>
+        <tr><td><strong>TVOC</strong></td><td><span class="safe">&lt; 0.3 mg/m³</span></td><td><span class="warn">0.3 — 0.5</span></td><td><span class="danger">&gt; 0.5</span></td><td>WHO</td></tr>
+        <tr><td><strong>CO</strong></td><td>(manual only)</td><td>—</td><td>—</td><td>Reference</td></tr>
+      </table>
+      <h3 style="font-size:17px;color:var(--green-dark);margin-top:18px">AQI Status Brackets (Thai PCD)</h3>
+      <table>
+        <tr><th>AQI</th><th>ระดับ</th><th>สีกำกับ</th></tr>
+        <tr><td>0 — 25</td><td>ดีมาก</td><td>🟢 cyan</td></tr>
+        <tr><td>26 — 50</td><td>ดี</td><td>🟢 green</td></tr>
+        <tr><td>51 — 100</td><td>ปานกลาง</td><td>🟡 yellow</td></tr>
+        <tr><td>101 — 200</td><td>มีผลต่อสุขภาพ</td><td>🟠 orange</td></tr>
+        <tr><td>201 — 300</td><td>มีผลต่อสุขภาพมาก</td><td>🔴 red</td></tr>
+        <tr><td>&gt; 300</td><td>อันตรายร้ายแรง</td><td>🟣 purple</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Appendix A7: Manual Data Merge -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A7</div>
+      <div class="slide-title">การรวมข้อมูล Manual กับ Sensor</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <p style="font-size:16px;margin-bottom:12px">ข้อมูล TVOC และ CO ที่อาสาสมัครบันทึกด้วยตนเอง รวมเข้ากับข้อมูลจากเซนเซอร์โดยไม่มีการแปลงหน่วยหรือ scaling — สมมติว่าหน่วยตรงกัน</p>
+      <div class="formula-box">
+        <div class="formula-name">Combined Average</div>
+        <div class="formula">tvoc_avg = (tvoc_sensor_sum + tvoc_manual_sum) / (count_sensor + count_manual)</div>
+        <div class="example">
+          <div class="example-label">หมายเหตุ</div>
+          - ระบบ tag ที่มาของข้อมูลแต่ละจุด (<code>source = sensor</code> หรือ <code>source = manual</code>)<br>
+          - ใน session summary แสดง label "sensor + manual" หรือ "manual only" ตามแหล่งที่มา<br>
+          - <strong>ไม่มี scaling/conversion</strong> — ข้อมูลถูกใช้แบบ raw
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>ข้อจำกัด:</strong> ระบบยังไม่มี Quality Control layer สำหรับข้อมูล manual — ต้องอาศัยอาสาสมัครบันทึกค่าให้ตรงตามที่อ่านจากหน้าจอเซนเซอร์ การฝึกอบรมและการตรวจสอบเป็นระยะจึงสำคัญมาก
+      </div>
+    </div>
+  </div>
+
+  <!-- Appendix A8: Summary -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num appendix">A8</div>
+      <div class="slide-title">สรุปสำหรับการอ้างอิง</div>
+      <div class="slide-tag appendix">Appendix</div>
+    </div>
+    <div class="slide-body">
+      <table>
+        <tr><th>หัวข้อ</th><th>หลักสำคัญ</th><th>จุดสอน</th></tr>
+        <tr><td><strong>AQI</strong></td><td>Linear piecewise interpolation, 5 breakpoints</td><td>Health impact ไม่เป็น linear</td></tr>
+        <tr><td><strong>Aggregation</strong></td><td>sum/count + rolling min/max</td><td>จัดการ missing data ผ่าน count</td></tr>
+        <tr><td><strong>Session logic</strong></td><td>130 min max · 300 min cooldown</td><td>ขีดจำกัดจาก hardware + SOP</td></tr>
+        <tr><td><strong>Comparison</strong></td><td>(Old − Eco) / Old %</td><td>Relative improvement metric</td></tr>
+        <tr><td><strong>Baseline</strong></td><td>10 min ambient · floor-to-zero</td><td>แยกค่าเตาออกจาก ambient</td></tr>
+        <tr><td><strong>Thresholds</strong></td><td>6 มลพิษ × 3 มาตรฐาน</td><td>Thai PCD vs WHO alignment</td></tr>
+        <tr><td><strong>Manual data</strong></td><td>Merge 1:1 กับ sensor data</td><td>ยังไม่มี QC layer</td></tr>
+      </table>
+      <div class="callout tip" style="margin-top:18px">
+        <strong>📚 แหล่งอ้างอิง:</strong>
+        <ul style="margin:8px 0 0 22px;font-size:15px">
+          <li>ราชกิจจานุเบกษา (กรมควบคุมมลพิษ) 2566 — Thai AQI breakpoints + PM2.5 thresholds</li>
+          <li>WHO Air Quality Guidelines — HCHO, TVOC thresholds</li>
+          <li>BiomassStove project codebase — <code>lab/tuya-ecostove/deploy/index.html</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="nav">
@@ -1335,11 +1645,7 @@
   <span class="counter"><span class="current" id="cur">1</span> / <span id="total">5</span></span>
   <button id="next" title="ถัดไป">▶</button>
   <button id="full" title="ฟูลสกรีน">⛶</button>
-  <span style="width:1px;height:18px;background:var(--line);display:inline-block;margin:0 2px"></span>
-  <button id="save-img" title="บันทึกไฟล์พร้อมรูป (รูปที่ใส่ไว้จะไม่หาย)" style="font-size:15px;padding:4px 10px">💾</button>
 </div>
-
-<div id="save-toast" style="position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--green-dark);color:white;padding:9px 20px;border-radius:999px;font-size:13px;opacity:0;transition:opacity 0.3s,transform 0.3s;pointer-events:none;z-index:200;white-space:nowrap"></div>
 
 <script>
   const slides = document.querySelectorAll('.slide');
@@ -1372,10 +1678,7 @@
     else if (e.key.toLowerCase() === 'f') document.getElementById('full').click();
   });
 
-  const _h = location.hash;
-  if (_h === '#last') show(total - 1);
-  else if (_h.startsWith('#') && !isNaN(_h.slice(1))) show(parseInt(_h.slice(1)) - 1);
-  else show(0);
+  show(0);
 
   // ── Button Screen Switcher ──
   document.querySelectorAll('.bsw-btn').forEach(btn => {
@@ -1403,27 +1706,18 @@
       try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); } catch {}
     }
 
-    // Seed localStorage from embedded store when localStorage is empty
-    (function () {
-      try {
-        const el = document.getElementById('embedded-image-store');
-        if (!el) return;
-        const data = JSON.parse(el.textContent || '{}');
-        if (!Object.keys(data).length) return;
-        if (!localStorage.getItem(STORE_KEY)) setStore(data);
-      } catch {}
-    })();
-
     function fillPlaceholder(el, id, dataUrl) {
       el.querySelectorAll('.ph-img, .img-remove-btn').forEach(n => n.remove());
+
       const img = document.createElement('img');
       img.className = 'ph-img';
       img.src = dataUrl;
       el.appendChild(img);
+
       const btn = document.createElement('button');
       btn.className = 'img-remove-btn';
       btn.textContent = '✕ ลบรูป';
-      btn.onclick = e => {
+      btn.onclick = (e) => {
         e.stopPropagation();
         el.querySelectorAll('.ph-img, .img-remove-btn').forEach(n => n.remove());
         el.classList.remove('filled');
@@ -1436,8 +1730,11 @@
     document.querySelectorAll('.img-placeholder').forEach((el, i) => {
       const tag = el.querySelector('.ph-tag');
       const id = tag ? tag.textContent.trim().replace(/\s+/g, '-') : 'ph-' + i;
+
+      // restore
       const s = getStore();
       if (s[id]) fillPlaceholder(el, id, s[id]);
+
       el.addEventListener('click', () => {
         if (el.classList.contains('filled')) return;
         const input = document.createElement('input');
@@ -1447,7 +1744,7 @@
           const file = input.files[0];
           if (!file) return;
           const reader = new FileReader();
-          reader.onload = ev => {
+          reader.onload = (ev) => {
             const url = ev.target.result;
             fillPlaceholder(el, id, url);
             const s = getStore(); s[id] = url; setStore(s);
@@ -1456,60 +1753,6 @@
         };
         input.click();
       });
-    });
-
-    // ── Save with Images (reads from DOM, not localStorage — works even if quota full) ──
-    function showToast(msg) {
-      const t = document.getElementById('save-toast');
-      t.textContent = msg;
-      t.style.opacity = '1';
-      t.style.transform = 'translateX(-50%) translateY(0)';
-      setTimeout(() => {
-        t.style.opacity = '0';
-        t.style.transform = 'translateX(-50%) translateY(10px)';
-      }, 3000);
-    }
-
-    document.getElementById('save-img').addEventListener('click', async () => {
-      // Read images directly from DOM — works even when localStorage quota was exceeded
-      const store = {};
-      document.querySelectorAll('.img-placeholder.filled').forEach(el => {
-        const tag = el.querySelector('.ph-tag');
-        const id = tag ? tag.textContent.trim().replace(/\s+/g, '-') : null;
-        const img = el.querySelector('.ph-img');
-        if (id && img && img.src.startsWith('data:')) store[id] = img.src;
-      });
-
-      if (!Object.keys(store).length) { showToast('ยังไม่มีรูปที่ใส่ไว้ค่ะ'); return; }
-
-      const clone = document.documentElement.cloneNode(true);
-      const storeEl = clone.querySelector('#embedded-image-store');
-      if (storeEl) storeEl.textContent = JSON.stringify(store);
-      clone.querySelectorAll('.ph-img, .img-remove-btn').forEach(n => n.remove());
-      clone.querySelectorAll('.img-placeholder.filled').forEach(el => el.classList.remove('filled'));
-
-      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-      const blob = new Blob([html], { type: 'text/html' });
-
-      if (window.showSaveFilePicker) {
-        try {
-          const h = await window.showSaveFilePicker({
-            suggestedName: 'workshop-slides.html',
-            types: [{ description: 'HTML File', accept: { 'text/html': ['.html'] } }],
-          });
-          const w = await h.createWritable();
-          await w.write(blob); await w.close();
-          showToast('💾 บันทึกแล้ว — รูปจะไม่หายอีกค่ะ');
-          return;
-        } catch (e) { if (e.name === 'AbortError') return; }
-      }
-
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'workshop-slides.html';
-      a.click();
-      URL.revokeObjectURL(a.href);
-      showToast('💾 ดาวน์โหลดแล้ว — แทนที่ไฟล์เดิมด้วยนะคะ');
     });
   })();
 </script>

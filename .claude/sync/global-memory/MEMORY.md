@@ -119,3 +119,8 @@
 ## SWT Project (Smart Tourism)
 - ลูกค้า: การรถไฟ (SRT)
 - NDF scope: Core Dashboard + Core DB + Auth + Kiosk + Mobile App + Admin Dashboard
+
+## Biomass Workshop Deadlines
+- → `memory/project_biomass_workshop_deadlines.md`
+- **2026-05-11 (จันทร์)**: ส่ง PDF คู่มืออาสา (`guide-volunteer.html`) ให้อาจารย์ — ยังไม่ได้รีวิว
+- **2026-05-20 (อังคาร)**: workshop จริง — ใช้ `workshop-slides.html`
