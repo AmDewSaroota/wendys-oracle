@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process explorer *)",
+      "mcp__plugin_discord_discord__fetch_messages"
+    ]
+  }
+}
