@@ -1,0 +1,1545 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>BiomassStove Workshop — 20 พฤษภาคม 2569</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #064e3b;
+    --green: #059669;
+    --green-light: #10b981;
+    --green-50: #ecfdf5;
+    --teal: #0d9488;
+    --navy: #0f172a;
+    --bg: #f0f7f4;
+    --bg-soft: #fafbfa;
+    --card: #ffffff;
+    --line: #e2e8f0;
+    --orange: #fb923c;
+    --orange-soft: #fed7aa;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --code-bg: #f1f5f9;
+    --bad: #dc2626;
+    --warn: #f59e0b;
+    --info: #2563eb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Chakra Petch', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Slide deck */
+  .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4vh 6vw 8vh;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+
+  /* Slide head */
+  .slide-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .slide-num {
+    background: var(--green-dark);
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .slide-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--green-dark);
+    letter-spacing: -0.01em;
+  }
+
+  .slide-tag {
+    margin-left: auto;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--orange);
+    background: var(--orange-soft);
+    padding: 6px 16px;
+    border-radius: 999px;
+  }
+
+  .slide-body {
+    flex: 1;
+    overflow: hidden;
+    font-size: 18px;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide-body p { margin: 6px 0; }
+  .slide-body ul, .slide-body ol { margin: 8px 0 8px 22px; }
+  .slide-body li { margin: 4px 0; font-size: 16px; }
+  .slide-body strong { color: var(--green-dark); }
+
+  /* Title slide */
+  .slide.title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, var(--green-50) 0%, var(--bg) 50%, #ecfeff 100%);
+    padding: 40px;
+  }
+
+  .title-slide .badge {
+    background: var(--green-dark);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    letter-spacing: 0.04em;
+  }
+
+  .title-slide h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 16px;
+    line-height: 1.25;
+    max-width: 900px;
+    letter-spacing: -0.01em;
+  }
+
+  .title-slide .subtitle {
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 400;
+    margin-bottom: 36px;
+    max-width: 800px;
+    line-height: 1.5;
+  }
+
+  .title-slide .meta {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: var(--card);
+    padding: 20px 36px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+  }
+
+  .title-slide .meta-item { text-align: center; }
+  .title-slide .meta-item .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .title-slide .meta-item .val { font-size: 17px; color: var(--green-dark); font-weight: 600; }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 10px 0;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  }
+
+  .card.accent { border-left: 4px solid var(--orange); }
+  .card.green { border-left: 4px solid var(--green); }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--green-50); color: var(--green-dark); font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Code */
+  code, pre { font-family: 'JetBrains Mono', monospace; }
+  code { background: var(--code-bg); padding: 2px 8px; border-radius: 4px; color: var(--green-dark); font-size: 0.92em; }
+  pre {
+    background: var(--code-bg);
+    padding: 16px 20px;
+    border-radius: 10px;
+    border-left: 4px solid var(--green);
+    overflow-x: auto;
+    line-height: 1.6;
+    margin: 10px 0;
+  }
+  pre code { background: none; padding: 0; }
+
+  /* Callout */
+  .callout {
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+    font-size: 17px;
+  }
+  .callout.tip { background: var(--green-50); border-left: 4px solid var(--green); }
+  .callout.tip strong { color: var(--green-dark); }
+  .callout.warn { background: #fef3c7; border-left: 4px solid var(--warn); }
+  .callout.warn strong { color: #92400e; }
+  .callout.info { background: #dbeafe; border-left: 4px solid var(--info); }
+  .callout.info strong { color: #1e40af; }
+
+  /* Agenda specific */
+  .agenda {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .agenda-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 100px;
+    gap: 18px;
+    align-items: center;
+    background: var(--card);
+    padding: 16px 22px;
+    border-radius: 12px;
+    border-left: 4px solid var(--green);
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+  }
+
+  .agenda-row.warm { border-left-color: var(--orange); }
+  .agenda-row.discussion { border-left-color: var(--info); }
+
+  .agenda-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  .agenda-content {
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .agenda-content .icon { font-size: 22px; margin-right: 8px; }
+
+  .agenda-duration {
+    text-align: right;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* Architecture flow */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 28px rgba(15,23,42,0.10);
+  }
+
+  .node {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 20px;
+    background: var(--bg-soft);
+    transition: filter 0.2s;
+    min-width: 0;
+  }
+
+  .node:hover { filter: brightness(0.92); }
+  .node .ico { font-size: 60px; margin-bottom: 18px; line-height: 1; }
+  .node .lbl { font-size: 22px; font-weight: 700; color: white; }
+  .node .sub { font-size: 14px; color: rgba(255,255,255,0.75); margin-top: 8px; line-height: 1.5; }
+  .node.green-bg { background: var(--green-dark); }
+  .node.orange-bg { background: var(--orange); }
+  .node.navy-bg { background: var(--navy); }
+  .node:not(.green-bg):not(.orange-bg):not(.navy-bg) { background: var(--teal); }
+  .node:not(.green-bg):not(.orange-bg):not(.navy-bg) .lbl { color: white; }
+  .node:not(.green-bg):not(.orange-bg):not(.navy-bg) .sub { color: rgba(255,255,255,0.75); }
+
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--green);
+    font-weight: 700;
+    padding: 0 10px;
+    background: white;
+    flex-shrink: 0;
+  }
+
+  /* Sensor specs */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .spec-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    border-top: 3px solid var(--green);
+  }
+
+  .spec-card h4 { color: var(--green-dark); font-size: 16px; margin-bottom: 4px; }
+  .spec-card ul { margin: 0; padding-left: 18px; font-size: 15px; }
+  .spec-card li { margin: 4px 0; }
+  .spec-note { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+  /* Compare table */
+  .compare-table { font-size: 15px; }
+  .compare-table .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .pill.good { background: #d1fae5; color: #065f46; }
+  .pill.bad { background: #fee2e2; color: #991b1b; }
+  .pill.neutral { background: #e0e7ff; color: #3730a3; }
+
+  /* Image placeholders — proper aspect ratios */
+  .img-placeholder {
+    background: var(--bg-soft);
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin: 12px auto;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 560px;
+    aspect-ratio: 4 / 3;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .img-placeholder:hover { background: var(--green-50); }
+  .img-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+  .img-placeholder .ph-icon { font-size: 40px; margin-bottom: 8px; opacity: 0.6; }
+  .img-placeholder .ph-label { font-weight: 600; color: var(--green-dark); font-size: 15px; }
+  .img-placeholder .ph-desc { font-size: 13px; margin-top: 6px; max-width: 90%; line-height: 1.5; }
+  .img-placeholder .ph-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--orange); margin-top: 8px; padding: 2px 8px; background: var(--orange-soft); border-radius: 999px; font-weight: 700; letter-spacing: 0.05em; position: absolute; top: 10px; right: 10px; }
+  .img-placeholder .ph-ratio { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); position: absolute; bottom: 10px; left: 12px; opacity: 0.7; letter-spacing: 0.05em; }
+
+  /* Aspect ratio variants */
+  .img-placeholder.aspect-16-9 { aspect-ratio: 16 / 9; max-width: 720px; }
+  .img-placeholder.aspect-3-4 { aspect-ratio: 3 / 4; max-width: 360px; }
+  .img-placeholder.aspect-4-3 { aspect-ratio: 4 / 3; max-width: 560px; }
+  .img-placeholder.aspect-3-2 { aspect-ratio: 3 / 2; max-width: 660px; }
+  .img-placeholder.aspect-1-1 { aspect-ratio: 1 / 1; max-width: 420px; }
+
+  .img-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin: 8px 0 0;
+    align-items: start;
+    flex: 1;
+    min-height: 0;
+  }
+  .img-row .img-placeholder {
+    margin: 0;
+    max-width: none;
+    height: auto;
+    width: 100%;
+  }
+  /* stack 2 landscape images vertically — fills height properly */
+  .img-row-stack {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 10px;
+    margin: 8px 0 0;
+  }
+  .img-row-stack .img-placeholder {
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    aspect-ratio: 16/9;
+    margin: 0 auto;
+  }
+
+  /* Buttons grid */
+  .buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .btn-card {
+    background: var(--card);
+    border: 2px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .btn-card:hover { border-color: var(--green); transform: translateY(-2px); }
+  .btn-card .ico { font-size: 32px; margin-bottom: 6px; }
+  .btn-card .clicks { font-size: 32px; font-weight: 700; color: var(--green-dark); line-height: 1; }
+  .btn-card .clicks small { font-size: 14px; color: var(--muted); display: block; margin-top: 2px; font-weight: 400; }
+  .btn-card .desc { margin-top: 10px; font-size: 14px; color: var(--ink); line-height: 1.4; }
+  .btn-card.calibrate { border-color: var(--orange); background: #fff7ed; }
+  .btn-card.calibrate .clicks { color: var(--orange); }
+  .btn-card.pair { border-color: var(--info); background: #eff6ff; }
+  .btn-card.pair .clicks { color: var(--info); }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    box-shadow: 0 4px 16px rgba(15,23,42,0.08);
+    z-index: 100;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    color: var(--green-dark);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .nav button:hover { background: var(--green-50); }
+  .nav .counter { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); min-width: 60px; text-align: center; }
+  .nav .counter .current { color: var(--green-dark); font-weight: 700; }
+
+  /* Progress */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: var(--orange);
+    transition: width 0.4s ease;
+    z-index: 101;
+  }
+
+  .hint {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    font-size: 11px;
+    color: var(--muted);
+    z-index: 100;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hint kbd { background: var(--card); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); margin: 0 2px; }
+
+  /* Appendix style */
+  .slide-num.appendix { background: var(--info); font-size: 18px; }
+  .slide-tag.appendix { background: #dbeafe; color: #1e40af; }
+
+  /* Section break (for appendix) */
+  .slide.section-break {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%);
+  }
+  .section-break h2 { font-size: 56px; color: #1e3a8a; margin-bottom: 16px; font-weight: 700; }
+  .section-break p { font-size: 22px; color: #1e40af; max-width: 700px; }
+
+  /* Timeline for session flow */
+  .timeline {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    margin: 18px 0;
+    background: var(--card);
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+  }
+  .timeline-block {
+    flex: 1;
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+    color: var(--ink);
+    position: relative;
+  }
+  .timeline-block.session { background: var(--green-50); border: 2px solid var(--green); flex: 2; }
+  .timeline-block.cooldown { background: #fef3c7; border: 2px solid var(--warn); flex: 2; }
+  .timeline-block.session2 { background: var(--green-50); border: 2px solid var(--green); flex: 2; }
+  .timeline-block.limit { background: #fee2e2; border: 2px solid var(--bad); }
+  .timeline-block .lbl { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .timeline-block .dur { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  /* Formula display for appendix */
+  .formula-box {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 12px 0;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.04);
+  }
+  .formula-box .formula-name { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .formula-box .formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--green-dark);
+    background: var(--code-bg);
+    padding: 14px 18px;
+    border-radius: 8px;
+    border-left: 4px solid var(--green);
+    margin: 10px 0;
+    line-height: 1.7;
+  }
+  .formula-box .example { background: #fff7ed; border-left: 4px solid var(--orange); padding: 12px 16px; border-radius: 8px; font-size: 15px; line-height: 1.7; margin-top: 10px; }
+  .formula-box .example-label { font-weight: 700; color: var(--orange); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+
+  /* Threshold table */
+  .threshold-table th { background: #fef3c7; color: #92400e; }
+  .threshold-table .safe { background: #d1fae5; color: #065f46; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+  .threshold-table .warn { background: #fef3c7; color: #92400e; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+  .threshold-table .danger { background: #fee2e2; color: #991b1b; font-weight: 600; padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+
+  @media print {
+    .nav, .hint, .progress { display: none; }
+    .slide {
+      position: relative;
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      page-break-after: always;
+      min-height: 95vh;
+    }
+  }
+
+  /* ── Button Screen Switcher ── */
+  .bsw-wrap { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+  .bsw-tabs { display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0; }
+  .bsw-btn { padding: 10px 22px; border-radius: 8px; border: 2px solid var(--line); background: white; font-size: 18px; font-weight: 600; font-family: 'Chakra Petch', sans-serif; cursor: pointer; transition: all 0.15s; color: var(--ink); }
+  .bsw-btn:hover { border-color: var(--green-light); }
+  .bsw-btn.active { background: var(--green-dark); color: white; border-color: var(--green-dark); }
+  .bsw-btn.bsw-warn.active { background: var(--orange); border-color: var(--orange); }
+  .bsw-btn.bsw-info.active { background: #2563eb; border-color: #2563eb; }
+  .bsw-img-area { flex: 1; overflow: hidden; display: flex; justify-content: center; }
+  .bsw-slot { display: none; }
+  .bsw-slot.active { display: flex; justify-content: center; width: 100%; height: 100%; }
+  .bsw-slot .img-placeholder { height: 100%; width: auto; aspect-ratio: 3/4; max-width: none; margin: 0; }
+  .bsw-descs { min-height: 38px; flex-shrink: 0; }
+  .bsw-desc { display: none; font-size: 18px; color: var(--ink); padding: 9px 16px; background: var(--green-50); border-radius: 8px; border-left: 4px solid var(--green); line-height: 1.5; }
+  .bsw-desc.active { display: block; }
+  .bsw-desc-warn { background: #fff7ed; border-left-color: var(--orange); }
+  .bsw-desc-info { background: #eff6ff; border-left-color: #2563eb; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Screen elements (legacy — kept for any inline use) */
+  .ms-hdr { display: flex; justify-content: space-between; font-size: 9px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; padding: 2px 4px 4px; border-bottom: 1px solid #1a2535; margin-bottom: 1px; }
+  .ms-row { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+  .ms-cell { border-radius: 5px; padding: 4px 6px; background: rgba(34,197,94,0.09); border: 1px solid rgba(34,197,94,0.28); }
+  .ms-cell.orng { background: rgba(249,115,22,0.09); border-color: rgba(249,115,22,0.3); }
+  .ms-cell.dim { background: rgba(100,116,139,0.06); border-color: rgba(100,116,139,0.15); }
+  .ms-lbl { font-family: 'JetBrains Mono', monospace; font-size: 7.5px; color: #64748b; display: block; margin-bottom: 2px; line-height: 1; }
+  .ms-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #22c55e; font-size: 18px; line-height: 1; }
+  .ms-val.orng { color: #fb923c; }
+  .ms-val.sm { font-size: 11px; color: #475569; }
+  .ms-val.md { font-size: 13px; }
+  .ms-aqi { border-radius: 5px; padding: 4px 8px; background: rgba(34,197,94,0.09); border: 1px solid rgba(34,197,94,0.28); display: flex; align-items: center; gap: 6px; }
+  .ms-aqi-bar { flex: 1; height: 5px; border-radius: 3px; background: linear-gradient(to right, #22c55e 0%, #eab308 50%, #ef4444 100%); }
+  .ms-aqi-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #22c55e; font-size: 20px; line-height: 1; }
+  .ms-aqi-needle { position: relative; }
+
+  /* Calibrating state */
+  .ms-calib { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 7px; padding: 8px; }
+  .ms-calib-dots { display: flex; align-items: center; gap: 6px; }
+  .ms-calib-dot { width: 7px; height: 7px; border-radius: 50%; background: #1e3a5f; transition: all 0.3s; }
+  .ms-calib-dot.lit { background: #3b82f6; box-shadow: 0 0 8px #3b82f6; width: 10px; height: 10px; }
+  .ms-calib-zh { font-size: 15px; color: white; font-weight: 600; }
+  .ms-calib-en { font-size: 10px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+  .ms-calib-num { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; color: #22c55e; line-height: 1; }
+
+  /* Pairing state */
+  .ms-pair { display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 6px; padding: 8px; text-align: center; }
+  .ms-pair-ico { font-size: 30px; animation: pulse-icon 1.2s ease-in-out infinite; }
+  @keyframes pulse-icon { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.9)} }
+  .ms-pair-zh { font-size: 14px; color: white; font-weight: 600; }
+  .ms-pair-en { font-size: 10px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+  .ms-pair-ssid { font-size: 9px; background: rgba(37,99,235,0.2); border: 1px solid rgba(37,99,235,0.4); border-radius: 4px; padding: 3px 7px; color: #93c5fd; font-family: 'JetBrains Mono', monospace; margin-top: 3px; line-height: 1.6; }
+
+
+  /* ── Step cards (calibration guide) ── */
+  .step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; flex: 1; min-height: 0; }
+  .step-card { background: white; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; }
+  .step-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .step-badge { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; flex-shrink: 0; background: var(--green-dark); }
+  .step-badge.warn { background: var(--orange); }
+  .step-badge.ok   { background: var(--green-light); }
+  .step-name { font-size: 16px; font-weight: 700; color: var(--green-dark); line-height: 1.35; }
+  .step-card.warn .step-name { color: #9a3412; }
+  .step-card.ok   .step-name { color: #065f46; }
+  .step-desc { font-size: 14px; color: #475569; line-height: 1.55; margin-bottom: 10px; }
+  .step-card .img-placeholder { max-width: none; margin: 0; flex: 1; min-height: 50px; height: auto; width: 100%; aspect-ratio: auto; }
+
+  /* ── Two-column photo layout ── */
+  .photo-layout { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: stretch; flex: 1; min-height: 0; overflow: hidden; }
+  .photo-layout-text { overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+  .photo-layout-photo { display: flex; align-items: stretch; }
+  .photo-layout-photo .img-placeholder { height: 100%; width: auto; aspect-ratio: 3/4; max-width: none; margin: 0; }
+
+  /* ── Full-width 16:9 photo ── */
+  .photo-full-16-9 { flex: 1; min-height: 0; display: flex; align-items: stretch; justify-content: center; }
+  .photo-full-16-9 .img-placeholder { height: 100%; width: auto; aspect-ratio: 16/9; max-width: 100%; margin: 0; }
+
+  /* ── Button screen states ── */
+  .btn-screen-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+  .btn-screen-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .btn-screen-label { font-size: 12px; font-weight: 700; color: var(--green-dark); text-align: center; font-family: 'JetBrains Mono', monospace; padding: 3px 8px; background: var(--green-50); border-radius: 999px; }
+  .btn-screen-item .img-placeholder { max-width: none; margin: 0; width: 100%; }
+
+  /* ── MT15 annotated layout ── */
+  .mt15-annotate { display: grid; grid-template-columns: 1fr auto 1fr; height: 100%; align-items: stretch; }
+  .mt15-ann-l { display: flex; flex-direction: column; justify-content: center; align-items: flex-end; padding-right: 20px; }
+  .mt15-ann-r { display: flex; flex-direction: column; justify-content: space-evenly; align-items: flex-start; padding-left: 20px; }
+  .mt15-ann-img { display: flex; align-items: stretch; }
+  .mt15-ann-img .img-placeholder { height: 100%; width: auto; aspect-ratio: 3/4; max-width: none; margin: 0; }
+  .mt15-ann-block { background: white; border-radius: 10px; padding: 12px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); width: 260px; position: relative; }
+  .mt15-ann-block h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .mt15-ann-block .note { font-size: 11px; color: #64748b; margin-top: 8px; padding: 4px 8px; background: #f8fafc; border-radius: 5px; line-height: 1.4; }
+  .ann-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .ann-chip { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
+  .mt15-ann-auto   .ann-chip { background: #d1fae5; color: #065f46; }
+  .mt15-ann-wifi   .ann-chip { background: #dbeafe; color: #1e40af; }
+  .mt15-ann-manual .ann-chip { background: #fed7aa; color: #9a3412; font-size: 14px; }
+  .tip-chip { position: relative; cursor: help; }
+  .tip-chip::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    transform: translateY(4px);
+    background: var(--navy);
+    color: white;
+    padding: 7px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 400;
+    white-space: normal;
+    width: max-content;
+    max-width: 260px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+    line-height: 1.6;
+  }
+  .tip-chip::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 6px solid transparent;
+    border-top-color: var(--navy);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+  }
+  .tip-chip:hover::after { opacity: 1; transform: translateY(0); }
+  .tip-chip:hover::before { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .mt15-ann-auto   { border-left: 4px solid #10b981; }
+  .mt15-ann-auto   h4 { color: #065f46; }
+  .mt15-ann-wifi   { border-left: 4px solid #2563eb; }
+  .mt15-ann-wifi   h4 { color: #1e40af; }
+  .mt15-ann-manual { border-left: 4px solid #f97316; }
+  .mt15-ann-manual h4 { color: #9a3412; }
+  /* left label → line extends RIGHT toward image */
+  .mt15-ann-auto::after  { content:''; position:absolute; top:50%; left:100%; width:20px; height:2px; background:#10b981; transform:translateY(-50%); }
+  /* right labels → line extends LEFT toward image */
+  .mt15-ann-wifi::before   { content:''; position:absolute; top:50%; right:100%; width:20px; height:2px; background:#2563eb; transform:translateY(-50%); }
+  .mt15-ann-manual::before { content:''; position:absolute; top:50%; right:100%; width:20px; height:2px; background:#f97316; transform:translateY(-50%); }
+
+  /* ── Image Insert ── */
+  .img-placeholder:not(.filled) { cursor: pointer; }
+  .img-placeholder:not(.filled)::after {
+    content: '📂 คลิกเพื่อแทรกรูป';
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--green-dark);
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .img-placeholder:not(.filled):hover::after { opacity: 1; }
+
+  .img-placeholder.filled {
+    padding: 0;
+    background: #f1f5f9;
+    cursor: default;
+  }
+  .img-placeholder.filled::before { display: none; }
+  .img-placeholder.filled:hover { background: #f1f5f9; }
+  .img-placeholder.filled .ph-icon,
+  .img-placeholder.filled .ph-label,
+  .img-placeholder.filled .ph-desc,
+  .img-placeholder.filled .ph-ratio,
+  .img-placeholder.filled .ph-tag { display: none; }
+  .img-placeholder.filled img.ph-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  .img-remove-btn {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    z-index: 10;
+    background: rgba(220, 38, 38, 0.88);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .img-placeholder.filled:hover .img-remove-btn { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="hint">← → space · F = ฟูลสกรีน</div>
+
+<div class="deck" id="deck">
+
+  <!-- Slide 0: Title -->
+  <div class="slide title-slide active">
+    <div class="badge">การฝึกอบรมเชิงปฏิบัติการ</div>
+    <h1>การใช้งานเครื่องวัดมลพิษในอากาศ<br>และการใช้ระบบสารสนเทศ</h1>
+    <p class="subtitle">โครงการ <strong style="color:var(--green-dark)">BiomassStove</strong> · ระบบเก็บข้อมูลและประเมินผลเตาไบโอแมส</p>
+    <div class="meta">
+      <div class="meta-item">
+        <div class="lbl">วันที่</div>
+        <div class="val">20 พ.ค. 2569</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">เวลา</div>
+        <div class="val">13:00 — 14:15 น.</div>
+      </div>
+      <div class="meta-item">
+        <div class="lbl">สถานที่</div>
+        <div class="val">หอประชุมบ้านนก · adiCET</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 1: Agenda -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">1</div>
+      <div class="slide-title">กำหนดการอบรม</div>
+    </div>
+    <div class="slide-body" style="justify-content:center;gap:14px">
+      <div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:16px">
+        <span style="font-size:28px">🎯</span>
+        <span style="font-size:20px;font-weight:600;color:var(--ink)">เปิดงาน และแนะนำระบบ</span>
+      </div>
+      <div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--green-50);border-left:5px solid var(--green);display:flex;align-items:center;gap:16px">
+        <span style="font-size:28px">🔬</span>
+        <span style="font-size:20px;font-weight:600;color:var(--green-dark)">การใช้งานเครื่องวัดมลพิษ MT15</span>
+      </div>
+      <div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--green-50);border-left:5px solid var(--green);display:flex;align-items:center;gap:16px">
+        <span style="font-size:28px">📊</span>
+        <span style="font-size:20px;font-weight:600;color:var(--green-dark)">ระบบอาสาสมัครและ Dashboard</span>
+      </div>
+<div class="agenda-row" style="border-radius:10px;padding:16px 24px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:16px">
+        <span style="font-size:28px">💬</span>
+        <span style="font-size:20px;font-weight:600;color:var(--ink)">ถาม-ตอบ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 2: System Architecture -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">2</div>
+      <div class="slide-title">โครงสร้างระบบ</div>
+      <div class="slide-tag">ภาพรวม</div>
+    </div>
+    <div class="slide-body">
+      <div class="flow">
+        <div class="node green-bg">
+          <div class="ico">🔬</div>
+          <div class="lbl">เซนเซอร์ MT15</div>
+          <div class="sub">ในบ้านอาสาสมัคร</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="node">
+          <div class="ico">📡</div>
+          <div class="lbl">Hotspot</div>
+          <div class="sub">มือถืออาสา · 2.4 GHz</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="node navy-bg">
+          <div class="ico">☁️</div>
+          <div class="lbl">ระบบ</div>
+          <div class="sub">Tuya + Supabase</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="node orange-bg">
+          <div class="ico">📊</div>
+          <div class="lbl">Dashboard</div>
+          <div class="sub">ดูข้อมูล real-time</div>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:15px;color:var(--muted);margin-top:14px;flex-shrink:0">ส่งข้อมูลอัตโนมัติทุก 5 นาที · ไม่ต้องดำเนินการเพิ่มเติม</p>
+    </div>
+  </div>
+
+  <!-- Slide 3: MT15 Screen Reading -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">3</div>
+      <div class="slide-title">การอ่านค่าหน้าจอ MT15</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="mt15-annotate">
+
+        <!-- Left: Cloud Auto -->
+        <div class="mt15-ann-l">
+          <div class="mt15-ann-block mt15-ann-auto">
+            <h4>🟢 ส่งระบบอัตโนมัติ</h4>
+            <div class="ann-chips">
+              <span class="ann-chip">อุณหภูมิ</span>
+              <span class="ann-chip">ความชื้น</span>
+              <span class="ann-chip">AQI</span>
+              <span class="ann-chip">CO₂</span>
+              <span class="ann-chip tip-chip" data-tip="ฟอร์มาลดีไฮด์ (Formaldehyde)">HCHO</span>
+              <span class="ann-chip">PM2.5</span>
+              <span class="ann-chip">PM10</span>
+            </div>
+            <div class="note">เมื่อเชื่อมต่ออินเตอร์เนท</div>
+          </div>
+        </div>
+
+        <!-- Center: Image -->
+        <div class="mt15-ann-img">
+          <div class="img-placeholder aspect-3-4 filled">
+            <div class="ph-tag">PHOTO #S1</div>
+            <img class="ph-img" src="./MT15_Screen.png">
+          </div>
+        </div>
+
+        <!-- Right: WiFi + Manual -->
+        <div class="mt15-ann-r">
+          <div class="mt15-ann-block mt15-ann-wifi">
+            <h4>📶 WiFi — มุมบนขวา</h4>
+            <ul>
+              <li>ไอคอนนิ่ง = เชื่อมต่อแล้ว ✅</li>
+              <li>ไอคอนกระพริบ = กำลังค้นหาและเชื่อมต่อ WiFi</li>
+              <li style="color:#9a3412">ถ้าไม่เชื่อมต่อ ข้อมูลไม่ส่งขึ้นระบบ ⚠️</li>
+            </ul>
+          </div>
+          <div class="mt15-ann-block mt15-ann-manual">
+            <h4>🟠 กรอกเองทุก 5 นาที</h4>
+            <div class="ann-chips">
+              <span class="ann-chip">CO</span>
+              <span class="ann-chip tip-chip" data-tip="สารอินทรีย์ระเหยง่ายรวม (Total VOC)">TVOC</span>
+            </div>
+            <div class="note">อ่านจากหน้าจอ → กรอกในเว็บอาสา</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Button Demo -->
+  <div class="slide" id="slide-btn-demo">
+    <div class="slide-head">
+      <div class="slide-num">4</div>
+      <div class="slide-title">การกดปุ่มบนเครื่อง MT15</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="bsw-wrap">
+
+        <div class="bsw-tabs">
+          <button class="bsw-btn active" data-slot="0">⏻ ปกติ</button>
+          <button class="bsw-btn" data-slot="1">1 · °C/°F</button>
+          <button class="bsw-btn" data-slot="2">2 · เสียง</button>
+          <button class="bsw-btn" data-slot="3">3 · หน้าจอ 2</button>
+          <button class="bsw-btn bsw-warn" data-slot="4">4 · Calibrate ⚙️</button>
+          <button class="bsw-btn bsw-info" data-slot="5">5 · WiFi 📡</button>
+        </div>
+
+        <div class="bsw-img-area">
+          <div class="bsw-slot active" id="bslot-0">
+            <div class="img-placeholder aspect-3-4 filled">
+              <div class="ph-tag">BTN #0</div>
+              <img class="ph-img" src="./MT15_Screen_1.png">
+            </div>
+          </div>
+          <div class="bsw-slot" id="bslot-1">
+            <div class="img-placeholder aspect-3-4 filled">
+              <div class="ph-tag">BTN #1</div>
+              <img class="ph-img" src="./MT15_Screen_2.png">
+            </div>
+          </div>
+          <div class="bsw-slot" id="bslot-2">
+            <div class="img-placeholder aspect-3-4">
+              <div class="ph-icon">🔇</div>
+              <div class="ph-label">กด 2 — ปิด/เปิดเสียง</div>
+              <div class="ph-desc">ไอคอน 🔊 เปลี่ยนเป็น 🔇</div>
+              <div class="ph-tag">BTN #2</div>
+              <div class="ph-ratio">3:4</div>
+            </div>
+          </div>
+          <div class="bsw-slot" id="bslot-3">
+            <div class="img-placeholder aspect-3-4 filled">
+              <div class="ph-tag">BTN #3</div>
+              <img class="ph-img" src="./MT15_Screen_3.png">
+            </div>
+          </div>
+          <div class="bsw-slot" id="bslot-4">
+            <div class="img-placeholder aspect-3-4 filled">
+              <div class="ph-tag">BTN #4</div>
+              <img class="ph-img" src="./MT15_Screen_4.png">
+            </div>
+          </div>
+          <div class="bsw-slot" id="bslot-5">
+            <div class="img-placeholder aspect-3-4 filled">
+              <div class="ph-tag">BTN #5</div>
+              <img class="ph-img" src="./MT15_Screen_5.png">
+            </div>
+          </div>
+        </div>
+
+        <div class="bsw-descs">
+          <div class="bsw-desc active" data-slot="0"><strong>ปกติ</strong> — หน้าจอหลักแสดงค่าทั้งหมด · เปิดเครื่อง: กดปุ่มค้าง 3 วินาที</div>
+          <div class="bsw-desc" data-slot="1"><strong>กด 1 ครั้ง</strong> — สลับหน่วยอุณหภูมิ °C / °F</div>
+          <div class="bsw-desc" data-slot="2"><strong>กด 2 ครั้ง</strong> — ปิด/เปิดเสียงเตือน ไอคอน 🔊 เปลี่ยนเป็น 🔇</div>
+          <div class="bsw-desc" data-slot="3"><strong>กด 3 ครั้ง</strong> — สลับหน้าจอแสดงผล ค่าหลักขนาดใหญ่ขึ้น</div>
+          <div class="bsw-desc bsw-desc-warn" data-slot="4"><strong>กด 4 ครั้ง — Calibrate ⚙️</strong> — รอ 120 วินาที อย่าขยับเครื่อง ใช้เมื่อค่าค้างสูงผิดปกติ</div>
+          <div class="bsw-desc bsw-desc-info" data-slot="5"><strong>กด 5 ครั้ง — WiFi 📡</strong> — หน้าจอเหมือนปกติ ไอคอน WiFi กะพริบขณะจับคู่ / นิ่งเมื่อเชื่อมต่อแล้ว</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7: Calibration Fix Guide -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">5</div>
+      <div class="slide-title">วิธีแก้ปัญหาค่าค้าง (Calibrate)</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="callout warn" style="margin-bottom:14px">
+        <strong>อาการ:</strong> ค่า CO2 หรือ PM2.5 ค้างสูง (เช่น CO2 = 2,000+ ppm) นานกว่า 15 นาทีหลังดับเตา — แก้ได้เองที่เครื่อง ไม่ต้องส่งซ่อม
+      </div>
+      <div class="step-grid">
+
+        <div class="step-card">
+          <div class="step-head">
+            <div class="step-badge warn">1</div>
+            <div class="step-name">สังเกตอาการ — ค่าไม่ลดลง</div>
+          </div>
+          <div class="step-desc">หน้าจอแสดงค่าสูงผิดปกติหลังดับเตาแล้ว เช่น CO2 ยังค้างที่ 2,000+ ppm นานเกิน 15 นาที</div>
+          <div class="img-placeholder aspect-4-3 filled">
+            <div class="ph-tag">PHOTO #C1</div>
+            <img class="ph-img" src="./MT15_Screen_6.png">
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-head">
+            <div class="step-badge">2</div>
+            <div class="step-name">กดปุ่มด้านข้าง 4 ครั้ง ติดกัน</div>
+          </div>
+          <div class="step-desc">กดปุ่มข้างเครื่อง 4 ครั้งติดกัน ไม่ต้องรีบ — หน้าจอจะแสดง "Calibrating..."</div>
+          <div class="img-placeholder aspect-4-3 filled">
+            <div class="ph-tag">PHOTO #C2</div>
+            <img class="ph-img" src="./Side.png">
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-head">
+            <div class="step-badge">3</div>
+            <div class="step-name">วางนิ่ง รอ 120 วินาที</div>
+          </div>
+          <div class="step-desc">ห้ามเคลื่อนย้ายเครื่องระหว่างรอ — เครื่องกำลังวัดค่าอากาศปกติเป็น baseline ใหม่</div>
+          <div class="img-placeholder aspect-4-3 filled">
+            <div class="ph-tag">PHOTO #C3</div>
+            <img class="ph-img" src="./MT15_Screen_4.png">
+          </div>
+        </div>
+
+        <div class="step-card ok">
+          <div class="step-head">
+            <div class="step-badge ok">✓</div>
+            <div class="step-name">ค่ากลับสู่ระดับปกติ ✅</div>
+          </div>
+          <div class="step-desc">หน้าจอแสดงค่าในระดับปกติของอากาศห้อง — พร้อมเริ่ม session ใหม่ได้</div>
+          <div class="img-placeholder aspect-4-3 filled">
+            <div class="ph-tag">PHOTO #C4</div>
+            <img class="ph-img" src="./MT15_Screen.png">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Hotspot Setup -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">6</div>
+      <div class="slide-title">การเชื่อมต่อ Hotspot</div>
+      <div class="slide-tag">Part 1</div>
+    </div>
+    <div class="slide-body">
+      <div class="photo-layout">
+        <div class="photo-layout-text">
+          <div class="callout tip" style="margin-bottom:12px;font-size:18px">
+            <strong style="font-size:22px">📡 ค่าตั้ง Hotspot มาตรฐาน</strong><br>
+            SSID: <code>Biomass</code> · รหัสผ่าน: <code>Biomass2026</code> · Band: <strong>2.4 GHz</strong> · จับคู่ครั้งเดียวแล้วเชื่อมต่ออัตโนมัติ
+          </div>
+          <div class="callout warn" style="font-size:18px">
+            <strong style="font-size:22px">⚠️ ตั้ง Band เป็น 2.4 GHz เท่านั้น</strong><br>
+            MT15 ไม่รองรับ 5 GHz — Settings → Mobile Hotspot → Band
+          </div>
+        </div>
+        <div class="photo-layout-photo">
+          <div class="img-placeholder aspect-3-4 filled">
+            <div class="ph-tag">PHOTO #8</div>
+            <img class="ph-img" src="./Hotspot.png">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10: Volunteer Page -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">7</div>
+      <div class="slide-title">หน้าอาสาสมัคร — บันทึกข้อมูลด้วยตนเอง</div>
+      <div class="slide-tag">Part 2</div>
+    </div>
+    <div class="slide-body">
+      <div class="photo-layout">
+        <div class="photo-layout-text">
+          <div style="font-size:76px;line-height:1;margin-bottom:16px">📲</div>
+          <div class="callout tip" style="margin-bottom:18px;font-size:19px">
+            <strong style="font-size:23px">🔗 วิธีเข้าเว็บอาสา</strong> — ไม่ต้อง login ไม่ต้องจำ URL
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="callout tip" style="margin:0;display:flex;align-items:center;gap:16px;padding:16px 20px">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dark);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex-shrink:0">1</div>
+              <div>
+                <div style="font-weight:700;font-size:20px">สแกน QR code จากสติกเกอร์</div>
+                <div style="font-size:16px;color:var(--muted);margin-top:2px">ติดอยู่ที่ด้านหลังเครื่อง MT15</div>
+              </div>
+            </div>
+            <div class="callout tip" style="margin:0;display:flex;align-items:center;gap:16px;padding:16px 20px">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dark);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex-shrink:0">2</div>
+              <div>
+                <div style="font-weight:700;font-size:20px">ระบบตรวจจับบ้านอัตโนมัติ</div>
+                <div style="font-size:16px;color:var(--muted);margin-top:2px">ผ่าน GPS — ไม่ต้องเลือกเอง</div>
+              </div>
+            </div>
+            <div class="callout tip" style="margin:0;display:flex;align-items:center;gap:16px;padding:16px 20px">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--green-dark);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;flex-shrink:0">3</div>
+              <div>
+                <div style="font-weight:700;font-size:20px">กรอกค่า CO + TVOC ได้เลย</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="photo-layout-photo">
+          <div class="img-placeholder aspect-3-4 filled">
+            <div class="ph-tag">PHOTO #V1</div>
+            <img class="ph-img" src="./Back_side.png">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide: Session Limits -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">8</div>
+      <div class="slide-title">ขีดจำกัดการเก็บข้อมูล (Session Limits)</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body" style="justify-content:center;gap:16px">
+      <p style="font-size:19px;color:var(--muted);flex-shrink:0;text-align:center">แต่ละบ้านเก็บได้ <strong style="color:var(--ink)">วันละ 2 ครั้ง</strong> มีช่วงพักบังคับระหว่างกัน</p>
+      <div style="display:flex;gap:12px;flex:1;min-height:0;align-items:stretch">
+        <div style="flex:2;background:var(--green-50);border:2px solid var(--green);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 20px;text-align:center">
+          <div style="font-size:68px;line-height:1">☀️</div>
+          <div style="font-weight:700;font-size:24px;color:var(--green-dark)">Session 1</div>
+          <div style="font-size:52px;font-weight:700;color:var(--green-dark);line-height:1">2:10</div>
+          <div style="font-size:16px;color:var(--muted)">ชั่วโมง</div>
+          <div style="font-size:15px;color:var(--green-dark);background:white;border-radius:10px;padding:8px 16px;margin-top:4px;line-height:1.6">เก็บค่าต่อเนื่อง<br>ขณะทำอาหาร</div>
+        </div>
+        <div style="flex:2;background:#fef3c7;border:2px solid var(--warn);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 20px;text-align:center">
+          <div style="font-size:68px;line-height:1">⏸️</div>
+          <div style="font-weight:700;font-size:24px;color:#92400e">Cooldown</div>
+          <div style="font-size:52px;font-weight:700;color:#92400e;line-height:1">5</div>
+          <div style="font-size:16px;color:var(--muted)">ชั่วโมง (บังคับ)</div>
+          <div style="font-size:15px;color:#92400e;background:white;border-radius:10px;padding:8px 16px;margin-top:4px;line-height:1.6">เซนเซอร์พัก<br>ระบบจะไม่เริ่ม session ใหม่</div>
+        </div>
+        <div style="flex:2;background:var(--green-50);border:2px solid var(--green);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 20px;text-align:center">
+          <div style="font-size:68px;line-height:1">🌙</div>
+          <div style="font-weight:700;font-size:24px;color:var(--green-dark)">Session 2</div>
+          <div style="font-size:52px;font-weight:700;color:var(--green-dark);line-height:1">2:10</div>
+          <div style="font-size:16px;color:var(--muted)">ชั่วโมง</div>
+          <div style="font-size:15px;color:var(--green-dark);background:white;border-radius:10px;padding:8px 16px;margin-top:4px;line-height:1.6">เก็บได้อีกครั้ง<br>ช่วงเย็น</div>
+        </div>
+        <div style="flex:1;background:#fee2e2;border:2px solid var(--bad);border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 12px;text-align:center">
+          <div style="font-size:68px;line-height:1">🛑</div>
+          <div style="font-weight:700;font-size:19px;color:var(--bad)">เกินโควต้า</div>
+          <div style="font-size:13px;color:var(--muted)">daily limit</div>
+          <div style="font-size:13px;color:var(--bad);background:white;border-radius:10px;padding:8px 10px;margin-top:4px;line-height:1.7">ระบบปิดรับข้อมูล<br>จนถึงวันถัดไป</div>
+        </div>
+      </div>
+      <div class="callout warn" style="flex-shrink:0;font-size:17px">
+        <strong>ทำไม?</strong> เซนเซอร์ต้องพักหลังเจอควัน · ทุกบ้านเก็บเท่ากันเพื่อเปรียบเทียบได้
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide: Data Collection Flow -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">9</div>
+      <div class="slide-title">ขั้นตอนการเก็บข้อมูล</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body" style="display:flex;flex-direction:column;overflow:hidden;padding:8px 14px 8px;justify-content:space-between;">
+
+      <!-- แถว 1: Step 1-5 -->
+      <div style="display:flex;align-items:stretch;gap:4px;flex:1;min-height:0;">
+
+        <!-- Step 1 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:var(--green-50);border:2px solid var(--green-light);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--green);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">1</span>
+          <span style="font-size:38px;line-height:1;">🔌</span>
+          <div style="font-size:17px;font-weight:700;color:var(--green-dark);line-height:1.3;">เปิดเซนเซอร์</div>
+          <div style="font-size:13px;color:var(--muted);">รอวอร์ม</div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 2 (branch) -->
+        <div style="flex:1.4;display:flex;flex-direction:column;border:2px solid var(--green-light);border-radius:12px;overflow:hidden;background:var(--green-50);">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:7px 10px;border-bottom:1.5px solid var(--green-light);">
+            <span style="font-size:12px;font-weight:700;color:var(--card);background:var(--green);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+            <span style="font-size:28px;line-height:1;">📶</span>
+            <span style="font-size:16px;font-weight:700;color:var(--green-dark);">เชื่อมอินเตอร์เนท</span>
+          </div>
+          <div style="display:flex;flex:1;">
+            <div style="flex:1;padding:6px 8px;border-right:1.5px solid var(--green-light);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;">
+              <span style="font-size:26px;">📱</span>
+              <div style="font-size:13px;font-weight:700;color:var(--bad);">ไม่มี WiFi</div>
+              <div style="font-size:12px;color:var(--ink);">เปิด Hotspot</div>
+            </div>
+            <div style="flex:1;padding:6px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;">
+              <span style="font-size:26px;">🏠</span>
+              <div style="font-size:13px;font-weight:700;color:var(--green);">มี WiFi</div>
+              <div style="font-size:12px;color:var(--ink);">อัตโนมัติ</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 3 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:var(--green-50);border:2px solid var(--green-light);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--green-light);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">3</span>
+          <span style="font-size:38px;line-height:1;">📷</span>
+          <div style="font-size:17px;font-weight:700;color:var(--green-dark);line-height:1.3;">แสกน QR</div>
+          <div style="font-size:13px;color:var(--muted);">เข้าระบบอาสา</div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 4 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:var(--green-50);border:2px solid var(--green-light);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--green-light);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">4</span>
+          <span style="font-size:38px;line-height:1;">🏠</span>
+          <div style="font-size:17px;font-weight:700;color:var(--green-dark);line-height:1.3;">เลือกบ้าน</div>
+          <div style="font-size:13px;color:var(--muted);">ยืนยัน</div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 5 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:#fff7ed;border:2px solid var(--orange);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--orange);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">5</span>
+          <span style="font-size:38px;line-height:1;">▶️</span>
+          <div style="font-size:17px;font-weight:700;color:#92400e;line-height:1.3;">กด "เริ่ม"</div>
+          <div style="font-size:13px;color:var(--muted);">Baseline 10 นาที</div>
+        </div>
+
+      </div>
+
+      <!-- Connector: dashed line + label -->
+      <div style="flex-shrink:0;height:36px;display:flex;align-items:center;gap:10px;">
+        <div style="flex:1;border-top:2px dashed var(--green-light);"></div>
+        <div style="flex-shrink:0;font-size:12px;font-weight:700;color:var(--green-dark);background:var(--green-50);border:2px solid var(--green);border-radius:20px;padding:3px 14px;white-space:nowrap;">ต่อไปขั้นที่ 6–10 ↓</div>
+        <div style="flex:1;border-top:2px dashed var(--green-light);"></div>
+      </div>
+
+      <!-- แถว 2: Step 6-10 -->
+      <div style="display:flex;align-items:stretch;gap:4px;flex:1;min-height:0;">
+
+        <!-- Step 6 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:#fff7ed;border:2px solid var(--warn);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--warn);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">6</span>
+          <span style="font-size:38px;line-height:1;">❓</span>
+          <div style="font-size:17px;font-weight:700;color:#92400e;line-height:1.3;">เก็บ CO/TVOC?</div>
+          <div style="font-size:13px;color:var(--muted);">ตามที่ได้รับมอบหมาย</div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 7 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:var(--green-50);border:2px solid var(--green);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--green-dark);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">7</span>
+          <span style="font-size:38px;line-height:1;">🔥</span>
+          <div style="font-size:17px;font-weight:700;color:var(--green-dark);line-height:1.3;">กด "เริ่มจุดเตา"</div>
+          <div style="font-size:13px;color:var(--muted);">จุดได้เลย!</div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 8 (branch) -->
+        <div style="flex:1.4;display:flex;flex-direction:column;border:2px solid var(--green-dark);border-radius:12px;overflow:hidden;background:var(--green-50);">
+          <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:7px 10px;border-bottom:1.5px solid var(--green);">
+            <span style="font-size:12px;font-weight:700;color:var(--card);background:var(--green-dark);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">8</span>
+            <span style="font-size:28px;line-height:1;">⏱️</span>
+            <span style="font-size:16px;font-weight:700;color:var(--green-dark);">เก็บข้อมูล 2 ชม.</span>
+          </div>
+          <div style="display:flex;flex:1;">
+            <div style="flex:1;padding:6px 8px;border-right:1.5px solid var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;">
+              <span style="font-size:26px;">📱</span>
+              <div style="font-size:13px;font-weight:700;color:var(--bad);">เก็บ CO/TVOC</div>
+              <div style="font-size:12px;color:var(--ink);">เปิดจอ กรอกทุก 5 นาที</div>
+            </div>
+            <div style="flex:1;padding:6px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;">
+              <span style="font-size:26px;">💤</span>
+              <div style="font-size:13px;font-weight:700;color:var(--green);">ไม่เก็บ</div>
+              <div style="font-size:12px;color:var(--ink);">ปิดจอ วางใกล้เซนเซอร์</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 9 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:#eff6ff;border:2px solid var(--info);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--info);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">9</span>
+          <span style="font-size:38px;line-height:1;">📊</span>
+          <div style="font-size:17px;font-weight:700;color:var(--info);line-height:1.3;">ระบบสรุปผล</div>
+          <div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center;">
+            <span style="font-size:11px;background:#fef2f2;border:1px solid var(--bad);color:var(--bad);padding:1px 5px;border-radius:4px;white-space:nowrap;">ต้องเก็บเพิ่ม</span>
+            <span style="font-size:11px;background:#f0fdf4;border:1px solid var(--green);color:var(--green);padding:1px 5px;border-radius:4px;white-space:nowrap;">✅ ครบ</span>
+            <span style="font-size:11px;background:#fff7ed;border:1px solid var(--orange);color:var(--orange);padding:1px 5px;border-radius:4px;white-space:nowrap;">⚠️ ไม่ทัน</span>
+          </div>
+        </div>
+
+        <div style="font-size:30px;flex-shrink:0;display:flex;align-items:center;padding:0 2px;">➡️</div>
+
+        <!-- Step 10 -->
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px;background:#f8fafc;border:2px solid var(--navy);border-radius:12px;padding:4px 6px;position:relative;">
+          <span style="position:absolute;top:7px;left:9px;font-size:12px;font-weight:700;color:var(--card);background:var(--navy);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;">10</span>
+          <span style="font-size:38px;line-height:1;">🏁</span>
+          <div style="font-size:17px;font-weight:700;color:var(--navy);line-height:1.3;">ปิดเซนเซอร์</div>
+          <div style="font-size:13px;color:var(--muted);">+ ปิด Hotspot</div>
+        </div>
+
+      </div>
+
+      <!-- Warning Bar -->
+      <div style="flex-shrink:0;margin-top:6px;padding:6px 14px;background:var(--orange-soft);border-radius:10px;border-left:4px solid var(--orange);display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">⚠️</span>
+        <span style="font-size:14px;color:#7c2d12;font-weight:700;">อย่าปิด Hotspot หรืออินเตอร์เนท ระหว่างเก็บข้อมูล — เซนเซอร์จะส่งข้อมูลไม่ได้</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Slide 10: Admin Review -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">10</div>
+      <div class="slide-title">ทีมวิจัยตรวจสอบและนำข้อมูลไปใช้</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body" style="gap:12px">
+      <div class="callout info" style="flex-shrink:0;font-size:17px">
+        <strong>ทุก session ที่เก็บได้</strong> — ทีมวิจัยตรวจ PM2.5 พีค · CO₂ เฉลี่ย · ความสมบูรณ์ข้อมูล ก่อนอนุมัติเข้าสู่การวิเคราะห์เปรียบเทียบเตา Biomass vs เดิม
+      </div>
+      <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);background:white;box-shadow:0 2px 12px rgba(15,23,42,0.08)">
+        <img src="dash-admin-sessions.png" style="width:100%;height:100%;object-fit:contain;display:block">
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11: Data Visualization -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">11</div>
+      <div class="slide-title">ข้อมูลที่ส่งมา — กลายเป็นกราฟแบบนี้</div>
+      <div class="slide-tag">Part 3</div>
+    </div>
+    <div class="slide-body" style="gap:12px">
+      <div class="callout tip" style="flex-shrink:0;font-size:17px">
+        <strong>ข้อมูล 2 แหล่งรวมกันในกราฟเดียว</strong> — เซนเซอร์ส่งอัตโนมัติทุก 5 นาที + CO · TVOC ที่กรอกเอง · แสดงรายบ้าน รายวัน รายเซสชัน
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0">
+        <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
+          <div style="font-weight:700;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 16px;flex-shrink:0">📡 PM2.5 · PM10 · CO₂ <span style="font-size:13px;font-weight:400;color:var(--muted)">(เซนเซอร์ส่งเอง)</span></div>
+          <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);background:white;box-shadow:0 2px 12px rgba(15,23,42,0.08)">
+            <img src="dash-graph-pm.png" style="width:100%;height:100%;object-fit:contain;display:block">
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;min-height:0">
+          <div style="font-weight:700;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 16px;flex-shrink:0">✏️ HCHO · TVOC · CO <span style="font-size:13px;font-weight:400;color:var(--muted)">(กรอกเองทุก 5 นาที)</span></div>
+          <div style="flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1.5px solid var(--line);background:white;box-shadow:0 2px 12px rgba(15,23,42,0.08)">
+            <img src="dash-graph-tvoc.png" style="width:100%;height:100%;object-fit:contain;display:block">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide Demo: Dashboard Live Demo -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num" style="background:var(--orange);font-size:20px">🚀</div>
+      <div class="slide-title">Dashboard และระบบอาสาสมัคร</div>
+      <div class="slide-tag" style="background:#fed7aa;color:#9a3412">Demo</div>
+    </div>
+    <div class="slide-body" style="gap:14px">
+      <p style="font-size:17px;color:var(--muted);flex-shrink:0">ระบบจริง · ข้อมูลสด · 10 บ้าน — <strong style="color:var(--ink)">กดเพื่อทดลองใช้งานด้วยตัวเอง</strong></p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex-shrink:0">
+        <div style="background:#fdf4ff;border:2px solid #d8b4fe;border-radius:16px;padding:20px 22px">
+          <div style="font-size:32px;margin-bottom:10px">⚖️</div>
+          <div style="font-weight:700;font-size:18px;color:#6b21a8;margin-bottom:6px">เปรียบเทียบเตา</div>
+          <div style="font-size:15px;color:var(--muted);line-height:1.65">Biomass vs เตาเดิม<br>% ลดมลพิษ หลัง baseline<br>ผลรวมทุกบ้าน / รายบ้าน</div>
+        </div>
+        <div style="background:#eff6ff;border:2px solid #93c5fd;border-radius:16px;padding:20px 22px">
+          <div style="font-size:32px;margin-bottom:10px">📈</div>
+          <div style="font-weight:700;font-size:18px;color:#1e40af;margin-bottom:6px">กราฟรายวัน</div>
+          <div style="font-size:15px;color:var(--muted);line-height:1.65">PM2.5 · CO₂ · CO · TVOC<br>เลือก session / ช่วงเวลา<br>ดูแนวโน้มได้ทันที</div>
+        </div>
+        <div style="background:var(--green-50);border:2px solid var(--green);border-radius:16px;padding:20px 22px">
+          <div style="font-size:32px;margin-bottom:10px">🗺️</div>
+          <div style="font-weight:700;font-size:18px;color:var(--green-dark);margin-bottom:6px">แผนที่บ้าน</div>
+          <div style="font-size:15px;color:var(--muted);line-height:1.65">จุดสีบอกระดับมลพิษล่าสุด<br>สถานะออนไลน์ / offline<br>ไม่ต้อง login</div>
+        </div>
+      </div>
+      <a href="system-demo.html"
+         style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--green-dark);color:white;border-radius:20px;text-decoration:none;box-shadow:0 8px 32px rgba(6,78,59,0.40);transition:transform 0.2s,box-shadow 0.2s"
+         onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 14px 40px rgba(6,78,59,0.50)'"
+         onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 32px rgba(6,78,59,0.40)'">
+        <div style="font-size:38px;line-height:1">🚀</div>
+        <div style="font-size:34px;font-weight:700;letter-spacing:-0.01em">เปิด Dashboard Demo</div>
+        <div style="font-size:15px;font-weight:400;opacity:0.65">กด ← Back เพื่อกลับสไลด์</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Slide 12: Q&A + Closing -->
+  <div class="slide">
+    <div class="slide-head">
+      <div class="slide-num">13</div>
+      <div class="slide-title">ถาม-ตอบ และปิดการอบรม</div>
+      <div class="slide-tag">Closing</div>
+    </div>
+    <div class="slide-body">
+      <div class="card green">
+        <h4 style="color:var(--green-dark);font-size:20px;margin-bottom:8px">🌐 ทรัพยากรสนับสนุน — ออนไลน์ในเว็บ เข้าถึงได้เสมอ</h4>
+        <ul style="font-size:16px;line-height:1.8">
+          <li><strong>คู่มือการใช้งานเซนเซอร์ MT15</strong> — เปิดดูได้ทุกเมื่อผ่าน Dashboard</li>
+          <li><strong>คู่มือหน้าเว็บอาสาสมัคร</strong> (กรอก TVOC/CO) — อยู่ในเว็บเดียวกัน</li>
+          <li><strong>Dashboard ตรวจสอบข้อมูลของบ้านตน</strong> — ดูสถานะและค่ารายวันได้ตลอด</li>
+          <li><strong>ช่องทางติดต่อทีมงาน</strong> — เมื่อเจอปัญหาในการใช้งาน</li>
+        </ul>
+      </div>
+
+      <div class="card accent" style="margin-top:14px">
+        <h4 style="color:var(--orange);font-size:20px;margin-bottom:8px">📞 ขั้นตอนถัดไป</h4>
+        <ol style="font-size:16px;line-height:1.8">
+          <li>อาสาสมัครรับเซนเซอร์กลับบ้าน</li>
+          <li>ติดตั้ง + ทดสอบที่บ้าน</li>
+          <li>เริ่มเก็บข้อมูล session แรก</li>
+          <li>ทีมงานติดตามและสนับสนุนเป็นรายสัปดาห์</li>
+        </ol>
+      </div>
+
+      <div style="text-align:center;margin-top:24px;padding:24px;background:var(--card);border-radius:14px">
+        <h2 style="color:var(--green-dark);font-size:32px;margin-bottom:8px">ขอบคุณค่ะ 🙏</h2>
+        <p style="color:var(--muted);font-size:18px">ยินดีรับข้อเสนอแนะและคำถามทุกประเด็น</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="ก่อนหน้า">◀</button>
+  <span class="counter"><span class="current" id="cur">1</span> / <span id="total">5</span></span>
+  <button id="next" title="ถัดไป">▶</button>
+  <button id="full" title="ฟูลสกรีน">⛶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  document.getElementById('total').textContent = total;
+  let idx = 0;
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides[idx].classList.remove('active');
+    idx = i;
+    slides[idx].classList.add('active');
+    document.getElementById('cur').textContent = idx + 1;
+    document.getElementById('progress').style.width = ((idx + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('next').onclick = () => show(idx + 1);
+  document.getElementById('prev').onclick = () => show(idx - 1);
+  document.getElementById('full').onclick = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(idx - 1); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+    else if (e.key.toLowerCase() === 'f') document.getElementById('full').click();
+  });
+
+  const _h = location.hash;
+  if (_h === '#last') show(total - 1);
+  else if (_h.startsWith('#') && !isNaN(_h.slice(1))) show(parseInt(_h.slice(1)) - 1);
+  else show(0);
+
+  // ── Button Screen Switcher ──
+  document.querySelectorAll('.bsw-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const slot = btn.dataset.slot;
+      document.querySelectorAll('.bsw-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.bsw-slot').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.bsw-desc').forEach(d => d.classList.remove('active'));
+      btn.classList.add('active');
+      const slotEl = document.getElementById('bslot-' + slot);
+      const descEl = document.querySelector('.bsw-desc[data-slot="' + slot + '"]');
+      if (slotEl) slotEl.classList.add('active');
+      if (descEl) descEl.classList.add('active');
+    });
+  });
+
+
+</script>
+
+</body>
+</html>
