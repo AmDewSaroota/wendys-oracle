@@ -1,21 +1,41 @@
 #!/usr/bin/env python3
 """Session goldminer — scan Claude Code .jsonl files for session timeline."""
-import json, os, glob, sys
-from datetime import datetime, timedelta
+import json, os, glob, sys, subprocess, re, time
+from datetime import datetime, timedelta, timezone
 
 project_dirs = [d for d in os.environ.get('PROJECT_DIRS', '').split(':') if d]
 count = int(sys.argv[1]) if len(sys.argv) > 1 else 10
-bkk = timedelta(hours=7)
+
+# Auto-detect local timezone offset (works on any machine)
+local_offset = timedelta(seconds=-time.timezone if time.daylight == 0 else -time.altzone)
+local_tz = timezone(local_offset)
+
+def build_repo_map():
+    mapping = {}
+    try:
+        r = subprocess.run(['ghq', 'list', '-p'], capture_output=True, text=True, timeout=5)
+        for path in r.stdout.strip().split('\n'):
+            if path:
+                mapping[path.replace('/', '-')] = path.split('/')[-1]
+    except: pass
+    return mapping
+
+def get_repo_name(project_dir, repo_map):
+    base = os.path.basename(project_dir.rstrip('/'))
+    clean = re.sub(r'-wt-\d+$', '', base)   # strip -wt-1, -wt-8 etc
+    return repo_map.get(clean) or clean.split('-')[-1] or clean
+
+repo_map = build_repo_map()
 
 # Get .jsonl files across all project dirs, deduplicate by basename, take N most recent
 seen = {}
 for d in project_dirs:
     for f in glob.glob(os.path.join(d, '*.jsonl')):
         base = os.path.basename(f)
-        if base not in seen or os.path.getmtime(f) > os.path.getmtime(seen[base]):
-            seen[base] = f
-all_files = list(seen.values())
-files = sorted(all_files, key=lambda f: os.path.getmtime(f), reverse=True)[:count]
+        if base not in seen or os.path.getmtime(f) > os.path.getmtime(seen[base][0]):
+            seen[base] = (f, d)   # store (filepath, project_dir) tuple
+all_files = [(fp, d) for fp, d in seen.values()]
+files = sorted(all_files, key=lambda x: os.path.getmtime(x[0]), reverse=True)[:count]
 
 # Load sessions-index from all dirs
 index_map = {}
@@ -27,7 +47,7 @@ for d in project_dirs:
     except: pass
 
 sessions = []
-for fp in files:
+for fp, source_dir in files:
     sid = os.path.basename(fp).replace('.jsonl', '')
     first_ts = last_ts = None
     branch = summary_text = None
@@ -66,11 +86,11 @@ for fp in files:
 
     if not first_ts: continue
 
-    # Convert timestamps to GMT+7
-    def to_gmt7(iso):
+    # Convert timestamps to local timezone
+    def to_local(iso):
         try:
             dt = datetime.fromisoformat(iso.replace('Z', '+00:00'))
-            return (dt + bkk).strftime('%Y-%m-%d %H:%M')
+            return dt.astimezone(local_tz).strftime('%Y-%m-%d %H:%M')
         except: return iso
 
     dur_min = 0
@@ -88,8 +108,9 @@ for fp in files:
 
     sessions.append({
         'sessionId': sid[:12],
-        'startGMT7': to_gmt7(first_ts),
-        'endGMT7': to_gmt7(last_ts),
+        'repoName': get_repo_name(source_dir, repo_map),
+        'startLocal': to_local(first_ts),
+        'endLocal': to_local(last_ts),
         'durationMin': dur_min,
         'realHumanMessages': len(real_human),
         'assistantMessages': assistant_count,
@@ -99,5 +120,26 @@ for fp in files:
         'isSidechain': is_sidechain,
     })
 
-sessions.sort(key=lambda s: s['startGMT7'], reverse=True)
-print(json.dumps(sessions, indent=2))
+sessions.sort(key=lambda s: s['startLocal'])  # chronological (oldest first)
+
+GAP_THRESHOLD = 30  # minutes
+
+def parse_local(s):
+    try: return datetime.strptime(s, '%Y-%m-%d %H:%M')
+    except: return None
+
+with_gaps = []
+for i, s in enumerate(sessions):
+    if i == 0:
+        with_gaps.append({"type": "gap", "label": "sleeping / offline"})
+    else:
+        prev_end = parse_local(sessions[i-1]['endLocal'])
+        curr_start = parse_local(s['startLocal'])
+        if prev_end and curr_start:
+            gap_min = int((curr_start - prev_end).total_seconds() / 60)
+            if gap_min > GAP_THRESHOLD:
+                with_gaps.append({"type": "gap", "gapMin": gap_min, "label": f"{gap_min}m gap"})
+    with_gaps.append(s)
+with_gaps.append({"type": "gap", "label": "no session yet"})
+
+print(json.dumps(with_gaps, indent=2))

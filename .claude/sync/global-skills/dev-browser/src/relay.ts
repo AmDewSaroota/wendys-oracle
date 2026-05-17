@@ -111,28 +111,6 @@ export async function serveRelay(options: RelayOptions = {}): Promise<RelayServe
   const namedPages = new Map<string, string>(); // name -> sessionId
   const playwrightClients = new Map<string, PlaywrightClient>();
   let extensionWs: WSContext | null = null;
-  let keepAliveInterval: ReturnType<typeof setInterval> | null = null;
-
-  // Keep-alive: ping extension every 20s to prevent MV3 service worker from sleeping
-  function startKeepAlive() {
-    stopKeepAlive();
-    keepAliveInterval = setInterval(() => {
-      if (extensionWs) {
-        try {
-          extensionWs.send(JSON.stringify({ method: "ping" }));
-        } catch {
-          // Connection may be closed, will be handled by onClose
-        }
-      }
-    }, 20_000);
-  }
-
-  function stopKeepAlive() {
-    if (keepAliveInterval) {
-      clearInterval(keepAliveInterval);
-      keepAliveInterval = null;
-    }
-  }
 
   // Pending requests to extension
   const extensionPendingRequests = new Map<
@@ -588,7 +566,6 @@ export async function serveRelay(options: RelayOptions = {}): Promise<RelayServe
           }
 
           extensionWs = ws;
-          startKeepAlive();
           log("Extension connected");
         },
 
@@ -699,7 +676,6 @@ export async function serveRelay(options: RelayOptions = {}): Promise<RelayServe
           }
 
           log("Extension disconnected");
-          stopKeepAlive();
 
           for (const pending of extensionPendingRequests.values()) {
             pending.reject(new Error("Extension connection closed"));
@@ -744,7 +720,6 @@ export async function serveRelay(options: RelayOptions = {}): Promise<RelayServe
     wsEndpoint,
     port,
     async stop() {
-      stopKeepAlive();
       for (const client of playwrightClients.values()) {
         client.ws.close(1000, "Server stopped");
       }

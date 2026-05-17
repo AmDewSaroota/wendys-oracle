@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "PowerShell(Start-Process explorer *)",
-      "mcp__plugin_discord_discord__fetch_messages"
+      "mcp__plugin_discord_discord__fetch_messages",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Select-String -Path *)",
+      "PowerShell(Copy-Item *)"
     ]
   }
 }
