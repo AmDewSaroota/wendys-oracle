@@ -218,22 +218,19 @@
           <span id="tvoc-countdown-text">ถัดไปใน 5:00</span>
         </div>
       </div>
-      <!-- TVOC input -->
-      <div class="mb-2">
-        <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
-        <div class="flex gap-2 w-full min-w-0">
-          <input type="number" id="tvoc-input" inputmode="decimal" step="0.001" min="0" max="100"
-            class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
-            placeholder="0.000">
-        </div>
-      </div>
-      <!-- CO input -->
-      <div class="mb-2">
-        <label class="text-xs font-bold text-amber-600 mb-1 block">CO — คาร์บอนมอนอกไซด์ (ppm)</label>
-        <div class="flex gap-2 w-full min-w-0">
+      <!-- CO + TVOC side by side — ตรงกับหน้าจอเครื่อง -->
+      <div class="flex gap-3 mb-2">
+        <div class="flex-1 min-w-0">
+          <label class="text-xs font-bold text-amber-600 mb-1 block">CO (ppm)</label>
           <input type="number" id="co-input" inputmode="numeric" step="1" min="0" max="999"
-            class="flex-1 min-w-0 text-center text-xl font-bold p-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 outline-none bg-white"
+            class="w-full text-center text-xl font-bold p-3 rounded-xl border-2 border-amber-200 focus:border-amber-500 outline-none bg-white"
             placeholder="000">
+        </div>
+        <div class="flex-1 min-w-0">
+          <label class="text-xs font-bold text-purple-600 mb-1 block">TVOC (mg/m³)</label>
+          <input type="number" id="tvoc-input" inputmode="decimal" step="0.001" min="0" max="100"
+            class="w-full text-center text-xl font-bold p-3 rounded-xl border-2 border-purple-200 focus:border-purple-500 outline-none bg-white"
+            placeholder="0.000">
         </div>
       </div>
       <!-- Submit button -->
@@ -871,7 +868,7 @@ async function pollStatus() {
       let inQuietNow = false;
       if (qsNow <= qeNow) { inQuietNow = nowHHMM >= qsNow && nowHHMM < qeNow; }
       else { inQuietNow = nowHHMM >= qsNow || nowHHMM < qeNow; }
-      if (inQuietNow) {
+      if (inQuietNow && !activeSession) {
         setSensorUI('cooldown', '🌙', 'อยู่ในช่วงหยุดเก็บข้อมูล (' + qsNow + '–' + qeNow + ')',
           'เก็บรอบถัดไปได้พรุ่งนี้ค่ะ');
         hideAllActions();
@@ -1281,7 +1278,13 @@ function updateSessionRemaining() {
 async function startCollection() {
   if (!selectedHouse) return;
   const btn = document.getElementById('start-collection-btn');
-  if (btn) { btn.disabled = true; btn.querySelector('div:nth-child(2)').textContent = 'กำลังเริ่ม...'; }
+  if (btn) {
+    btn.disabled = true;
+    btn.classList.remove('bg-sky-600'); btn.classList.add('bg-gray-400');
+    btn.querySelector('div:nth-child(1)').textContent = '⏳';
+    btn.querySelector('div:nth-child(2)').textContent = 'กำลังเริ่ม...';
+    btn.querySelector('div:nth-child(3)').textContent = 'รอสักครู่';
+  }
   try {
     const res = await fetch(API_BASE + '/api/volunteer?action=start-session', {
       method: 'POST',
@@ -1308,14 +1311,20 @@ async function startCollection() {
       showToast('⚠️ ไม่สามารถเริ่มได้ — ' + (data.error || 'ลองใหม่อีกครั้ง'));
       if (btn) {
         btn.disabled = false;
+        btn.classList.remove('bg-gray-400'); btn.classList.add('bg-sky-600');
+        btn.querySelector('div:nth-child(1)').textContent = '▶';
         btn.querySelector('div:nth-child(2)').textContent = 'เริ่มเก็บข้อมูล';
+        btn.querySelector('div:nth-child(3)').textContent = 'กดเมื่อพร้อมเริ่มเก็บข้อมูล';
       }
     }
   } catch (e) {
     showToast('⚠️ การเชื่อมต่อขัดข้อง — ลองใหม่');
     if (btn) {
       btn.disabled = false;
+      btn.classList.remove('bg-gray-400'); btn.classList.add('bg-sky-600');
+      btn.querySelector('div:nth-child(1)').textContent = '▶';
       btn.querySelector('div:nth-child(2)').textContent = 'เริ่มเก็บข้อมูล';
+      btn.querySelector('div:nth-child(3)').textContent = 'กดเมื่อพร้อมเริ่มเก็บข้อมูล';
     }
   }
 }
@@ -1331,7 +1340,10 @@ function hideCookingButton() {
 
 function showTvocSection() {
   document.getElementById('tvoc-section').classList.remove('hidden');
-  if (!tvocReminderTimer) startTvocReminder();
+  if (!tvocReminderTimer) {
+    const saved = loadTvocNextReminder();
+    startTvocReminder(saved > 0 ? saved : null);
+  }
 }
 
 const END_BTN_SHOW_AFTER_MIN = 100; // show "จบ" button after 100 min (30 min before auto-cutoff)
@@ -1708,6 +1720,22 @@ function showToast(msg, duration) {
 const TVOC_INTERVAL_MS = DEMO_MODE ? 300000 / DEMO_TIME_X : 300000; // 5 min real, 15 sec demo
 let tvocNextReminder = 0; // timestamp of next reminder
 let tvocReminderTimer = null;
+
+function saveTvocNextReminder() {
+  if (!selectedHouse) return;
+  try {
+    const thaiDate = new Date(Date.now() + 7 * 3600000).toISOString().split('T')[0];
+    localStorage.setItem('tvoc_next_reminder_' + selectedHouse.id + '_' + thaiDate, String(tvocNextReminder));
+  } catch(e) {}
+}
+
+function loadTvocNextReminder() {
+  if (!selectedHouse) return 0;
+  try {
+    const thaiDate = new Date(Date.now() + 7 * 3600000).toISOString().split('T')[0];
+    return parseInt(localStorage.getItem('tvoc_next_reminder_' + selectedHouse.id + '_' + thaiDate) || '0', 10);
+  } catch(e) { return 0; }
+}
 function closeTvocModal() {
   const m = document.getElementById('tvoc-modal');
   if (m) m.classList.add('hidden');
@@ -1815,11 +1843,17 @@ function updateTvocCountdown() {
   }
 }
 
-function startTvocReminder() {
+function startTvocReminder(resumeTimestamp) {
   if (tvocReminderTimer) clearInterval(tvocReminderTimer);
-  tvocNextReminder = Date.now() + TVOC_INTERVAL_MS;
-  tvocOverdue = false;
+  if (resumeTimestamp) {
+    tvocNextReminder = resumeTimestamp;
+    tvocOverdue = Date.now() >= resumeTimestamp;
+  } else {
+    tvocNextReminder = Date.now() + TVOC_INTERVAL_MS;
+    tvocOverdue = false;
+  }
   tvocLastNag = 0;
+  saveTvocNextReminder();
   updateTvocCountdown();
 
   tvocReminderTimer = setInterval(() => {
@@ -1837,6 +1871,9 @@ function startTvocReminder() {
     }
     updateTvocCountdown();
   }, 1000);
+
+  // ถ้า restore มาแล้ว overdue อยู่แล้ว — แจ้งทันที
+  if (tvocOverdue) { tvocLastNag = Date.now(); sendTvocNotification(); }
 }
 
 function stopTvocReminder() {
@@ -1849,6 +1886,7 @@ function resetTvocCountdown() {
   tvocNextReminder = Date.now() + TVOC_INTERVAL_MS;
   tvocOverdue = false;
   tvocLastNag = 0;
+  saveTvocNextReminder();
   updateTvocCountdown();
   const banner = document.getElementById('tvoc-reminder-banner');
   if (banner) banner.classList.add('hidden');

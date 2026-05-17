@@ -63,6 +63,7 @@
     .step-card { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc; }
     .bg-gray-800 { background: #f3f4f6 !important; border: 1px solid #d1d5db !important; break-inside: avoid; page-break-inside: avoid; }
     .bg-white { break-inside: avoid; page-break-inside: avoid; }
+    .bg-indigo-50 { break-inside: avoid; page-break-inside: avoid; }
     header { background: white !important; color: black !important; border-bottom: 2px solid #064e3b; }
     header h1 { color: #064e3b !important; }
     header p { color: #333 !important; }
@@ -281,10 +282,23 @@
     <!-- ตัวอย่างหน้าจอ: ปุ่มเริ่มเก็บข้อมูล -->
     <div class="bg-gray-800 rounded-2xl p-4 mb-3 shadow-sm">
       <p class="text-xs text-gray-400 mb-3 text-center">ตัวอย่างหน้าจอ</p>
-      <div class="bg-sky-600 text-white py-5 rounded-2xl text-center">
-        <div class="text-4xl mb-1">▶</div>
-        <div class="text-lg font-bold">เริ่มเก็บข้อมูล</div>
-        <div class="text-xs opacity-70 mt-1">กดเมื่อพร้อมเริ่มเก็บข้อมูล</div>
+      <div class="flex gap-3">
+        <div class="flex-1">
+          <p class="text-xs text-gray-400 mb-1 text-center">ก่อนกด</p>
+          <div class="bg-sky-600 text-white py-4 rounded-2xl text-center">
+            <div class="text-3xl mb-1">▶</div>
+            <div class="text-sm font-bold">เริ่มเก็บข้อมูล</div>
+            <div class="text-xs opacity-70 mt-0.5">กดเมื่อพร้อม</div>
+          </div>
+        </div>
+        <div class="flex-1">
+          <p class="text-xs text-gray-400 mb-1 text-center">หลังกด</p>
+          <div class="bg-gray-400 text-white py-4 rounded-2xl text-center">
+            <div class="text-3xl mb-1">⏳</div>
+            <div class="text-sm font-bold">กำลังเริ่ม...</div>
+            <div class="text-xs opacity-70 mt-0.5">รอสักครู่</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -333,13 +347,15 @@
           <p class="text-sm font-bold text-purple-800">📝 บันทึกค่า</p>
           <span class="text-xs text-purple-500 font-bold">กรอกค่าถัดไปใน 4:32</span>
         </div>
-        <div class="mb-2">
-          <p class="text-xs font-bold text-purple-600 mb-1">TVOC (mg/m³)</p>
-          <div class="bg-white rounded-lg border border-purple-200 py-2 px-3 text-center text-gray-400 text-sm">0.000</div>
-        </div>
-        <div class="mb-3">
-          <p class="text-xs font-bold text-amber-600 mb-1">CO (ppm)</p>
-          <div class="bg-white rounded-lg border border-purple-200 py-2 px-3 text-center text-gray-400 text-sm">0</div>
+        <div class="flex gap-2 mb-3">
+          <div class="flex-1">
+            <p class="text-xs font-bold text-amber-600 mb-1">CO (ppm)</p>
+            <div class="bg-white rounded-lg border border-amber-200 py-2 px-3 text-center text-gray-400 text-sm">000</div>
+          </div>
+          <div class="flex-1">
+            <p class="text-xs font-bold text-purple-600 mb-1">TVOC (mg/m³)</p>
+            <div class="bg-white rounded-lg border border-purple-200 py-2 px-3 text-center text-gray-400 text-sm">0.000</div>
+          </div>
         </div>
         <div class="bg-purple-600 text-white py-2 rounded-lg text-center font-bold text-sm">📝 บันทึก</div>
       </div>
