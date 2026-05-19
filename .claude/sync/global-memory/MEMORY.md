@@ -102,6 +102,9 @@
 - **ถ้าไม่แน่ใจ บอกว่าไม่แน่ใจ** — อย่าพูดเหมือนมั่นใจ
 - **ห้าม remind สิ่งที่แก้ไปแล้วซ้ำ** (DewS สั่ง 2026-04-18)
 
+## NDF Promo
+- **Act 1 ต้องแนบ ref 2 รูปเสมอ** → `memory/feedback_act1_always_two_refs.md` — `@1REf.png` + `@1REf_2.png` ขาดไม่ได้ (DewS เตือนหลายรอบ)
+
 ## Gemini Agent
 - **Fact-check 2 ชั้น** → `memory/feedback_gemini_agent_verification.md` — Gemini self-check ✅/⚠️/📚 + WEnDyS Final Verification + Verification Summary table ก่อนส่ง DewS เสมอ
 
