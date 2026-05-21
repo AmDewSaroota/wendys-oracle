@@ -103,6 +103,7 @@
 - **ห้าม remind สิ่งที่แก้ไปแล้วซ้ำ** (DewS สั่ง 2026-04-18)
 
 ## NDF Promo
+- **ทุกคลิปต้องโชว์แอป แต่ UI คล้ายไม่เหมือนจริง** → `memory/feedback_ndf_promo_show_app.md` — gen ref UI ใหม่ (inspired by) ห้ามใช้ screen recording/screenshot จริง — apply ทุกคลิป ห้ามถามซ้ำ
 - **Act 1 ต้องแนบ ref 2 รูปเสมอ** → `memory/feedback_act1_always_two_refs.md` — `@1REf.png` + `@1REf_2.png` ขาดไม่ได้ (DewS เตือนหลายรอบ)
 
 ## Gemini Agent
