@@ -27,6 +27,9 @@
 - **Discord MCP CRLF bug** → `memory/discord-mcp-crlf-bug.md` — ถ้า `plugin:discord:discord` fail บน Windows ให้แปลง `.env` จาก CRLF → LF
 - **maw-js + maw-ui Windows install** → `memory/maw-js-windows-symlink-fix.md` — full setup (2 repos), plugin + UI junctions, restart-by-port (process is bun.exe ไม่ใช่ maw.exe)
 
+## Family
+- ลูก: **น้องเมฆ** เกิด 26 มกราคม 2566 (Jan 26, 2023) — อายุ 3 ขวบกว่า → `memory/user_child_megh.md`
+
 ## Company
 - DewS's company: **NDF** (ไม่ใช่ Radical Enlighten)
 
