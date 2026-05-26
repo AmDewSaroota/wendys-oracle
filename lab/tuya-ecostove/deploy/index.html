@@ -12127,14 +12127,15 @@
                 <div class="space-y-4">
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.name')}</label>
-                        <input id="edit-device-name" value="${escAttr(name)}" class="w-full p-4 rounded-2xl border">
+                        <input id="edit-device-name" value="${escAttr(name)}" class="w-full p-4 rounded-2xl border" oninput="checkDeviceNameMismatch()">
                     </div>
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.select')}</label>
-                        <select id="edit-device-tuya-id" class="w-full p-4 rounded-2xl border custom-select">
+                        <select id="edit-device-tuya-id" class="w-full p-4 rounded-2xl border custom-select" onchange="checkDeviceNameMismatch()">
                             ${sensorOptions}
                         </select>
                     </div>
+                    <div id="device-name-mismatch-warn" class="hidden bg-amber-50 border border-amber-300 rounded-xl px-4 py-3 text-sm text-amber-800"></div>
                     <div>
                         <label class="text-[13px] font-bold text-navy block mb-1">${t('dev.change.house')}</label>
                         <select id="edit-device-subject" class="w-full p-4 rounded-2xl border custom-select">
@@ -12145,6 +12146,23 @@
                     <button onclick="updateDevice('${escAttr(id)}')" class="w-full bg-[#064e3b] text-white py-4 rounded-2xl font-bold">${t('common.save.changes')}</button>
                 </div>
             `);
+            setTimeout(checkDeviceNameMismatch, 0);
+        }
+        function checkDeviceNameMismatch() {
+            const nameEl = document.getElementById('edit-device-name');
+            const sensorEl = document.getElementById('edit-device-tuya-id');
+            const warnEl = document.getElementById('device-name-mismatch-warn');
+            if (!nameEl || !sensorEl || !warnEl) return;
+            const nameMatch = nameEl.value.match(/(\d{3})$/);
+            const sensorText = sensorEl.options[sensorEl.selectedIndex]?.text || '';
+            const sensorMatch = sensorText.match(/(\d{3})/g);
+            const sensorNum = sensorMatch ? sensorMatch[sensorMatch.length - 1] : null;
+            if (nameMatch && sensorNum && nameMatch[1] !== sensorNum) {
+                warnEl.textContent = '⚠️ เลขไม่ตรงกัน: ชื่อเครื่อง "' + nameMatch[1] + '" ≠ เซนเซอร์ "' + sensorNum + '"';
+                warnEl.classList.remove('hidden');
+            } else {
+                warnEl.classList.add('hidden');
+            }
         }
         async function updateDevice(id) {
             const name = document.getElementById('edit-device-name').value;

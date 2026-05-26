@@ -921,6 +921,7 @@ async function pollStatus() {
     if (activeSession && !sessionEndSummaryShown) {
       sessionEndSummaryShown = true;
       showAutoSessionSummary();
+      return;
     }
 
     // Check if daily limit reached (2 completed sessions today)
