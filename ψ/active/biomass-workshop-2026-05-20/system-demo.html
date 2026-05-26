@@ -43,6 +43,10 @@
         .pulse-ring { animation: pulse-ring 2s infinite; }
         .vstep-btn { transition: all 0.15s; cursor: pointer; }
         .vstep-btn:hover { transform: translateY(-1px); }
+        /* Hide header + scenario bars when in volunteer mode (full focus on volunteer demo) */
+        body.volunteer-mode > nav,
+        body.volunteer-mode > .bg-purple-100,
+        body.volunteer-mode > .scenario-bar { display: none !important; }
     </style>
 </head>
 <body class="bg-gradient-to-b from-slate-50 to-slate-100 text-gray-800 min-h-screen">
@@ -1108,13 +1112,13 @@
         </div>
 
         <!-- MT15 draggable popup -->
-        <div id="mt15-popup" style="display:none;position:fixed;top:80px;right:40px;z-index:9999;background:white;border:2px solid #d1fae5;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);overflow:auto;resize:both;min-width:320px;min-height:200px;width:560px;">
-            <div id="mt15-popup-handle" style="background:#065f46;color:white;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;cursor:grab;user-select:none;">
-                <span style="font-size:14px;font-weight:700;">🔬 หน้าจอเซนเซอร์ MT15 — ลากย้ายได้</span>
+        <div id="mt15-popup" style="display:none;flex-direction:column;position:fixed;top:80px;right:40px;z-index:9999;background:white;border:2px solid #d1fae5;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.2);overflow:hidden;resize:both;min-width:320px;min-height:300px;width:680px;height:560px;">
+            <div id="mt15-popup-handle" style="background:#065f46;color:white;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;cursor:grab;user-select:none;flex-shrink:0;">
+                <span style="font-size:14px;font-weight:700;">🔬 หน้าจอเซนเซอร์ MT15 — ลากย้ายได้ · ลากมุมล่างขวาเพื่อขยาย</span>
                 <button onclick="toggleMT15Popup()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">✕</button>
             </div>
-            <div style="display:flex;align-items:flex-start;gap:16px;padding:16px;">
-                <img src="./MT15_Screen.png" style="height:420px;width:auto;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.15);flex-shrink:0;">
+            <div style="display:flex;align-items:stretch;gap:16px;padding:16px;flex:1;min-height:0;overflow:auto;">
+                <img src="./MT15_Screen.png" style="height:100%;width:auto;max-width:65%;object-fit:contain;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.15);flex-shrink:0;">
                 <div style="font-size:14px;line-height:1.8;color:#1e293b;white-space:nowrap;">
                     <p style="font-weight:700;color:#065f46;font-size:15px;margin-bottom:10px;">ค่าที่แสดงบนหน้าจอ</p>
                     <div style="display:flex;flex-direction:column;gap:4px;">
@@ -1134,7 +1138,7 @@
         <script>
         function toggleMT15Popup(){
             var p=document.getElementById('mt15-popup');
-            p.style.display=p.style.display==='none'?'block':'none';
+            p.style.display=p.style.display==='none'?'flex':'none';
         }
         (function(){
             var el=document.getElementById('mt15-popup');
@@ -1878,9 +1882,8 @@
             document.getElementById('nav-basic').className = tab === 'basic' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
             document.getElementById('nav-deep').className = tab === 'deep' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
             document.getElementById('nav-volunteer').className = tab === 'volunteer' ? 'nav-active py-2' : 'text-emerald-200/70 hover:text-white font-medium py-2';
-            // Hide scenario switcher when on volunteer view (not relevant)
-            const scSwitcher = document.querySelector('.bg-purple-100');
-            if (scSwitcher) scSwitcher.style.display = tab === 'volunteer' ? 'none' : 'flex';
+            // Volunteer mode = full focus (hide nav + scenario bars/switcher via CSS)
+            document.body.classList.toggle('volunteer-mode', tab === 'volunteer');
             // Init deep map on first visit (Leaflet needs visible container)
             if (tab === 'deep' && !mapDeepInited) {
                 mapDeepInited = true;
