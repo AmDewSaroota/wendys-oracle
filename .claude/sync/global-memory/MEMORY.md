@@ -8,11 +8,6 @@
 - **DewS ใช้ VSCode เป็นหลัก** → `memory/user_workflow_vscode.md` — แนะนำตาม VSCode terminal; `.bat` บน Desktop เป็น backup เท่านั้น
 - **WEnDyS bot ID** = `1501114681388040302` / role `1501118554584383582` → `memory/wendys_bot_identity.md` (ใช้แยก mention ของเรา vs บอทอื่นใน Discord)
 
-## AI Video/Image Tool Stack
-- **Higgsfield** = storyboard / ภาพนิ่ง (still images) · **Dreamina/Jimeng** = video (Seedance engine)
-- Workflow: Storyboard ก่อน → ใช้เป็น ref → Video → `memory/ai_video_tool_stack.md`
-- ⚠️ ห้ามข้ามไป video prompt เลย — storyboard ก่อนเสมอ
-
 ## Quick-Start Commands
 - **"มังกร"** หรือ **"Seedance"** → โหลด `ψ/lab/vdrama/seedance-prompt-guide.md` ทันที
   - ⚠️ **Video ref strict lock = all-or-nothing เด็ดขาด** → `memory/feedback_video_ref_no_partial_override.md` — ห้ามแนะนำ ONLY MODIFY / 唯一修改 (มันเฟล)
@@ -22,9 +17,6 @@
 
 ## UI Text Guidelines
 - ใช้**คำกลางๆ** เสมอ — ห้ามอ้างอิง "อาจารย์", "ชาวบ้าน", หรือบุคคลเฉพาะ
-
-## Thai School Uniform Rules (AI gen)
-- 🎒 **Thai school uniform/hair** → `memory/thai_school_uniform_rules.md` — เด็กชายไทย ม.ต้น+ม.ปลาย **ใส่ขาสั้น khaki ทั้งคู่** · ความต่างหลัก = ทรงผม (ม.ต้น = รองทรงสั้น/crew cut · ม.ปลาย = สั้นเรียบ ยาวกว่าเล็กน้อย)
 
 ## Machines (WEnDyS Twins)
 - **พี่เวนดี้** 💻 = โน้ตบุ๊ค (DewSNitro) — เครื่องหลัก
