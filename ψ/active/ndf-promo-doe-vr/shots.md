@@ -1,4 +1,4 @@
-# NDF Promo — DOE JOB VR
+﻿# NDF Promo — DOE JOB VR
 
 **Project**: NDF Promotional Video (showcase งาน NDF Dev)
 **Shot ที่กำลังทำ**: Shot สุดท้าย (5/5) — **DOE JOB เรียนรู้อาชีพ VR**
@@ -30,7 +30,7 @@
 | 2 | 4-7s | 3s | Hall นิทรรศการ Career Fair · crowd + booths | เด็กเดินผ่านคน · booth DOE JOB VR เด่นในระยะกลาง · มี VR headset display | curious, drawn-in | Tracking shot จากด้านหลังเด็ก · slight side angle | ✅ Storyboard prompt done |
 | 3 | 7-10s | 3s | หน้า booth DOE JOB VR | เด็กยก VR headset ขึ้นใส่ · มือ + headset เด่น | anticipation, wonder | Close-up face/hands | ⏳ Pending |
 | 4 | 10-12s | 2s | Transition | Light flash · fade to VR world | magical transition | Whip pan / fade effect | ⏳ Pending |
-| 5 | 12-22s | 10s | ใน VR worlds (7 ฉาก) | Quick-cut montage 1.4s/อาชีพ:<br>① บาริสต้า ② เชฟ ③ แอร์โฮสเตส ④ นักขับโดรน ⑤ ช่างไฟ ⑥ ช่างแต่งหน้า ⑦ แพทย์ | dynamic, exciting, vibrant | Quick cuts · POV/medium | ⏳ Pending |
+| 5 | 12-22s | 10s | ใน VR worlds (3 อาชีพ · 4 clips) | 5A: Drone briefing room · 5B: Drone fly POV · 5C: Doctor hospital room · 5D: Chef kitchen prep — ~2.5s/clip | dynamic, exciting, vibrant | Quick cuts · POV/medium | ✅ Storyboard done (5A=DronePilotRefF 5B=DronePilotRefE 5C=DoctorRefA 5D=ChefRefA) |
 | 6 | 22-25s | 3s | กลับมา booth | เด็กยังใส่ headset · ใบหน้าเห็นรอยยิ้ม · ดวงตาประกาย | hopeful, inspired | Extreme close-up face | ⏳ Pending |
 | 7 | 25-28s | 3s | หน้า booth | เด็กถอด headset · หันยิ้มให้ครู/พ่อแม่ที่ยืนข้างๆ · พวกเขายิ้มตอบ | warm relief, connection | Medium two-shot | ⏳ Pending |
 | 8 | 28-30s | 2s | End card | **พื้นที่เบลอๆ รอ logo** + tagline placeholder · พื้นหลัง bokeh นิทรรศการ | confident close | Static | ⏳ Pending |
@@ -121,6 +121,7 @@ Length tgt:  4 sec/clip, sweet spot 150-200 words EN
 - ห้ามข้ามไป video prompt โดยไม่มี storyboard ก่อน
 - Keyshot ครอบคลุม char + env แล้ว → ไม่ต้องแนบ @[CharBoyA] / @[REFBedroom] ซ้ำใน video prompt
 - Logo บริษัทใส่ตอน post — prompt ใส่ "blurred placeholder" / "generic abstract booth signage"
+- **ทุก prompt ต้องระบุ tool ที่ใช้เจนในหัวข้อเสมอ** — format: `Shot X — [ประเภท] (Tool)` เช่น `Shot 3a — Storyboard (Higgsfield)` / `Shot 1 — Video (Dreamina)` / `REFBooth — Setting ref (Higgsfield)`
 
 ---
 
