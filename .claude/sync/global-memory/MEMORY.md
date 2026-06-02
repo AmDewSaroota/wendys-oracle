@@ -82,6 +82,9 @@
 ### 🚀 EcoStove deploy ไม่ต้องถาม
 - → `memory/feedback_ecostove_deploy_no_confirm.md` — `npx vercel --prod --yes` รันได้เลย ไม่ต้อง confirm
 
+### 🪟 Editor window อย่าเด้งทับขณะแก้โค้ด
+- → `memory/feedback_no_window_pop.md` — VSCode auto-focus ไปที่ไฟล์ที่แก้ทำให้ทับหน้าที่ DewS ดูอยู่ — แจ้ง DewS ให้ drag tab ไปไว้อีก column ก่อนเริ่ม
+
 ### 📂 เปิด Explorer หลังสร้างไฟล์ใหม่ (DewS)
 - → `memory/feedback_open_explorer_on_new_file.md` — ทุกครั้งที่สร้างไฟล์ใหม่ ต้อง `Start-Process explorer` ไปที่ folder ทันที
 
