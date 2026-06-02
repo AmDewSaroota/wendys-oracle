@@ -108,6 +108,13 @@
 - **ถ้าไม่แน่ใจ บอกว่าไม่แน่ใจ** — อย่าพูดเหมือนมั่นใจ
 - **ห้าม remind สิ่งที่แก้ไปแล้วซ้ำ** (DewS สั่ง 2026-04-18)
 
+## /shot Skill
+- อ่าน NDF narrative guide + seedance guide ก่อนเขียน prompt ทุกครั้ง → `memory/feedback_shot_skill_read_guide.md`
+- Duration: 4-15s ต่อคลิป (ไม่ fixed) | Ratio: 9:16 ก่อน | BGM: ใส่ใน AE ทีหลัง (diegetic sounds เท่านั้นใน prompt)
+
+## Tool Workflow
+- **Higgsfield** = เจนภาพนิ่ง storyboard / **Dreamina** = เจนคลิปวิดีโอ → `memory/feedback_higgsfield_dreamina_workflow.md`
+
 ## Video/Image Generation (ทุกงาน)
 - **ทุก prompt ต้องระบุ tool ในหัวข้อเสมอ** → `memory/feedback_prompt_tool_label_required.md` — format: `Shot X — Storyboard (Higgsfield)` / `Shot X — Video (Dreamina)` ใช้กับทุกงาน ไม่ใช่แค่ NDF Promo
 

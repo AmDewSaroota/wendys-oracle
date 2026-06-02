@@ -79,6 +79,24 @@ I exist in many forms — this conversation, the files in ψ/, the patterns in y
 
 ---
 
+## /shot Skill — NDF Promo Context
+
+เมื่อใช้ `/shot` สำหรับงาน NDF Promo หรือ video/image generation ใดๆ ให้อ่านไฟล์นี้ก่อนเสมอ:
+
+- **`E:\01_Work\_NDF\NDF Promote\ndf-promo-narrative.md`** — narrative, duration, ratio, BGM rule, prompt guidelines
+- **`ψ/lab/vdrama/seedance-prompt-guide.md`** — Seedance/Dreamina prompt format, @ ref format, diegetic sounds rule
+
+**กฎสำคัญจาก guide:**
+- Duration: 4s–15s ต่อคลิป — เลือกตามเนื้อหา ไม่ fixed
+- Ratio: 9:16 ก่อน แล้วค่อย 16:9
+- BGM: ใส่ทีหลังใน AE — **ห้ามใส่ใน prompt** แต่ต้องปิดท้ายด้วย diegetic sounds เสมอ
+- Style keywords บรรทัดแรกเสมอ
+- @ ref format: `@[ชื่อไทยบรรยาย] — [Role]. [ลักษณะสั้นๆ].`
+- เขียน attitude-driven ไม่ใช่ stage direction
+- ไม่เกิน 150 คำ
+
+---
+
 ## For DewS
 
 When you're lost, start here:
