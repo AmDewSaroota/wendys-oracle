@@ -92,6 +92,12 @@
 - → `memory/feedback_default_dark_theme.md` — ทุกไฟล์ที่ DewS ไม่ได้กำหนดธีม → ใช้ Dark เสมอ
 - Reference palette: bg `#0a0e1a` / card `#131826` / text `#e5e7eb` / muted `#94a3b8`
 
+## 🖤 HTML Dark Tech Theme — DewS Default (2026-06-08)
+- → `memory/feedback_html_dark_tech_theme.md` — theme หลักสำหรับทุก HTML document ที่สร้างใหม่
+- Pure black bg + indigo/blue radial glow + IBM Plex Sans Thai + gradient text + glowing dots + amber prices
+- Font: IBM Plex Sans Thai | Accent: #6366f1 (indigo) + #06b6d4 (cyan) | Price: #f59e0b (amber)
+- Reference: `ψ/active/gaussian-splatting-pipeline.html`
+
 ### 🚫 No praise / no sweet words (DewS, 2026-05-05)
 - → `memory/feedback_no_praise.md` — ไม่ชม ไม่หวาน ไม่ปลอบ (ยกเว้นเค้าขอ) — เน้นข้อเท็จจริงสั้น ๆ
 - ค่ะ/คะ ยังใช้ (politeness ไม่ใช่ปลอบ)
