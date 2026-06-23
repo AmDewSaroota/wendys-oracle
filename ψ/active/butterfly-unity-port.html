@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Butterfly Flock — AE → Unity3D</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #000;
+    color: #e5e7eb;
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Radial glow background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 800px 600px at 20% 20%, rgba(99,102,241,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 400px at 80% 80%, rgba(6,182,212,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 40px 100px;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 56px;
+    border-bottom: 1px solid rgba(99,102,241,0.2);
+    padding-bottom: 32px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6366f1;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    background: linear-gradient(135deg, #e5e7eb 0%, #6366f1 50%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    color: #94a3b8;
+    font-size: 0.95rem;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2 .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #06b6d4;
+    margin-bottom: 12px;
+    margin-top: 24px;
+  }
+
+  p {
+    color: #cbd5e1;
+    margin-bottom: 14px;
+  }
+
+  /* Cards */
+  .card {
+    background: rgba(19,24,38,0.8);
+    border: 1px solid rgba(99,102,241,0.15);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+
+  .card-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .card.method-a { border-color: rgba(99,102,241,0.3); }
+  .card.method-b { border-color: rgba(6,182,212,0.3); }
+
+  .method-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .method-a .method-label { color: #6366f1; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); }
+  .method-b .method-label { color: #06b6d4; background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.25); }
+
+  .method-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 4px;
+  }
+
+  .method-desc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 14px;
+  }
+
+  /* Code blocks */
+  pre {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: #e2e8f0;
+  }
+
+  .comment { color: #4a5568; }
+  .keyword { color: #6366f1; }
+  .type    { color: #06b6d4; }
+  .func    { color: #a78bfa; }
+  .num     { color: #f59e0b; }
+  .str     { color: #34d399; }
+
+  /* Recommend badge */
+  .badge-rec {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f59e0b;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Note box */
+  .note {
+    background: rgba(6,182,212,0.05);
+    border-left: 3px solid #06b6d4;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: #94a3b8;
+  }
+
+  .note strong { color: #06b6d4; }
+
+  .warn {
+    background: rgba(245,158,11,0.05);
+    border-left: 3px solid #f59e0b;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: #94a3b8;
+  }
+
+  .warn strong { color: #f59e0b; }
+
+  /* Mapping table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead tr {
+    border-bottom: 1px solid rgba(99,102,241,0.3);
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 16px;
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #cbd5e1;
+    vertical-align: top;
+  }
+
+  td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: #a78bfa;
+  }
+
+  td:nth-child(2) {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: #06b6d4;
+  }
+
+  td:last-child {
+    font-size: 0.82rem;
+    color: #64748b;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* Divider */
+  hr {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin: 40px 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #334155;
+    margin-top: 60px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="tag">After Effects → Unity3D</div>
+    <h1>Butterfly Flock<br>Port Guide</h1>
+    <p class="subtitle">แปลง expression กลุ่มผีเสื้อจาก AE มาเป็น C# script ใน Unity3D</p>
+  </div>
+
+  <!-- BRIEF -->
+  <div class="section">
+    <div class="tag" style="color:#10b981;background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.25);">โจทย์</div>
+    <h2 style="font-size:1.4rem;margin-bottom:24px;"><span class="num" style="background:linear-gradient(135deg,#059669,#0891b2);">★</span> งานสองชิ้น — ต่างกันอย่างไร</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:36px;">
+      <div class="card" style="border-color:rgba(99,102,241,0.35);">
+        <div style="font-size:10px;color:#6366f1;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;">งานต้นฉบับ — DewS (After Effects)</div>
+        <ul style="color:#cbd5e1;font-size:.88rem;line-height:2.1;padding-left:16px;">
+          <li>ผีเสื้อคือ <strong style="color:#e5e7eb;">ตัวประกอบ</strong> — เล็ก ให้ฉากมีชีวิตชีวา</li>
+          <li>ฝูง — ตามกันเป็นขบวน Leader-Follower</li>
+          <li>ขนาดเล็ก ไม่ต้องดูละเอียด</li>
+          <li>2D Composition space (pixel)</li>
+          <li>Pre-rendered — ไม่ real-time</li>
+        </ul>
+      </div>
+      <div class="card" style="border-color:rgba(16,185,129,0.35);">
+        <div style="font-size:10px;color:#10b981;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;">งานปัจจุบัน — น้อง (Unity 3D)</div>
+        <ul style="color:#cbd5e1;font-size:.88rem;line-height:2.1;padding-left:16px;">
+          <li>ผีเสื้อคือ <strong style="color:#e5e7eb;">พระเอก</strong> — ตัวใหญ่ เห็นชัด</li>
+          <li>บินอิสระแต่ละตัว — ไม่มี leader</li>
+          <li>Texture จาก user ระบายสี (scan)</li>
+          <li>3D World space — real-time</li>
+          <li>Spawn → บิน → fade → destroy</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Reference images -->
+    <h3 style="color:#94a3b8;margin-bottom:14px;">Reference ที่ส่งมา</h3>
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:36px;">
+      <div style="background:rgba(19,24,38,0.8);border:1px solid rgba(239,68,68,0.25);border-radius:10px;overflow:hidden;">
+        <div style="padding:10px 16px;background:rgba(239,68,68,0.08);border-bottom:1px solid rgba(239,68,68,0.15);">
+          <span style="font-size:.8rem;font-weight:700;color:#fca5a5;letter-spacing:.06em;">REF 1 — ปัญหา: หัวชี้ขึ้นตลอด (TOP view)</span>
+        </div>
+        <img src="butterfly-ref-topview.png" style="width:100%;display:block;" alt="REF 1 top view problem">
+        <div style="padding:10px 16px;font-size:.8rem;color:#64748b;">ลูกศรเขียวชี้ขึ้นทุกตัว — ผีเสื้อไม่หันหัวตามทิศที่บิน เห็นแค่ด้านบนปีก</div>
+      </div>
+      <div style="background:rgba(19,24,38,0.8);border:1px solid rgba(6,182,212,0.25);border-radius:10px;overflow:hidden;">
+        <div style="padding:10px 16px;background:rgba(6,182,212,0.06);border-bottom:1px solid rgba(6,182,212,0.15);">
+          <span style="font-size:.8rem;font-weight:700;color:#67e8f9;letter-spacing:.06em;">REF 2 — เป้าหมาย: Path แบบ S-curve organic</span>
+        </div>
+        <img src="butterfly-ref-path.png" style="width:100%;display:block;" alt="REF 2 flight path">
+        <div style="padding:10px 16px;font-size:.8rem;color:#64748b;">เส้นแดง — ผีเสื้อควรบินโค้งผ่านฉากอย่าง organic ไม่ใช่แค่ขึ้น/ลงตรงๆ</div>
+      </div>
+    </div>
+
+    <!-- Current Problems -->
+    <h2 style="margin-bottom:20px;"><span class="num" style="background:linear-gradient(135deg,#dc2626,#ea580c);">!</span> ปัญหาที่น้องเจออยู่ตอนนี้</h2>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px;">
+
+      <div class="card" style="border-color:rgba(239,68,68,0.25);display:flex;gap:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:.9rem;">👁️</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#fca5a5;margin-bottom:4px;">มองเห็นแค่ TOP view</div>
+          <div style="font-size:.85rem;color:#94a3b8;line-height:1.65;">โมเดลผีเสื้อหันหน้าขึ้นตลอด — ไม่ว่าจะบินไปทางไหน เราเห็นแค่ด้านหลังปีก เหมือนมองจากข้างบน</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(239,68,68,0.25);display:flex;gap:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:.9rem;">↗️</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#fca5a5;margin-bottom:4px;">ความเร็วกับทิศทางไม่สัมพันธ์กัน</div>
+          <div style="font-size:.85rem;color:#94a3b8;line-height:1.65;">animation กระพือปีกอยู่ แต่ตัวผีเสื้อ slide ไปเอียงๆ ดูเหมือนถูกลากออกไปทางข้างแทนที่จะ "บิน" จริงๆ</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(239,68,68,0.25);display:flex;gap:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:.9rem;">❄️</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#fca5a5;margin-bottom:4px;">กระพือเร็ว แต่เคลื่อนที่ช้า — ดู freeze</div>
+          <div style="font-size:.85rem;color:#94a3b8;line-height:1.65;">wing flap speed กับ movement speed ไม่ sync กัน ผีเสื้อดูเหมือนขยันกระพือปีก แต่ไม่ไปไหนเลย</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(239,68,68,0.25);display:flex;gap:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:.9rem;">⬆️</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#fca5a5;margin-bottom:4px;">หัวชี้ขึ้นตลอด</div>
+          <div style="font-size:.85rem;color:#94a3b8;line-height:1.65;">action มีแค่ขึ้น/ลง และ slide เอียงข้างเล็กน้อย ทั้งที่ผีเสื้อจริงจะหันหัวไปทางที่บิน</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- What to implement -->
+    <h2 style="margin-bottom:20px;"><span class="num" style="background:linear-gradient(135deg,#059669,#0891b2);">✓</span> สิ่งที่ควร Implement เพิ่ม</h2>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+        <div style="color:#10b981;font-size:1rem;flex-shrink:0;margin-top:1px;">✅</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#6ee7b7;margin-bottom:3px;">แก้ Forward vector ของ model</div>
+          <div style="font-size:.82rem;color:#64748b;">ตรวจว่า mesh หน้าไปทาง +Z หรือ +Y — ถ้าผิดต้องหมุน root object 90° ก่อน add LookRotation</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+        <div style="color:#10b981;font-size:1rem;flex-shrink:0;margin-top:1px;">✅</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#6ee7b7;margin-bottom:3px;">LookRotation ตาม velocity</div>
+          <div style="font-size:.82rem;color:#64748b;">หันหัวไปทางที่บิน — มีใน ButterflyHero.cs แล้ว แต่ต้องตรวจ forward axis ของ model ให้ถูกก่อน</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+        <div style="color:#10b981;font-size:1rem;flex-shrink:0;margin-top:1px;">✅</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#6ee7b7;margin-bottom:3px;">Bank angle — เอียงตัวเมื่อเลี้ยว</div>
+          <div style="font-size:.82rem;color:#64748b;">คำนวณ angular velocity แล้วเพิ่ม roll เล็กน้อยตามทิศเลี้ยว ทำให้ดู organic มากขึ้น</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+        <div style="color:#10b981;font-size:1rem;flex-shrink:0;margin-top:1px;">✅</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#6ee7b7;margin-bottom:3px;">Sync wing flap speed กับ movement speed</div>
+          <div style="font-size:.82rem;color:#64748b;">ส่ง velocity magnitude เป็น AnimationController parameter — ยิ่งเร็วยิ่งกระพือถี่ขึ้น</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:8px;">
+        <div style="color:#10b981;font-size:1rem;flex-shrink:0;margin-top:1px;">✅</div>
+        <div>
+          <div style="font-size:.9rem;font-weight:600;color:#6ee7b7;margin-bottom:3px;">Path แบบ S-curve — Perlin noise steering</div>
+          <div style="font-size:.82rem;color:#64748b;">บินโค้งผ่านฉากแบบ organic แทนการขึ้น/ลงตรงๆ — มีใน ButterflyHero.cs แล้ว ปรับ noiseFrequency ให้ต่ำลง</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <!-- Section 0: Original AE Script -->
+  <div class="section">
+    <h2><span class="num" style="background: linear-gradient(135deg,#334155,#475569);">0</span> ต้นฉบับ — AE Expression ทำงานอย่างไร</h2>
+
+    <p>ก่อนจะแปลงมา Unity ทำความเข้าใจว่าสคริปต์ AE ต้นฉบับมีหลักการอะไรบ้าง:</p>
+
+    <!-- Step 1: Index -->
+    <h3>① คำนวณหน่วงเวลาจาก Layer Index</h3>
+    <div class="card">
+      <pre><code>Delay             = <span class="num">0.15</span>   <span class="comment">// วินาที ต่อ 1 ช่วง</span>
+Follower_Multiplier = index - L.index
+Total_Delay         = Follower_Multiplier * Delay</code></pre>
+    </div>
+    <p>ใน AE ทุก layer มีหมายเลข <code>index</code> อัตโนมัติ — ผีเสื้อตัวที่ 1 index = 2, ตัวที่ 2 index = 3 และต่อไปเรื่อยๆ (leader = 1)<br>
+    ผลคือ ยิ่งตัวไหนอยู่ไกลจาก leader ในลำดับ layer → หน่วงเวลานานขึ้นตามสัดส่วน</p>
+
+    <!-- Step 2: Velocity Lag -->
+    <h3>② ชดเชยตำแหน่งด้วยความเร็ว (Velocity Compensation)</h3>
+    <div class="card">
+      <pre><code>P_Current = L.transform.position.value         <span class="comment">// ตำแหน่ง leader ตอนนี้</span>
+V_Current = L.transform.position.velocityAtTime(time)  <span class="comment">// ความเร็ว leader ตอนนี้</span>
+
+P_Lag = P_Current - V_Current * Total_Delay    <span class="comment">// ถอยหลังตามทิศที่บิน</span></code></pre>
+    </div>
+    <p>แนวคิดคือ: <strong style="color:#e5e7eb">"ถ้า leader กำลังบินไปทางไหน follower ควรอยู่ด้านหลังตรงนั้น"</strong><br>
+    สูตรนี้ประมาณตำแหน่งย้อนกลับไปตามเวกเตอร์ความเร็ว — ง่ายและเร็ว แต่เป็นการ approximation (ไม่ใช่ path จริง)</p>
+
+    <div class="note">
+      <strong>ทำไมถึง approximate?</strong><br>
+      AE ไม่มี position history — มันรู้แค่ "ตอนนี้ velocity เท่าไหร่" จึงคาดเดาตำแหน่งในอดีตด้วยสูตรเส้นตรง<br>
+      ถ้า leader หักเลี้ยวกะทันหัน follower จะยังคงชดเชยตาม velocity เก่า ซึ่งพอดีกับการบินของผีเสื้อ (ดูเป็นธรรมชาติ)
+    </div>
+
+    <!-- Step 3: Wiggle -->
+    <h3>③ เพิ่ม Wiggle — การส่ายตัวอิสระ</h3>
+    <div class="card">
+      <pre><code>wiggle_frequency = <span class="num">0.3</span>   <span class="comment">// ช้า = ส่ายนุ่มนวล, เร็ว = สั่นกระวนกระวาย</span>
+wiggle_amplitude = <span class="num">500</span>   <span class="comment">// ระยะการกระจายตัว (หน่วย pixel AE)</span>
+
+wiggle_X = wiggle(wiggle_frequency, wiggle_amplitude)[0]
+wiggle_Y = wiggle(wiggle_frequency, wiggle_amplitude)[1]
+wiggle_Z = wiggle(wiggle_frequency, wiggle_amplitude)[2]</code></pre>
+    </div>
+    <p>AE <code>wiggle()</code> สร้าง smooth random noise ด้วย Perlin-like algorithm — แต่ละ layer ได้ค่า noise ต่างกันโดยอัตโนมัติ (AE จัดการ seed ให้เอง)</p>
+
+    <!-- Step 4: Final -->
+    <h3>④ รวมผล</h3>
+    <div class="card">
+      <pre><code>P_Lag + Wiggle_Offset   <span class="comment">// ตำแหน่งสุดท้าย = lag + การส่ายตัว</span></code></pre>
+    </div>
+
+    <!-- Summary flow -->
+    <div style="margin-top:24px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.85rem;">
+      <div style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);border-radius:8px;padding:8px 14px;color:#a5b4fc;">Leader position</div>
+      <div style="color:#475569; font-size:1.1rem;">→</div>
+      <div style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.25);border-radius:8px;padding:8px 14px;color:#67e8f9;">คำนวณ velocity</div>
+      <div style="color:#475569; font-size:1.1rem;">→</div>
+      <div style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.25);border-radius:8px;padding:8px 14px;color:#67e8f9;">ถอยตำแหน่ง × delay</div>
+      <div style="color:#475569; font-size:1.1rem;">→</div>
+      <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:8px;padding:8px 14px;color:#fcd34d;">+ Wiggle noise</div>
+      <div style="color:#475569; font-size:1.1rem;">→</div>
+      <div style="background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.25);border-radius:8px;padding:8px 14px;color:#6ee7b7;">ตำแหน่งสุดท้าย</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Section 1: Velocity Lag -->
+  <div class="section">
+    <h2><span class="num">1</span> Velocity-Lag — ผีเสื้อตามกัน</h2>
+
+    <p>AE ใช้วิธีชดเชยตำแหน่งด้วยความเร็วปัจจุบัน ซึ่งเป็นการ <em>ประมาณ</em> ว่า follower อยู่ "ด้านหลัง" leader แค่ไหน Unity ทำได้ 2 วิธี:</p>
+
+    <div class="card-row">
+      <!-- Method A -->
+      <div class="card method-a">
+        <div class="method-label">วิธี A</div>
+        <div class="method-title">Velocity Lag</div>
+        <div class="method-desc">เหมือน AE เลย — ง่าย เขียนน้อย</div>
+        <pre><code><span class="type">Vector3</span> lagPos =
+  leader.position
+  - leaderVelocity * totalDelay;
+
+transform.position =
+  lagPos + wiggleOffset;</code></pre>
+      </div>
+
+      <!-- Method B -->
+      <div class="card method-b">
+        <div class="method-label">วิธี B</div>
+        <div class="method-title">History Buffer <span class="badge-rec">แนะนำ</span></div>
+        <div class="method-desc">แม่นกว่า — follower โค้งตามเส้นทางจริง</div>
+        <pre><code><span class="comment">// เก็บ history ทุก frame</span>
+positionHistory.<span class="func">Enqueue</span>(
+  leader.position
+);
+
+<span class="comment">// follower อ่าน N frames ที่แล้ว</span>
+transform.position =
+  positionHistory[followerIndex];</code></pre>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>เมื่อไหร่ใช้วิธีไหน?</strong><br>
+      วิธี A — prototype เร็ว หรือ path ของ leader เป็นเส้นตรง<br>
+      วิธี B — path โค้ง เช่น Sine Wave หรือ Spline → follower จะโค้งตามสวยกว่ามาก
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Section 2: Wiggle -->
+  <div class="section">
+    <h2><span class="num">2</span> Wiggle → Perlin Noise</h2>
+
+    <p>AE <code>wiggle(freq, amp)</code> ใช้ noise แบบ smooth random — ใน Unity ใช้ <code>Mathf.PerlinNoise</code> แทนได้ตรงๆ</p>
+
+    <div class="card">
+      <pre><code><span class="type">float</span> t = Time.time * wiggleFrequency;
+
+<span class="type">float</span> x = (<span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(t + seed, <span class="num">0f</span>) - <span class="num">0.5f</span>) * <span class="num">2f</span> * wiggleAmplitude;
+<span class="type">float</span> y = (<span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(<span class="num">0f</span>, t + seed) - <span class="num">0.5f</span>) * <span class="num">2f</span> * wiggleAmplitude;
+<span class="type">float</span> z = (<span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(t + seed, t + seed) - <span class="num">0.5f</span>) * <span class="num">2f</span> * wiggleAmplitude;
+
+<span class="type">Vector3</span> wiggleOffset = <span class="keyword">new</span> <span class="type">Vector3</span>(x, y, z);</code></pre>
+    </div>
+
+    <div class="warn">
+      <strong>⚠️ ต้องใช้ seed ต่างกันทุกตัว</strong><br>
+      ถ้าทุกตัวใช้ seed เดียวกัน → wiggle พร้อมกันหมด ดูไม่เป็นธรรมชาติ<br>
+      แก้ง่ายๆ: <code>float seed = followerIndex * 100f;</code>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Section 3: Mapping Table -->
+  <div class="section">
+    <h2><span class="num">3</span> Mapping — AE → Unity</h2>
+
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>AE Expression</th>
+            <th>Unity (C#)</th>
+            <th>หมายเหตุ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>layer("Butterfly_Leader")</td>
+            <td>GameObject leaderObj</td>
+            <td>assign ใน Inspector</td>
+          </tr>
+          <tr>
+            <td>index - L.index</td>
+            <td>followerIndex</td>
+            <td>array index ของ follower</td>
+          </tr>
+          <tr>
+            <td>.velocityAtTime(time)</td>
+            <td>(pos - prevPos) / Time.deltaTime</td>
+            <td>คำนวณเองทุก frame</td>
+          </tr>
+          <tr>
+            <td>wiggle(freq, amp)</td>
+            <td>Mathf.PerlinNoise</td>
+            <td>ต้องใช้ seed แยกแต่ละตัว</td>
+          </tr>
+          <tr>
+            <td>Comp space (px)</td>
+            <td>World space (units)</td>
+            <td>scale ลงเยอะ — ดูหมายเหตุด้านล่าง</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn">
+      <strong>⚠️ เรื่อง Scale</strong><br>
+      AE ทำงานใน 2D composition space หน่วยเป็น pixel — Unity เป็น 3D world units<br>
+      <code>wiggle_amplitude = 500</code> ใน AE อาจต้อง scale เหลือ <code>0.5f</code> ใน Unity<br>
+      ขึ้นอยู่กับขนาด scene ของน้องค่ะ — ปรับ trial and error
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Section 4: Quick Start -->
+  <div class="section">
+    <h2><span class="num">4</span> โครงสร้าง Script คร่าวๆ</h2>
+
+    <p>ถ้าน้องจะ implement วิธี A (ง่ายสุด) — โครงสร้าง C# จะประมาณนี้:</p>
+
+    <div class="card">
+      <pre><code><span class="keyword">public class</span> <span class="type">ButterflyFollower</span> : MonoBehaviour
+{
+    <span class="keyword">public</span> <span class="type">Transform</span> leader;
+    <span class="keyword">public int</span> followerIndex;
+    <span class="keyword">public float</span> delay = <span class="num">0.15f</span>;
+    <span class="keyword">public float</span> wiggleFreq = <span class="num">0.3f</span>;
+    <span class="keyword">public float</span> wiggleAmp = <span class="num">0.5f</span>;
+
+    <span class="keyword">private</span> <span class="type">Vector3</span> prevLeaderPos;
+    <span class="keyword">private float</span> seed;
+
+    <span class="keyword">void</span> <span class="func">Start</span>()
+    {
+        prevLeaderPos = leader.position;
+        seed = followerIndex * <span class="num">100f</span>;
+    }
+
+    <span class="keyword">void</span> <span class="func">Update</span>()
+    {
+        <span class="comment">// คำนวณ velocity ของ leader</span>
+        <span class="type">Vector3</span> vel = (leader.position - prevLeaderPos) / Time.deltaTime;
+        prevLeaderPos = leader.position;
+
+        <span class="comment">// lag position</span>
+        <span class="type">float</span> totalDelay = followerIndex * delay;
+        <span class="type">Vector3</span> lagPos = leader.position - vel * totalDelay;
+
+        <span class="comment">// wiggle</span>
+        <span class="type">float</span> t = Time.time * wiggleFreq;
+        <span class="type">Vector3</span> w = <span class="keyword">new</span> <span class="type">Vector3</span>(
+            (<span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(t + seed, <span class="num">0f</span>) - <span class="num">.5f</span>) * <span class="num">2f</span> * wiggleAmp,
+            (<span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(<span class="num">0f</span>, t + seed) - <span class="num">.5f</span>) * <span class="num">2f</span> * wiggleAmp,
+            (<span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(t + seed, t + seed) - <span class="num">.5f</span>) * <span class="num">2f</span> * wiggleAmp
+        );
+
+        transform.position = lagPos + w;
+    }
+}</code></pre>
+    </div>
+
+    <div class="note">
+      <strong>วิธีใช้:</strong> Attach script นี้ให้กับ butterfly แต่ละตัว → กำหนด leader + followerIndex ใน Inspector<br>
+      ตัวแรก followerIndex = 1, ตัวสอง = 2 และต่อไปเรื่อยๆ
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Section 5: Hero Butterfly -->
+  <div class="section">
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <h2 style="margin-bottom:0;"><span class="num" style="background:linear-gradient(135deg,#059669,#06b6d4);">★</span> Hero Butterfly — งานปัจจุบัน</h2>
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#10b981;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:4px;padding:3px 8px;">ใช้อันนี้</span>
+    </div>
+
+    <p style="color:#94a3b8;margin-bottom:20px;">ไม่ใช่ฝูง ไม่มี leader-follower — แต่ละตัวบินอิสระ มี boundary, มีอายุ, fade ออกเองเมื่อหมดเวลา</p>
+
+    <div class="note" style="margin-bottom:24px;">
+      <strong>หลักการ:</strong> Spawn → บินด้วย Perlin noise steering → ผลักกลับเมื่อใกล้ขอบ → fade + destroy เมื่อหมดอายุ
+    </div>
+
+    <h3>ButterflyHero.cs</h3>
+    <div class="card">
+      <pre><code><span class="keyword">using</span> UnityEngine;
+
+<span class="keyword">public class</span> <span class="type">ButterflyHero</span> : MonoBehaviour
+{
+    [Header(<span class="str">"Flight"</span>)]
+    <span class="keyword">public float</span> speed         = <span class="num">1.5f</span>;
+    <span class="keyword">public float</span> turnSmooth    = <span class="num">1.5f</span>;   <span class="comment">// สูง = หักเลี้ยวเร็ว</span>
+    <span class="keyword">public float</span> noiseFrequency = <span class="num">0.35f</span>;
+
+    [Header(<span class="str">"Boundary"</span>)]
+    <span class="keyword">public</span> <span class="type">Vector3</span> boundsMin = <span class="keyword">new</span> <span class="type">Vector3</span>(-<span class="num">8f</span>, <span class="num">0.5f</span>, -<span class="num">4f</span>);
+    <span class="keyword">public</span> <span class="type">Vector3</span> boundsMax = <span class="keyword">new</span> <span class="type">Vector3</span>( <span class="num">8f</span>, <span class="num">5.0f</span>,  <span class="num">4f</span>);
+    <span class="keyword">public float</span>  boundaryPush = <span class="num">2.5f</span>;  <span class="comment">// ระยะเริ่มผลักก่อนถึงขอบ</span>
+
+    [Header(<span class="str">"Lifetime"</span>)]
+    <span class="keyword">public float</span> lifetime    = <span class="num">12f</span>;
+    <span class="keyword">public float</span> fadeOutTime = <span class="num">2f</span>;
+
+    <span class="keyword">private float</span>    seed;
+    <span class="keyword">private</span> <span class="type">Vector3</span>  velocity;
+    <span class="keyword">private</span> <span class="type">Renderer</span> rend;
+    <span class="keyword">private float</span>    age;
+
+    <span class="keyword">void</span> <span class="func">Start</span>()
+    {
+        seed     = <span class="type">Random</span>.value * <span class="num">1000f</span>;
+        rend     = GetComponentInChildren&lt;<span class="type">Renderer</span>&gt;();
+        velocity = <span class="type">Random</span>.onUnitSphere * speed;  <span class="comment">// ทิศเริ่มต้นสุ่ม</span>
+    }
+
+    <span class="keyword">void</span> <span class="func">Update</span>()
+    {
+        age += Time.deltaTime;
+
+        <span class="comment">// 1. Noise steering — ทิศทางบินแบบ organic</span>
+        <span class="keyword">float</span> t = Time.time * noiseFrequency + seed;
+        <span class="type">Vector3</span> noiseDir = <span class="keyword">new</span> <span class="type">Vector3</span>(
+            <span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(t,        <span class="num">0f</span>       ) - <span class="num">0.5f</span>,
+            <span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(<span class="num">0f</span>,       t        ) - <span class="num">0.5f</span>,
+            <span class="type">Mathf</span>.<span class="func">PerlinNoise</span>(t * <span class="num">0.7f</span>, t * <span class="num">1.3f</span>) - <span class="num">0.5f</span>
+        );
+
+        <span class="comment">// 2. Boundary push — ผลักกลับเมื่อใกล้ขอบ</span>
+        <span class="type">Vector3</span> pos  = transform.position;
+        <span class="type">Vector3</span> push = <span class="type">Vector3</span>.zero;
+        <span class="keyword">float</span>   m    = boundaryPush;
+
+        push.x += <span class="type">Mathf</span>.<span class="func">InverseLerp</span>(boundsMin.x + m, boundsMin.x, pos.x);
+        push.x -= <span class="type">Mathf</span>.<span class="func">InverseLerp</span>(boundsMax.x - m, boundsMax.x, pos.x);
+        push.y += <span class="type">Mathf</span>.<span class="func">InverseLerp</span>(boundsMin.y + m, boundsMin.y, pos.y);
+        push.y -= <span class="type">Mathf</span>.<span class="func">InverseLerp</span>(boundsMax.y - m, boundsMax.y, pos.y);
+        push.z += <span class="type">Mathf</span>.<span class="func">InverseLerp</span>(boundsMin.z + m, boundsMin.z, pos.z);
+        push.z -= <span class="type">Mathf</span>.<span class="func">InverseLerp</span>(boundsMax.z - m, boundsMax.z, pos.z);
+
+        <span class="comment">// 3. รวมทิศ → smooth velocity</span>
+        <span class="type">Vector3</span> desired = (noiseDir.normalized + push * <span class="num">2f</span>).normalized * speed;
+        velocity = <span class="type">Vector3</span>.<span class="func">Lerp</span>(velocity, desired, turnSmooth * Time.deltaTime);
+        transform.position += velocity * Time.deltaTime;
+
+        <span class="comment">// 4. หันหน้าตามทิศบิน</span>
+        <span class="keyword">if</span> (velocity.sqrMagnitude > <span class="num">0.01f</span>)
+            transform.rotation = <span class="type">Quaternion</span>.<span class="func">Slerp</span>(
+                transform.rotation,
+                <span class="type">Quaternion</span>.<span class="func">LookRotation</span>(velocity),
+                turnSmooth * Time.deltaTime
+            );
+
+        <span class="comment">// 5. Fade out → destroy</span>
+        <span class="func">HandleLifetime</span>();
+    }
+
+    <span class="keyword">void</span> <span class="func">HandleLifetime</span>()
+    {
+        <span class="keyword">if</span> (age &lt; lifetime - fadeOutTime) <span class="keyword">return</span>;
+
+        <span class="keyword">float</span> alpha = <span class="num">1f</span> - (age - (lifetime - fadeOutTime)) / fadeOutTime;
+        <span class="type">Color</span> c = rend.material.color;
+        c.a = <span class="type">Mathf</span>.<span class="func">Max</span>(<span class="num">0f</span>, alpha);
+        rend.material.color = c;
+
+        <span class="keyword">if</span> (age >= lifetime)
+            <span class="type">Destroy</span>(gameObject);
+    }
+}</code></pre>
+    </div>
+
+    <div class="warn" style="margin-top:16px;">
+      <strong>⚠️ Fade ใช้ได้เฉพาะ material ที่ตั้ง Rendering Mode = Fade / Transparent</strong><br>
+      URP → ตั้ง Surface Type = Transparent ใน material ด้วยค่ะ
+    </div>
+
+    <h3 style="margin-top:28px;">Parameter ที่ปรับบ่อย</h3>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Default</th>
+            <th>ปรับเพื่อ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>speed</td>
+            <td>1.5f</td>
+            <td>บินเร็ว/ช้า — 0.8–2.5 เหมาะกับ magical scene</td>
+          </tr>
+          <tr>
+            <td>turnSmooth</td>
+            <td>1.5f</td>
+            <td>ต่ำ = เลี้ยวนุ่ม, สูง = หักเลี้ยวฉับพลัน</td>
+          </tr>
+          <tr>
+            <td>noiseFrequency</td>
+            <td>0.35f</td>
+            <td>ต่ำ = path ยาว ช้า, สูง = วนสั้น ถี่</td>
+          </tr>
+          <tr>
+            <td>boundaryPush</td>
+            <td>2.5f</td>
+            <td>ระยะเริ่มโค้งกลับ — ยิ่งสูงยิ่ง smooth</td>
+          </tr>
+          <tr>
+            <td>lifetime</td>
+            <td>12f</td>
+            <td>อายุรวม (วินาที) — ปรับตาม UX ที่ต้องการ</td>
+          </tr>
+          <tr>
+            <td>fadeOutTime</td>
+            <td>2f</td>
+            <td>ช่วง fade ก่อน destroy</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note" style="margin-top:16px;">
+      <strong>วิธีใช้:</strong> Attach <code>ButterflyHero</code> กับ butterfly prefab — ระบบ spawn ที่มีอยู่แล้วกำหนด position + texture ก่อน instantiate ได้เลย ไม่ต้องแก้ script นี้ค่ะ
+    </div>
+
+  </div>
+
+  <div class="footer">
+    WEnDyS · Butterfly Flock Port Guide · 2026
+  </div>
+
+</div>
+</body>
+</html>
