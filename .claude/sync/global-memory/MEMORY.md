@@ -29,9 +29,14 @@
 
 ## Family
 - ลูก: **น้องเมฆ** เกิด 26 มกราคม 2566 (Jan 26, 2023) — อายุ 3 ขวบกว่า → `memory/user_child_megh.md`
+- **ครอบครัวพ่อแม่ DewS** — ปัญหาหนี้สิน/toxic dynamic รายละเอียดเต็ม → `memory/user_family_situation.md`
 
 ## Company
 - DewS's company: **NDF** (ไม่ใช่ Radical Enlighten)
+
+## Financial Plan
+- พอร์ตและแผนการเงินของ DewS (บันทึก มิ.ย. 2026) → `memory/user_financial_plan.md`
+- ออมรายเดือน 5,000 บาท (60% กองทุนหุ้น / 40% กองบั้นปลายพ่อแม่ — แยกบัญชี ไม่บอกพ่อแม่)
 
 ## EcoStove — Overview
 - **Sensor หลัก**: MT15 (Laser Scattering), BS 001-012
@@ -113,6 +118,10 @@
 - **ห้ามพูดจากความจำอย่างเดียว** — ต้อง verify กับ source of truth
 - **ถ้าไม่แน่ใจ บอกว่าไม่แน่ใจ** — อย่าพูดเหมือนมั่นใจ
 - **ห้าม remind สิ่งที่แก้ไปแล้วซ้ำ** (DewS สั่ง 2026-04-18)
+
+## 🔇 Fortal Dragon — No BGM (บังคับ)
+- ทุก video prompt Fortal ต้องมี diegetic sounds เสมอ → `memory/feedback_fortal_no_bgm.md`
+- EN: `No background music. Only diegetic sounds —` / CN: `无背景音乐。仅环境音效——`
 
 ## /shot Skill
 - อ่าน NDF narrative guide + seedance guide ก่อนเขียน prompt ทุกครั้ง → `memory/feedback_shot_skill_read_guide.md`
