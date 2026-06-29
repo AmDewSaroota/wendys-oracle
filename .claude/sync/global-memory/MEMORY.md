@@ -123,6 +123,10 @@
 - ทุก video prompt Fortal ต้องมี diegetic sounds เสมอ → `memory/feedback_fortal_no_bgm.md`
 - EN: `No background music. Only diegetic sounds —` / CN: `无背景音乐。仅环境音效——`
 
+## Seedance Ratio
+- **21:9 เป็น default** สำหรับงาน cinematic ทุกงาน (Fortal Dragon + BG panorama) → `memory/feedback_seedance_ratio_21_9.md`
+- Flower greenscreen clips ยังคงใช้ 1:1
+
 ## /shot Skill
 - อ่าน NDF narrative guide + seedance guide ก่อนเขียน prompt ทุกครั้ง → `memory/feedback_shot_skill_read_guide.md`
 - Duration: 4-15s ต่อคลิป (ไม่ fixed) | Ratio: 9:16 ก่อน | BGM: ใส่ใน AE ทีหลัง (diegetic sounds เท่านั้นใน prompt)
