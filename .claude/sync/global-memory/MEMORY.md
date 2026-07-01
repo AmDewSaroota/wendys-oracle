@@ -45,6 +45,7 @@
 - MAX 2 sessions/device/day | Map ใช้ OSM tiles | SVG สำหรับ sensor triangle
 
 ## UX Defaults
+- 📄 **เปิด PDF ทุกครั้งหลัง generate** — ไม่ถาม → `memory/feedback_open_pdf_after_generate.md`
 - 🖤 **HTML Dark Tech Theme** → `memory/feedback_html_dark_tech_theme.md` (bg #0a0e1a, indigo/cyan accent, IBM Plex Sans Thai)
 - 🌙 Dark theme ทุกไฟล์ที่ไม่ได้กำหนด → `memory/feedback_default_dark_theme.md`
 - 🪟 แจ้ง DewS drag tab ก่อนแก้โค้ด (กัน VSCode auto-focus) → `memory/feedback_no_window_pop.md`
