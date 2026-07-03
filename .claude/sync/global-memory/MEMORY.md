@@ -52,6 +52,7 @@
 - 📂 เปิด Explorer หลังสร้างไฟล์ใหม่ → `memory/feedback_open_explorer_on_new_file.md`
 
 ## Video/Image Generation
+- 🚫 **ห้ามใช้ UUID ใน prompt** — ใช้ @[filename] เท่านั้น DewS replace UUID เองตอน upload → `memory/feedback_no_uuid_in_prompts.md`
 - **ทุก prompt ต้องระบุ tool ในหัวข้อ** → `memory/feedback_prompt_tool_label_required.md`
 - **Higgsfield** = storyboard / **Dreamina** = video → `memory/feedback_higgsfield_dreamina_workflow.md`
 - อ่าน NDF narrative + seedance guide ก่อนเขียนทุกครั้ง → `memory/feedback_shot_skill_read_guide.md`
