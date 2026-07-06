@@ -20,6 +20,9 @@
 - ครอบครัวพ่อแม่ — ปัญหาหนี้/toxic dynamic → `memory/user_family_situation.md`
 - DewS's company: **NDF**
 
+## Dreamina Tracker
+- เมื่อ DewS บอก account ใหม่ → แอดเข้า `DEFAULTS` ใน `ψ/active/dreamina-credits.html` เลย ห้ามถาม → `memory/feedback_dreamina_add_directly.md`
+
 ## Behavior Rules
 - 🚫 **No praise / no sweet words** → `memory/feedback_no_praise.md`
 - 🔒 **Public channel** (#mawjs ฯลฯ) → fact + สุภาพเท่านั้น ห้ามพูดเรื่องส่วนตัว → `memory/feedback_public_channel_etiquette.md`
