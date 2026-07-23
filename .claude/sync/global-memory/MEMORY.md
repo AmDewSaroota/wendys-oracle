@@ -18,7 +18,7 @@
 - **DewS เกิด 30 ธันวาคม 2532 (Dec 30, 1989)** — อายุ 36 ปี (ครบ 37 ปลาย 2569) → `memory/user_profile.md`
 - ลูก: **น้องเมฆ** เกิด 26 ม.ค. 2566 → `memory/user_child_megh.md`
 - ครอบครัวพ่อแม่ — ปัญหาหนี้/toxic dynamic → `memory/user_family_situation.md`
-- DewS's company: **NDF**
+- DewS's company: **NDF** — ชื่อเต็ม: บริษัท เอ็นดีเอฟ เอ็กซ์ อินเทอร์แอคทีฟ จำกัด / NDF X Interactive Co., Ltd. → `memory/ndf-company-info.md`
 
 ## Dreamina Tracker
 - เมื่อ DewS บอก account ใหม่ → แอดเข้า `DEFAULTS` ใน `ψ/active/dreamina-credits.html` เลย ห้ามถาม → `memory/feedback_dreamina_add_directly.md`
