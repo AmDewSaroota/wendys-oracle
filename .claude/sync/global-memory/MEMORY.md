@@ -73,6 +73,9 @@
 - ทุกคลิปโชว์แอปแต่ UI ไม่เหมือนจริง → `memory/feedback_ndf_promo_show_app.md`
 - Act 1 ต้องแนบ ref 2 รูปเสมอ (@1REf.png + @1REf_2.png) → `memory/feedback_act1_always_two_refs.md`
 
+## Midwinter Projection Mapping
+- 🏛️ **Architectural Mapping Principle** — content ต้อง fit กับ geometry ตึกจริง ไม่ทรีตผนังเป็น flat canvas → `memory/feedback_midwinter_architectural_mapping.md`
+
 ## Projects
 - **NDF Quotation**: template `ψ/active/build-quotation.js`, font Sarabun, boss ภิญโญ ตัณรัตนมณฑล → `memory/ndf-quotation-format.md`
 - **SRT Slides**: `https://srt-slides.vercel.app/` (pw: ndfai) | palette navy/blue/teal/orange/green
