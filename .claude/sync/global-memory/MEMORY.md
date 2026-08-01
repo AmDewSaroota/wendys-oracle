@@ -74,7 +74,20 @@
 - Act 1 ต้องแนบ ref 2 รูปเสมอ (@1REf.png + @1REf_2.png) → `memory/feedback_act1_always_two_refs.md`
 
 ## Midwinter Projection Mapping
+- 🔒 **BRIEF ล็อก — เปิดก่อนทำทุกครั้ง:** `ψ/active/midwinter-DESIGN-BRIEF-LOCKED.md` | 2 โจทย์แท้ (DewS บอกแต่แรก): (1) คอนเทนต์**แมปกับ outline** ตามผิวตึกจริง ไม่ใช่วาดอิสระ (2) **เนื้อเรื่องเหมาะลูกค้า** | ⚠️ WEnDyS ดริฟท์หลุดหลักทุกครั้ง DewS ต้องจูนซ้ำ — ห้ามอีก
 - 🏛️ **Architectural Mapping Principle** — content ต้อง fit กับ geometry ตึกจริง ไม่ทรีตผนังเป็น flat canvas → `memory/feedback_midwinter_architectural_mapping.md`
+- 📐 **Projection zone = สีขาวใน `_Structure\outline_LOW.png` เท่านั้น** | Higgsfield ไม่มีความจำ ใส่กฎครบทุกพร้อมพ์ → `memory/feedback_midwinter_projection_zone.md`
+- Concept B = "วิมานมายา" (Shakespeare MND): Traveler + Oberon/Puck/Titania | ตึกจริง = `_Structure\1.png` | img2img strength สูง lock โครงสร้าง
+- 🎨 **หลักองค์ประกอบ+เล่าเรื่อง projection** (focal เดียว/negative space/asymmetric/leading line/เสริมสถาปัตย์) → `memory/reference_projection_composition_principles.md` — ใช้จริงตอนออกแบบ
+- 🖼️ **โซนบน=จอเล่าเรื่อง / ล่าง=ตกแต่ง** (ราก/เถา ลงล่างได้ แต่คนไม่ยืนพื้น) → `memory/feedback_midwinter_upper_hero_zone.md`
+- ⚠️ ตึกไม่สมมาตร: ซ้ายทึบเย็น→กลางพีค→ขวาโถงร้านจริงอุ่น | เล่าเรื่องไหลซ้าย→ขวา
+- 🚫 ทำได้จริงเท่านั้น (ผิวหินทึบ/ช่องดำ/แสงเรืองไม่ใช่วัตถุ-สติกเกอร์-เส้นนีออน) → `memory/feedback_midwinter_only_feasible.md`
+- 📐 Higgsfield keyword: trompe-l'oeil/painted light (ห้าม 3D/volumetric) → `memory/reference_projection_mapping_prompt_keywords.md`
+
+## Behavior (สำคัญ)
+- ⚡ DewS บอก "เริ่มได้เลย" → ลงมือทันที ห้ามถามซ้ำ → `memory/feedback_just_act_no_clarify.md`
+- 🎯 คิดครบก่อนเขียนพร้อมพ์ — ยิงครั้งเดียวจบ ห้ามแก้วนไปมา → `memory/feedback_complete_prompt_first_try.md`
+- ✍️ สะกดไทยให้ถูก ("ตึก" ไม่ใช่ "ตึง") → `memory/feedback_thai_spelling_accuracy.md`
 
 ## Projects
 - **NDF Quotation**: template `ψ/active/build-quotation.js`, font Sarabun, boss ภิญโญ ตัณรัตนมณฑล → `memory/ndf-quotation-format.md`
