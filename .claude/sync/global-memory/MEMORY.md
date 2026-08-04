@@ -74,6 +74,7 @@
 - Act 1 ต้องแนบ ref 2 รูปเสมอ (@1REf.png + @1REf_2.png) → `memory/feedback_act1_always_two_refs.md`
 
 ## Midwinter Projection Mapping
+- 🚀 **ส่งงานแล้ว (3 ส.ค. 2026):** proposal live `https://midwinter-proposal.vercel.app` (3 คอนเซ็ปต์+สตอรี่บอร์ด+คลิป) → `memory/midwinter-proposal-deploy.md` | พร้อมพ์ shot: `ψ/active/midwinter-shots-prompts-final.md`
 - 🔒 **BRIEF ล็อก — เปิดก่อนทำทุกครั้ง:** `ψ/active/midwinter-DESIGN-BRIEF-LOCKED.md` | 2 โจทย์แท้ (DewS บอกแต่แรก): (1) คอนเทนต์**แมปกับ outline** ตามผิวตึกจริง ไม่ใช่วาดอิสระ (2) **เนื้อเรื่องเหมาะลูกค้า** | ⚠️ WEnDyS ดริฟท์หลุดหลักทุกครั้ง DewS ต้องจูนซ้ำ — ห้ามอีก
 - 🏛️ **Architectural Mapping Principle** — content ต้อง fit กับ geometry ตึกจริง ไม่ทรีตผนังเป็น flat canvas → `memory/feedback_midwinter_architectural_mapping.md`
 - 📐 **Projection zone = สีขาวใน `_Structure\outline_LOW.png` เท่านั้น** | Higgsfield ไม่มีความจำ ใส่กฎครบทุกพร้อมพ์ → `memory/feedback_midwinter_projection_zone.md`
@@ -84,10 +85,15 @@
 - 🚫 ทำได้จริงเท่านั้น (ผิวหินทึบ/ช่องดำ/แสงเรืองไม่ใช่วัตถุ-สติกเกอร์-เส้นนีออน) → `memory/feedback_midwinter_only_feasible.md`
 - 📐 Higgsfield keyword: trompe-l'oeil/painted light (ห้าม 3D/volumetric) → `memory/reference_projection_mapping_prompt_keywords.md`
 
+## WEnDyS = โปรแกรมเมอร์ของ DewS
+- 🛠️ DewS เป็นอาร์ทติสต์ ไม่ถนัดโค้ด → WEnDyS เป็นโปรแกรมเมอร์: เจอปัญหาซ้ำ **เขียน tool แก้ ไม่ใช่พร้อมพ์วน** → `memory/wendys_is_dews_programmer.md`
+- 🏭 Elza pipeline + tool ที่พอร์ต (followspot.py = sectional follow-spot) → `memory/midwinter-elza-pipeline.md` | Windows: Python 3.12 + Pillow + numpy + ffmpeg พร้อมแล้ว
+
 ## Behavior (สำคัญ)
 - ⚡ DewS บอก "เริ่มได้เลย" → ลงมือทันที ห้ามถามซ้ำ → `memory/feedback_just_act_no_clarify.md`
 - 🎯 คิดครบก่อนเขียนพร้อมพ์ — ยิงครั้งเดียวจบ ห้ามแก้วนไปมา → `memory/feedback_complete_prompt_first_try.md`
 - ✍️ สะกดไทยให้ถูก ("ตึก" ไม่ใช่ "ตึง") → `memory/feedback_thai_spelling_accuracy.md`
+- 🪞 **รู้บทบาทตัวเองตลอดเวลา — DewS ไม่ควรต้องย้ำเตือน** → `memory/feedback_role_awareness.md`
 
 ## Projects
 - **NDF Quotation**: template `ψ/active/build-quotation.js`, font Sarabun, boss ภิญโญ ตัณรัตนมณฑล → `memory/ndf-quotation-format.md`
