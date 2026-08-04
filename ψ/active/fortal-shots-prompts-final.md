@@ -39,52 +39,67 @@ No background music. Only diegetic sounds — silence during calm, then a deep b
 
 ---
 
-## Shot 02-MD ✅ (Flip — working prompt, DewS 2026-06-18)
+## Shot 02-MD ✅ (ultrawide — DewS 2026-07-23)
 
-**Refs ที่ต้องแนบ (ตามลำดับ upload) — เหมือน Shot 02:**
-- รูปภาพ1: `E:\01_Work\_NDF\Fortal\_REF\Screenshot 2026-04-03 233722.jpg` — background atmosphere, storm clouds, lighting tone
-- รูปภาพ2: character sheet มังกรร่างปกติ — dark armored scales, orange magma cracks, burning orange eyes
+**Refs ที่ต้องแนบ (ตามลำดับ):**
+- `E:\01_Work\_NDF\Fortal\Shot02-MD\Ultrawide_shot02MD_1st.png` — Starting frame (ultrawide, ปีกครบทั้ง 2 ด้าน, black letterbox bars)
+- `E:\01_Work\_NDF\Fortal\Shot02-MD\Shot02_MD_05\Shot02_MD_05_00000.png` — Character ref: dark charcoal-gray scales, magma chest, amber eyes
 
 ```
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
 
-@[มังกรร่างปกติ] — Dragon appearance strictly reference: Dark armored scales, cracks glowing with orange magma light, burning orange eyes.
+@[Ultrawide_shot02MD_1st.png] — Starting frame. Match this composition exactly:
+dragon centered, both wings fully spread tip-to-tip, low camera angle looking up,
+black letterbox bars top and bottom.
 
-@[Screenshot 2026-04-03 233722.jpg] — Background atmosphere reference: Dark gray storm clouds and lighting tone.
+@[Shot02_MD_05_00000] — Character ref. Match dragon EXACTLY:
+dark charcoal-gray armored scales, deep molten orange-red magma chest cracks,
+amber eyes. NOT brown. NOT reddish.
 
-Dragon is hovering ABOVE the cloud sea — clouds visible below and behind the dragon, establishing high altitude. Cloud layer lit from the horizon with warm orange twilight glow, not plain gray — orange light catches the cloud edges and the dragon's underside. Dragon head, neck, shoulders and upper wings fill the frame — medium close-up, NOT extreme close-up. Framing matches the reference image throughout the entire shot. Dragon expression is menacing — brow ridge deeply furrowed, fangs slightly bared, nostrils flared, eyes glaring with predatory aggression.
+CRITICAL: Black bars at top and bottom are PERMANENT throughout — never disappear, never shrink.
+CRITICAL: Camera is completely LOCKED. No zoom. No push. No pan. No tilt. Static shot.
 
-0:00-0:02 Camera slowly drifts to the right — gentle, continuous panning movement throughout. Dragon starts with both wings FULLY SPREAD OPEN — continuing from the previous shot's violent wing burst. Wings slowly begin to relax from their explosive spread. Dragon hovers with zero-gravity feel — body drifts and sways subtly with airflow, wing membranes flutter in wind, neck membranes and small scales tremble. Eyes slowly widen, pupils burning like molten magma, brow ridge tightens further, nostrils exhale wisps of blue smoke.
+Dragon begins hovering — wings fully spread, body upright, eyes locked on camera.
+Then: dragon's body tilts forward — chest drops, head dips, weight shifts onto wings.
+Slow and deliberate. Not aggressive — mechanical. The way a bird of prey commits before the stoop.
+Wings angle from spread-hover into dive position — tips rotate downward as body pitches forward.
+As the dragon tilts toward camera it grows slightly larger in frame — because IT is leaning in, not the camera moving.
 
-0:02-0:04 Dragon folds both wings tight against body, torso tilts forward and sinks, preparing to dive. Jaw cracks open revealing deep orange glow in throat — hinting at imminent fire. Camera tilts downward following the dragon's forward lean, background clouds accelerate upward.
+End: dragon fully pitched forward, wings locked in dive angle, filling more of frame —
+body language says: committed, airborne in the next moment.
 
-Shallow depth of field — dragon eyes and scale texture razor sharp, background clouds heavily blurred but orange glow still visible. Handheld camera subtle tremor. Motion blur follows dragon head rotation. ARRI color tone, deep teal-blue shadows, warm orange twilight glow on clouds and dragon, film grain.
-
-No background music. Only diegetic sounds — dragon roars, wing beats, wind.
+Handheld subtle tremor. ARRI tone, deep teal shadow, warm orange magma glow. Film grain.
+No background music. Only diegetic sounds — wing membrane tension, low wind,
+deep exhale from dragon as it commits to the dive.
 ```
 
 ---
 
-## Shot 02 ✅ (Good09 — working prompt, DewS 2026-06-18)
+## Shot 02 ✅ (ultrawide — DewS 2026-07-07)
 
-**Refs ที่ต้องแนบ (ตามลำดับ upload):**
-- รูปภาพ1: character sheet มังกรร่างปกติ — dark gray scales, dark red wing veins, amber eyes
-- รูปภาพ2: `E:\01_Work\_NDF\Fortal\_REF\Screenshot 2026-04-03 233722.jpg` — composition ref: dragon vertical pose, cloud effects, low-angle camera
+**Refs ที่ต้องแนบ (ตามลำดับ):**
+- `E:\01_Work\_NDF\Fortal\Shot02\Ultrawide_shot02_1st.png` — Starting frame: dragon vertical posture sprinting upward, cloud sea wide
+- `E:\01_Work\_NDF\Fortal\Shot02\Ultrawide_shot02_top.png` — Apex frame: wings burst fully open, cloud shockwave
+- character sheet มังกรร่างปกติ — dark gray scales, dark red wing veins, amber eyes
 
 ```
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
 
-@[Screenshot 2026-04-03 233722.jpg] — Composition, dragon pose, cloud effects, and camera angle strictly reference: Dragon in vertical posture sprinting upward, facing the camera throughout, clouds below pulled and dragged upward by flight force. Camera must maintain low-angle upward shot, tracking the dragon from below throughout, no angle change permitted.
+@[Ultrawide_shot02_1st.png] — Starting frame. Dragon vertical posture sprinting straight upward through cloud plume, tiny at first, cloud sea and dark mountains spread wide.
 
-@[มังกรร่างปกติ] — Dragon appearance strictly reference: Dark gray armored scales, wing membrane with dark red vein patterns, amber eyes. Only one dragon in frame.
+@[Ultrawide_shot02_top.png] — Apex frame. Wings burst fully open, cloud shockwave behind.
 
-0:00-0:02 Dragon sprints vertically upward at high speed, both wings pressed tight against body, flying higher and higher.
+@[มังกรร่างปกติ] — Dark gray armored scales, wing membrane dark red vein patterns, amber eyes.
 
-0:02-0:03 Dragon reaches apex, body jolts to abrupt halt — then both wings violently burst open like a spring suddenly released, bone structure snapping outward as wing membranes stretch taut and shudder violently, shockwave scatters surrounding clouds into visible blast ripples, air torn apart by wingspan. Transitions to horizontal gliding posture, flying parallel to the cloud sea.
+CRITICAL: Black bars at top and bottom are permanent throughout — never disappear or shrink.
+Camera locked low-angle looking upward tracking dragon from below. No angle change.
 
-Dragon has living presence — tail sways subtly with airflow, wing membranes flutter in wind, absolutely not a rigid CG model. Low-angle upward shot, camera tracking dragon's ascent. Handheld camera slight shake, lens breathing effect. First half strong motion blur; second half decelerates, silhouette gradually sharpens. Foreground has thin wisps of cloud streaming rapidly past the lens.
+0:00–0:02 Dragon sprints vertically upward, wings pressed tight, clouds dragged upward in wake.
+0:02–0:03 Dragon reaches apex — body jolts to halt — both wings violently burst open. Bone structure snaps, membranes shudder, pressure shockwave scatters clouds into blast ripples.
+0:03–0:05 Dragon settles into horizontal glide, wings wide and steady, motion blur clears.
 
-Ultra-shallow depth of field, film grain, ARRI color tone, deep teal-blue shadows, twilight warm orange.
+Handheld shake, lens breathing. Foreground cloud wisps stream past lens. Ultra-shallow DOF, film grain, ARRI tone, deep teal-blue shadows, twilight warm orange.
+No background music. Only diegetic sounds — rushing wind, deep boom at wing burst, air tearing.
 ```
 
 ---
@@ -227,35 +242,37 @@ powerful wing beats hammering air, vapor explosion entering clouds, distant city
 
 ---
 
-## Shot 11 🔄 (v2 — armor melts, DewS 2026-06-19)
+## Shot 11 🔄 (ultrawide agitation-phase — DewS 2026-07-07)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
-- `E:\01_Work\_NDF\Fortal\Shot11\Shot11_Ref.png` — Starting frame, camera behind knight on parapet, dragon distant
-- character sheet อัศวิน — dark full-plate iron armor
+- `E:\01_Work\_NDF\Fortal\Shot11\Ultrawide_shot11_1st.png` — Starting frame (ultrawide, black letterbox bars)
+- `E:\01_Work\_NDF\Fortal\_REF\BGPP_Knight_normalHand.png` — Knight character sheet: dark full-plate iron armor
 - character sheet มังกรร่างไฟ — Black scales, magma veins, orange eyes
 
 ```
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy. War. Carnage.
 
-@[Shot11_Ref] — Starting frame. Camera behind knight on parapet, dragon distant.
+@[Ultrawide_shot11_1st.png] — Starting frame.
 
-@[อัศวิน charsheet] — Knight character sheet. Dark full-plate iron armor.
+@[BGPP_Knight_normalHand.png] — Knight character sheet. Dark full-plate iron armor.
 
-@[มังกรร่างไฟ] — Dragon character sheet. Black scales, magma veins, orange eyes.
+@[มังกรร่างไฟ] — Dragon: Black scales, magma veins, orange eyes.
 
-Real-time speed — no slow motion. Every action at full pace throughout.
+CRITICAL: Black bars at top and bottom are permanent throughout.
 
-Dragon moves at full hunting velocity — wings hammering air like pistons, body rigid, never slowing. Not flying — tearing through. Fire pours continuously from its jaws as it goes — a wake of destruction, not an aimed strike. The dragon does not stop. Does not circle. Does not wait.
+Dragon moves at steady predator velocity — deliberate, unhurried, inevitable.
 
-Firelit night. Castle parapet: narrow stone battlement, high above street.
+The knight sees it coming and does not know what to do. His body betrays him — shifting weight foot to foot, half-turning then stopping, hands coming up then dropping, head snapping left and right. Not frozen. Agitated. Overwhelmed. He wastes precious seconds in this useless panic.
 
-Knight spots the dragon closing in — and breaks. Turns and sprints directly toward camera — full desperate scramble, armor clanking and lurching, stumbling over his own feet. Not a warrior's retreat. Pure terror. Every muscle trying to outrun something that cannot be outrun.
+By the time he commits to running — the dragon is already dangerously close. Full sprint. Maximum effort. Stumbling, lurching, armor clanking.
 
-As dragon tears past, dragonfire — superheated beyond any mortal flame — slams into the parapet. The iron armor does not hold. It glows red instantly, then iron begins to run — liquid metal dripping from pauldrons, from gauntlets, from the breastplate. The knight is still standing as the armor melts around them, molten iron streaming downward. Then the fire overwhelms completely. Hard cut.
+Camera retreats ahead of knight, locked at chest height. Waist-up minimum, never more than two-thirds frame height.
 
-Camera alive — handheld, flinching, breathing with fear. ARRI tone: coal shadow, fire vivid. Wing motion blur maximum. Heavy film grain. Vignette.
+Iron armor glows red instantly — iron begins to run. Knight still standing as armor melts. Then fire overwhelms. Hard cut.
 
-No background music. Only diegetic sounds — fire roaring, dragon roar, hammering wing beats, armored boots sprinting on stone, scorching wind.
+ARRI tone: coal shadow, fire vivid. Heavy film grain. Vignette.
+
+No background music. Only diegetic sounds — fire, dragon roar, wing beats, boots on stone, scorching wind.
 ```
 
 ---
