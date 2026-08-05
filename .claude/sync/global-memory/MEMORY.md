@@ -19,6 +19,7 @@
 - ลูก: **น้องเมฆ** เกิด 26 ม.ค. 2566 → `memory/user_child_megh.md`
 - ครอบครัวพ่อแม่ — ปัญหาหนี้/toxic dynamic → `memory/user_family_situation.md`
 - DewS's company: **NDF** — ชื่อเต็ม: บริษัท เอ็นดีเอฟ เอ็กซ์ อินเทอร์แอคทีฟ จำกัด / NDF X Interactive Co., Ltd. → `memory/ndf-company-info.md`
+- **บ้าน = ทาวน์โฮม 2 ชั้น 120 ตร.ม. · เลี้ยงแมว · ซื้อหุ่นยนต์ดูดฝุ่น Xiaomi H50 Pro (ส.ค. 2026, คืน Ecovacs T30C)** + บทเรียน verify สเปก → `memory/dews-robot-vacuum-t30c.md`
 
 ## Dreamina Tracker
 - เมื่อ DewS บอก account ใหม่ → แอดเข้า `DEFAULTS` ใน `ψ/active/dreamina-credits.html` เลย ห้ามถาม → `memory/feedback_dreamina_add_directly.md`
