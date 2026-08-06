@@ -54,6 +54,7 @@
 - 🌙 Dark theme ทุกไฟล์ที่ไม่ได้กำหนด → `memory/feedback_default_dark_theme.md`
 - 🪟 แจ้ง DewS drag tab ก่อนแก้โค้ด (กัน VSCode auto-focus) → `memory/feedback_no_window_pop.md`
 - 📂 เปิด Explorer หลังสร้างไฟล์ใหม่ → `memory/feedback_open_explorer_on_new_file.md`
+- 🗓️ **เอกสาร generate ใส่วันที่+เวลาในชื่อไฟล์** (`ชื่องาน_YYYY-MM-DD_HHMM.pdf`) กันชื่อซ้ำ → `memory/feedback_dated_output_filenames.md`
 
 ## Video/Image Generation
 - 🚫 **ห้ามใช้ UUID ใน prompt** — ใช้ @[filename] เท่านั้น DewS replace UUID เองตอน upload → `memory/feedback_no_uuid_in_prompts.md`
