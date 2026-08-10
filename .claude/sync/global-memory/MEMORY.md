@@ -20,6 +20,7 @@
 - ครอบครัวพ่อแม่ — ปัญหาหนี้/toxic dynamic → `memory/user_family_situation.md`
 - DewS's company: **NDF** — ชื่อเต็ม: บริษัท เอ็นดีเอฟ เอ็กซ์ อินเทอร์แอคทีฟ จำกัด / NDF X Interactive Co., Ltd. → `memory/ndf-company-info.md`
 - **บ้าน = ทาวน์โฮม 2 ชั้น 120 ตร.ม. · เลี้ยงแมว · ซื้อหุ่นยนต์ดูดฝุ่น Xiaomi H50 Pro (ส.ค. 2026, คืน Ecovacs T30C)** + บทเรียน verify สเปก → `memory/dews-robot-vacuum-t30c.md`
+- **แอร์: ซื้อ Midea Chione 9,360 BTU (MSCH-10CRFN8) ฿9,299 จาก HomePro ส.ค. 2026 แทน Panasonic เก่า 14 ปี · ประกันคอมฯ 10 ปี/ติดตั้ง 180 วัน** → `memory/dews-aircon-midea-chione.md`
 
 ## Dreamina Tracker
 - เมื่อ DewS บอก account ใหม่ → แอดเข้า `DEFAULTS` ใน `ψ/active/dreamina-credits.html` เลย ห้ามถาม → `memory/feedback_dreamina_add_directly.md`
@@ -92,6 +93,7 @@
 - 🏭 Elza pipeline + tool ที่พอร์ต (followspot.py = sectional follow-spot) → `memory/midwinter-elza-pipeline.md` | Windows: Python 3.12 + Pillow + numpy + ffmpeg พร้อมแล้ว
 
 ## Behavior (สำคัญ)
+- 🎬 **Ultrawide shots = ใส่แถบดำเสมอ** ห้ามถาม → `memory/feedback_ultrawide_always_black_bars.md`
 - ⚡ DewS บอก "เริ่มได้เลย" → ลงมือทันที ห้ามถามซ้ำ → `memory/feedback_just_act_no_clarify.md`
 - 🎯 คิดครบก่อนเขียนพร้อมพ์ — ยิงครั้งเดียวจบ ห้ามแก้วนไปมา → `memory/feedback_complete_prompt_first_try.md`
 - ✍️ สะกดไทยให้ถูก ("ตึก" ไม่ใช่ "ตึง") → `memory/feedback_thai_spelling_accuracy.md`
