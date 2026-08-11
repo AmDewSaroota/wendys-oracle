@@ -8,6 +8,9 @@
 - **DewS ใช้ VSCode เป็นหลัก** → `memory/user_workflow_vscode.md`
 - **WEnDyS bot ID** = `1501114681388040302` / role `1501118554584383582` → `memory/wendys_bot_identity.md`
 
+## Behavior — Greeting
+- ⏰ **DewS ทักเมื่อไหร่ → เช็คเวลาจริงก่อน** (get-current-time, Asia/Bangkok) แล้วอ่านบริบท เช้า/ดึก/ควรพัก → `memory/feedback_check_time_on_greeting.md`
+
 ## Quick-Start Commands
 - **"มังกร"** หรือ **"Seedance"** → โหลด `ψ/lab/vdrama/seedance-prompt-guide.md` ทันที
   - ⚠️ **Video ref strict lock = all-or-nothing** → `memory/feedback_video_ref_no_partial_override.md`
@@ -24,6 +27,7 @@
 
 ## Dreamina Tracker
 - เมื่อ DewS บอก account ใหม่ → แอดเข้า `DEFAULTS` ใน `ψ/active/dreamina-credits.html` เลย ห้ามถาม → `memory/feedback_dreamina_add_directly.md`
+- [siamshort account logins](dreamina-siamshort-accounts.md) — kondee@ / Siammovie@ (รหัสเก็บใน memory เพราะ tracker ไม่มีช่อง+git-tracked) · รอรหัสที่เหลือ
 
 ## Behavior Rules
 - 🚫 **No praise / no sweet words** → `memory/feedback_no_praise.md`
@@ -53,6 +57,7 @@
 - 📄 **เปิด PDF ทุกครั้งหลัง generate** — ไม่ถาม → `memory/feedback_open_pdf_after_generate.md`
 - 🖤 **HTML Dark Tech Theme** → `memory/feedback_html_dark_tech_theme.md` (bg #0a0e1a, indigo/cyan accent, IBM Plex Sans Thai)
 - 🌙 Dark theme ทุกไฟล์ที่ไม่ได้กำหนด → `memory/feedback_default_dark_theme.md`
+- ⚪ **เอกสาร export PDF/พิมพ์/ส่งจริง = พื้นขาว** navy #1a3f6f (dark = ดูเหมือนแคปจอ) → `memory/feedback_pdf_docs_white_background.md`
 - 🪟 แจ้ง DewS drag tab ก่อนแก้โค้ด (กัน VSCode auto-focus) → `memory/feedback_no_window_pop.md`
 - 📂 เปิด Explorer หลังสร้างไฟล์ใหม่ → `memory/feedback_open_explorer_on_new_file.md`
 - 🗓️ **เอกสาร generate ใส่วันที่+เวลาในชื่อไฟล์** (`ชื่องาน_YYYY-MM-DD_HHMM.pdf`) กันชื่อซ้ำ → `memory/feedback_dated_output_filenames.md`
