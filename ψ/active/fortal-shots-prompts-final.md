@@ -22,7 +22,11 @@ Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
 
 @[Image2.png] — Dragon appearance strictly reference: Dark gray armored scales with warm brown tones at scale edges, wing membrane with dark red vein patterns, amber eyes. Only one dragon in frame.
 
-The shot begins with a long, uncomfortable stillness. Vast cloud sea, dark mountains, dramatic sky. Nothing moves. Clouds drift in absolute peace and silence. Cloud surface is perfectly flat and unbroken. This calm MUST last — let the audience feel safe, let them forget something is coming.
+The shot begins with calm — not stillness. Vast cloud sea, dark mountains, dramatic sky. Clouds drift slowly and naturally across the surface — lazy, unhurried. The sky breathes. This is peace, not paralysis. Let the audience feel safe.
+
+Midway through the calm: a single spot on the cloud surface begins to dip downward — barely visible, a shallow depression forming slowly. The surrounding mist drifts inward toward it, as if something below is pulling the air down. No violence. No warning. Just wrongness — the kind that makes the audience lean forward without knowing why.
+
+No lightning. No thunder. No wind gusts. Only the quiet pull of something enormous preparing to surface.
 
 Then — WITHOUT ANY WARNING — the dragon BURSTS upward through the clouds like a geyser erupting from the earth. The sheer mass and speed displaces the entire cloud layer — clouds are PULLED UPWARD in the dragon's wake, spiraling and twisting behind it. The air itself is pushed aside. This is not a bird taking flight — this is a force of nature rising.
 
@@ -39,43 +43,39 @@ No background music. Only diegetic sounds — silence during calm, then a deep b
 
 ---
 
-## Shot 02-MD ✅ (ultrawide — DewS 2026-07-23)
+## Shot 02-MD ✅ (ultrawide v10 — DewS 2026-08-05)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
-- `E:\01_Work\_NDF\Fortal\Shot02-MD\Ultrawide_shot02MD_1st.png` — Starting frame (ultrawide, ปีกครบทั้ง 2 ด้าน, black letterbox bars)
-- `E:\01_Work\_NDF\Fortal\Shot02-MD\Shot02_MD_05\Shot02_MD_05_00000.png` — Character ref: dark charcoal-gray scales, magma chest, amber eyes
+- `E:\01_Work\_NDF\Fortal\Shot02-MD\Ultrawide_Shot2MD_First.png` — Starting frame (มังกรกลางล่างเฟรม มีพื้นที่ด้านบน)
+- `E:\01_Work\_NDF\Fortal\_REF\Image2_Litup.png` — Glow color ref: magma-orange chest veins, blazing eyes (partial only)
 
 ```
-Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
+No ease-in. No ease-out. Constant velocity throughout.
 
-@[Ultrawide_shot02MD_1st.png] — Starting frame. Match this composition exactly:
-dragon centered, both wings fully spread tip-to-tip, low camera angle looking up,
-black letterbox bars top and bottom.
+@[Ultrawide_Shot2MD_First.png] — THIS IS FRAME ONE. Begin exactly here. Camera and scale locked.
+@[Image2_Litup.png] — Glow color reference ONLY. Target color for eyes and chest when lit.
 
-@[Shot02_MD_05_00000] — Character ref. Match dragon EXACTLY:
-dark charcoal-gray armored scales, deep molten orange-red magma chest cracks,
-amber eyes. NOT brown. NOT reddish.
+CAMERA LOCKED. Does not move. Does not zoom. Dragon scale stays constant throughout.
+ULTRAWIDE LETTERBOX. Black bars top and bottom permanent — never disappear.
 
-CRITICAL: Black bars at top and bottom are PERMANENT throughout — never disappear, never shrink.
-CRITICAL: Camera is completely LOCKED. No zoom. No push. No pan. No tilt. Static shot.
+FIRST HALF: A creature of immense weight holds itself in the air. The wings work — short, precise strokes at normal speed, just enough to prevent falling. Real-time. Each beat: load, stroke, recover. The body barely moves — held rigid by muscle and mass. The dragon surveys. Patient. Unhurried. Not because it is relaxed — because nothing threatens it.
 
-Dragon begins hovering — wings fully spread, body upright, eyes locked on camera.
-Then: dragon's body tilts forward — chest drops, head dips, weight shifts onto wings.
-Slow and deliberate. Not aggressive — mechanical. The way a bird of prey commits before the stoop.
-Wings angle from spread-hover into dive position — tips rotate downward as body pitches forward.
-As the dragon tilts toward camera it grows slightly larger in frame — because IT is leaning in, not the camera moving.
+SECOND HALF — three beats, distinct:
 
-End: dragon fully pitched forward, wings locked in dive angle, filling more of frame —
-body language says: committed, airborne in the next moment.
+Beat 1 — INTENT: Wings slow almost to stillness. The dragon holds. Not resting — deliberate. Every muscle loaded. The air waits.
 
-Handheld subtle tremor. ARRI tone, deep teal shadow, warm orange magma glow. Film grain.
-No background music. Only diegetic sounds — wing membrane tension, low wind,
-deep exhale from dragon as it commits to the dive.
+Beat 2 — LOAD: The body rises slightly — chest lifts, wings pull inward. Energy coiling. A fraction of a second.
+
+Beat 3 — COMMIT: The chest drops hard. Wings drive forward. Body snaps to horizontal in one powered movement — not a drift, not a rotation. A release. Tail rises. Head locks forward. Jaw opens. Eyes ignite orange. Chest veins illuminate — partial, not full magma.
+
+Everything that follows is Shot 03.
+
+No background music. Only diegetic sounds — sharp rhythmic wing percussion at normal tempo, deep chest resonance building as body commits, low thunder.
 ```
 
 ---
 
-## Shot 02 ✅ (ultrawide — DewS 2026-07-07)
+## Shot 02+03 ✅ (combined 7s — camera shake added, DewS 2026-08-11)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
 - `E:\01_Work\_NDF\Fortal\Shot02\Ultrawide_shot02_1st.png` — Starting frame: dragon vertical posture sprinting upward, cloud sea wide
@@ -83,60 +83,56 @@ deep exhale from dragon as it commits to the dive.
 - character sheet มังกรร่างปกติ — dark gray scales, dark red wing veins, amber eyes
 
 ```
+No ease-in. No ease-out. Constant velocity throughout.
+
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
 
-@[Ultrawide_shot02_1st.png] — Starting frame. Dragon vertical posture sprinting straight upward through cloud plume, tiny at first, cloud sea and dark mountains spread wide.
+@[Ultrawide_shot02_1st.png] — STARTING FRAME. Dragon vertical posture sprinting straight upward through cloud plume.
 
-@[Ultrawide_shot02_top.png] — Apex frame. Wings burst fully open, cloud shockwave behind.
-
-@[มังกรร่างปกติ] — Dark gray armored scales, wing membrane dark red vein patterns, amber eyes.
+@[Ultrawide_shot02_top.png] — Apex frame. Wings burst fully open, cloud shockwave.
 
 CRITICAL: Black bars at top and bottom are permanent throughout — never disappear or shrink.
-Camera locked low-angle looking upward tracking dragon from below. No angle change.
 
 0:00–0:02 Dragon sprints vertically upward, wings pressed tight, clouds dragged upward in wake.
-0:02–0:03 Dragon reaches apex — body jolts to halt — both wings violently burst open. Bone structure snaps, membranes shudder, pressure shockwave scatters clouds into blast ripples.
-0:03–0:05 Dragon settles into horizontal glide, wings wide and steady, motion blur clears.
 
-Handheld shake, lens breathing. Foreground cloud wisps stream past lens. Ultra-shallow DOF, film grain, ARRI tone, deep teal-blue shadows, twilight warm orange.
-No background music. Only diegetic sounds — rushing wind, deep boom at wing burst, air tearing.
+0:02–0:03 Dragon SLAMS to a halt at apex — violent stop, zero deceleration. Both wings DETONATE outward in a single explosive frame — not unfolding, not spreading — DETONATING. Bone structure cracks out like a whip. Membranes snap taut and shudder from the force. The pressure wave BLASTS outward — clouds explode away in all directions, a visible shockwave ring tears through the cloud sea. The air itself recoils. This is not a wing opening — it is an explosion. The shockwave HITS THE CAMERA — the entire frame jolts violently, a single brutal impact strike. Camera staggers, recovers. Not gradual — one hard hit from the pressure wave.
+
+0:03–0:04 Dragon settles into horizontal flight. Jaw opens — roar erupts, full roar, sound rips through air. Jaw snaps shut. Eyes lock forward. Chest begins to glow faint orange.
+
+0:04–0:07 Dragon approaches camera at full speed — getting larger every second. Ferocious. Savage. No slowdown. Chest blazing. Eyes locked. Handheld shake INTENSIFIES as dragon closes — turbulence builds, lens breathing hard, frame trembling from displaced air. Final second: passes directly overhead at maximum speed. Camera tilts up tracking belly. Wake turbulence SLAMS the frame — violent jolt as it vanishes. Gone instantly.
+
+Handheld shake, lens breathing. Film grain, ARRI tone, deep teal-blue shadows, twilight warm orange.
+
+No background music. Only diegetic sounds — rushing wind, deep boom at wing burst, roar, doppler rush as dragon passes overhead.
 ```
 
 ---
 
-## Shot 3 🔄 (working prompt — รอ test ท่าใหม่)
+## Shot 03 ✅ (ultrawide v4 — DewS 2026-08-05)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
-- character sheet มังกร (รูปภาพ1)
-- `E:\01_Work\_NDF\Fortal\Shot03\Shot03 _1st.png` — scene composition ref (รูปภาพ2)
-- `E:\01_Work\_NDF\Fortal\Shot03\Shot03 _Last.png` — near-end framing guide (รูปภาพ3)
-
-**หมายเหตุ**: กำลังทำ starting frame ใหม่ (`Shot03_1st_NEW`) ให้มังกรหัวก้ม ปีกงอต่ำกว่าหัว ปากเรือง — เพื่อต่อจาก Shot 2MD end frame
+- `E:\01_Work\_NDF\Fortal\Shot03\Ultrawide_shot03_1st.png` — Starting frame: ultrawide, dragon in horizontal flight, mountain + cloud backdrop
+- `E:\01_Work\_NDF\Fortal\_REF\Image2_Litup.png` — Character: chest partially lit orange, wings dark
 
 ```
-Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy.
+No ease-in. No ease-out. Constant velocity throughout.
+We cut INTO this shot mid-action. Already happening. Already attacking.
 
-@8ea0aa79-60a4-45aa-87dc-8a3d723f44b8 — Dragon character sheet, strictly reference for appearance.
-@bc7d9ee1-a3ca-4737-9989-9e8d9b380364 — Scene composition reference. Dragon right to left, wide shot, above mountains and clouds.
-@ce1ebe55-6509-40b3-a3b8-29503a3d1051 — Loose guide for near-end framing only.
+@[Ultrawide_shot03_1st.png] — STARTING FRAME. Lock composition and trajectory exactly as shown.
+@[Image2_Litup.png] — Character. Chest and belly glow orange. Wings dark.
 
-Only one dragon. Real-time speed, NOT slow motion.
+ULTRAWIDE LETTERBOX. Black bars top and bottom permanent — never disappear.
 
-Dragon explodes across frame right to left at breakneck speed — violent, predatory, furious.
-Each wingbeat is a thunderclap that launches it forward like a missile.
-Then the dragon pulls up sharply and roars STRAIGHT OVER THE CAMERA —
-belly and wing undersides slam across the full frame directly above, filling the entire sky.
-Not to the side — directly overhead.
+FIRST MOMENT: Dragon jaw open — roar erupts, carrying over from previous shot. Full roar, not growl. Sound rips through air for 0.5–1 second. Then jaw snaps shut. Eyes lock forward. Body commits to approach.
 
-Then the dragon pulls up sharply — camera TILTS UP following the dragon as it roars
-STRAIGHT OVER THE CAMERA. Camera keeps tilting upward, tracking the dragon's belly
-and wing undersides as they sweep across the sky directly above.
-Dragon passes completely overhead until the tail whips past and exits the frame.
-Shot ends with camera pointing up at empty sky — dragon is fully gone.
+Dragon continues exactly as shown — same angle, same trajectory, approaching fast. Ferocious. Savage. No slowdown. Mouth closed from here on.
 
-Subtle handheld shake. Shallow DOF. Film grain, ARRI tone.
+Gets larger in frame as it closes distance. Chest blazing. Eyes locked.
 
-No background music. Only diegetic sounds — thunderous wing beats, roaring wind.
+Final seconds: passes directly overhead. Camera tilts up. Belly fills frame. Gone instantly.
+
+No BGM. Diegetic sounds — roar at opening, violent wingbeats, doppler rush as dragon passes overhead.
+```
 ```
 
 ---
@@ -155,7 +151,9 @@ No background music. Only diegetic sounds — thunderous wing beats, roaring win
 @[Ultrawide_Shot10_1st color.png] 的构图和主体位置。
 手持摄影自然晃动，镜头呼吸感，有机运镜。
 
-CRITICAL: Black bars at top and bottom are permanent throughout the entire clip — they must never disappear or shrink.
+CRITICAL: Black bars at top and bottom are a fixed 2D film frame overlay — they are NOT part of the scene. They do not tilt, warp, rotate, or move with the camera. They stay perfectly horizontal and static for the entire clip.
+
+Real-time speed throughout. NOT slow motion. NOT cinematic slow-mo. NOT high frame rate. Every action plays at actual speed.
 
 前景和中景挤满了逃命的人群，严格参考 @[BGPP คนหนี]：
 士兵与村民混杂，东倒西歪，相互推撞，
@@ -167,15 +165,22 @@ CRITICAL: Black bars at top and bottom are permanent throughout the entire clip 
 深灰铠甲鳞片，翼膜暗红血管纹路，琥珀色双眼。
 飞龙双翼如铁锤猛击空气，绝非滑翔，是全速猎杀中的掠食者。
 
-0:00-0:03 极浅景深聚焦飞龙，龙口喷出宽阔火焰，
-火焰向四周翻卷扩散如瀑布倾泻，绝非圆柱形。
-前景人群身影隐现其中，惊慌奔逃。
+0:00-0:02 镜头低角度向后移动——引导逃命人群冲向镜头。
+飞龙从远处飞来，持续向下喷火，大火烧穿两侧建筑。
+飞龙越来越近，龙焰燃烧至地面，几乎烧到镜头脚下。
+全程自然手持晃动，无停顿。
 
-0:03-0:06 镜头猛然上扬，跟随飞龙越过头顶继续后仰——
-飞龙越过镜头正上方，向身后上空全速飞去，
-镜头越过天顶继续后仰追踪，直到飞龙完全消失于身后天际。
-飞龙全程速度不减，绝无减速，绝无慢动作，绝无缓出。
-镜头跟随速度不减，直到飞龙彻底消失，不提前停止。
+0:02 龙焰几乎抵达镜头——强烈热浪冲击镜头，高频短幅震动模拟爆炸冲击，迅速衰减。
+
+0:02-0:03 飞龙猛然抬头，将颈部向上扫起——停止向下喷火，身体冲过镜头正上方飞去。
+
+0:03-0:05 镜头急速向后仰起追踪飞龙——飞龙保持同一水平飞行轨迹，继续向前飞去。
+镜头从仰望正上方继续向后仰，跟随飞龙越过头顶向身后远去。
+飞龙清晰可见，越飞越远越来越小，沿同一方向消失于远方天际。
+镜头持续追踪，直到飞龙完全消失——不提前停止。
+
+0:05-0:07 飞龙消失后，镜头缓出锁定后方天空，持续到片尾。
+全程自然手持微晃不停，加速上仰后缓出收尾。
 木屋被烈焰完全吞噬，整片区域淹没在火海中，
 浓烟猛烈翻涌遮挡大半画面。
 
@@ -193,7 +198,25 @@ CRITICAL: Black bars at top and bottom are permanent throughout the entire clip 
 
 ---
 
-## Shot 5 🔄 (v1 — draft, ยังไม่ได้ test)
+## Shot 05 🔄 (ultrawide update — DewS 2026-08-05)
+
+### Higgsfield — Ultrawide Fill (ทำก่อน gen video)
+
+**Refs:** Image 1 = `Ultrawide_Shot5_gen.png` / Image 2 = `Image2.png`
+
+```
+@[Image 1] — Base image.
+Fill black areas on LEFT and RIGHT sides with clouds and sky only.
+Match the existing sky color, tone, and lighting from center image EXACTLY — no color shift.
+Black bars at TOP and BOTTOM stay black.
+Center dragon untouched.
+Wing tips extend naturally into filled areas.
+No new elements.
+
+@[Image 2] — Character ref. Match dragon appearance exactly.
+```
+
+### Dreamina — Video Prompt
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
 - `E:\01_Work\_NDF\Fortal\Shot05\Shot05_First.png` — starting frame (รูปภาพ4)
@@ -304,20 +327,28 @@ No background music. Only diegetic sounds — wing beats, wind.
 
 ---
 
-## Shot 08 ✅ (Good01 — working prompt, DewS 2026-06-18)
+## Shot 08 ✅ (Good01 — ultrawide 2026-08-07)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
-- `E:\01_Work\_NDF\Fortal\Shot08\Shot08_1st.png` — Starting frame + composition reference
+- `E:\01_Work\_NDF\Fortal\Shot08\Ultrawide_Shot08_First.png` — STARTING FRAME ultrawide (swap เมื่อเจนเสร็จ)
 - character sheet มังกรร่างไฟ — dragon GLOW battle form appearance
 
 ```
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy. One continuous shot. Real-time speed, NOT slow motion.
 
-@[Shot08_1st.png] — Starting frame and composition reference. Dragon on the left, side view, breathing fire down onto village. Mountains and overcast sky behind. Camera locks this exact framing from frame one — NO zoom in, NO zoom out, NO scale change. The dragon stays at this size in frame throughout.
+@[Ultrawide_Shot08_First.png] — THIS IS FRAME ONE. Begin exactly here — dragon position, altitude, scale, and framing locked to this image. Do NOT start higher. Do NOT reframe. Match this exactly.
 
 @[มังกรร่างไฟ] — Dragon GLOW battle form. Black scales cracked with blazing orange magma veins, burning orange eyes, glowing claws.
 
-Camera only pan horizontally, smoothly tracking the dragon left to right as it flies. Like a helicopter keeping perfect pace beside the dragon. Dragon glides from left of frame toward the right, gradually descending — wings slightly angled down, losing altitude with purpose. It sweeps a continuous stream of fire across the village below, head dragging the flame like a brush painting destruction across the rooftops. Savage and relentless. Small wooden huts and thatched cottages erupt one after another as the fire passes over them. Thick black smoke and orange flames billow upward. The village is only small buildings — NOT a city, NOT large stone structures. Hills and mountains drift past in the background. Overcast sky, dark and heavy. Shallow DOF locked on dragon, background softly blurred. Motion blur on wing tips and fire stream. Subtle handheld tremor. ARRI tone, teal shadows, warm orange firelight, film grain.
+ULTRAWIDE LETTERBOX. Black bars top and bottom are fixed borders — they do NOT grow, do NOT shrink, do NOT move. Permanent throughout.
+
+Frame one matches the ref exactly: dragon on the left side of frame, low altitude, village and burning rooftops clearly visible below. The village fills the lower portion of frame throughout — always visible, never disappearing.
+
+Camera pans horizontally right only — smooth constant speed, like a helicopter keeping pace beside the dragon. No zoom. No altitude change. Dragon moves right across frame, staying at the same scale and altitude as frame one.
+
+Dragon sweeps fire continuously rightward across the village below — head aimed down, fire stream dragging across rooftops like a brush. Each building ignites as the fire passes. Thick black smoke and orange flames billow upward. Small wooden huts and thatched cottages only — NOT large stone buildings. Hills and mountains drift past in the background. Overcast sky, dark and heavy.
+
+Shallow DOF locked on dragon. Motion blur on wing tips and fire stream. Subtle handheld tremor. ARRI tone, teal shadows, warm orange firelight, film grain.
 
 No background music. Only diegetic sounds — dragon roar, rushing fire, crackling timber, wind.
 ```
@@ -349,9 +380,9 @@ No background music. Only diegetic sounds — dragon roar, rushing fire, crackli
 
 飞龙全速猎杀——双翼如铁锤猛击空气，绝非滑翔。龙口从第一帧起持续喷出翻卷烈焰，火焰如瀑布向下倾泻，燃烧一切。不是飞行——是疯狂追击。
 
-飞龙头部左右猛烈甩动——向左喷火，向右喷火，再向左，肆意燃烧每一寸街道。不是瞄准——是屠杀。
+飞龙眼神锁定猎物——先盯人，再喷火。发现逃命人群立刻转向，精准燃烧，烧完再找下一个目标。无人可见时转向建筑，烧穿屋顶，烧塌木梁。头部每一次转动都有目的——不是乱扫，是猎杀。
 
-喷火时眉骨紧皱，双眼凶狠如嗜血猎手，充满愤怒与杀意。
+喷火时眉骨紧皱，双眼如猎手锁定猎物，冷酷而精准。杀意不是愤怒——是享受。
 
 双翼逐渐展开占据画面左右两侧，下方街道人群仓皇奔逃，清晰可见，火势只增不减。
 
@@ -366,19 +397,21 @@ ARRI色调，暗部青蓝，火光浓烈暖橙，胶片颗粒加重。
 
 ---
 
-## Shot 06 ✅ (Good05 — working prompt, DewS 2026-06-18)
+## Shot 06 ✅ (Good05 — working prompt, ultrawide 2026-08-07)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
 - character sheet มังกรร่างปกติ — dark grey-brown scales, amber eyes, no glow
 - character sheet มังกรร่างไฟ — black scales, magma veins, burning orange eyes
-- `E:\01_Work\_NDF\Fortal\Shot06\1st_color.png` — composition reference, low angle looking up, dark sky
+- `E:\01_Work\_NDF\Fortal\Shot06\Ultrawide_Shot6.png` — STARTING FRAME. Ultrawide letterbox. Lock composition.
 
 ```
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy. One continuous shot.
 
 @[มังกรร่างปกติ] — Dragon NORMAL form. Dark grey-brown scales, amber eyes, no glow.
 @[มังกรร่างไฟ] — Dragon GLOW battle form. Black scales cracked with blazing orange magma veins, burning orange eyes, glowing claws.
-@[1st_color.png] — Composition reference. Low angle looking up, dark oppressive sky.
+@[Ultrawide_Shot6.png] — STARTING FRAME. Lock composition exactly as shown. Low angle looking up, dark oppressive sky.
+
+ULTRAWIDE LETTERBOX. Black bars top and bottom permanent — never disappear.
 
 Low angle looking up. Dark heavy storm clouds overhead — oppressive, threatening, NOT blue sky. Background is ONLY sky and storm clouds throughout the entire shot — no city, no buildings, no ground visible at any point. The dragon remains at significant altitude. Camera tracks the dragon as it glides downward. The dragon is always in motion — continuously gliding and descending, never hovering or floating stationary.
 
@@ -393,11 +426,11 @@ No background music. Only diegetic sounds — crackling magma, deep growl, fire 
 
 ---
 
-## Shot 07 ✅ (good4 — working prompt, DewS 2026-06-18)
+## Shot 07 ✅ (good4 — ultrawide 2026-08-07)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
-- `E:\01_Work\_NDF\Fortal\Shot07\Shot07_1st.png` — Starting frame, lock framing
-- `E:\01_Work\_NDF\Fortal\Shot07\Shot07_Last.png` — Loose guide for near-end framing only
+- `E:\01_Work\_NDF\Fortal\Shot07\Ultrawide_Shot07_First.png` — STARTING FRAME ultrawide
+- `E:\01_Work\_NDF\Fortal\Shot07\Ultrawide_Shot07_Last.png` — Loose guide for near-end framing only
 - character sheet มังกรร่างไฟ — dragon GLOW battle form appearance
 
 **หมายเหตุ**: prompt นี้เป็น English version ล่าสุด — DewS บอกว่ายิ่งแก้ยิ่งพัง บางทีกลับมาใช้อันแรกดีกว่า
@@ -405,9 +438,11 @@ No background music. Only diegetic sounds — crackling magma, deep growl, fire 
 ```
 Game CG cutscene cinematic, photorealistic film-quality, epic dark fantasy. One continuous shot. Real-time speed, NOT slow motion.
 
-@[Shot07_1st.png] — Starting frame. Lock this framing — NO zoom in, NO zoom out.
-@[Shot07_Last.png] — Loose guide for near-end framing only.
+@[Ultrawide_Shot07_First.png] — STARTING FRAME. Lock this framing — NO zoom in, NO zoom out.
+@[Ultrawide_Shot07_Last.png] — Loose guide for near-end framing only.
 @[มังกรร่างไฟ] — Dragon GLOW battle form. Black scales cracked with blazing orange magma veins, burning orange eyes, glowing claws.
+
+ULTRAWIDE LETTERBOX. Black bars top and bottom permanent — never disappear.
 
 Camera behind and above the dragon at this locked distance throughout. Dragon in full GLOW battle form — wings spread wide. Only small wooden huts and thatched cottages below — NOT a city, NOT large buildings. Dragon dives toward the village with fierce momentum — powerful and unstoppable. Wings beat down with massive force — each stroke shaking the air. Wing tips snap and shudder from the rushing wind. Hind legs tense, claws flexing. The whole body alive — muscles rippling, tail swaying. It sweeps fire across the rooftops. Everything erupts. Thick black smoke billows upward. Fire grows until it dominates the lower frame. Wing membranes glow orange, snapping from wind. Heat distortion, embers streak past camera. Shallow DOF on dragon. Motion blur on fire. ARRI tone, teal shadows, orange fire, film grain.
 
@@ -503,26 +538,26 @@ No background music. Only diegetic sounds — explosive wing beats rocketing upw
 
 ---
 
-## Shot 15 ✅ (ultrawide — DewS 2026-07-03)
+## Shot 15 ✅ (ultrawide v2 — DewS 2026-08-10)
 
 **Refs ที่ต้องแนบ (ตามลำดับ):**
-- `E:\01_Work\_NDF\Fortal\Shot15\Ultrawide_Shot15.png` — Starting frame (ultra-wide letterbox, aerial dorsal view, dragon above dome center)
+- `E:\01_Work\_NDF\Fortal\Shot15\Ultrawide_Shot15_V2.png` — Starting frame (ultra-wide letterbox, aerial dorsal view, dragon above dome center, burning village below)
 - character sheet มังกรร่างไฟ — dragon appearance
 
 ```
 No ease-in. No ease-out. Constant velocity. No speed ramping.
 Game CG cutscene, photorealistic, epic dark fantasy.
 
-@[Ultrawide_Shot15.png] — Starting frame. Match this composition: aerial dorsal view, dragon above dome center, fire already streaming onto dome surface, mountain valley below. Continue from this exact moment.
+@[Ultrawide_Shot15_V2.png] — Starting frame. Match this composition: aerial dorsal view, dragon above dome center, fireball forming below chest, burning medieval village surrounding dome below. Continue from this exact moment.
 @[มังกรร่างไฟ] — Dragon: black scales, magma veins, orange eyes.
 
 CRITICAL: Black bars at top and bottom are permanent throughout the entire clip — they must never disappear or shrink.
 
-CAMERA: point of view of someone riding on the dragon's back — positioned just above the spine, looking forward and downward along the body toward the target. Seeing the dragon's neck, spine ridge, and wing tops spreading left and right. The dome is visible AHEAD and BELOW in the lower portion of frame — small at first, growing as the dragon closes in. NOT a side view. NOT overhead. Looking FORWARD along the dragon's body direction.
+CAMERA: point of view of someone riding on the dragon's back — positioned just above the spine, looking forward and downward along the body toward the target. Seeing the dragon's neck, spine ridge, and wing tops spreading left and right. The dome is visible AHEAD and BELOW in the lower portion of frame — growing larger as the dragon closes in. NOT a side view. NOT overhead. Looking FORWARD along the dragon's body direction.
 
 THE ENTIRE SHOT IS FAST AND DESTRUCTIVE. Every second something is being destroyed. No grace. No elegance. Pure obliteration.
 
-Fire streams from jaws and slams into the dome surface. Dome starts small in the lower frame — dragon is still high and far. Dome grows larger as dragon dives closer.
+Fire streams from jaws and slams into the dome surface. Dome grows larger as dragon dives closer.
 
 IMMEDIATE RESULT: massive columns of thick black smoke ERUPT upward from the impact point — violent, explosive, enormous. More smoke than fire. The smoke rises fast and heavy, billowing outward in all directions. Stone glows red then white-hot. The dome surface dissolves under the superheated fire. The breach tears open wide — smoke and fire pouring from the gap.
 
@@ -538,22 +573,22 @@ No background music. Diegetic only — roaring fire, stone disintegrating, massi
 
 ---
 
-## Shot 16 ✅ (ultrawide — DewS 2026-07-03)
+## Shot 16 ✅ (ultrawide — updated 2026-08-11)
 
 **Refs ที่ต้องแนบ (4 refs ตามลำดับ):**
-- `E:\01_Work\_NDF\Fortal\Shot16\Shot16_1st_UltraWide_smoke3.png` — Starting frame (ultra-wide, dragon mid-descent)
+- `UltraWide_DragonSil` — Starting frame (dragon mid-descent, cathedral interior)
 - character sheet มังกรร่างไฟ — dragon appearance
-- `E:\01_Work\_NDF\Fortal\_REF\Image2_Litup.png` — atmosphere reference: smoke density, fire intensity, debris
-- `E:\01_Work\_NDF\Fortal\_REF\Dragon_UltraWide.png` — final pose reference: dragon size, stance, wing spread
+- `UltraWide_Dragon` — Final pose reference: dragon size, stance, wing spread
+- `UltraWide_Smoke` — Atmosphere reference: smoke density, fire intensity, debris
 
 ```
 No ease-in. No ease-out. Constant velocity. No speed ramping.
 Game CG cutscene, photorealistic, epic dark fantasy.
 
-@[Shot16_1st_UltraWide_smoke3.png] — Starting frame. Match composition and cathedral interior exactly. IMPORTANT: a dragon silhouette/shadow is already present in this frame — this is NOT a background element, this IS the dragon mid-descent. Continue from this exact moment. Do not ignore or erase the dragon presence already in frame.
+@[UltraWide_DragonSil] — Starting frame. Match composition and cathedral interior exactly. IMPORTANT: a dragon silhouette/shadow is already present in this frame — this is NOT a background element, this IS the dragon mid-descent. Continue from this exact moment. Do not ignore or erase the dragon presence already in frame.
 @[มังกรร่างไฟ] — Dragon: black scales, magma veins, orange eyes.
-@[Image2_Litup.png] — Atmosphere reference ONLY. Match this level of dense black smoke, fire intensity, and falling debris throughout. NOT composition. NOT camera angle. Atmosphere only.
-@[Dragon_UltraWide.png] — FINAL POSE reference ONLY. Match dragon size, stance, distance from camera, and wing spread in the final sovereign pose. Background — ignore completely.
+@[UltraWide_Dragon] — FINAL POSE reference ONLY. Match dragon size, stance, distance from camera, and wing spread in the final sovereign pose. Background and lighting in this image — ignore completely. Use cathedral from starting frame ref.
+@[UltraWide_Smoke] — Atmosphere reference ONLY. Match this level of dense black smoke, fire intensity, and falling debris throughout. NOT composition. NOT camera angle. Atmosphere only.
 
 CRITICAL: Black bars at top and bottom are permanent throughout the entire clip — they must never disappear or shrink at any point.
 
@@ -563,11 +598,13 @@ We cut INTO this shot mid-action. FRAME ONE: dragon already at terminal velocity
 
 The smoke is NOT separate from the dragon — smoke REACTS to the dragon's mass. Air displacement is violent: smoke churns into vortices, tears apart around wings, spirals in the dragon's wake. Smoke wraps the body, pulled into the slipstream. Not a dragon flying through smoke — smoke being destroyed by the dragon's passing.
 
-Dragon SLAMS floor — ONE foreleg first, then second. Floor CRACKS. Shockwave blasts outward. Camera follows dragon during descent, then shudders once on impact, then locks completely — no zoom, no push-in, no follow for the remainder of the clip. NO zoom at any point after landing. Focal length fixed. If dragon appears larger, it is because the dragon moved — not the camera.
+Dragon SLAMS floor — ONE foreleg first, then second. Floor CRACKS. Shockwave blasts outward. Camera follows dragon during descent, then shudders once on impact, then locks completely.
+
+Camera is a stone wall — ZERO movement, ZERO zoom, ZERO push, ZERO drift after impact. Focal length does not change by a single millimeter. Frozen. Any apparent size change is the dragon moving — not the camera.
 
 The dragon plants its full mass into the room. Wings drop and spread until wingtips find stone — not planted, claimed. The body sinks low between them, the full span of the creature now anchored to the floor like a flag driven into conquered ground. Cathedral columns frame it on both sides and there is barely space left for air. This is what occupation looks like. The violence is already over. What remains is ownership.
 
-Head SNAPS left — roar erupts, a catastrophic wave of sound that physically moves stone and rattles flame. Head sweeps hard right, still roaring — bellowing at every corner of the cathedral. Stays rooted. Does not step forward. The roar is the threat — the body does not need to move.
+Head SNAPS forward — directly at camera, directly at the audience. Jaw tears open. Roar erupts STRAIGHT INTO LENS — not left, not right, not sideways. Full frontal. The audience is the target.
 
 Dragon raises neck tall — regal, sovereign. Wings press down, tips on stone floor. Camera remains at floor level, angle tilted upward — dragon towers above, looking down at the lens the way a predator looks at something already defeated. Full silhouette visible from this low angle — head, wingspan, body, tail. Cathedral ceiling visible above the dragon's head. Jaw slightly parted. This is will, not accident.
 

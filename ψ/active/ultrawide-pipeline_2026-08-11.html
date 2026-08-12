@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultrawide Pipeline — Fortal Dragon</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:     #0a0e1a;
+    --bg2:    #0f1528;
+    --bg3:    #141a30;
+    --border: #1e2a4a;
+    --indigo: #6366f1;
+    --cyan:   #22d3ee;
+    --teal:   #14b8a6;
+    --orange: #fb923c;
+    --text:   #e2e8f0;
+    --muted:  #64748b;
+    --dim:    #94a3b8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(34,211,238,0.08) 0%, transparent 60%),
+      var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(99,102,241,0.15);
+    border: 1px solid rgba(99,102,241,0.35);
+    color: var(--indigo);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .hero h1 span { color: var(--cyan); }
+
+  .hero p.sub {
+    font-size: 1.05rem;
+    color: var(--dim);
+    max-width: 520px;
+    margin-bottom: 20px;
+  }
+
+  .spec-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    color: var(--cyan);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 6px 18px;
+    border-radius: 6px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 80px 40px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  section + section { border-top: 1px solid var(--border); }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--indigo);
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h2 .accent { color: var(--cyan); }
+
+  /* ── CONTEXT ── */
+  .context-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 32px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .ctx-step {
+    flex: 1;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ctx-step + .ctx-step { border-left: 1px solid var(--border); }
+
+  .ctx-tool {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ctx-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--dim);
+  }
+
+  .ctx-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .ctx-arrow {
+    padding: 0 12px;
+    color: var(--muted);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .ctx-highlight {
+    background: rgba(34,211,238,0.05);
+    border-left: 2px solid var(--cyan) !important;
+  }
+
+  .ctx-highlight .ctx-tool { color: var(--cyan); }
+  .ctx-highlight .ctx-title { color: var(--text); }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 40px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 28px;
+    align-items: flex-start;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .step:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .step:nth-child(1) .step-num { background: rgba(34,211,238,0.12); border: 2px solid var(--cyan); color: var(--cyan); }
+  .step:nth-child(2) .step-num { background: rgba(20,184,166,0.12); border: 2px solid var(--teal); color: var(--teal); }
+  .step:nth-child(3) .step-num { background: rgba(251,146,60,0.12); border: 2px solid var(--orange); color: var(--orange); }
+
+  .step-body h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    margin-top: 10px;
+  }
+
+  .step:nth-child(1) .step-body h3 { color: var(--cyan); }
+  .step:nth-child(2) .step-body h3 { color: var(--teal); }
+  .step:nth-child(3) .step-body h3 { color: var(--orange); }
+
+  .tool-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 2px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .step-body p {
+    font-size: 0.95rem;
+    color: var(--dim);
+    line-height: 1.7;
+    max-width: 680px;
+  }
+
+  .step-note {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 0 4px 4px 0;
+    max-width: 560px;
+  }
+
+  /* ── VISUAL COMPARE ── */
+  .visual-compare {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-top: 28px;
+  }
+
+  .visual-card { display: flex; flex-direction: column; gap: 10px; }
+
+  .visual-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--dim);
+    font-weight: 500;
+  }
+
+  .step-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 7px;
+    border-radius: 4px;
+  }
+  .step-badge.s1 { background: rgba(34,211,238,0.12); color: var(--cyan); border: 1px solid rgba(34,211,238,0.3); }
+  .step-badge.s2 { background: rgba(20,184,166,0.12); color: var(--teal); border: 1px solid rgba(20,184,166,0.3); }
+
+  .visual-img-wrap {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #000;
+  }
+
+  .visual-img-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .visual-caption {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    text-align: center;
+  }
+
+  .visual-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .arrow-label { font-size: 10px; font-weight: 600; color: var(--cyan); white-space: nowrap; }
+  .arrow-sub   { font-size: 9px; color: var(--muted); white-space: nowrap; }
+  .arrow-icon  { font-size: 1.3rem; color: var(--cyan); }
+
+  /* ── BAR LOCK BOX ── */
+  .bar-lock-box {
+    margin-top: 32px;
+    background: rgba(99,102,241,0.05);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+
+  .bar-lock-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--indigo);
+    margin-bottom: 20px;
+  }
+
+  .bar-lock-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(99,102,241,0.18);
+    border: 1px solid rgba(99,102,241,0.35);
+    color: var(--indigo);
+    flex-shrink: 0;
+  }
+
+  .bar-lock-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  @media (max-width: 640px) { .bar-lock-body { grid-template-columns: 1fr; } }
+
+  .bar-lock-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .bar-lock-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--cyan);
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(34,211,238,0.2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .bar-lock-or {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-align: center;
+    margin: 6px 0;
+  }
+
+  .bar-lock-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .bar-lock-list li {
+    font-size: 0.88rem;
+    color: var(--dim);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .bar-lock-list li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    color: var(--indigo);
+  }
+
+  .bar-lock-list li strong { color: var(--text); font-weight: 600; }
+
+  .ref-rule-box {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ref-rule-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+  }
+
+  .ref-icon {
+    font-size: 0.85rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .ref-icon.must { background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+  .ref-icon.ok   { background: rgba(20,184,166,0.12); color: var(--teal);   border: 1px solid rgba(20,184,166,0.3); }
+
+  .ref-rule-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .ref-rule-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* ── HIGGSFIELD EXAMPLE ── */
+  .higgsfield-box {
+    margin-top: 24px;
+    background: rgba(34,211,238,0.04);
+    border: 1px solid rgba(34,211,238,0.2);
+    border-radius: 12px;
+    padding: 22px 28px;
+  }
+
+  .higgsfield-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .higgsfield-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(34,211,238,0.12);
+    border: 1px solid rgba(34,211,238,0.3);
+    color: var(--cyan);
+    flex-shrink: 0;
+  }
+
+  .higgsfield-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .higgsfield-baseimg {
+    margin-bottom: 14px;
+  }
+
+  .higgsfield-baselabel {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .higgsfield-baseimg img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    border: 1px solid rgba(34,211,238,0.2);
+  }
+
+  .higgsfield-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--dim);
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    margin-bottom: 14px;
+  }
+
+  .higgsfield-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .higgsfield-rule {
+    font-size: 0.82rem;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+  }
+
+  .hr-dot { color: var(--cyan); flex-shrink: 0; }
+
+  /* ── EVOLVE NOTE ── */
+  .evolve-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--indigo);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+  }
+
+  .evolve-icon {
+    font-size: 1.1rem;
+    color: var(--indigo);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .evolve-note p {
+    font-size: 0.9rem;
+    color: var(--dim);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .evolve-note p strong { color: var(--text); font-weight: 600; }
+
+  /* ── AE BOX ── */
+  .ae-box {
+    margin-top: 28px;
+    background: rgba(251,146,60,0.05);
+    border: 1px solid rgba(251,146,60,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .ae-box-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .ae-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(251,146,60,0.15);
+    border: 1px solid rgba(251,146,60,0.3);
+    color: var(--orange);
+  }
+
+  .ae-box p {
+    font-size: 0.88rem;
+    color: var(--dim);
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+
+  .mono-sm {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--cyan);
+    font-size: 0.85em;
+  }
+
+  .ae-screenshot {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(251,146,60,0.2);
+    margin-bottom: 12px;
+  }
+
+  .ae-screenshot img { width: 100%; height: auto; display: block; }
+
+  .ae-caption {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── INSIGHT ── */
+  .insight-box {
+    margin-top: 40px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(34,211,238,0.05) 100%);
+    border: 1px solid rgba(99,102,241,0.25);
+    border-radius: 16px;
+    padding: 36px 40px;
+  }
+
+  .insight-box h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .insight-box p {
+    font-size: 1rem;
+    color: var(--dim);
+    line-height: 1.8;
+    max-width: 680px;
+  }
+
+  .insight-box p strong { color: var(--cyan); font-weight: 600; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 36px 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  footer strong { color: var(--dim); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tag">NDF X Interactive · Internal Pipeline</div>
+  <h1>How We Make<br><span>Ultrawide Clips</span></h1>
+  <p class="sub">Pipeline สำหรับสร้างคลิปวิดีโอ LED Wall — format ที่ไม่มี AI tool ไหนเจนได้โดยตรง</p>
+  <div class="spec-pill">LED Wall · 12,288 × 2,160 px</div>
+</div>
+
+<!-- SECTION 1: CONTEXT -->
+<section>
+  <div class="section-label">บริบท</div>
+  <h2>จุดเริ่มต้น — ก่อนถึง<span class="accent">ขั้นตอน Ultrawide</span></h2>
+
+  <div class="context-row">
+    <div class="ctx-step">
+      <div class="ctx-tool">Maya / Blender</div>
+      <div class="ctx-title">3D Previz</div>
+      <div class="ctx-desc">วาง animation, trajectory, camera — ใช้เป็น motion reference เท่านั้น</div>
+    </div>
+    <div class="ctx-arrow">→</div>
+    <div class="ctx-step">
+      <div class="ctx-tool">Dreamina · 21:9 / 720P</div>
+      <div class="ctx-title">AI Gen — Full Frame</div>
+      <div class="ctx-desc">เจนที่ ratio 21:9 / 720P แบบเต็มเฟรม ยังไม่มีแถบดำ — iterate จนได้ผลที่โอเค จากนั้น<strong style="color:var(--cyan)"> เซฟ prompt + ref ที่ดีไว้ทุก shot เพื่อ re-gen ได้ตลอด เพื่อให้ได้ผลลัพธ์ที่ใกล้เคียงกับที่ต้องการเสมอ</strong></div>
+    </div>
+    <div class="ctx-arrow">→</div>
+    <div class="ctx-step ctx-highlight">
+      <div class="ctx-tool">Ultrawide Pipeline</div>
+      <div class="ctx-title">ขั้นตอนต่อจากนี้ ↓</div>
+      <div class="ctx-desc">เพิ่มแถบดำ + 4K เพื่อให้ได้ ultrawide พร้อม deliver</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: ULTRAWIDE PIPELINE -->
+<section>
+  <div class="section-label">Ultrawide Pipeline</div>
+  <h2>3 ขั้นตอน<span class="accent"> สู่ Ultrawide</span></h2>
+
+  <div class="evolve-note">
+    <span class="evolve-icon">↻</span>
+    <p>Pipeline นี้ไม่ได้ถูกออกแบบไว้ล่วงหน้า — แต่เกิดจากการ<strong>ปรับวิธีทำงานตามโจทย์ที่เปลี่ยนในแต่ละขั้นตอน</strong> แต่ละ step เกิดขึ้นเพื่อแก้ปัญหาเฉพาะหน้า จนกลายเป็น workflow ที่ replicable ได้</p>
+  </div>
+
+  <div class="pipeline">
+
+    <!-- STEP 01 -->
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <div class="tool-tag">Higgsfield / Photoshop</div>
+        <h3>สกัด Keyframe → ทำแถบดำที่ภาพนิ่ง → ขยายเป็น Ultrawide</h3>
+        <p>สังเกตจาก prompt และ ref ที่เคยเจนแล้วได้ผล → เลือก keyframe ที่ดีจากคลิป 21:9 / 720P → วางในเสกลที่พร้อมขยาย → นำ frame ไปขยายและใส่แถบดำด้วย Higgsfield หรือ Photoshop ให้กลายเป็น ultrawide still พร้อมแถบดำ</p>
+        <div class="step-note">Output: ultrawide starting frame พร้อมแนบ prompt รอบถัดไป</div>
+
+        <div class="visual-compare">
+          <div class="visual-card">
+            <div class="visual-label"><span class="step-badge s1">Keyframe สกัดจากคลิป 21:9</span></div>
+            <div class="visual-img-wrap">
+              <img src="file:///E:/01_Work/_NDF/Fortal/Shot11/BaseImage.png" alt="Base keyframe" loading="lazy">
+            </div>
+            <div class="visual-caption">Base image · frame ที่เลือกก่อนขยาย</div>
+          </div>
+          <div class="visual-arrow">
+            <div class="arrow-label">Higgsfield / PSD</div>
+            <div class="arrow-sub">ขยาย + ใส่แถบดำ</div>
+            <div class="arrow-icon">→</div>
+          </div>
+          <div class="visual-card">
+            <div class="visual-label"><span class="step-badge s2">Ultrawide Starting Frame</span></div>
+            <div class="visual-img-wrap">
+              <img src="file:///E:/01_Work/_NDF/Fortal/Shot11/Ultrawide_shot11_1st.png" alt="Ultrawide starting frame" loading="lazy">
+            </div>
+            <div class="visual-caption">พร้อมแนบเป็น ref ขั้นถัดไป</div>
+          </div>
+        </div>
+
+        <div class="higgsfield-box">
+          <div class="higgsfield-title">
+            <span class="higgsfield-badge">HIGGSFIELD PROMPT</span>
+            ตัวอย่าง prompt สำหรับ expand frame → Ultrawide
+          </div>
+          <div class="higgsfield-note">แนบ frame ที่วางในเสกลที่พร้อมทำเป็น ultrawide แล้ว → Higgsfield อ่าน @Image 1 เป็น base แล้วเติมพื้นที่ดำซ้าย/ขวา</div>
+          <pre class="higgsfield-code">@Image 1 — BASE IMAGE. Lock this frame exactly.
+Do not alter center content, lighting, or composition.
+
+Extend the scene outward — fill the black areas on the LEFT and RIGHT
+to complete the ultrawide frame. Match existing atmosphere, lighting,
+and depth seamlessly. Same environment continuing outward.
+No new focal elements — environment extension only.
+
+ULTRAWIDE LETTERBOX. Black bars top and bottom are permanent —
+fixed 2D overlay, not part of the scene.
+Do not remove, shrink, or warp them.
+
+Film grain, ARRI tone, cinematic depth. Seamless blend at all edges.</pre>
+          <div class="higgsfield-rules">
+            <div class="higgsfield-rule"><span class="hr-dot">·</span> @Image 1 ต้องระบุชัดว่าเป็น BASE IMAGE — ไม่ใช่ ref</div>
+            <div class="higgsfield-rule"><span class="hr-dot">·</span> ถ้ามี character ref เพิ่ม @Image 2 แยก — ระบุว่า "appearance reference only"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 02 -->
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <div class="tool-tag">Dreamina Re-Gen</div>
+        <h3>แนบ Ultrawide Ref + Prompt → Re-Gen คลิป</h3>
+        <p>นำ ultrawide still จาก Step 01 แนบเป็น starting frame ref ใน Dreamina พร้อม prompt ที่ล็อคแถบดำ → re-gen คลิป → AI maintain แถบดำตลอด → ได้ ultrawide letterbox clip</p>
+        <div class="step-note">Output: ultrawide clip พร้อมนำเข้า AE</div>
+
+        <div class="bar-lock-box">
+          <div class="bar-lock-title">
+            <span class="bar-lock-badge">PROMPT LOCK</span>
+            กฎล็อคแถบดำ — ใส่ทุกครั้งที่แนบ ultrawide ref
+          </div>
+          <div class="bar-lock-body">
+            <div class="bar-lock-col">
+              <div class="bar-lock-label">ตัวอย่าง prompt ที่ใช้จริง</div>
+              <div class="bar-lock-code">ULTRAWIDE LETTERBOX. Black bars top and bottom permanent — never disappear or shrink.</div>
+              <div class="bar-lock-or">หรือ</div>
+              <div class="bar-lock-code">CRITICAL: Black bars at top and bottom are permanent throughout — never disappear or shrink.</div>
+            </div>
+            <div class="bar-lock-col">
+              <div class="bar-lock-label">กฎการใช้</div>
+              <ul class="bar-lock-list">
+                <li>ระบุ <strong>โดดเด่น ต้นๆ prompt</strong> — ไม่ฝังในย่อหน้า</li>
+                <li>ใส่พร้อมกับเรฟแถบดำแล้ว</li>
+                <li>AI มักตีความแถบดำว่า "ข้อผิดพลาด" — ต้องบอกชัดว่าคือ <strong>fixed 2D overlay</strong></li>
+              </ul>
+              <div class="ref-rule-box" style="margin-top:14px;">
+                <div class="ref-rule-row">
+                  <span class="ref-icon must">!</span>
+                  <div>
+                    <div class="ref-rule-title">เรฟ frame / BG</div>
+                    <div class="ref-rule-desc">ต้องมีแถบดำอยู่แล้วในภาพ — ref แบบ 21:9 เฉยๆ (ไม่มีแถบ) AI จะเจนแบบ 21:9 โดยไม่มีแถบดำ</div>
+                  </div>
+                </div>
+                <div class="ref-rule-row">
+                  <span class="ref-icon ok">✓</span>
+                  <div>
+                    <div class="ref-rule-title">Character Sheet</div>
+                    <div class="ref-rule-desc">แนบได้ปกติทุก format — ไม่กระทบแถบดำ</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 03 -->
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <div class="tool-tag">After Effects</div>
+        <h3>AE — ครอปแถบดำ + ปรับ Spec</h3>
+        <p>นำคลิป ultrawide letterbox เข้า AE → ครอปแถบดำบนล่างออก เหลือเฉพาะเนื้อหา ultrawide → ปรับ scale ให้ตรง LED Wall spec</p>
+        <div class="step-note">Output: ultrawide clip พร้อม deliver</div>
+
+        <div class="ae-box">
+          <div class="ae-box-title">
+            <span class="ae-badge">CASE</span>
+            ปรับ spec กลางโปรดักชั่น
+          </div>
+          <p>เริ่มต้นได้รับ spec <span class="mono-sm">9,116 × 1,892</span> — ระหว่างทางได้รับข้อมูลอัปเดตว่าจอจริงคือ <span class="mono-sm">12,288 × 2,160</span> แก้ใน AE โดยไม่ต้อง re-gen คลิปใหม่ ใช้ 3 layers: คลิปกลาง + ขยายซ้าย + ขยายขวา (inverted mask)</p>
+          <div class="ae-screenshot">
+            <img src="file:///E:/01_Work/_NDF/Fortal/Strech.png" alt="AE stretch technique" loading="lazy">
+          </div>
+          <div class="ae-caption">Ultrawide_L · Ultrawide (main) · Ultrawide_R — เติมพื้นที่ที่เพิ่มขึ้นโดยไม่มีรอยต่อ</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <strong>NDF X Interactive Co., Ltd.</strong> · Fortal Dragon Project · 2026
+</footer>
+
+</body>
+</html>
