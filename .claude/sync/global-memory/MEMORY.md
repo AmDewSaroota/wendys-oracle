@@ -53,6 +53,12 @@
 - Account: `biomassstove.cmru@gmail.com` / `BioMass@cmru2026`
 - MAX 2 sessions/device/day | Map ใช้ OSM tiles | SVG สำหรับ sensor triangle
 
+## Document Ethics
+- 🚫 **ห้ามจำแนกคนด้วยสีผิว/เชื้อชาติในเอกสารลูกค้า/ราชการ** — ใช้ช่วงวัย+บุคลิก+บทบาทแทน → `memory/feedback_no_skin_ethnicity_classification.md`
+
+## HTML Presentations
+- 🖼️ **HTML ที่มีรูป → embed base64 เสมอ** ห้าม file:// path ถ้าจะส่งต่อ → `memory/feedback_html_embed_images_base64.md`
+
 ## UX Defaults
 - 📄 **เปิด PDF ทุกครั้งหลัง generate** — ไม่ถาม → `memory/feedback_open_pdf_after_generate.md`
 - 🖤 **HTML Dark Tech Theme** → `memory/feedback_html_dark_tech_theme.md` (bg #0a0e1a, indigo/cyan accent, IBM Plex Sans Thai)
@@ -65,6 +71,7 @@
 ## Video/Image Generation
 - 🚫 **ห้ามใช้ UUID ใน prompt** — ใช้ @[filename] เท่านั้น DewS replace UUID เองตอน upload → `memory/feedback_no_uuid_in_prompts.md`
 - **ทุก prompt ต้องระบุ tool ในหัวข้อ** → `memory/feedback_prompt_tool_label_required.md`
+- 🚫 **ทุก image prompt ใส่ "No text"** กัน AI แปะ label รกภาพ → `memory/feedback_image_prompts_no_text.md`
 - **Higgsfield** = storyboard / **Dreamina** = video → `memory/feedback_higgsfield_dreamina_workflow.md`
 - อ่าน NDF narrative + seedance guide ก่อนเขียนทุกครั้ง → `memory/feedback_shot_skill_read_guide.md`
 
@@ -76,6 +83,7 @@
 - **21:9 = default cinematic** (Fortal Dragon + BG panorama) / **1:1** = flower greenscreen → `memory/feedback_seedance_ratio_21_9.md`
 - Ratios: 21:9 / 16:9 / 4:3 / 1:1 / 3:4 / 9:16 | Duration: 4–15s | Resolution: 720P/1080P
 - Output size ขึ้นกับ ref ที่ upload — ไม่ fixed per resolution setting
+- 🗣️ **Thai TTS เพี้ยน → respell ชื่อ (`ต่ะ วัน`) + คำทับศัพท์เขียนอังกฤษ (`ผู้ช่วย digital`) · ไทย+EN ยาวในคลิปเดียวไม่ได้ ต้องแยก 2 คลิป** → `memory/reference_seedance_thai_tts_pronunciation.md`
 
 ## NDF Promo
 - ทุกคลิปโชว์แอปแต่ UI ไม่เหมือนจริง → `memory/feedback_ndf_promo_show_app.md`
