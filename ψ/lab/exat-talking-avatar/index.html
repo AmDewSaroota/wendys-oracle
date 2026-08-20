@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXAT Talking Avatar — Viseme Lip-Sync (WEnDyS)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  :root{--bg:#0a0e1a;--panel:#111726;--line:#1e2740;--indigo:#6366f1;--cyan:#22d3ee;--text:#e5e9f5;--dim:#7c88a8;--ok:#34d399;--warn:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(1200px 600px at 50% -10%,#141c33 0%,var(--bg) 55%);color:var(--text);font-family:'IBM Plex Sans Thai',sans-serif;min-height:100vh;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:18px}
+  h1{font-size:20px;font-weight:600}h1 span{color:var(--cyan)}
+  .sub{color:var(--dim);font-size:12px;margin-top:-12px}
+  .wrap{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;width:100%;max-width:920px}
+  .stage{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  canvas#face{background:#0c1120;border-radius:14px;display:block;width:300px;height:370px}
+  .chip{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:#0c1120;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px}
+  .chip b{color:var(--cyan)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#334}.dot.live{background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+  .side{flex:1;min-width:300px;max-width:420px;display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .card h3{font-size:13px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-family:'IBM Plex Mono',monospace}
+  textarea,input[type=text],input[type=password]{width:100%;background:#0c1120;border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 12px;resize:vertical}
+  textarea{min-height:64px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+  button{font-family:inherit;font-size:13px;font-weight:500;color:var(--text);background:linear-gradient(180deg,#1c2540,#151b30);border:1px solid var(--line);padding:9px 16px;border-radius:10px;cursor:pointer;transition:.15s}
+  button:hover{border-color:var(--indigo);transform:translateY(-1px)}
+  button.p{background:linear-gradient(180deg,var(--indigo),#4f46e5);border-color:transparent}
+  button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  label.file{font-size:13px;background:linear-gradient(180deg,#1c2540,#151b30);border:1px solid var(--line);padding:9px 16px;border-radius:10px;cursor:pointer}
+  input[type=file]{display:none}
+  .mut{color:var(--dim);font-size:12px;line-height:1.6}
+  .status{font-size:12px;font-family:'IBM Plex Mono',monospace}
+  .status .g{color:var(--ok)}.status .w{color:var(--warn)}
+  .rng{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+  input[type=range]{flex:1;accent-color:var(--cyan)}
+  .vgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+  .vbtn{font-size:11px;padding:6px 0;text-align:center;font-family:'IBM Plex Mono',monospace}
+  .chat{max-height:150px;overflow:auto;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.5}
+  .msg{padding:7px 10px;border-radius:9px;max-width:90%}
+  .msg.u{background:#182340;align-self:flex-end}.msg.a{background:#0c1120;border:1px solid var(--line);align-self:flex-start}
+  .calibhint{position:relative}
+</style>
+</head>
+<body>
+  <h1>EXAT <span>Talking Avatar</span></h1>
+  <p class="sub">viseme lip-sync · mouth + eye layers · blink + sway · Gemini brain & voice</p>
+
+  <div class="wrap">
+    <div class="stage">
+      <canvas id="face" width="300" height="370"></canvas>
+      <div class="chip"><span class="dot" id="dot"></span> viseme: <b id="vLabel">rest</b> · eye: <b id="eLabel">open</b></div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <h3>1 · พูดคุย (พิมพ์ / เสียง)</h3>
+        <textarea id="txt" placeholder="พิมพ์ข้อความให้อวาตาร์อ่าน... หรือถาม Gemini"></textarea>
+        <div class="row">
+          <button class="p" id="speakBtn">▶ อ่านออกเสียง</button>
+          <button id="askBtn">✨ ถาม Gemini</button>
+          <button id="micBtn">🎤 พูด</button>
+          <button id="stopBtn" disabled>■ หยุด</button>
+        </div>
+        <div class="chat" id="chat" style="margin-top:10px"></div>
+      </div>
+
+      <div class="card">
+        <h3>2 · รูปอวาตาร์ (โฟลเดอร์ mouths/)</h3>
+        <div class="row">
+          <label class="file">📁 โหลดโฟลเดอร์รูป<input type="file" id="folder" webkitdirectory multiple accept="image/*"></label>
+          <span class="status" id="imgStatus"><span class="w">placeholder mode</span></span>
+        </div>
+        <div class="mut" style="margin-top:8px">ต้องมีไฟล์: rest, PP, AA, E, EE, O, UU, FF, TH, L, CH, DD (+eyes_closed, eyes_half) .png — หน้าเดียวกัน เปลี่ยนแค่ปาก/ตา</div>
+        <div class="row">
+          <button id="calMouth">⬚ กำหนดโซนปาก</button>
+          <button id="calEye">⬚ กำหนดโซนตา</button>
+          <button id="calSave">💾 บันทึกโซน</button>
+        </div>
+        <div class="mut" id="calMsg" style="margin-top:6px">โหลดรูปแล้วลากกรอบคลุมปาก/ตา (ทำครั้งเดียว จำไว้ให้)</div>
+      </div>
+
+      <div class="card">
+        <h3>3 · ตั้งค่า</h3>
+        <div class="rng"><span>เสียง</span><select id="voiceSel" style="flex:1;background:#0c1120;border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px;padding:6px"></select></div>
+        <div id="voiceWarn" class="mut" style="color:var(--warn)"></div>
+        <div class="rng"><span>ความเร็วพูด</span><input type="range" id="rate" min="0.6" max="1.4" step="0.05" value="1"></div>
+        <div class="rng"><span>ความลื่น</span><input type="range" id="smooth" min="0.15" max="0.7" step="0.05" value="0.4"></div>
+        <div class="rng"><span>ขอบฟุ้ง</span><input type="range" id="feather" min="0.1" max="0.45" step="0.05" value="0.28"></div>
+        <div class="rng"><span>เฟดปาก</span><input type="range" id="xfade" min="60" max="260" step="10" value="150"></div>
+        <div class="rng"><span>จังหวะปาก</span><input type="range" id="mrate" min="5" max="12" step="0.5" value="7"></div>
+        <div class="row"><label style="font-size:12px;color:var(--dim)"><input type="checkbox" id="blinkOn" checked> กะพริบตา</label>
+          <label style="font-size:12px;color:var(--dim)"><input type="checkbox" id="swayOn" checked> ขยับหัว</label>
+          <button id="testBlink" style="font-size:12px;padding:6px 12px">😉 ทดสอบกะพริบ</button></div>
+        <div style="margin-top:8px"><input type="password" id="gkey" placeholder="Gemini API key (เก็บในเครื่อง)"></div>
+        <div class="rng" style="margin-top:8px"><span>เสียง Gemini</span><select id="gvoice" style="flex:1;background:#0c1120;border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:inherit;font-size:12px;padding:6px">
+          <option value="Kore">Kore (หญิง หนักแน่น)</option>
+          <option value="Aoede">Aoede (หญิง สดใส)</option>
+          <option value="Leda">Leda (หญิง อ่อน)</option>
+          <option value="Zephyr">Zephyr (หญิง สว่าง)</option>
+          <option value="Puck">Puck (ชาย)</option>
+          <option value="Charon">Charon (ชาย ทุ้ม)</option>
+        </select></div>
+        <div class="mut">มี key = ใช้เสียง Gemini (ไทยชัด + ปากตรงเสียง) อัตโนมัติ</div>
+        <div class="mut" style="margin-top:8px">ทดสอบรูปปากทีละตัว:</div>
+        <div class="vgrid" id="vgrid"></div>
+      </div>
+    </div>
+  </div>
+
+<script src="assets.js"></script>
+<script>
+(() => {
+const $=id=>document.getElementById(id);
+const cv=$('face'), ctx=cv.getContext('2d');
+let W=cv.width, H=cv.height;
+
+// ---------- viseme set ----------
+const KEYS=['rest','PP','AA','E','EE','O','UU','FF','TH','L','CH','DD','smile','surprised'];
+// placeholder shape params: o=open(0..1) w=width(0..1) r=round(0..1) t=teeth(0..1) tg=tongue(0..1)
+const SHAPE={
+  rest:{o:.06,w:.46,r:.2,t:0,tg:0}, PP:{o:0,w:.42,r:.15,t:0,tg:0,press:1},
+  AA:{o:.92,w:.56,r:0,t:.35,tg:.15}, E:{o:.48,w:.62,r:0,t:.35,tg:.1},
+  EE:{o:.3,w:.86,r:0,t:.75,tg:0}, O:{o:.56,w:.36,r:.6,t:.1,tg:.1},
+  UU:{o:.34,w:.22,r:1,t:0,tg:0}, FF:{o:.1,w:.5,r:.05,t:.7,tg:0,bite:1},
+  TH:{o:.22,w:.5,r:.1,t:.4,tg:.55,tgUp:.55}, L:{o:.4,w:.5,r:.1,t:.35,tg:.6,tgUp:1},
+  CH:{o:.26,w:.36,r:.62,t:.3,tg:0}, DD:{o:.26,w:.56,r:.1,t:.62,tg:.2},
+  smile:{o:.12,w:.72,r:0,t:.25,tg:0}, surprised:{o:.72,w:.36,r:.7,t:.15,tg:.1}
+};
+
+// ---------- images ----------
+const IMG={}; let haveImages=false, base=null;
+let rects=JSON.parse(localStorage.getItem('va_rects')||'null')||{mouth:{x:245,y:585,w:150,h:115},eye:{x:200,y:350,w:245,h:85}};
+
+const VALID=[...KEYS,'smile','surprised','eyes_closed','eyes_half'];
+const canon=s=>VALID.find(k=>k.toLowerCase()===s.toLowerCase())||s;   // match ไม่สนตัวเล็ก/ใหญ่
+$('folder').onchange=e=>{
+  const files=[...e.target.files]; let n=0;
+  files.forEach(f=>{
+    const nm=canon(f.name.replace(/\.[^.]+$/,''));
+    const img=new Image(); img.onload=()=>{ IMG[nm]=img; if(nm==='rest'){base=img; W=img.naturalWidth; H=img.naturalHeight; cv.width=W; cv.height=H; cv.style.width=Math.min(320,W)+'px'; cv.style.height='auto';}
+      n++; haveImages=!!IMG['rest']; updImgStatus(); };
+    img.src=URL.createObjectURL(f);
+  });
+};
+function updImgStatus(){
+  const need=['rest','AA','EE','O','UU','PP','FF','DD']; const got=need.filter(k=>IMG[k]).length;
+  $('imgStatus').innerHTML= haveImages? `<span class="g">image mode · ${Object.keys(IMG).length} รูป</span>` : `<span class="w">placeholder mode</span>`;
+}
+
+// ---------- calibration ----------
+let calMode=null, dragging=null;
+$('calMouth').onclick=()=>{calMode='mouth';$('calMsg').textContent='ลากกรอบคลุม "ปาก" บนรูป';};
+$('calEye').onclick=()=>{calMode='eye';$('calMsg').textContent='ลากกรอบคลุม "ตา 2 ข้าง" บนรูป';};
+$('calSave').onclick=()=>{localStorage.setItem('va_rects',JSON.stringify(rects));calMode=null;$('calMsg').textContent='บันทึกโซนแล้ว ✓';};
+function evPos(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*(W/r.width),y:(e.clientY-r.top)*(H/r.height)};}
+cv.addEventListener('pointerdown',e=>{if(!calMode)return;const p=evPos(e);dragging={x0:p.x,y0:p.y};});
+cv.addEventListener('pointermove',e=>{if(!calMode||!dragging)return;const p=evPos(e);rects[calMode]={x:Math.min(dragging.x0,p.x),y:Math.min(dragging.y0,p.y),w:Math.abs(p.x-dragging.x0),h:Math.abs(p.y-dragging.y0)};});
+cv.addEventListener('pointerup',()=>{dragging=null;});
+
+// ---------- state / animation ----------
+const cur={o:.06,w:.46,r:.2,t:0,tg:0,press:0,bite:0,tgUp:0}; let curKey='rest', manualKey=null;
+let eyeOpen=1; // 1 open .5 half 0 closed
+let mPrev=null,mCur=null,mT0=0,lastVisChange=0; // mouth crossfade state
+const blink={next:performance.now()+1500,phase:'open',t0:0};
+
+function lerp(a,b,f){return a+(b-a)*f;}
+function stepShape(target,f){for(const k in cur)cur[k]=lerp(cur[k],target[k]||0,f);}
+
+// blink state machine
+function updBlink(now){
+  if(!$('blinkOn').checked){eyeOpen=1;return;}
+  const B=blink;
+  if(B.phase==='open'&&now>B.next){B.phase='closing';B.t0=now;}
+  const dt=now-B.t0;
+  if(B.phase==='closing'){eyeOpen=1-Math.min(1,dt/90); if(dt>=90){B.phase='closed';B.t0=now;}}
+  else if(B.phase==='closed'){eyeOpen=0; if(dt>=140){B.phase='opening';B.t0=now;}}
+  else if(B.phase==='opening'){eyeOpen=Math.min(1,dt/120); if(dt>=120){B.phase='open';eyeOpen=1;B.next=now+2000+Math.random()*3000;}}
+}
+
+// ---------- placeholder renderer (vector face) ----------
+function drawPlaceholder(sway){
+  ctx.save();
+  ctx.translate(W/2+sway.x,H/2+sway.y); ctx.rotate(sway.rot); ctx.translate(-W/2,-H/2);
+  // bg
+  ctx.fillStyle='#0c1120';ctx.fillRect(0,0,W,H);
+  const cx=W/2;
+  // shoulders (navy)
+  ctx.fillStyle='#1e2a52';ctx.beginPath();ctx.ellipse(cx,H+40,W*0.5,120,0,0,7);ctx.fill();
+  // neck
+  ctx.fillStyle='#c99a86';ctx.fillRect(cx-26,H*0.62,52,60);
+  // head
+  ctx.fillStyle='#d8ac97';ctx.beginPath();ctx.ellipse(cx,H*0.42,78,96,0,0,7);ctx.fill();
+  // hair
+  ctx.fillStyle='#15181f';ctx.beginPath();ctx.ellipse(cx,H*0.29,82,58,0,Math.PI,0);ctx.fill();
+  ctx.fillRect(cx-82,H*0.20,164,42);
+  // brows
+  ctx.strokeStyle='#3a2a24';ctx.lineWidth=5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(cx-52,H*0.37);ctx.quadraticCurveTo(cx-34,H*0.355,cx-16,H*0.37);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx+16,H*0.37);ctx.quadraticCurveTo(cx+34,H*0.355,cx+52,H*0.37);ctx.stroke();
+  // eyes (blink via eyeOpen)
+  const eyeY=H*0.41, eh=13*eyeOpen+1, ew=22;
+  [-34,34].forEach(dx=>{
+    ctx.fillStyle='#f3f0ee';ctx.beginPath();ctx.ellipse(cx+dx,eyeY,ew,eh,0,0,7);ctx.fill();
+    if(eyeOpen>0.25){ctx.fillStyle='#2b1d16';ctx.beginPath();ctx.ellipse(cx+dx,eyeY,7,Math.min(9,eh),0,0,7);ctx.fill();
+      ctx.fillStyle='#000';ctx.beginPath();ctx.arc(cx+dx,eyeY,3.2,0,7);ctx.fill();}
+    // lid line
+    ctx.strokeStyle='#a9836f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx+dx-ew,eyeY-eh);ctx.quadraticCurveTo(cx+dx,eyeY-eh-3,cx+dx+ew,eyeY-eh);ctx.stroke();
+  });
+  // nose
+  ctx.strokeStyle='#b98d78';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(cx-3,eyeY+18);ctx.lineTo(cx-8,H*0.5);ctx.quadraticCurveTo(cx,H*0.515,cx+8,H*0.5);ctx.stroke();
+  // mouth (viseme)
+  drawVecMouth(cx,H*0.585,cur);
+  ctx.restore();
+}
+function drawVecMouth(cx,cy,p){
+  const w=18+p.w*46;
+  const press=p.press||0, bite=p.bite||0, tgUp=p.tgUp||0;
+  const top=1+p.o*20, bot=1+p.o*26;
+  const uT=(8+p.r*10)*(1-0.5*press), lT=(11+p.r*10)*(1-0.5*press);
+
+  // ---- F/V : mouth almost closed, upper teeth resting on lower lip (พูด ฟ ไม่ใช่กัดปาก) ----
+  if(bite>0.5){
+    // lower lip (raised, full)
+    ctx.fillStyle='#c76b81';
+    ctx.beginPath();ctx.moveTo(cx-w,cy+1);ctx.quadraticCurveTo(cx,cy+bot+lT,cx+w,cy+1);ctx.quadraticCurveTo(cx,cy+bot*0.2,cx-w,cy+1);ctx.closePath();ctx.fill();
+    // upper teeth sitting on the lower lip
+    const tw=w*0.76, ty=cy, th=5+p.t*5;
+    ctx.fillStyle='#f4f6ff';
+    ctx.beginPath();ctx.moveTo(cx-tw,ty-th);ctx.quadraticCurveTo(cx,ty-th-2,cx+tw,ty-th);ctx.lineTo(cx+tw,ty);ctx.quadraticCurveTo(cx,ty+1,cx-tw,ty);ctx.closePath();ctx.fill();
+    // upper lip above teeth
+    ctx.fillStyle='#c76b81';
+    ctx.beginPath();ctx.moveTo(cx-w,cy-th-1);ctx.quadraticCurveTo(cx,cy-th-1-uT,cx+w,cy-th-1);ctx.quadraticCurveTo(cx,cy-th-1,cx-w,cy-th-1);ctx.closePath();ctx.fill();
+    return;
+  }
+
+  // cavity
+  ctx.fillStyle='#3a1220';
+  ctx.beginPath();ctx.moveTo(cx-w,cy);ctx.quadraticCurveTo(cx,cy-top,cx+w,cy);ctx.quadraticCurveTo(cx,cy+bot,cx-w,cy);ctx.closePath();ctx.fill();
+  // upper teeth
+  if(p.t>0.05&&p.o>0.12){ctx.fillStyle=`rgba(244,246,255,${Math.min(.95,p.t)})`;const tw=w*.8,ty=cy-top+2,th=3+p.t*8;ctx.beginPath();ctx.moveTo(cx-tw,ty);ctx.quadraticCurveTo(cx,ty-2,cx+tw,ty);ctx.lineTo(cx+tw,ty+th);ctx.quadraticCurveTo(cx,ty+th-2,cx-tw,ty+th);ctx.closePath();ctx.fill();}
+  // tongue — always inside the mouth; tgUp raises tip toward upper teeth (ล) not sticking out
+  if(p.tg>0.1){
+    const restY=cy+bot*0.55;
+    const tipY=tgUp>0.3 ? cy-top*0.15 : cy+bot*0.15;   // raised for L/TH, low otherwise
+    ctx.fillStyle='rgba(198,86,108,'+Math.min(1,p.tg)+')';
+    ctx.beginPath();ctx.moveTo(cx-w*.42,restY);ctx.quadraticCurveTo(cx,tipY,cx+w*.42,restY);ctx.quadraticCurveTo(cx,cy+bot*0.85,cx-w*.42,restY);ctx.closePath();ctx.fill();
+  }
+  // lips
+  ctx.fillStyle='#c76b81';
+  ctx.beginPath();ctx.moveTo(cx-w,cy);ctx.quadraticCurveTo(cx-w*.5,cy-top-uT,cx,cy-top-uT*.75);ctx.quadraticCurveTo(cx+w*.5,cy-top-uT,cx+w,cy);ctx.quadraticCurveTo(cx,cy-top,cx-w,cy);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#b85875';
+  ctx.beginPath();ctx.moveTo(cx-w,cy);ctx.quadraticCurveTo(cx,cy+bot,cx+w,cy);ctx.quadraticCurveTo(cx,cy+bot+lT,cx-w,cy);ctx.closePath();ctx.fill();
+  // pressed-lip seam (PP เม้มปาก)
+  if(press>0.3){
+    ctx.strokeStyle='rgba(120,48,64,'+Math.min(1,press)+')';ctx.lineWidth=2.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx-w*0.88,cy);ctx.quadraticCurveTo(cx,cy+1.5,cx+w*0.88,cy);ctx.stroke();
+  }
+}
+
+// วาดรูป crop พร้อมขอบฟุ้ง (feather) ให้กลมกลืนกับ base ไม่เห็นรอยตัดสี่เหลี่ยม
+const _oc=document.createElement('canvas'), _ox=_oc.getContext('2d');
+function drawFeathered(img,r,alpha,feather){
+  if(!img||img===base||r.w<2||r.h<2)return;
+  const f=Math.min(0.48,Math.max(0.05,feather||0.25));
+  _oc.width=r.w|0; _oc.height=r.h|0;
+  _ox.clearRect(0,0,r.w,r.h);
+  _ox.drawImage(img, r.x,r.y,r.w,r.h, 0,0,r.w,r.h);   // crop โซนเดียวกันจากรูป viseme
+  _ox.globalCompositeOperation='destination-in';       // เก็บเฉพาะส่วนที่ mask ทึบ
+  _ox.save(); _ox.translate(r.w/2,r.h/2); _ox.scale(1,r.h/r.w); _ox.translate(-r.w/2,-r.h/2);
+  const g=_ox.createRadialGradient(r.w/2,r.h/2,(r.w/2)*(1-f), r.w/2,r.h/2,(r.w/2));
+  g.addColorStop(0,'#000'); g.addColorStop(1,'rgba(0,0,0,0)');
+  _ox.fillStyle=g; _ox.fillRect(-r.w,-r.h,r.w*3,r.h*3);
+  _ox.restore();
+  _ox.globalCompositeOperation='source-over';
+  ctx.globalAlpha=alpha; ctx.drawImage(_oc,r.x,r.y); ctx.globalAlpha=1;
+}
+// ถ้าไม่มีรูป viseme ตัวนั้น ใช้ตัวใกล้เคียงแทน (F/L/TH ที่ AI ดื้อ)
+const FALLBACK={FF:['DD','PP'],TH:['DD'],L:['DD'],smile:['rest'],surprised:['AA'],EE:['E'],CH:['UU','O'],E:['AA']};
+function resolveMouth(key){
+  if(IMG[key])return IMG[key];
+  for(const alt of (FALLBACK[key]||[])) if(IMG[alt])return IMG[alt];
+  return IMG['rest']||base;
+}
+
+// ---------- image renderer (photo composite) ----------
+function drawImages(sway){
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  ctx.translate(W/2+sway.x,H/2+sway.y);ctx.rotate(sway.rot);ctx.translate(-W/2,-H/2);
+  ctx.drawImage(base,0,0,W,H);
+  // mouth layer + crossfade + feather ขอบฟุ้ง
+  const mImg=resolveMouth(manualKey||curKey);
+  if(mImg!==mCur){mPrev=mCur;mCur=mImg;mT0=performance.now();}
+  let fade=Math.min(1,(performance.now()-mT0)/(parseFloat($('xfade').value)||150));
+  fade=fade*fade*(3-2*fade);   // smoothstep — เข้า-ออกนุ่ม ไม่กระตุก
+  const m=rects.mouth, ff=parseFloat($('feather').value);
+  if(mPrev&&mPrev!==base&&fade<1) drawFeathered(mPrev,m,1,ff);
+  drawFeathered(mCur,m,fade>=1?1:fade,ff);
+  // eye layer (overlay closed/half only when blinking) — ฟุ้งขอบเช่นกัน
+  if(eyeOpen<0.85){const eImg=eyeOpen<0.4?(IMG['eyes_closed']):(IMG['eyes_half']||IMG['eyes_closed']);drawFeathered(eImg,rects.eye,1,Math.max(ff,0.3));}
+  ctx.restore();
+  // calibration overlay
+  if(calMode){const r=rects[calMode];ctx.strokeStyle=calMode==='mouth'?'#22d3ee':'#fbbf24';ctx.lineWidth=2;ctx.setLineDash([6,4]);ctx.strokeRect(r.x,r.y,r.w,r.h);ctx.setLineDash([]);}
+}
+
+// ---------- main loop ----------
+function loop(){
+  const now=performance.now();
+  const f=parseFloat($('smooth').value);
+  // viseme target
+  let tk=manualKey||curKey; stepShape(SHAPE[tk]||SHAPE.rest,f);
+  updBlink(now);
+  const sway=$('swayOn').checked?{x:Math.sin(now/1700)*4,y:Math.sin(now/2300)*3,rot:Math.sin(now/2000)*0.012}:{x:0,y:0,rot:0};
+  if(haveImages&&base)drawImages(sway); else drawPlaceholder(sway);
+  $('vLabel').textContent=tk; $('eLabel').textContent=eyeOpen>.8?'open':eyeOpen<.3?'closed':'half';
+  requestAnimationFrame(loop);
+}
+
+// ---------- text -> viseme ----------
+function charToViseme(c){
+  if(!c)return null;
+  if(/[฀-๿]/.test(c)){
+    if('าัะๅำ'.includes(c))return'AA'; if('ีิืึ'.includes(c))return'EE';
+    if('เแใไ'.includes(c))return'E'; if('ูุ'.includes(c))return'UU';
+    if('โ'.includes(c))return'O'; if('ะฯๆ'.includes(c))return'AA';
+    if('มบปพผภ'.includes(c))return'PP'; if('ฟฝ'.includes(c))return'FF';
+    if('ว'.includes(c))return'UU'; if('ลฬ'.includes(c))return'L';
+    if('ชฉฌจ'.includes(c))return'CH'; if('ธฐถทฒ'.includes(c))return'TH';
+    if('อ'.includes(c))return'O'; if('่้๊๋็ั์ํิีึื'.includes(c))return null;
+    return'DD';
+  }
+  const l=c.toLowerCase();
+  if('mbp'.includes(l))return'PP'; if('fv'.includes(l))return'FF';
+  if('w'.includes(l))return'UU'; if('l'.includes(l))return'L';
+  if('a'.includes(l))return'AA'; if('e'.includes(l))return'E';
+  if('i'.includes(l))return'EE'; if('o'.includes(l))return'O';
+  if('u'.includes(l))return'UU'; if('y'.includes(l))return'EE';
+  if('cjsz'.includes(l))return'CH'; if(' '.includes(l))return'rest';
+  if('tdknghqrx'.includes(l))return'DD'; return'DD';
+}
+function buildVis(text){const arr=[];let prev='rest';for(const ch of text){let v=charToViseme(ch);if(v===null)v=prev;arr.push(v);prev=v;}return arr;}
+
+// ---------- TTS speak + drive visemes ----------
+let voices=[];
+function loadVoices(){
+  voices=speechSynthesis.getVoices();
+  const sel=$('voiceSel'); if(!sel)return;
+  const prev=sel.value;
+  sel.innerHTML='';
+  voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${v.name} (${v.lang})`;sel.appendChild(o);});
+  const ti=voices.findIndex(v=>v.lang.toLowerCase().startsWith('th'));
+  if(prev!==''&&voices[prev])sel.value=prev; else if(ti>=0)sel.value=ti;
+  $('voiceWarn').textContent = ti>=0 ? '' : '⚠ ไม่พบเสียงไทย — เปิดใน Microsoft Edge (มีเสียงไทยในตัว) หรือติดตั้งภาษาไทยใน Windows Settings › Speech';
+}
+loadVoices(); if(speechSynthesis.onvoiceschanged!==undefined)speechSynthesis.onvoiceschanged=loadVoices;
+function pickVoice(text){const sel=$('voiceSel'); if(sel&&sel.value!==''&&voices[sel.value])return voices[sel.value]; const thai=/[฀-๿]/.test(text); return voices.find(x=>thai?x.lang.toLowerCase().startsWith('th'):x.lang.startsWith('en'))||voices.find(x=>x.lang.toLowerCase().startsWith('th'))||voices[0];}
+let spk={on:false,vis:[],anchor:0,at:0,cps:12,audioDur:0,analyser:null,td:null,src:null};
+function endSpeak(){if(spk._fb)clearTimeout(spk._fb);spk.on=false;spk.audioDur=0;spk.analyser=null;curKey='rest';$('dot').classList.remove('live');$('stopBtn').disabled=true;}
+function speak(text){
+  stopSpeak(); if(!text.trim())return;
+  spk.vis=buildVis(text); const rate=parseFloat($('rate').value); spk.cps=parseFloat($('mrate').value)||7;   // จังหวะปากปรับได้เอง
+  // ปากขยับทันที ไม่รอ TTS — ขับด้วยเวลา
+  spk.on=true; spk.anchor=0; spk.at=performance.now();
+  $('dot').classList.add('live'); $('stopBtn').disabled=false; driveLoop();
+  const estMs=(text.length/spk.cps)*1000+700;
+  spk._fb=setTimeout(endSpeak, estMs);           // เผื่อ TTS ไม่ดัง ก็หยุดเองตามเวลา
+  const u=new SpeechSynthesisUtterance(text); const v=pickVoice(text); if(v)u.voice=v; u.rate=rate; u.pitch=1; u.lang=v?v.lang:'th-TH';
+  u.onboundary=e=>{if(e.charIndex!=null){spk.anchor=e.charIndex;spk.at=performance.now();}};
+  // ❗ ไม่ผูก onend กับการหยุด — เพราะเสียงผิดภาษา onend เด้งทันที แอนิเมชันจะดับกลางคัน
+  //    ให้จบด้วย timer (estMs) แทน · ปากขยับครบประโยคเสมอ
+  try{speechSynthesis.cancel();}catch(e){}
+  setTimeout(()=>{try{speechSynthesis.speak(u);}catch(e){}},60);   // เลี่ยงบั๊ก cancel ชน speak (Chrome/Edge)
+}
+function driveLoop(){
+  if(!spk.on)return;
+  const now=performance.now();
+  let idx;
+  if(spk.audioDur>0){ idx=((now-spk.at)/1000/spk.audioDur)*spk.vis.length; }  // sync กับความยาวเสียงจริง
+  else { idx=spk.anchor+(now-spk.at)/1000*spk.cps; }
+  idx=Math.max(0,Math.min(spk.vis.length-1,Math.floor(idx)));
+  let k=spk.vis[idx]||'rest';
+  // ปิดปากตอนเสียงเงียบ (ช่วงเว้นวรรค) — ขับจากเสียงจริง
+  if(spk.analyser){spk.analyser.getByteTimeDomainData(spk.td);let s=0;for(let i=0;i<spk.td.length;i++){const v=(spk.td[i]-128)/128;s+=v*v;}const rms=Math.sqrt(s/spk.td.length);if(rms<0.018)k='rest';}
+  // min-dwell: กันปากสลับถี่เกินจนสั่น
+  if(k!==curKey && (now-lastVisChange)>=70){curKey=k;lastVisChange=now;}
+  requestAnimationFrame(driveLoop);
+}
+function stopSpeak(){if(spk._fb)clearTimeout(spk._fb);try{speechSynthesis.cancel();}catch(e){}if(spk.src){try{spk.src.stop();}catch(e){}spk.src=null;}spk.on=false;spk.audioDur=0;spk.analyser=null;curKey='rest';$('dot').classList.remove('live');$('stopBtn').disabled=true;}
+
+// ---------- Gemini TTS (เสียงไทยจริง + ขับ lip sync จากเสียง) ----------
+let actx=null;
+function b64ToBytes(b64){const bin=atob(b64);const n=bin.length;const a=new Uint8Array(n);for(let i=0;i<n;i++)a[i]=bin.charCodeAt(i);return a;}
+function pcm16ToBuffer(bytes,ctx,rate){const dv=new DataView(bytes.buffer);const n=(bytes.length/2)|0;const buf=ctx.createBuffer(1,n,rate);const ch=buf.getChannelData(0);for(let i=0;i<n;i++)ch[i]=dv.getInt16(i*2,true)/32768;return buf;}
+async function speakGemini(text){
+  stopSpeak(); if(!text.trim())return;
+  const key=$('gkey').value.trim(); if(!key){speak(text);return;}
+  spk.vis=buildVis(text);
+  $('dot').classList.add('live'); $('stopBtn').disabled=false;
+  const lm=addMsg('🔊 กำลังสร้างเสียง...','a');
+  try{
+    const voice=$('gvoice')?$('gvoice').value:'Kore';
+    const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`;
+    // prefix สไตล์ (ไม่ถูกอ่าน) — กันโมเดลตีความเป็นคำถามแล้วตอบ text แทนอ่าน
+    const body={contents:[{parts:[{text:`Say in a warm, natural voice: ${text}`}]}],generationConfig:{responseModalities:["AUDIO"],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:voice}}}}};
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json();
+    const part=(j?.candidates?.[0]?.content?.parts||[]).find(p=>p.inlineData);
+    if(!part)throw new Error(j?.error?.message||'ไม่มีเสียงตอบกลับ');
+    const rate=parseInt((String(part.inlineData.mimeType).match(/rate=(\d+)/)||[])[1]||'24000',10);
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==='suspended')await actx.resume();
+    const buf=pcm16ToBuffer(b64ToBytes(part.inlineData.data),actx,rate);
+    const src=actx.createBufferSource();src.buffer=buf;
+    const an=actx.createAnalyser();an.fftSize=1024;
+    src.connect(an);an.connect(actx.destination);
+    spk.src=src;spk.analyser=an;spk.td=new Uint8Array(an.fftSize);
+    spk.on=true;spk.audioDur=buf.duration;spk.at=performance.now();
+    src.onended=endSpeak;
+    lm.remove();
+    src.start();driveLoop();
+  }catch(e){lm.remove();addMsg('(เสียง Gemini ล้มเหลว: '+e.message+') — ใช้เสียงระบบแทน','a');speak(text);}
+}
+function say(text){ if($('gkey').value.trim()) speakGemini(text); else speak(text); }
+
+// ---------- Gemini ----------
+$('gkey').value=localStorage.getItem('va_gkey')||'';
+$('gkey').oninput=e=>localStorage.setItem('va_gkey',e.target.value);
+async function askGemini(q){
+  const key=$('gkey').value.trim(); if(!key){return '⚠ ยังไม่ได้ใส่ Gemini API key — ใส่ในช่อง "Gemini API key" ด้านล่างก่อน แล้วค่อยกดถามใหม่';}
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${key}`;
+  const body={contents:[{role:'user',parts:[{text:q}]}],systemInstruction:{parts:[{text:'ตอบสั้น กระชับ เป็นภาษาไทย เหมาะให้อวาตาร์อ่านออกเสียง ไม่เกิน 2-3 ประโยค ไม่ใส่ emoji ไม่ใส่ markdown'}]}};
+  try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json();
+    if(j.error)return '⚠ '+(j.error.message||'error');
+    const c=j?.candidates?.[0];
+    const t=(c?.content?.parts||[]).map(p=>p.text).filter(Boolean).join(' ').trim();
+    return t||('(ไม่มีคำตอบ · เหตุ='+(c?.finishReason||'unknown')+')');
+  }catch(e){return'(เชื่อม Gemini ไม่ได้: '+e.message+')';}
+}
+function addMsg(t,who){const d=document.createElement('div');d.className='msg '+who;d.textContent=t;$('chat').appendChild(d);$('chat').scrollTop=1e9;return d;}
+
+// ---------- controls ----------
+$('speakBtn').onclick=()=>{const t=$('txt').value;if(t.trim()){addMsg(t,'u');say(t);}};
+$('askBtn').onclick=async()=>{const q=$('txt').value.trim();if(!q)return;addMsg(q,'u');$('txt').value='';const a=await askGemini(q);addMsg(a,'a');say(a);};
+$('stopBtn').onclick=stopSpeak;
+$('testBlink').onclick=()=>{blink.phase='closing';blink.t0=performance.now();$('blinkOn').checked=true;};
+// ASR
+$('micBtn').onclick=()=>{
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('เบราว์เซอร์นี้ไม่รองรับ Speech Recognition (ใช้ Chrome/Edge)');return;}
+  const rec=new SR();rec.lang='th-TH';rec.interimResults=false;rec.maxAlternatives=1;
+  $('micBtn').textContent='● ฟัง...';
+  rec.onresult=async e=>{const t=e.results[0][0].transcript;addMsg(t,'u');const a=await askGemini(t);addMsg(a,'a');say(a);};
+  rec.onerror=e=>{$('micBtn').textContent='🎤 พูด';};
+  rec.onend=()=>{$('micBtn').textContent='🎤 พูด';};
+  rec.start();
+};
+// viseme test grid
+KEYS.forEach(k=>{const b=document.createElement('button');b.className='vbtn';b.textContent=k;
+  b.onmousedown=()=>manualKey=k;b.onmouseup=b.onmouseleave=()=>manualKey=null;$('vgrid').appendChild(b);});
+
+// โหลดรูปที่ฝังไว้ใน assets.js อัตโนมัติ — ไม่ต้องเลือกโฟลเดอร์ทุกรอบ
+function initAssets(){
+  if(!window.VISEME_ASSETS)return;
+  Object.keys(window.VISEME_ASSETS).forEach(raw=>{
+    const nm=canon(raw); const img=new Image();
+    img.onload=()=>{ IMG[nm]=img; if(nm==='rest'){base=img;W=img.naturalWidth;H=img.naturalHeight;cv.width=W;cv.height=H;cv.style.width=Math.min(340,W)+'px';cv.style.height='auto';} haveImages=!!IMG['rest']; updImgStatus(); };
+    img.src=window.VISEME_ASSETS[raw];
+  });
+}
+initAssets();
+updImgStatus();loop();
+})();
+</script>
+</body>
+</html>
