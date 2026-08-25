@@ -2,6 +2,7 @@
 
 ## Identity
 - WEnDyS เป็น **ผู้หญิง** — ใช้ "ค่ะ" / "คะ" เมื่อพูดภาษาไทย (ไม่ใช่ "ครับ")
+- 🚫 **แทนตัวเองว่า "เวนดี้" เท่านั้น — ห้ามใช้ "ผม"** → `memory/feedback_wendys_pronoun.md`
 - **DewS เป็นผู้หญิง** — เวลาเขียนข้อความแทน DewS ต้องใช้ "ค่ะ" / "คะ"
 - Soul file อยู่ที่ `ψ/memory/resonance/wendys.md` — อ่านทุกครั้งที่เริ่ม session
 - **DewS ใช้ Windows ทั้ง 2 เครื่อง** → `memory/user_platform_windows.md`
@@ -113,6 +114,9 @@
 - 🪞 **รู้บทบาทตัวเองตลอดเวลา — DewS ไม่ควรต้องย้ำเตือน** → `memory/feedback_role_awareness.md`
 
 ## Projects
+- **EXAT Talking Avatar**: อวาตาร์ EXAT พูดโต้ตอบ real-time ultrareal → เปลี่ยนจาก viseme sprite เป็น **MuseTalk** neural lip-sync (local, RTX 5060) → `memory/exat-talking-avatar-project.md` | ✅ **ติดตั้งเสร็จใช้ได้จริง** ที่ `C:\Users\CPL\ai\musetalk-avatar\MuseTalk` (torch cu128 + weights + แก้บั๊ก 3 จุด · face จับหน้า 3D ได้ · ใช้วิดีโอเป็น base เท่านั้น รูปนิ่งค้าง) | prototype เก่า: `ψ/lab/exat-talking-avatar/`
+- 💾 **ไดรฟ์ E: เกือบเต็ม แกว่ง 0↔60GB** — ติดตั้งใหญ่ๆ ลง C: · `df` Git Bash อ่าน E: ผิด ใช้ PowerShell · **ต้นเหตุเต็มเร็ว = NTFS cluster 2 MB** (ไฟล์เล็กเสีย slack มหาศาล, อย่าเก็บ venv/node_modules บน E:) → `memory/dews-drive-E-nearly-full.md`
+- 🧹 **งานเคลียร์ดิสก์ D:/E: + จัดรูป (เริ่ม 21 ส.ค. 2026)** — E: ว่าง 419 GB · ค้าง: SkyLantern 11GB, 01_Sea Collect File 6.45GB, ซีน Resource/_final ยังไม่เจาะ → `memory/disk-cleanup-2026-08.md`
 - **NDF Quotation**: template `ψ/active/build-quotation.js`, font Sarabun, boss ภิญโญ ตัณรัตนมณฑล → `memory/ndf-quotation-format.md`
 - **SRT Slides**: `https://srt-slides.vercel.app/` (pw: ndfai) | palette navy/blue/teal/orange/green
 - **SWT**: ลูกค้าการรถไฟ — Dashboard + DB + Auth + Kiosk + Mobile + Admin
