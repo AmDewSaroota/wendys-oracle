@@ -1,0 +1,507 @@
+ไอคอน Fortal — ชุดที่ส่งออกจากแคตตาล็อก
+ออกเมื่อ 9 ก.ย. 09:09 · 141 ไฟล์
+ที่มา https://fortal-icon-catalog.vercel.app
+
+ชื่อไฟล์ในนี้คือชื่อที่ตั้งใจให้ใช้ในโค้ดได้เลย ไม่ต้องเปลี่ยนชื่อใหม่
+เช่น credit-balance.svg ใช้เป็น component ชื่อ IconCreditBalance
+
+สำคัญ — ไอคอนเดิมหนึ่งดวงถูกใช้อยู่หลายที่
+ห้ามแทนที่โดยดูจากชื่อไอคอนเดิม เพราะจะเปลี่ยนพร้อมกันหมดทุกจุด
+เช่น sparkles ดวงเดียวถูกใช้อยู่ 8 ตำแหน่ง ต้องแยกเป็น 8 ดวงแล้วไล่เปลี่ยนทีละจุด
+
+manifest.json บอกของแต่ละไฟล์ไว้ครบ
+  code / component  ชื่อที่ใช้ในโค้ด
+  page / aria_label  หน้าเว็บและป้ายปุ่ม ใช้ค้นหาจุดที่ต้องแก้
+  find_by.css_class  คลาสของไอคอนเดิมในหน้าเว็บ ใช้ยืนยันว่าเจอจุดถูก
+  shares_icon_with   ช่องอื่นที่ตอนนี้ใช้ไอคอนเดิมดวงเดียวกัน
+  status / comments  ผลรีวิวและสิ่งที่คุยกันไว้
+
+รายการไฟล์
+  skills.svg
+      สกิลและเอเจนต์ · Skills
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Skills
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  model-nano-banana-pro.svg
+      โมเดลภาพ Nano Banana 2.0 Pro · Nano Banana 2.0 Pro
+      /image (รายการโมเดล)  aria-label: Nano Banana 2.0 Pro
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  model-seedream-pro.svg
+      โมเดลภาพ Seedream 5.0 Pro · Seedream 5.0 Pro
+      /image (รายการโมเดล)  aria-label: Seedream 5.0 Pro
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  generate.svg
+      ปุ่มสั่งสร้าง (ตัดแต้ม) · Generate
+      /video · /image · /audio (ปุ่มสั่งงาน)  aria-label: Generate Video
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  enhance-prompt.svg
+      ปรับพรอมป์ให้ดีขึ้น · Enhance prompt
+      /video · /image (ใต้ช่องพรอมป์)  aria-label: Enhance prompt · 2 pt
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  by-agent.svg
+      สร้างด้วยเอเจนต์ · By Agent
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: By Agent
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  credit-balance.svg
+      ยอดแต้มคงเหลือ · Credit balance
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Skills
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  enhance.svg
+      ขัดพรอมป์บนกระดาน · Enhance
+      Canvas board  aria-label: Enhance · 4 pt
+      เดิมใช้ sparkles ร่วมกับอีก 7 ตำแหน่ง
+  attach-reference.svg
+      แนบไฟล์อ้างอิง · Attach reference
+      /video · /skills · /prompt-helpers · /studio  aria-label: Choose a file reference type
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  extend-video.svg
+      ต่อความยาววิดีโอ · Extend video
+      /video (แถบเครื่องมือบนชิ้นงาน)  aria-label: Extend video
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  zoom-in.svg
+      ซูมเข้า · Zoom in
+      Canvas board (มุมซ้ายล่าง)  aria-label: Zoom in
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  create-new.svg
+      สร้างใหม่ · Create new
+      /video · /skills · /prompt-helpers · /studio  aria-label: Choose a file reference type
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  create-canvas.svg
+      สร้างกระดานใหม่ · Create canvas
+      Canvas board  aria-label: Create canvas
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  add-input-node.svg
+      เพิ่มโหนดอินพุต · Add input node
+      Canvas board  aria-label: Add input node
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  new-chat.svg
+      แชทใหม่ · New chat
+      Studio (Agent Director)  aria-label: New chat
+      เดิมใช้ plus ร่วมกับอีก 6 ตำแหน่ง
+  video.svg
+      วิดีโอ (เมนู) · Video
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Video
+      เดิมใช้ video ร่วมกับอีก 4 ตำแหน่ง
+  model-seedance.svg
+      โมเดลวิดีโอ Seedance 2.0 · Seedance 2.0
+      /video (รายการโมเดล)  aria-label: Seedance 2.0
+      เดิมใช้ video ร่วมกับอีก 4 ตำแหน่ง
+  model-seedance-next.svg
+      โมเดลวิดีโอ Seedance 2.5 · Seedance 2.5
+      /video (รายการโมเดล)  aria-label: Seedance 2.5
+      เดิมใช้ video ร่วมกับอีก 4 ตำแหน่ง
+  model-hailuo.svg
+      โมเดลวิดีโอ Hailuo 3.0 · Hailuo 3.0
+      /video (รายการโมเดล)  aria-label: Hailuo 3.0
+      เดิมใช้ video ร่วมกับอีก 4 ตำแหน่ง
+  model-flux.svg
+      โมเดลวิดีโอ Flux 3 · Flux 3
+      /video (รายการโมเดล)  aria-label: Flux 3
+      เดิมใช้ video ร่วมกับอีก 4 ตำแหน่ง
+  agent-director.svg
+      Agent Director · Agent Director
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Studio
+      เดิมใช้ clapperboard ร่วมกับอีก 3 ตำแหน่ง
+  cover-placeholder.svg
+      รูปแทนตอนไม่มีภาพหน้าปก · Cover placeholder
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Studio
+      เดิมใช้ clapperboard ร่วมกับอีก 3 ตำแหน่ง
+  open-video-editor.svg
+      เปิดตัวตัดต่อ · Open video editor
+      Canvas board  aria-label: Open video editor
+      เดิมใช้ clapperboard ร่วมกับอีก 3 ตำแหน่ง
+  sequence.svg
+      ซีเควนซ์ · Sequence
+      Studio (Agent Director)  aria-label: Sequence
+      เดิมใช้ clapperboard ร่วมกับอีก 3 ตำแหน่ง
+  edit-image-video.svg
+      แก้ไขภาพ/วิดีโอ · Edit image / video
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Edit image
+      เดิมใช้ pencil ร่วมกับอีก 3 ตำแหน่ง
+  edit-project.svg
+      แก้ไขโปรเจกต์ · Edit project
+      /studio · /skills (เมนูบนการ์ด)  aria-label: Edit
+      เดิมใช้ pencil ร่วมกับอีก 3 ตำแหน่ง
+  edit-profile.svg
+      แก้ไขโปรไฟล์ · Edit profile
+      /account  aria-label: Edit profile
+      เดิมใช้ pencil ร่วมกับอีก 3 ตำแหน่ง
+  edit-story-cover.svg
+      แก้บทและภาพปก · Edit Story & Cover
+      Studio (Agent Director)  aria-label: Edit Story & Cover
+      เดิมใช้ pencil ร่วมกับอีก 3 ตำแหน่ง
+  organization-credits.svg
+      องค์กรและแต้ม · Organization / Credits
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: 2,810.3 points · organization workspace (Fortal Team) — view plans
+      เดิมใช้ building2 ร่วมกับอีก 2 ตำแหน่ง
+  move-to-organization.svg
+      ย้ายเข้าองค์กร · Move to organization
+      /studio · /skills (เมนูบนการ์ด)  aria-label: Move to organization
+      เดิมใช้ building2 ร่วมกับอีก 2 ตำแหน่ง
+  organization.svg
+      องค์กร · Organization
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: 2,810.3 points · organization workspace (Fortal Team) — view plans
+      เดิมใช้ building2 ร่วมกับอีก 2 ตำแหน่ง
+  image.svg
+      ภาพ (เมนู) · Image
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Image
+      เดิมใช้ image ร่วมกับอีก 2 ตำแหน่ง
+  first-frame.svg
+      โหมดล็อกเฟรมแรก · First frame
+      /video · แผงตั้งค่าใต้ช่องพรอมป์  aria-label: First frame
+      เดิมใช้ image ร่วมกับอีก 2 ตำแหน่ง
+  first-last-frame.svg
+      โหมดล็อกเฟรมแรก+สุดท้าย · First + last frame
+      /video · แผงตั้งค่าใต้ช่องพรอมป์  aria-label: First + last frame
+      เดิมใช้ image ร่วมกับอีก 2 ตำแหน่ง
+  video-badge.svg
+      ป้ายบอกว่าเป็นวิดีโอ · Video badge
+      / · /video
+      เดิมใช้ play ร่วมกับอีก 2 ตำแหน่ง
+  play-video.svg
+      เล่นวิดีโอ · Play video
+      Canvas board (โหนดผลลัพธ์)  aria-label: Play video
+      เดิมใช้ play ร่วมกับอีก 2 ตำแหน่ง
+  run.svg
+      สั่งรันโหนด · Run
+      Canvas board (โหนดสั่งงาน)  aria-label: Run
+      เดิมใช้ play ร่วมกับอีก 2 ตำแหน่ง
+  open-story-cover.svg
+      เปิดบทและภาพปก · Open Story & Cover
+      Canvas board  aria-label: Open Story & Cover
+      เดิมใช้ book-open ร่วมกับอีก 1 ตำแหน่ง
+  story.svg
+      บท · Story
+      Studio (Agent Director)  aria-label: Story
+      เดิมใช้ book-open ร่วมกับอีก 1 ตำแหน่ง
+  previous.svg
+      ดูชิ้นก่อนหน้า · Previous
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Previous
+      เดิมใช้ chevron-left ร่วมกับอีก 1 ตำแหน่ง
+  back-to-projects.svg
+      กลับไปหน้าโปรเจกต์ · Back to projects
+      Studio (Agent Director)  aria-label: Back to projects
+      เดิมใช้ chevron-left ร่วมกับอีก 1 ตำแหน่ง
+  next.svg
+      ดูชิ้นถัดไป · Next
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Next
+      เดิมใช้ chevron-right ร่วมกับอีก 1 ตำแหน่ง
+  go-to-settings.svg
+      เข้าไปตั้งค่าต่อ · Go to settings
+      /account  aria-label: Set up 2FA
+      เดิมใช้ chevron-right ร่วมกับอีก 1 ตำแหน่ง
+  duration.svg
+      ความยาวคลิป · Duration
+      /video · /studio  aria-label: Generation settings
+      เดิมใช้ clock3 ร่วมกับอีก 1 ตำแหน่ง
+  last-edited.svg
+      วันที่แก้ไขล่าสุด · Last edited
+      /video · /studio  aria-label: Last edited on 06 Sept 2026
+      เดิมใช้ clock3 ร่วมกับอีก 1 ตำแหน่ง
+  take-over-project.svg
+      ยึดสิทธิ์เจ้าของโปรเจกต์ · Take over project
+      /account  aria-label: Free Plan
+      เดิมใช้ crown ร่วมกับอีก 1 ตำแหน่ง
+  plan.svg
+      ระดับแพ็กเกจ · Plan
+      /account  aria-label: Free Plan
+      เดิมใช้ crown ร่วมกับอีก 1 ตำแหน่ง
+  more-actions.svg
+      เมนูเพิ่มเติม · More actions
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: More actions
+      เดิมใช้ ellipsis ร่วมกับอีก 1 ตำแหน่ง
+  workspace-actions.svg
+      เมนูจัดการ workspace · Workspace actions
+      Canvas board  aria-label: More workspace actions
+      เดิมใช้ ellipsis ร่วมกับอีก 1 ตำแหน่ง
+  model-gpt-image.svg
+      โมเดลภาพ GPT Image 2 · GPT Image 2
+      /image  aria-label: GPT Image 2 High-control image gen
+      เดิมใช้ image-plus ร่วมกับอีก 1 ตำแหน่ง
+  elements.svg
+      องค์ประกอบ · Elements
+      Studio (Agent Director)  aria-label: Elements
+      เดิมใช้ image-plus ร่วมกับอีก 1 ตำแหน่ง
+  open-ai-assistance.svg
+      ผู้ช่วย AI · Open AI assistance
+      Canvas board  aria-label: Open AI assistance
+      เดิมใช้ message-square-text ร่วมกับอีก 1 ตำแหน่ง
+  edit-in-chat.svg
+      แก้ในแชท · Edit in chat
+      Studio (Agent Director)  aria-label: Edit in chat
+      เดิมใช้ message-square-text ร่วมกับอีก 1 ตำแหน่ง
+  attach-files-canvas.svg
+      แนบไฟล์ · Attach files
+      Canvas board  aria-label: Attach files
+      เดิมใช้ paperclip ร่วมกับอีก 1 ตำแหน่ง
+  attach-files-chat.svg
+      แนบไฟล์ในแชท · Attach files
+      Studio (Agent Director)  aria-label: Attach files
+      เดิมใช้ paperclip ร่วมกับอีก 1 ตำแหน่ง
+  send-message-canvas.svg
+      ส่งข้อความ · Send message
+      Canvas board  aria-label: Send message
+      เดิมใช้ send ร่วมกับอีก 1 ตำแหน่ง
+  send-message-chat.svg
+      ส่งข้อความในแชท · Send message
+      Studio (Agent Director)  aria-label: Send message
+      เดิมใช้ send ร่วมกับอีก 1 ตำแหน่ง
+  delete-permanently.svg
+      ลบถาวร · Delete permanently
+      /video  aria-label: Permanently remove media file
+      เดิมใช้ trash2 ร่วมกับอีก 1 ตำแหน่ง
+  delete-project.svg
+      ลบโปรเจกต์ · Delete project
+      /studio · /skills (เมนูบนการ์ด)  aria-label: Delete
+      เดิมใช้ trash2 ร่วมกับอีก 1 ตำแหน่ง
+  members-count.svg
+      จำนวนคนในโปรเจกต์ · Members count
+      /studio  aria-label: 2
+      เดิมใช้ users ร่วมกับอีก 1 ตำแหน่ง
+  members.svg
+      สมาชิกในองค์กร · Members
+      /account  aria-label: Members
+      เดิมใช้ users ร่วมกับอีก 1 ตำแหน่ง
+  prompt-helpers.svg
+      ตัวช่วยเขียนพรอมป์ · Prompt Helpers
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Prompt Helpers
+      เดิมใช้ wand-sparkles ร่วมกับอีก 1 ตำแหน่ง
+  add-processing-node.svg
+      เพิ่มโหนดประมวลผล · Add processing node
+      Canvas board  aria-label: Add processing node
+      เดิมใช้ wand-sparkles ร่วมกับอีก 1 ตำแหน่ง
+  tools.svg
+      เครื่องมือ · Tools
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Tools
+      เดิมใช้ wrench ร่วมกับอีก 1 ตำแหน่ง
+  add-tool-node.svg
+      เพิ่มโหนดเครื่องมือ · Add tool node
+      Canvas board  aria-label: Add tool node
+      เดิมใช้ wrench ร่วมกับอีก 1 ตำแหน่ง
+  lens.svg
+      เลนส์ · LENS
+      Studio (Agent Director)  aria-label: LENS
+  audio.svg
+      เสียง (เมนู) · Audio
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Audio
+  verified.svg
+      ยืนยันตัวตนแล้ว · Verified
+      /account  aria-label: Verified
+  model-nano-banana.svg
+      โมเดลภาพ Nano Banana · Nano Banana 2.0
+      /image  aria-label: Nano Banana 2.0 Fast visual ideati
+  model-seedance-fast.svg
+      โมเดลวิดีโอ Seedance 2.0 Fast · Seedance 2.0 Fast
+      /video · แผงตั้งค่าใต้ช่องพรอมป์  aria-label: Seedance 2.0 Fast Fast Seedance 2.0. The pro
+  open-elements.svg
+      เปิดคลังองค์ประกอบ · Open Elements
+      Canvas board  aria-label: Open Elements
+  joined.svg
+      วันที่เข้าร่วม · Joined
+      /account  aria-label: JOINED September 1, 2026
+  camera.svg
+      กล้อง · CAMERA
+      Studio (Agent Director)  aria-label: CAMERA
+  usage.svg
+      การใช้งาน · Usage
+      /account  aria-label: Usage
+  open-dropdown.svg
+      เปิดรายการตัวเลือก · Open dropdown
+      / · /video  aria-label: Default Newest
+  test-mode.svg
+      โหมดทดสอบ · Test mode
+      Studio (Agent Director)  aria-label: Test mode
+  ready.svg
+      พร้อมใช้งาน · Ready
+      /skills  aria-label: Ready
+  open-reviews.svg
+      เปิดรีวิว · Open Reviews
+      Canvas board  aria-label: Open Reviews
+  chat-history.svg
+      ประวัติแชท · Chat history
+      Studio (Agent Director)  aria-label: Chat history
+  billing.svg
+      การเรียกเก็บเงิน · Billing
+      /account  aria-label: Billing
+  crop.svg
+      ครอบตัดภาพ · Crop
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Crop this image
+  upscale.svg
+      ขยายความละเอียด · Upscale
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Upscale image
+  hide-output-links.svg
+      ซ่อนเส้นเชื่อมผลลัพธ์ · Hide generated output connections
+      Canvas board  aria-label: Hide generated output connections
+  audio-format.svg
+      รูปแบบไฟล์เสียง · Audio format
+      /audio  aria-label: MP324 kHz
+  import-skill.svg
+      นำเข้าสกิล · Import skill
+      /skills  aria-label: Import skill
+  timeline.svg
+      ไทม์ไลน์ · Timeline
+      Studio (Agent Director)  aria-label: Timeline
+  project-identity.svg
+      อัตลักษณ์โปรเจกต์ · Project Identity
+      Studio (Agent Director)  aria-label: Project Identity World fields that drive
+  add-to-prompt-analyze.svg
+      ส่งไปวิเคราะห์พรอมป์ · Add to prompt analyze
+      /prompt-helpers  aria-label: วิเคราะห์พรอมต์ 0
+  input-mode-auto.svg
+      โหมดรับภาพ · อัตโนมัติ · Input mode · Auto
+      /video  aria-label: Auto
+  new-skill-folder.svg
+      สร้างโฟลเดอร์สกิล · New skill folder
+      /skills
+  audio-quality.svg
+      คุณภาพเสียง · Audio quality
+      /audio  aria-label: MP324 kHz 1
+  world.svg
+      โลกของเรื่อง · WORLD
+      Studio (Agent Director)  aria-label: WORLD Fortal Arena
+  grid-view.svg
+      มุมมองตาราง · Grid view
+      /video  aria-label: Grid view
+  pan-mode.svg
+      โหมดเลื่อนกระดาน · Pan mode
+      Canvas board  aria-label: Pan mode
+  storage.svg
+      พื้นที่เก็บไฟล์ · Storage
+      /account  aria-label: Storage
+  home.svg
+      หน้าแรก · Home
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Home
+  detail.svg
+      รายละเอียด · Detail
+      Canvas board  aria-label: Detail
+  switch-language.svg
+      สลับภาษา · Switch Language
+      Studio (Agent Director)  aria-label: Switch Language
+  skill-sets.svg
+      ชุดสกิล · Skill sets
+      /skills  aria-label: Skill Sets
+  by-canvas.svg
+      สร้างด้วย Canvas · By Canvas
+      /studio  aria-label: By Canvas
+  open-board-library.svg
+      คลังกระดาน · Open Board Library
+      Canvas board  aria-label: Open Board Library
+  list-view.svg
+      มุมมองรายการ · List view
+      /video  aria-label: List view
+  set-password.svg
+      ตั้งรหัสผ่าน · Set password
+      /account
+  read-only-preset.svg
+      ของระบบ แก้ไม่ได้ · Read-only preset
+      /skills · /prompt-helpers  aria-label: Read-only
+  sign-out.svg
+      ออกจากระบบ · Sign out
+      /account  aria-label: Sign out
+  primary-email.svg
+      อีเมลหลัก · Primary email
+      /account  aria-label: PRIMARY EMAIL dews.cnx@gmail.com
+  show-overview-map.svg
+      แผนที่ย่อ · Show overview map
+      Canvas board  aria-label: Show overview map
+  project-ratio.svg
+      สัดส่วนของโปรเจกต์ · Project ratio
+      /studio  aria-label: 16:9
+  fit-to-screen.svg
+      ขยายดูเต็มจอ · Fit to screen
+      /video  aria-label: Thumbnail zoom
+  edit-with-chat.svg
+      ส่งเข้าแชทเพื่อแก้ต่อ · Edit with chat
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Edit with chat — attach this file to the composer
+  zoom-out.svg
+      ซูมออก · Zoom out
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Zoom out
+  resolution.svg
+      ความละเอียด · Resolution
+      /video  aria-label: Generation settings
+  active-devices.svg
+      อุปกรณ์ที่ล็อกอินอยู่ · Active devices
+      /account
+  theme-toggle.svg
+      สลับธีมมืด–สว่าง · Theme toggle
+      ทุกหน้า (แถบเมนูซ้าย)  aria-label: Theme: Dark
+  select-mode.svg
+      โหมดเลือก · Select mode
+      Canvas board  aria-label: Select mode
+  model-seed-audio.svg
+      โมเดลเสียง Seed Audio · Seed Audio 1.0
+      /audio  aria-label: Seed Audio 1.0 Multilingual Multil
+  art-style.svg
+      สไตล์ภาพ · ART STYLE
+      Studio (Agent Director)  aria-label: ART STYLE
+  hide-chat-panel.svg
+      ซ่อนแผงแชท · Hide chat panel
+      Studio (Agent Director)  aria-label: Hide chat panel
+  aspect-ratio.svg
+      สัดส่วนภาพ · Aspect ratio
+      /video  aria-label: Generation settings
+  transactions.svg
+      รายการเดินบัญชี · Transactions
+      /account  aria-label: Transactions
+  reuse-prompt.svg
+      ใช้พรอมป์เดิมซ้ำ · Reuse prompt
+      /video · /image (แถบเครื่องมือบนชิ้นงาน)  aria-label: Reuse prompt and settings
+  reset-prompt.svg
+      ล้างพรอมป์ทั้งหมด · Reset prompt
+      /video  aria-label: Reset — clear prompt, original, and ALL AI rewrites
+  visual-rules.svg
+      กฎภาพ · VISUAL RULES
+      Studio (Agent Director)  aria-label: VISUAL RULES
+  synopsis.svg
+      เรื่องย่อ · SYNOPSIS
+      Studio (Agent Director)  aria-label: SYNOPSIS
+  search-generations.svg
+      ค้นหาผลงาน · Search generations
+      / · /video · /skills  aria-label: Search generations
+  project-settings.svg
+      ตั้งค่าโปรเจกต์ · Project settings
+      Studio (Agent Director)  aria-label: Project settings
+  sign-in-method.svg
+      วิธีเข้าสู่ระบบ · Sign-in method
+      /account  aria-label: SIGN-IN METHOD Google
+  two-factor-auth.svg
+      ยืนยันสองชั้น · Two-factor auth
+      /account
+  favorite.svg
+      รายการโปรด · Favorite
+      /video  aria-label: Favorites
+  add-helper-node.svg
+      เพิ่มโหนดตัวช่วย · Add helper node
+      Canvas board  aria-label: Add helper node
+  theme-light.svg
+      ธีมสว่าง · Theme: Light
+      Studio (Agent Director)  aria-label: Theme: Light
+  transfer-ownership.svg
+      โอนสิทธิ์เจ้าของ · Transfer ownership
+      /studio · /skills (เมนูบนการ์ด)  aria-label: Transfer ownership
+  profile.svg
+      โปรไฟล์ · Profile
+      /account  aria-label: Profile overview
+  audio-on-off.svg
+      เปิด–ปิดเสียง · Audio on/off
+      /video  aria-label: Generation settings
+  generate-audio.svg
+      สั่งสร้างเสียง · Generate audio
+      Canvas board  aria-label: Generate audio
+  atmosphere.svg
+      บรรยากาศ · ATMOSPHERE
+      Studio (Agent Director)  aria-label: ATMOSPHERE
+  hide-canvas-chat-panel.svg
+      ปิดแผงแชท (กระดาน) · Hide chat panel
+      Canvas board  aria-label: Hide chat panel
+  canvas.svg
+      Canvas — เมนูแยกใหม่ · Canvas
+      —  aria-label: —
+  my-presets.svg
+      Preset ที่ลูกค้าสร้างเอง · My Presets
+      —  aria-label: —
+  join-as-admin.svg
+      ขอเข้าเป็นแอดมิน · Join as admin
+      —  aria-label: —
+  view-only.svg
+      สถานะดูอย่างเดียว · View only
+      —  aria-label: —

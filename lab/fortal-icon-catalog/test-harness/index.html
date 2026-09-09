@@ -1,0 +1,124 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>harness</title>
+<link rel="stylesheet" href="/app.css">
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+/* เซิร์ฟเวอร์จำลอง — เลียนแบบ /api/state, /api/action, /api/file/<id> ให้เหมือนของจริง
+   เพื่อทดสอบพฤติกรรมฝั่งหน้าเว็บทั้งหมดโดยไม่ต้องล็อกอิน */
+(function () {
+  var SLOTS = {}, EVENTS = [], CALLS = [], CMTS = [], CID = 1;
+  window.__T = {
+    slots: SLOTS, events: EVENTS, calls: CALLS, comments: CMTS,
+    me: { name: 'ดีไซเนอร์ A', email: 'a@x.com', image: null, reviewer: true },
+    reset: function () {
+      for (var k in SLOTS) delete SLOTS[k];
+      EVENTS.length = 0; CALLS.length = 0; CMTS.length = 0;
+    }
+  };
+  var realFetch = window.fetch.bind(window);
+
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : input.url;
+    var path = url.replace(/^https?:\/\/[^/]+/, '').split('?')[0];
+    var method = (init && init.method) || 'GET';
+
+    if (path === '/data.json' || path === '/brief.json') return realFetch(url, { cache: 'no-store' });
+
+    if (path === '/api/state') {
+      return Promise.resolve(new Response(JSON.stringify({
+        me: window.__T.me, slots: SLOTS, comments: CMTS,
+        events: EVENTS.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 60)
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    }
+
+    if (path === '/api/action' && method === 'POST') {
+      var b = JSON.parse(init.body);
+      CALLS.push(b);
+      var now = Date.now();
+      var who = window.__T.me.name;
+      if (b.op === 'upload') {
+        if (['image/svg+xml', 'image/png', 'image/webp'].indexOf(b.mime) < 0)
+          return Promise.resolve(new Response(JSON.stringify({ error: 'รับเฉพาะ SVG · PNG · WebP' }), { status: 400 }));
+        if (!b.data || b.data.length > 220 * 1024)
+          return Promise.resolve(new Response(JSON.stringify({ error: 'ไฟล์ใหญ่เกิน 150 KB' }), { status: 400 }));
+        var again = !!SLOTS[b.id];
+        SLOTS[b.id] = { name: b.name, mime: b.mime, _data: b.data, by: who, at: now, aliasOf: null,
+                        status: 'submitted', reviewBy: null, reviewAt: 0,
+                        note: (SLOTS[b.id] || {}).note || '', noteBy: null, noteAt: 0 };
+        EVENTS.push({ t: now, u: who, a: again ? 're' : 'up', slot: b.id, th: b.th, f: b.name });
+      } else if (b.op === 'review') {
+        if (!window.__T.me.reviewer)
+          return Promise.resolve(new Response(JSON.stringify({ error: 'ไม่มีสิทธิ์รีวิว' }), { status: 403 }));
+        var back = b.status === 'submitted';
+        SLOTS[b.id].status = b.status;
+        SLOTS[b.id].reviewBy = back ? null : who;
+        SLOTS[b.id].reviewAt = back ? 0 : now;
+        EVENTS.push({ t: now, u: who, a: back ? 'undo' : (b.status === 'approved' ? 'ok' : 'rev'), slot: b.id, th: b.th });
+      } else if (b.op === 'note') {
+        SLOTS[b.id].note = b.note; SLOTS[b.id].noteBy = who; SLOTS[b.id].noteAt = now;
+        EVENTS.push({ t: now, u: who, a: 'note', slot: b.id, th: b.th });
+      } else if (b.op === 'delete') {
+        var had = SLOTS[b.id]; delete SLOTS[b.id];
+        EVENTS.push({ t: now, u: who, a: 'del', slot: b.id, th: b.th, f: had && had.name });
+      } else if (b.op === 'alias') {
+        if (b.target) {
+          var t = SLOTS[b.target];
+          if (!t || !t.name) return Promise.resolve(new Response(JSON.stringify({ error: 'ช่องปลายทางยังไม่มีไฟล์' }), { status: 400 }));
+          if (t.aliasOf) return Promise.resolve(new Response(JSON.stringify({ error: 'ช่องปลายทางผูกอยู่กับช่องอื่นแล้ว' }), { status: 400 }));
+          Object.keys(SLOTS).forEach(function (k) { if (SLOTS[k].aliasOf === b.id) SLOTS[k].aliasOf = b.target; });
+          SLOTS[b.id] = { aliasOf: b.target, status: 'submitted', name: null, mime: null, _data: null };
+        } else if (SLOTS[b.id]) { delete SLOTS[b.id]; }
+        EVENTS.push({ t: now, u: who, a: b.target ? 'link' : 'unlink', slot: b.id, th: b.th, f: b.target || null });
+      } else if (b.op === 'comment') {
+        if (!/^(slot|brief):[A-Za-z0-9._~:@+-]{1,120}$/.test(b.target || ''))
+          return Promise.resolve(new Response(JSON.stringify({ error: 'bad target' }), { status: 400 }));
+        var txt = String(b.text || '').trim();
+        if (!txt) return Promise.resolve(new Response(JSON.stringify({ error: 'ข้อความว่าง' }), { status: 400 }));
+        CMTS.push({ id: CID++, target: b.target, t: now, u: who, text: txt, done: false, doneBy: null, doneAt: 0 });
+        EVENTS.push({ t: now, u: who, a: 'cmt', slot: b.target, th: b.th });
+      } else if (b.op === 'comment_del') {
+        var i = CMTS.findIndex(function (c) { return c.id === b.cid; });
+        if (i >= 0) { if (CMTS[i].u !== who) return Promise.resolve(new Response(JSON.stringify({ error: 'ลบได้เฉพาะข้อความของตัวเอง' }), { status: 403 })); CMTS.splice(i, 1); }
+      } else if (b.op === 'comment_done') {
+        var c2 = CMTS.filter(function (c) { return c.id === b.cid; })[0];
+        if (c2) { c2.done = b.done !== false; c2.doneBy = c2.done ? who : null; c2.doneAt = c2.done ? now : 0; }
+      } else {
+        return Promise.resolve(new Response(JSON.stringify({ error: 'unknown op' }), { status: 400 }));
+      }
+      return Promise.resolve(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    }
+
+    if (path.indexOf('/api/file/') === 0) {
+      var id = decodeURIComponent(path.slice('/api/file/'.length));
+      var s = SLOTS[id];
+      if (!s) return Promise.resolve(new Response('not found', { status: 404 }));
+      var b64 = s._data.split(',')[1];
+      var bin = atob(b64), arr = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return Promise.resolve(new Response(arr, { status: 200, headers: { 'Content-Type': s.mime } }));
+    }
+
+    return realFetch(input, init);
+  };
+
+  /* กันไม่ให้ดาวน์โหลดจริงตอนทดสอบ — เก็บไว้ตรวจแทน */
+  window.__T.saved = [];
+  var realCreate = document.createElement.bind(document);
+  document.createElement = function (tag) {
+    var el = realCreate(tag);
+    if (String(tag).toLowerCase() === 'a') {
+      var realClick = el.click.bind(el);
+      el.click = function () {
+        if (el.download) { window.__T.saved.push({ name: el.download, href: el.href }); return; }
+        realClick();
+      };
+    }
+    return el;
+  };
+})();
+</script>
+<script src="/app.js"></script>
