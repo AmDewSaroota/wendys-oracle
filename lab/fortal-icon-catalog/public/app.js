@@ -87,7 +87,7 @@
     '<div class="steps">' +
       '<div class="step"><b>1 · ทำใน Figma</b><p>ตั้งชื่อเฟรมให้ตรงกับ<b>ชื่อไอคอน</b>ในลิสต์ (<button class="inlink" id="dlnames2">กดโหลดลิสต์ CSV</button> ไปตั้ง) แล้ว Export เป็น SVG ทั้งชุด</p></div>' +
       '<div class="step"><b>2 · ลากเข้าเว็บทีเดียว</b><p>ลากไฟล์ทั้งกองมาวางที่แถบ <b>“วางไฟล์ไอคอนที่นี่”</b> ด้านล่าง ระบบจับคู่เข้าช่องอัตโนมัติ ดูพรีวิวก่อนยืนยันได้</p></div>' +
-      '<div class="step"><b>3 · พี่กี๋รีวิว</b><p>กดผ่าน หรือ ต้องแก้ ที่ช่องนั้น แล้วคอมเมนต์คุยกันในหน้าเดียวจบ ทุกคนเห็นพร้อมกัน</p></div>' +
+      '<div class="step"><b>3 · พี่กี๋รีวิว</b><p>กดผ่านถ้าโอเค · ถ้ายังไม่ผ่าน คอมเมนต์บอกจุดที่ต้องแก้ในช่องนั้น คุยกันในหน้าเดียวจบ ทุกคนเห็นพร้อมกัน</p></div>' +
     '</div>' +
     '<div class="tiles">' +
       '<div class="tile a"><div class="n">' + SLOTS.length + '</div><p>ดวงที่ต้องวาดทั้งหมด · ไปใช้จริง ' +
@@ -240,10 +240,10 @@
       return '<div class="mrow"><span class="fn">' + esc(r.f.name) + '</span>' + right + '</div>';
     }).join('') + '</div>';
     return ask({
-      title: 'จะลงให้ ' + okRows.length + ' ไฟล์ จากทั้งหมด ' + rows.length,
+      title: 'พร้อมส่ง ' + okRows.length + ' จาก ' + rows.length + ' ไฟล์',
       body: body + (okRows.length < rows.length
         ? '<p class="hint4">ไฟล์ที่จับคู่ไม่ได้จะถูกข้าม — เปลี่ยนชื่อไฟล์ให้ตรงกับชื่อใต้ภาพแล้วลากใหม่ได้</p>' : ''),
-      ok: okRows.length ? 'ลงให้เลย' : 'ปิด'
+      ok: okRows.length ? 'ยืนยันการส่ง' : 'ปิด'
     }).then(function (yes) {
       if (!yes || !okRows.length) return;
       var i = 0, hit = 0;
@@ -424,7 +424,7 @@
       cmt: SLOTS.filter(function (s) { return openCount('slot:' + s.id) > 0; }).length
     };
     var L = [['all', 'ทั้งหมด'], ['todo', 'ยังไม่ส่ง'], ['dupg', 'ยังใช้รูปซ้ำ'],
-             ['sent', 'รอรีวิว'], ['ok', 'ผ่านแล้ว'], ['rev', 'ต้องแก้'],
+             ['sent', 'รอรีวิว'], ['ok', 'ผ่านแล้ว'],
              ['cmt', 'มีคอมเมนต์ค้าง'], ['ref', 'อ้างอิงแบรนด์']];
     $('#chips').innerHTML = L.map(function (p) {
       return '<button class="chip' + (FILTER === p[0] ? ' on' : '') + '" data-f="' + p[0] + '">' +
@@ -700,9 +700,7 @@
       '<div class="dbtns">' +
         (s.ref ? '<span class="offnote">' + esc(s.ref.why) + '</span>' : '') +
         (v && canReview ? '<button class="btn sm" data-ok="' + esc(id) + '">' +
-            (st === 'approved' ? '✓ ผ่านแล้ว' : 'ผ่าน') + '</button>' +
-          '<button class="btn sm" data-rev="' + esc(id) + '">' +
-            (st === 'revise' ? '↺ ต้องแก้' : 'ต้องแก้') + '</button>' : '') +
+            (st === 'approved' ? '✓ ผ่านแล้ว' : 'ผ่าน') + '</button>' : '') +
         (v ? '<button class="btn sm" data-dl="' + esc(id) + '">ดาวน์โหลด</button>' +
              '<button class="btn sm" data-del="' + esc(id) + '">ลบ</button>' : '') +
         '<button class="btn sm" data-pick="' + esc(id) + '">' +
