@@ -37,10 +37,16 @@ supabase link --project-ref zijybzjstjlqvhmckgor
 ## Step 3: ตั้งค่า Secrets (Tuya API Keys)
 
 ```bash
-# ตั้งค่า Tuya credentials (ห้ามแชร์!)
-supabase secrets set TUYA_ACCESS_ID=7dudg9tg3cwvrf8dx9na
-supabase secrets set TUYA_ACCESS_SECRET=f51fa230ddf343478ae5616c52b51111
+# ตั้งค่า Tuya credentials — อ่านค่าจริงจาก .env (ห้าม hardcode ในไฟล์นี้!)
+supabase secrets set TUYA_ACCESS_ID=<ใส่ค่าจาก .env>
+supabase secrets set TUYA_ACCESS_SECRET=<ใส่ค่าจาก .env>
 ```
+
+> ⚠️ **ห้ามเขียนค่าจริงลงไฟล์นี้** — repo `wendys-oracle` เป็น **public**
+> ค่าจริงอยู่ที่ `.env` และ `config.json` (ทั้งคู่อยู่ใน `.gitignore` แล้ว)
+>
+> ค่าที่เคยถูก hardcode ไว้ตรงนี้ (โปรเจกต์ Tuya เก่าส่วนตัว `7dudg…`) ถือว่า **หลุดสู่สาธารณะแล้ว**
+> ต้อง revoke/rotate — ดู `E:\01_Work\_NDF\Test_WebAPP\_HANDOFF\04_ACTION_ITEMS.md`
 
 ---
 
