@@ -50,7 +50,7 @@
       if (g.group !== cur) { html += "<h2>" + esc(g.group) + "</h2>"; cur = g.group; }
       html += '<div class="scrow" data-g="' + gi + '">' +
         '<div class="sctop">' +
-        '<a class="scurl" href="' + esc(g.urlFull) + '" target="_blank" rel="noreferrer">' + esc(g.url) + "</a>" +
+        '<a class="scurl" href="' + esc(g.urlFull) + '" target="_blank" rel="noreferrer">' + esc(g.urlFull) + "</a>" +
         '<button class="sccopy" data-u="' + esc(g.urlFull) + '">คัดลอก URL</button>' +
         '<span class="scdesc">' + esc(g.desc) + "</span>" +
         '<span class="sccount">' + g.shots.length + " ภาพ</span></div>";
