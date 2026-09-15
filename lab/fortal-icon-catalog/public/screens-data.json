@@ -8,6 +8,7 @@
    "group": "1 · หน้าแรก / เข้าสู่ระบบ",
    "url": "/",
    "urlFull": "https://fortal.studio/",
+   "urlOpen": "https://fortal.studio/",
    "desc": "หน้าแรก + หน้าต่าง Sign In / สมัคร / ลืมรหัส ทั้งโฟลว์",
    "shots": [
     {
@@ -192,6 +193,7 @@
    "group": "1 · หน้าแรก / เข้าสู่ระบบ",
    "url": "/auth/reset-password",
    "urlFull": "https://fortal.studio/auth/reset-password",
+   "urlOpen": "https://fortal.studio/auth/reset-password",
    "desc": "หน้าตั้งรหัสผ่านใหม่ (เปิดจากลิงก์ในอีเมล)",
    "shots": [
     {
@@ -204,6 +206,7 @@
    "group": "1 · หน้าแรก / เข้าสู่ระบบ",
    "url": "/legal/privacy",
    "urlFull": "https://fortal.studio/legal/privacy",
+   "urlOpen": "https://fortal.studio/legal/privacy",
    "desc": "นโยบายความเป็นส่วนตัว",
    "shots": [
     {
@@ -216,6 +219,7 @@
    "group": "1 · หน้าแรก / เข้าสู่ระบบ",
    "url": "/legal/terms",
    "urlFull": "https://fortal.studio/legal/terms",
+   "urlOpen": "https://fortal.studio/legal/terms",
    "desc": "เงื่อนไขการใช้งาน",
    "shots": [
     {
@@ -228,6 +232,7 @@
    "group": "1 · หน้าแรก / เข้าสู่ระบบ",
    "url": "[Google] accounts.google.com/signin",
    "urlFull": "https://accounts.google.com/signin",
+   "urlOpen": "https://accounts.google.com/signin",
    "desc": "หน้าเลือกบัญชีของ Google (ไม่ใช่หน้าเรา)",
    "shots": [
     {
@@ -240,6 +245,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/pricing",
    "urlFull": "https://fortal.studio/pricing",
+   "urlOpen": "https://fortal.studio/pricing",
    "desc": "แพ็กเกจและราคา",
    "shots": [
     {
@@ -280,6 +286,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/billing",
    "urlFull": "https://fortal.studio/billing",
+   "urlOpen": "https://fortal.studio/billing",
    "desc": "บิลและการใช้แต้ม",
    "shots": [
     {
@@ -304,6 +311,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/billing/usage",
    "urlFull": "https://fortal.studio/billing/usage",
+   "urlOpen": "https://fortal.studio/billing/usage",
    "desc": "ประวัติรายการแต้ม (บัญชีส่วนตัว)",
    "shots": [
     {
@@ -316,6 +324,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/org/members",
    "urlFull": "https://fortal.studio/org/members",
+   "urlOpen": "https://fortal.studio/org/members",
    "desc": "สมาชิกในองค์กร",
    "shots": [
     {
@@ -336,6 +345,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/org/usage",
    "urlFull": "https://fortal.studio/org/usage",
+   "urlOpen": "https://fortal.studio/org/usage",
    "desc": "การใช้แต้มขององค์กร",
    "shots": [
     {
@@ -348,6 +358,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/org/storage",
    "urlFull": "https://fortal.studio/org/storage",
+   "urlOpen": "https://fortal.studio/org/storage",
    "desc": "พื้นที่เก็บไฟล์ขององค์กร",
    "shots": [
     {
@@ -360,6 +371,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "/org/transactions",
    "urlFull": "https://fortal.studio/org/transactions",
+   "urlOpen": "https://fortal.studio/org/transactions",
    "desc": "ประวัติรายการแต้มขององค์กร",
    "shots": [
     {
@@ -372,6 +384,7 @@
    "group": "2 · เงิน / แพ็กเกจ",
    "url": "[เว็บชำระเงินแยก] siamshort-payment-fe-u75071/checkout/{id}",
    "urlFull": "https://siamshort-payment-fe-u75071.vm.elestio.app/checkout/{id}",
+   "urlOpen": "https://siamshort-payment-fe-u75071.vm.elestio.app/checkout/{id}",
    "desc": "หน้าชำระเงิน (คนละเว็บกับ fortal.studio)",
    "shots": [
     {
@@ -396,6 +409,7 @@
    "group": "3 · บัญชีผู้ใช้",
    "url": "/account",
    "urlFull": "https://fortal.studio/account",
+   "urlOpen": "https://fortal.studio/account",
    "desc": "โปรไฟล์ · รหัสผ่าน · 2FA",
    "shots": [
     {
@@ -420,6 +434,7 @@
    "group": "3 · บัญชีผู้ใช้",
    "url": "/account/sessions",
    "urlFull": "https://fortal.studio/account/sessions",
+   "urlOpen": "https://fortal.studio/account/sessions",
    "desc": "อุปกรณ์ที่ล็อกอินอยู่",
    "shots": [
     {
@@ -432,6 +447,7 @@
    "group": "3 · บัญชีผู้ใช้",
    "url": "/account/storage",
    "urlFull": "https://fortal.studio/account/storage",
+   "urlOpen": "https://fortal.studio/account/storage",
    "desc": "พื้นที่เก็บไฟล์ของเรา",
    "shots": [
     {
@@ -444,6 +460,7 @@
    "group": "4 · หน้าสร้างงาน (Gen)",
    "url": "/video",
    "urlFull": "https://fortal.studio/video",
+   "urlOpen": "https://fortal.studio/video",
    "desc": "สร้างวิดีโอ",
    "shots": [
     {
@@ -520,6 +537,7 @@
    "group": "4 · หน้าสร้างงาน (Gen)",
    "url": "/image",
    "urlFull": "https://fortal.studio/image",
+   "urlOpen": "https://fortal.studio/image",
    "desc": "สร้างภาพ",
    "shots": [
     {
@@ -576,6 +594,7 @@
    "group": "4 · หน้าสร้างงาน (Gen)",
    "url": "/audio",
    "urlFull": "https://fortal.studio/audio",
+   "urlOpen": "https://fortal.studio/audio",
    "desc": "สร้างเสียง",
    "shots": [
     {
@@ -612,6 +631,7 @@
    "group": "5 · เครื่องมือ",
    "url": "/tools",
    "urlFull": "https://fortal.studio/tools",
+   "urlOpen": "https://fortal.studio/tools",
    "desc": "หน้ารวมเครื่องมือ",
    "shots": [
     {
@@ -628,6 +648,7 @@
    "group": "5 · เครื่องมือ",
    "url": "/tools/{slug}",
    "urlFull": "https://fortal.studio/tools/{slug}",
+   "urlOpen": "https://fortal.studio/tools/anyangle",
    "desc": "หน้าเครื่องมือ 31 ตัว (คนละ URL)",
    "shots": [
     {
@@ -760,6 +781,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/ai-director",
    "urlFull": "https://fortal.studio/ai-director",
+   "urlOpen": "https://fortal.studio/ai-director",
    "desc": "รายการโปรเจกต์แบบ AI Director  (/studio เด้งมาที่นี่)",
    "shots": [
     {
@@ -772,6 +794,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/canvas",
    "urlFull": "https://fortal.studio/canvas",
+   "urlOpen": "https://fortal.studio/canvas",
    "desc": "รายการกระดาน Canvas",
    "shots": [
     {
@@ -784,6 +807,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/studio/{id}/v2",
    "urlFull": "https://fortal.studio/studio/{id}/v2",
+   "urlOpen": "https://fortal.studio/studio/3809d0ba-585d-4019-a195-3f78a473d1e5/v2",
    "desc": "โปรเจกต์โหมด Agent — แชท + Story/Elements/Sequence/Timeline",
    "shots": [
     {
@@ -952,6 +976,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/studio/{id}/v2/activity",
    "urlFull": "https://fortal.studio/studio/{id}/v2/activity",
+   "urlOpen": "https://fortal.studio/studio/3809d0ba-585d-4019-a195-3f78a473d1e5/v2/activity",
    "desc": "หน้ากิจกรรม/สถานะงานของโปรเจกต์",
    "shots": [
     {
@@ -968,6 +993,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/studio/{id}/idea-board",
    "urlFull": "https://fortal.studio/studio/{id}/idea-board",
+   "urlOpen": "https://fortal.studio/studio/4d817bd2-1602-49fc-862d-06c5a552909e/idea-board",
    "desc": "กระดาน node ของโปรเจกต์",
    "shots": [
     {
@@ -1056,6 +1082,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/studio/{id}/video-editor",
    "urlFull": "https://fortal.studio/studio/{id}/video-editor",
+   "urlOpen": "https://fortal.studio/studio/3809d0ba-585d-4019-a195-3f78a473d1e5/video-editor",
    "desc": "ตัวตัดต่อในเว็บ",
    "shots": [
     {
@@ -1128,6 +1155,7 @@
    "group": "6 · Studio (ทำหนัง)",
    "url": "/examples/canvas/{slug}",
    "urlFull": "https://fortal.studio/examples/canvas/{slug}",
+   "urlOpen": "https://fortal.studio/examples/canvas/prompt-to-image-starter",
    "desc": "กระดานตัวอย่าง 6 ชุด",
    "shots": [
     {
@@ -1164,6 +1192,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/skills",
    "urlFull": "https://fortal.studio/skills",
+   "urlOpen": "https://fortal.studio/skills",
    "desc": "รายการสกิลของ agent",
    "shots": [
     {
@@ -1212,6 +1241,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/skills/new",
    "urlFull": "https://fortal.studio/skills/new",
+   "urlOpen": "https://fortal.studio/skills/new",
    "desc": "สร้างสกิลใหม่",
    "shots": [
     {
@@ -1224,6 +1254,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/skills/import",
    "urlFull": "https://fortal.studio/skills/import",
+   "urlOpen": "https://fortal.studio/skills/import",
    "desc": "นำเข้าสกิล",
    "shots": [
     {
@@ -1236,6 +1267,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/skills/{id}",
    "urlFull": "https://fortal.studio/skills/{id}",
+   "urlOpen": "https://fortal.studio/skills/5e7cc597-2172-49e4-b217-de4e5e00f968",
    "desc": "หน้าแก้สกิล",
    "shots": [
     {
@@ -1248,6 +1280,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/prompt-helpers",
    "urlFull": "https://fortal.studio/prompt-helpers",
+   "urlOpen": "https://fortal.studio/prompt-helpers",
    "desc": "รายการตัวช่วยเขียนพรอมต์",
    "shots": [
     {
@@ -1276,6 +1309,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/prompt-helpers/new",
    "urlFull": "https://fortal.studio/prompt-helpers/new",
+   "urlOpen": "https://fortal.studio/prompt-helpers/new",
    "desc": "สร้างตัวช่วยใหม่",
    "shots": [
     {
@@ -1288,6 +1322,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/prompt-helpers/{id}",
    "urlFull": "https://fortal.studio/prompt-helpers/{id}",
+   "urlOpen": "https://fortal.studio/prompt-helpers/853461b5-2a9c-4bf0-b119-929ebd350f35",
    "desc": "หน้าแก้ตัวช่วย",
    "shots": [
     {
@@ -1300,6 +1335,7 @@
    "group": "7 · สกิล / ตัวช่วยพรอมต์",
    "url": "/prompts",
    "urlFull": "https://fortal.studio/prompts",
+   "urlOpen": "https://fortal.studio/prompts",
    "desc": "คลังพรอมต์",
    "shots": [
     {
