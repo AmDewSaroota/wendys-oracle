@@ -17,7 +17,7 @@
   }
 
   function stats() {
-    var app = data.groups.filter(function (g) { return g.url.indexOf("[เว็บคู่มือ]") !== 0; });
+    var app = data.groups;
     var imgs = 0;
     data.groups.forEach(function (g) { imgs += g.shots.length; });
     return { urls: app.length, docs: data.groups.length - app.length, imgs: imgs };
@@ -36,8 +36,8 @@
     html += '<div class="sckpi">' +
       '<div><b>' + s.urls + "</b><span>URL ของเว็บแอป</span></div>" +
       '<div><b>' + s.imgs + "</b><span>ภาพหน้าจอ</span></div>" +
-      '<div><b>' + s.docs + "</b><span>หน้าเว็บคู่มือ</span></div>" +
-      '<div><b>' + esc(data.captured) + "</b><span>วันที่เก็บภาพ</span></div></div>";
+      '<div><b>' + esc(data.captured) + "</b><span>วันที่เก็บภาพ</span></div></div>" +
+      (data.scope ? '<div class="scscope">' + esc(data.scope) + "</div>" : "");
 
     html += '<div class="scsearch"><input id="scq" placeholder="พิมพ์เพื่อกรอง — เช่น billing, studio, เมนู" value="' + esc(q) + '"></div>';
 
