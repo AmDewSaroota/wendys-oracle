@@ -1,0 +1,1867 @@
+{
+ "title": "หน้าจอทุกหน้าของ fortal.studio",
+ "note": "แกนคือ URL — บรรทัดละ 1 URL พร้อมภาพของหน้านั้น รวมหน้าต่างซ้อนและเมนูที่ไม่มี URL ของตัวเอง",
+ "captured": "2026-09-14 ถึง 2026-09-15",
+ "groups": [
+  {
+   "group": "1 · หน้าแรก / เข้าสู่ระบบ",
+   "url": "/",
+   "urlFull": "https://fortal.studio/",
+   "desc": "หน้าแรก + หน้าต่าง Sign In / สมัคร / ลืมรหัส ทั้งโฟลว์",
+   "shots": [
+    {
+     "img": "2026-09-14__02-auth__01-signin-modal.webp",
+     "caption": "กด Sign In ที่แถบซ้ายล่าง — หน้าต่าง Welcome to Fortal Studio มี 2 ทาง: Continue with Google / Continue with Email + ลิงก์ Privacy Policy · Terms of Use"
+    },
+    {
+     "img": "2026-09-14__02-auth__02-signin-modal-slide-tab.webp",
+     "caption": "ฝั่งขวาของหน้าต่าง Sign In เป็นสไลด์ 4 หัวข้อ (Story Shot · Cinematic Video · Character World · Timeline) — กดเปลี่ยนได้"
+    },
+    {
+     "img": "2026-09-14__02-auth__03-email-form.webp",
+     "caption": "กด Continue with Email — ฟอร์ม Email + Password · ปุ่ม Sign in · New here? Create an account · Forgot password? · Back"
+    },
+    {
+     "img": "2026-09-14__02-auth__04-email-form-filled.webp",
+     "caption": "กรอกอีเมลและรหัสผ่าน (ตัวอย่างสมมติ) ก่อนกด Sign in"
+    },
+    {
+     "img": "2026-09-14__02-auth__05-signin-wrong-password.webp",
+     "caption": "กด Sign in ด้วยอีเมล/รหัสผ่านที่ไม่ถูกต้อง — ข้อความแจ้งเตือนที่ผู้ใช้เห็น"
+    },
+    {
+     "img": "2026-09-14__02-auth__06-forgot-no-email.webp",
+     "caption": "กด Forgot password? ตอนยังไม่กรอกอีเมล — ขึ้น 'Enter your email above first.'"
+    },
+    {
+     "img": "2026-09-14__02-auth__07-forgot-with-email.webp",
+     "caption": "กรอกอีเมลแล้วกด Forgot password? — ขึ้น 'Password reset link sent — check your inbox.' พร้อมปุ่ม Back"
+    },
+    {
+     "img": "2026-09-14__02-auth__08-create-account-form.webp",
+     "caption": "กด New here? Create an account — ฟอร์มสมัคร Email + Password · ปุ่ม Create account · Already have an account? Sign in · Resend confirmation email · Back"
+    },
+    {
+     "img": "2026-09-14__02-auth__09-create-account-resend-no-email.webp",
+     "caption": "กด Resend confirmation email ตอนยังไม่กรอกอีเมล — ข้อความแจ้งเตือน"
+    },
+    {
+     "img": "2026-09-14__02-auth__10-create-account-filled.webp",
+     "caption": "ฟอร์มสมัครที่กรอกอีเมล/รหัสผ่านแล้ว (ไม่ได้กด Create account จริง — จะสร้างบัญชีในระบบ)"
+    },
+    {
+     "img": "2026-09-14__02-auth__11-back-to-signin.webp",
+     "caption": "กด Already have an account? Sign in — กลับมาฟอร์ม Sign in"
+    },
+    {
+     "img": "2026-09-14__02-auth__12-modal-closed.webp",
+     "caption": "กด × ปิดหน้าต่าง Sign In — กลับหน้าแรกตามเดิม"
+    },
+    {
+     "img": "2026-09-14__03-billing__11-switch-to-personal.webp",
+     "caption": "สลับ workspace: เมนูโปรไฟล์ → กดชื่อ Fortal Team → เลือก DewS CNX · Personal (กระเป๋าส่วนตัว แพ็ก Free)"
+    },
+    {
+     "img": "2026-09-14__03-billing__23-switch-back-to-org.webp",
+     "caption": "สลับ workspace กลับเป็น Fortal Team (Organization): เมนูโปรไฟล์ → กดชื่อ workspace → เลือก Fortal Team"
+    },
+    {
+     "img": "2026-09-14__03-billing__27-pricing-visitor-get-starter.webp",
+     "caption": "กด Get Starter ตอนยังไม่ล็อกอิน — ระบบเปิดหน้าต่าง Sign In ก่อน"
+    },
+    {
+     "img": "2026-09-14__03-billing__28-pricing-visitor-get-team.webp",
+     "caption": "กด Get Team ตอนยังไม่ล็อกอิน — สิ่งที่ระบบแสดง"
+    },
+    {
+     "img": "2026-09-14__04-account__06-account-my-profile-menu.webp",
+     "caption": "เมนูโปรไฟล์ → Account → My Profile (พาไปหน้า /account)"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__01-home-first-visit-full.webp",
+     "caption": "หน้าแรกครั้งแรก (ยังไม่ล็อกอิน) ทั้งหน้า — มีแบนเนอร์คุกกี้"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__01b-cookie-banner-in-page.webp",
+     "caption": "แบนเนอร์คุกกี้ ณ ตำแหน่งจริงบนหน้า (เต็มจอ) — เห็นว่าลอยอยู่มุมซ้ายล่างทับเนื้อหา"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__02-cookie-banner.webp",
+     "caption": "แบนเนอร์คุกกี้ (มุมซ้ายล่าง) — ซูมเฉพาะกล่อง เห็นครบทั้งข้อความและปุ่ม Accept all / Reject / Settings"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__03-cookie-settings-dialog.webp",
+     "caption": "Settings → หน้าต่าง Cookie preferences"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__04-hero-slide-1.webp",
+     "caption": "แบนเนอร์บน สไลด์ 1"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__05-hero-slide-2.webp",
+     "caption": "แบนเนอร์บน สไลด์ 2"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__06-hero-slide-3.webp",
+     "caption": "แบนเนอร์บน สไลด์ 3"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__07-hero-slide-4.webp",
+     "caption": "แบนเนอร์บน สไลด์ 4"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__08-model-cards-and-prompt-box.webp",
+     "caption": "การ์ดโมเดล 5 ใบ + กล่องพรอมต์ from 20 pts"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__09-discover-seedream-banner.webp",
+     "caption": "ส่วน Limited-time boost — Discover Seedream 5.0 Pro"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__10-sample-canvas-section.webp",
+     "caption": "ส่วน Sample Canvas 6 การ์ด (ชี้การ์ดแรก = ปุ่ม Use this Canvas)"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__11-inspiration-section.webp",
+     "caption": "ส่วน Inspiration — ค้นหา · Sort · แท็บ All/Image/Video · การ์ดผลงาน"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__12-inspiration-filter-image.webp",
+     "caption": "Inspiration แท็บ Image"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__13-inspiration-filter-video.webp",
+     "caption": "Inspiration แท็บ Video"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__14-inspiration-search-empty.webp",
+     "caption": "Inspiration ค้นหา 'city' — ไม่มีผลลัพธ์"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__15-inspiration-preview-modal.webp",
+     "caption": "กดการ์ดผลงาน — หน้าต่างพรีวิว"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__16-sidebar-visitor.webp",
+     "caption": "แถบซ้าย (ยังไม่ล็อกอิน) — เมนู 9 หน้า · ธีม · Sign In · More"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__17-more-menu-visitor.webp",
+     "caption": "More (…) — Plans & Pricing · Terms · Privacy · Switch Language"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__18-switch-language-submenu.webp",
+     "caption": "More → Switch Language — รายการภาษา"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__19-home-light-theme.webp",
+     "caption": "หน้าแรกธีมสว่าง"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__20-home-thai.webp",
+     "caption": "หน้าแรกภาษาไทย"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__21-sidebar-logged-in.webp",
+     "caption": "แถบซ้ายหลังล็อกอิน — ยอดแต้ม + รูปโปรไฟล์แทน Sign In"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__22-profile-menu.webp",
+     "caption": "กดรูปโปรไฟล์ — เมนูบัญชี (workspace · Credit usage · Organization · Account · Sign out)"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__23-workspace-switcher.webp",
+     "caption": "กดชื่อ workspace ในเมนู — รายการ workspace ที่สลับได้"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__24-more-menu-logged-in.webp",
+     "caption": "More (…) หลังล็อกอิน"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__02-new-pages__05-cookie-banner-fullscreen.webp",
+     "caption": "แบนเนอร์คุกกี้ (ครั้งแรกที่เข้าเว็บ) — เต็มจอ เห็นว่าอยู่มุมไหน"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__02-new-pages__06-cookie-banner-closeup.webp",
+     "caption": "แบนเนอร์คุกกี้ ซูมเฉพาะกล่อง — เห็นครบทั้งข้อความและปุ่ม Accept all / Reject / Settings"
+    }
+   ]
+  },
+  {
+   "group": "1 · หน้าแรก / เข้าสู่ระบบ",
+   "url": "/auth/reset-password",
+   "urlFull": "https://fortal.studio/auth/reset-password",
+   "desc": "หน้าตั้งรหัสผ่านใหม่ (เปิดจากลิงก์ในอีเมล)",
+   "shots": [
+    {
+     "img": "fortal-ui-2026-09-15__02-new-pages__04-reset-password-link-expired.webp",
+     "caption": "หน้าตั้งรหัสผ่านใหม่ เมื่อเปิดโดยไม่มีลิงก์จากอีเมล — ขึ้น Link expired"
+    }
+   ]
+  },
+  {
+   "group": "1 · หน้าแรก / เข้าสู่ระบบ",
+   "url": "/legal/privacy",
+   "urlFull": "https://fortal.studio/legal/privacy",
+   "desc": "นโยบายความเป็นส่วนตัว",
+   "shots": [
+    {
+     "img": "2026-09-14__02-auth__13-legal-privacy.webp",
+     "caption": "ลิงก์ Privacy Policy จากหน้าต่าง Sign In → หน้า /legal/privacy (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "1 · หน้าแรก / เข้าสู่ระบบ",
+   "url": "/legal/terms",
+   "urlFull": "https://fortal.studio/legal/terms",
+   "desc": "เงื่อนไขการใช้งาน",
+   "shots": [
+    {
+     "img": "2026-09-14__02-auth__14-legal-terms.webp",
+     "caption": "ลิงก์ Terms of Use → หน้า /legal/terms (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "1 · หน้าแรก / เข้าสู่ระบบ",
+   "url": "[Google] accounts.google.com/signin",
+   "urlFull": "https://accounts.google.com/signin",
+   "desc": "หน้าเลือกบัญชีของ Google (ไม่ใช่หน้าเรา)",
+   "shots": [
+    {
+     "img": "2026-09-14__02-auth__15-google-oauth-page.webp",
+     "caption": "กด Continue with Google — ระบบพาไปหน้าเลือกบัญชีของ Google (ไม่ได้ล็อกอินต่อ)"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/pricing",
+   "urlFull": "https://fortal.studio/pricing",
+   "desc": "แพ็กเกจและราคา",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__01-pricing-org-postpaid.webp",
+     "caption": "หน้า Plans & Pricing เมื่อ workspace ปัจจุบันเป็น Organization แบบ B2B (Fortal Team) — ขึ้น 'You're on Post-Paid billing' ไม่แสดงแพ็กเกจ มีปุ่ม Go to Billing → credit line"
+    },
+    {
+     "img": "2026-09-14__03-billing__12-pricing-personal-monthly.webp",
+     "caption": "หน้า Plans & Pricing เมื่ออยู่กระเป๋าส่วนตัว (Free) — แพ็ก Individual 5 แบบ (Trial/Starter/Plus/Pro/Ultra) · Team 3 แบบ (Team/Team Pro/Enterprise) · Top-up Points (ทั้งหน้า)"
+    },
+    {
+     "img": "2026-09-14__03-billing__13-pricing-personal-annual.webp",
+     "caption": "กดสวิตช์ Annual (save up to −15%) — ราคารายปี"
+    },
+    {
+     "img": "2026-09-14__03-billing__15-pricing-topup-section.webp",
+     "caption": "ส่วน Top-up Points ท้ายหน้า Pricing (กระเป๋าส่วนตัว)"
+    },
+    {
+     "img": "2026-09-14__03-billing__24-pricing-visitor-monthly.webp",
+     "caption": "หน้า Plans & Pricing ตอนยังไม่ล็อกอิน — เห็นครบทั้ง Individual 5 แพ็ก · Team 3 แพ็ก (Team/Team Pro/Enterprise) · Top-up Points (ทั้งหน้า)"
+    },
+    {
+     "img": "2026-09-14__03-billing__25-pricing-visitor-annual.webp",
+     "caption": "กดสวิตช์ Annual — ราคารายปี ทุกแพ็ก (ทั้งหน้า)"
+    },
+    {
+     "img": "2026-09-14__03-billing__26-pricing-team-seats-5.webp",
+     "caption": "แพ็ก Team เปลี่ยนจำนวน Seats จาก 2 เป็น 5 — ยอดรวมต่อเดือนเปลี่ยนตาม"
+    },
+    {
+     "img": "2026-09-14__03-billing__29-pricing-contact-sales.webp",
+     "caption": "กด Contact sales (Enterprise) ตอนยังไม่ล็อกอิน — หน้าไม่เปลี่ยน ไม่มีหน้าต่างเด้ง (น่าจะเปิดโปรแกรมอีเมลของเครื่อง)"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/billing",
+   "urlFull": "https://fortal.studio/billing",
+   "desc": "บิลและการใช้แต้ม",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__02-billing-org.webp",
+     "caption": "หน้า Billing & usage ของ Organization B2B — แพ็ก B2B/Enterprise · ยอดแต้ม · Credit line · Request credit · Drawdown history · Bill history · Tax invoice details"
+    },
+    {
+     "img": "2026-09-14__03-billing__03-billing-request-credit.webp",
+     "caption": "กด Request credit — หน้าต่างขอดึงแต้มจาก credit line เข้าพูลของ Org (ไม่ได้กดยืนยัน)"
+    },
+    {
+     "img": "2026-09-14__03-billing__04-billing-tax-add-details.webp",
+     "caption": "กด Add details ที่ Tax invoice details — ฟอร์มข้อมูลออกใบกำกับภาษี (ไม่ได้บันทึก)"
+    },
+    {
+     "img": "2026-09-14__03-billing__20-billing-personal.webp",
+     "caption": "หน้า Billing ของกระเป๋าส่วนตัว (แพ็ก Free)"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/billing/usage",
+   "urlFull": "https://fortal.studio/billing/usage",
+   "desc": "ประวัติรายการแต้ม (บัญชีส่วนตัว)",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__21-account-transactions.webp",
+     "caption": "(กระเป๋าส่วนตัว) เมนูโปรไฟล์ → Account → Transactions — พาไปหน้า /billing/usage ประวัติรายการแต้มของบัญชีส่วนตัว"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/org/members",
+   "urlFull": "https://fortal.studio/org/members",
+   "desc": "สมาชิกในองค์กร",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__06-org-members.webp",
+     "caption": "หน้า Members ของ Organization — รายชื่อสมาชิก · Role · Spend cap · ปุ่ม Invite member"
+    },
+    {
+     "img": "2026-09-14__03-billing__07-org-invite-member.webp",
+     "caption": "กด Invite member — หน้าต่างเชิญสมาชิก (ไม่ได้ส่งคำเชิญ)"
+    },
+    {
+     "img": "2026-09-14__03-billing__08-org-edit-spend-cap.webp",
+     "caption": "กดที่ Spend cap 'Unlimited' ของสมาชิก — ตั้งเพดานแต้มต่อคน (ไม่ได้บันทึก)"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/org/usage",
+   "urlFull": "https://fortal.studio/org/usage",
+   "desc": "การใช้แต้มขององค์กร",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__05-org-usage.webp",
+     "caption": "หน้า Usage ของ Organization — การใช้แต้มแยกตามสมาชิก (By member) และตามโปรเจกต์ (By project)"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/org/storage",
+   "urlFull": "https://fortal.studio/org/storage",
+   "desc": "พื้นที่เก็บไฟล์ขององค์กร",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__09-org-storage.webp",
+     "caption": "หน้า Storage ของ Organization — พื้นที่ที่ใช้ แยกตามโปรเจกต์และคนสร้าง (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "/org/transactions",
+   "urlFull": "https://fortal.studio/org/transactions",
+   "desc": "ประวัติรายการแต้มขององค์กร",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__10-org-transactions.webp",
+     "caption": "เมนูโปรไฟล์ → Organization → Transactions — พาไปหน้า /org/transactions ประวัติรายการแต้มของ Organization"
+    }
+   ]
+  },
+  {
+   "group": "2 · เงิน / แพ็กเกจ",
+   "url": "[เว็บชำระเงินแยก] siamshort-payment-fe-u75071/checkout/{id}",
+   "urlFull": "https://siamshort-payment-fe-u75071.vm.elestio.app/checkout/{id}",
+   "desc": "หน้าชำระเงิน (คนละเว็บกับ fortal.studio)",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__16-pricing-get-starter.webp",
+     "caption": "กด Get Starter (กระเป๋าส่วนตัว) — ระบบพาไปหน้าชำระเงิน (เว็บชำระเงินแยก) แสดงแพ็กเกจ · เลขที่คำสั่งซื้อ · ราคา · ค่าธรรมเนียมบัตร · VAT · ยอดชำระวันนี้ (ไม่ได้ชำระเงิน)"
+    },
+    {
+     "img": "2026-09-14__03-billing__17-pricing-start-trial.webp",
+     "caption": "กด Start trial ฿49 — หน้าชำระเงินของแพ็ก Trial 100 points · ยอดชำระ ฿65.01 (รวมค่าธรรมเนียมบัตร + VAT) (ไม่ได้ชำระเงิน)"
+    },
+    {
+     "img": "2026-09-14__03-billing__18-checkout-tax-invoice.webp",
+     "caption": "หน้าชำระเงิน — ติ๊ก 'ต้องการใบกำกับภาษี' แล้วมีฟอร์มข้อมูลใบกำกับภาษีเพิ่มขึ้นมา"
+    },
+    {
+     "img": "2026-09-14__03-billing__19-checkout-back-link.webp",
+     "caption": "หน้าชำระเงิน เลื่อนลงล่าง — ลิงก์ 'กลับไปที่ Fortal Studio'"
+    }
+   ]
+  },
+  {
+   "group": "3 · บัญชีผู้ใช้",
+   "url": "/account",
+   "urlFull": "https://fortal.studio/account",
+   "desc": "โปรไฟล์ · รหัสผ่าน · 2FA",
+   "shots": [
+    {
+     "img": "2026-09-14__04-account__01-account-overview.webp",
+     "caption": "หน้า Account — Profile overview · Security overview (Email verified · Password · 2FA) · การ์ด Two-factor · Password · Active sessions"
+    },
+    {
+     "img": "2026-09-14__04-account__02-account-edit-profile.webp",
+     "caption": "กด Edit profile — ฟอร์มแก้ชื่อ/รูปโปรไฟล์แบบ inline (ไม่ได้บันทึก)"
+    },
+    {
+     "img": "2026-09-14__04-account__03-account-2fa-remove.webp",
+     "caption": "กด Remove ที่ Two-factor authentication — หน้าต่างยืนยัน (ไม่ได้กดยืนยัน)"
+    },
+    {
+     "img": "2026-09-14__04-account__04-account-setup-password.webp",
+     "caption": "กด Set up password — ฟอร์มตั้งรหัสผ่านสำหรับล็อกอินด้วยอีเมล (ไม่ได้บันทึก)"
+    }
+   ]
+  },
+  {
+   "group": "3 · บัญชีผู้ใช้",
+   "url": "/account/sessions",
+   "urlFull": "https://fortal.studio/account/sessions",
+   "desc": "อุปกรณ์ที่ล็อกอินอยู่",
+   "shots": [
+    {
+     "img": "2026-09-14__04-account__05-account-sessions.webp",
+     "caption": "กด Manage sessions → หน้า Active sessions — รายการอุปกรณ์ที่ล็อกอินอยู่ · ปุ่ม Log out รายตัว · Log out all other sessions · Log out all devices (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "3 · บัญชีผู้ใช้",
+   "url": "/account/storage",
+   "urlFull": "https://fortal.studio/account/storage",
+   "desc": "พื้นที่เก็บไฟล์ของเรา",
+   "shots": [
+    {
+     "img": "2026-09-14__03-billing__22-account-storage.webp",
+     "caption": "หน้า Storage ของบัญชี — ไฟล์ทั้งหมดที่เราเป็นเจ้าของในทุก workspace (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "4 · หน้าสร้างงาน (Gen)",
+   "url": "/video",
+   "urlFull": "https://fortal.studio/video",
+   "desc": "สร้างวิดีโอ",
+   "shots": [
+    {
+     "img": "2026-09-14__05-video__01-video-page.webp",
+     "caption": "หน้า /video — ประวัติงานที่เคย gen (จัดกลุ่มตามวัน) + กล่องพรอมต์ด้านล่าง (โมเดล · โฟลเดอร์ · ตั้งค่า · helper · ราคา)"
+    },
+    {
+     "img": "2026-09-14__05-video__02-folder-menu.webp",
+     "caption": "กดปุ่มโฟลเดอร์ซ้ายบน (DewS) — รายการโฟลเดอร์งานที่เลือกได้ / สร้างโฟลเดอร์ใหม่"
+    },
+    {
+     "img": "2026-09-14__05-video__03-search-generations.webp",
+     "caption": "กดไอคอนค้นหา (Search generations) ขวาบน — ช่องค้นหางานเก่า"
+    },
+    {
+     "img": "2026-09-14__05-video__04-sort-by-date.webp",
+     "caption": "กด By Date — ตัวเลือกการเรียงลำดับ"
+    },
+    {
+     "img": "2026-09-14__05-video__05-type-filter.webp",
+     "caption": "กดตัวกรองชนิด (Video) — ตัวเลือกกรองชนิดงาน"
+    },
+    {
+     "img": "2026-09-14__05-video__06-favorites-on.webp",
+     "caption": "กด Favorites — แสดงเฉพาะงานที่กดดาวไว้"
+    },
+    {
+     "img": "2026-09-14__05-video__07-list-view.webp",
+     "caption": "กดปุ่ม List view — ประวัติงานแบบรายการ"
+    },
+    {
+     "img": "2026-09-14__05-video__08-thumbnail-size.webp",
+     "caption": "กลับเป็น Grid view แล้วเลื่อนแถบ Thumbnail size — ขนาดการ์ดเปลี่ยน"
+    },
+    {
+     "img": "2026-09-14__05-video__09-video-detail.webp",
+     "caption": "กดการ์ดงานวิดีโอ — หน้าต่างรายละเอียด (พรอมต์ · โมเดล · ตั้งค่า · ปุ่มดาวน์โหลด/ใช้ซ้ำ)"
+    },
+    {
+     "img": "2026-09-14__05-video__10-attach-menu.webp",
+     "caption": "กดปุ่ม Attach ในกล่องพรอมต์ — เลือกชนิดไฟล์อ้างอิงที่จะแนบ"
+    },
+    {
+     "img": "2026-09-14__05-video__11-model-menu.webp",
+     "caption": "กดชื่อโมเดล (Seedance 2.0) — รายการโมเดลวิดีโอที่เลือกได้"
+    },
+    {
+     "img": "2026-09-14__05-video__12-auto-menu.webp",
+     "caption": "กดปุ่ม Auto (ถัดจากโมเดล) — ตัวเลือกโหมด"
+    },
+    {
+     "img": "2026-09-14__05-video__13-generation-settings.webp",
+     "caption": "กด 16:9 720p 5s Off — แผงตั้งค่า (สัดส่วน · ความละเอียด · ความยาว · เสียง)"
+    },
+    {
+     "img": "2026-09-14__05-video__14-prompt-helper-menu.webp",
+     "caption": "กด No helper — เลือก Prompt helper ที่จะใช้ช่วยเขียนพรอมต์"
+    },
+    {
+     "img": "2026-09-14__05-video__15-prompt-typed.webp",
+     "caption": "พิมพ์พรอมต์ในกล่อง — ปุ่ม Generate Video แสดงราคา (ไม่ได้กด gen)"
+    },
+    {
+     "img": "2026-09-14__05-video__16-enhance-prompt-hover.webp",
+     "caption": "เอาเมาส์ชี้ปุ่ม 2pt (Enhance prompt) — คำอธิบาย (ไม่ได้กด)"
+    },
+    {
+     "img": "2026-09-14__05-video__17-reset-prompt.webp",
+     "caption": "กดปุ่ม Reset (ไอคอนวงกลม) — ล้างพรอมต์ทั้งหมด"
+    }
+   ]
+  },
+  {
+   "group": "4 · หน้าสร้างงาน (Gen)",
+   "url": "/image",
+   "urlFull": "https://fortal.studio/image",
+   "desc": "สร้างภาพ",
+   "shots": [
+    {
+     "img": "2026-09-14__06-image__01-image-page.webp",
+     "caption": "หน้า /image — ประวัติภาพที่เคย gen + กล่องพรอมต์ (GPT Image 2 · 1:1 1K Low JPEG · helper · ราคา 0.2 pt)"
+    },
+    {
+     "img": "2026-09-14__06-image__02-image-page-full.webp",
+     "caption": "หน้า /image ทั้งหน้า (มีปุ่ม Load more ท้ายรายการ)"
+    },
+    {
+     "img": "2026-09-14__06-image__03-load-more.webp",
+     "caption": "กด Load more — โหลดงานเก่าเพิ่ม"
+    },
+    {
+     "img": "2026-09-14__06-image__04-image-detail.webp",
+     "caption": "กดการ์ดภาพ — หน้าต่างรายละเอียดภาพ"
+    },
+    {
+     "img": "2026-09-14__06-image__05-attach-menu.webp",
+     "caption": "กดปุ่ม Attach — แนบภาพอ้างอิง"
+    },
+    {
+     "img": "2026-09-14__06-image__06-model-menu.webp",
+     "caption": "กดชื่อโมเดล (GPT Image 2) — รายการโมเดลภาพที่เลือกได้"
+    },
+    {
+     "img": "2026-09-14__06-image__07-generation-settings.webp",
+     "caption": "กด 1:1 1K Low JPEG — แผงตั้งค่า (สัดส่วน · ความละเอียด · คุณภาพ · ชนิดไฟล์)"
+    },
+    {
+     "img": "2026-09-14__06-image__08-prompt-helper-menu.webp",
+     "caption": "กด No helper — เลือก Prompt helper ที่จะใช้ช่วยเขียนพรอมต์"
+    },
+    {
+     "img": "2026-09-14__06-image__09-prompt-typed.webp",
+     "caption": "พิมพ์พรอมต์ — ปุ่ม Generate Image พร้อมราคา 0.2 pt"
+    },
+    {
+     "img": "2026-09-14__06-image__10-generating.webp",
+     "caption": "กด Generate Image (0.2 pt) — การ์ดงานใหม่ขึ้นสถานะกำลังสร้าง"
+    },
+    {
+     "img": "2026-09-14__06-image__11-generated-result.webp",
+     "caption": "รอจน gen เสร็จ — ภาพผลลัพธ์ปรากฏบนสุดของประวัติ"
+    },
+    {
+     "img": "2026-09-14__06-image__12-result-detail.webp",
+     "caption": "กดภาพที่เพิ่ง gen — รายละเอียด + ปุ่มจัดการ"
+    }
+   ]
+  },
+  {
+   "group": "4 · หน้าสร้างงาน (Gen)",
+   "url": "/audio",
+   "urlFull": "https://fortal.studio/audio",
+   "desc": "สร้างเสียง",
+   "shots": [
+    {
+     "img": "2026-09-14__07-audio__01-audio-page.webp",
+     "caption": "หน้า /audio — ประวัติเสียงที่เคย gen (การ์ดมีปุ่ม Play + แถบเลื่อน) + กล่องพรอมต์"
+    },
+    {
+     "img": "2026-09-14__07-audio__02-audio-detail.webp",
+     "caption": "กดการ์ดเสียง — หน้าต่างรายละเอียด"
+    },
+    {
+     "img": "2026-09-14__07-audio__03-audio-playing.webp",
+     "caption": "กดปุ่ม Play บนการ์ด — กำลังเล่นเสียง"
+    },
+    {
+     "img": "2026-09-14__07-audio__04-model-menu.webp",
+     "caption": "กดชื่อโมเดล (Seed Audio 1.0 · Multilingual) — ตัวเลือกโมเดล/ภาษา/เสียง"
+    },
+    {
+     "img": "2026-09-14__07-audio__05-generation-settings.webp",
+     "caption": "กด MP3 24 kHz — แผงตั้งค่าไฟล์เสียง"
+    },
+    {
+     "img": "2026-09-14__07-audio__06-prompt-typed.webp",
+     "caption": "พิมพ์ข้อความที่จะให้อ่าน — ปุ่ม Generate แสดงราคา (ไม่ได้กด gen)"
+    },
+    {
+     "img": "2026-09-14__07-audio__07-prompt-helper-menu.webp",
+     "caption": "กด No helper — เลือก Prompt helper ที่จะใช้ช่วยเขียนพรอมต์"
+    }
+   ]
+  },
+  {
+   "group": "5 · เครื่องมือ",
+   "url": "/tools",
+   "urlFull": "https://fortal.studio/tools",
+   "desc": "หน้ารวมเครื่องมือ",
+   "shots": [
+    {
+     "img": "2026-09-14__09-tools__01-tools-list.webp",
+     "caption": "หน้า /tools — Creative Tools ทั้ง 31 ตัว (การ์ดบอกชื่อ · คำอธิบาย · ป้าย Local/AI)"
+    },
+    {
+     "img": "2026-09-14__09-tools__02-tool-card-hover.webp",
+     "caption": "เอาเมาส์ชี้การ์ดเครื่องมือ (Crop Image)"
+    }
+   ]
+  },
+  {
+   "group": "5 · เครื่องมือ",
+   "url": "/tools/{slug}",
+   "urlFull": "https://fortal.studio/tools/{slug}",
+   "desc": "หน้าเครื่องมือ 31 ตัว (คนละ URL)",
+   "shots": [
+    {
+     "img": "2026-09-14__09-tools__03-tool-anyangle.webp",
+     "caption": "เครื่องมือ Anyangle (/tools/anyangle) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__04-tool-arrow-shot.webp",
+     "caption": "เครื่องมือ Arrow Shot (/tools/arrow-shot) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__05-tool-color-grade.webp",
+     "caption": "เครื่องมือ Color Grade (/tools/color-grade) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__06-tool-color-grade-video.webp",
+     "caption": "เครื่องมือ Color Grade Video (/tools/color-grade-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__07-tool-convert-fps.webp",
+     "caption": "เครื่องมือ Convert FPS (/tools/convert-fps) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__08-tool-convert-image.webp",
+     "caption": "เครื่องมือ Convert Image (/tools/convert-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__09-tool-crop-image.webp",
+     "caption": "เครื่องมือ Crop Image (/tools/crop-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__10-tool-custom-inpaint.webp",
+     "caption": "เครื่องมือ Custom Inpaint (/tools/custom-inpaint) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__11-tool-depth-map.webp",
+     "caption": "เครื่องมือ Depth Map (/tools/depth-map) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__12-tool-depth-map-local.webp",
+     "caption": "เครื่องมือ Depth Map Local (/tools/depth-map-local) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__13-tool-draw-to-edit.webp",
+     "caption": "เครื่องมือ Draw To Edit (/tools/draw-to-edit) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__14-tool-extract-board.webp",
+     "caption": "เครื่องมือ Extract Board (/tools/extract-board) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__15-tool-generate-3d.webp",
+     "caption": "เครื่องมือ Generate 3D (/tools/generate-3d) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__16-tool-layout-image.webp",
+     "caption": "เครื่องมือ Layout Image (/tools/layout-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__17-tool-lip-sync.webp",
+     "caption": "เครื่องมือ Lip Sync (/tools/lip-sync) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__18-tool-motion-control.webp",
+     "caption": "เครื่องมือ Motion Control (/tools/motion-control) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__19-tool-music-generator.webp",
+     "caption": "เครื่องมือ Music Generator (/tools/music-generator) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__20-tool-overlay-image.webp",
+     "caption": "เครื่องมือ Overlay Image (/tools/overlay-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__21-tool-pose-control.webp",
+     "caption": "เครื่องมือ Pose Control (/tools/pose-control) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__22-tool-reframe-video.webp",
+     "caption": "เครื่องมือ Reframe Video (/tools/reframe-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__23-tool-remove-background.webp",
+     "caption": "เครื่องมือ Remove Background (/tools/remove-background) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__24-tool-render-3d.webp",
+     "caption": "เครื่องมือ Render 3D (/tools/render-3d) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__25-tool-restyle-background.webp",
+     "caption": "เครื่องมือ Restyle Background (/tools/restyle-background) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__26-tool-restyle-person.webp",
+     "caption": "เครื่องมือ Restyle Person (/tools/restyle-person) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__27-tool-restyle-video.webp",
+     "caption": "เครื่องมือ Restyle Video (/tools/restyle-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__28-tool-speed-ramp.webp",
+     "caption": "เครื่องมือ Speed Ramp (/tools/speed-ramp) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__29-tool-storyboard.webp",
+     "caption": "เครื่องมือ Storyboard (/tools/storyboard) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__30-tool-trim-video.webp",
+     "caption": "เครื่องมือ Trim Video (/tools/trim-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__31-tool-upscale-image.webp",
+     "caption": "เครื่องมือ Upscale Image (/tools/upscale-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__32-tool-upscale-video.webp",
+     "caption": "เครื่องมือ Upscale Video (/tools/upscale-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    },
+    {
+     "img": "2026-09-14__09-tools__33-tool-voice-clone.webp",
+     "caption": "เครื่องมือ Voice Clone (/tools/voice-clone) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/ai-director",
+   "urlFull": "https://fortal.studio/ai-director",
+   "desc": "รายการโปรเจกต์แบบ AI Director  (/studio เด้งมาที่นี่)",
+   "shots": [
+    {
+     "img": "fortal-ui-2026-09-15__02-new-pages__01-ai-director.webp",
+     "caption": "รายการโปรเจกต์ AI Director (หน้าที่ /studio เด้งมา) — หลังล็อกอิน"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/canvas",
+   "urlFull": "https://fortal.studio/canvas",
+   "desc": "รายการกระดาน Canvas",
+   "shots": [
+    {
+     "img": "fortal-ui-2026-09-15__02-new-pages__02-canvas-list.webp",
+     "caption": "รายการกระดาน Canvas ทั้งหมดของ workspace"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/studio/{id}/v2",
+   "urlFull": "https://fortal.studio/studio/{id}/v2",
+   "desc": "โปรเจกต์โหมด Agent — แชท + Story/Elements/Sequence/Timeline",
+   "shots": [
+    {
+     "img": "2026-09-14__12-studio-agent__01-studio-overview.webp",
+     "caption": "เปิดโปรเจกต์โหมด Agent (Chiang Mai History) — ซ้าย: แชท AI Director + ปุ่มลัด 3 ปุ่ม + ช่องพิมพ์ (Auto Confirm · โมเดล GLM/Fable) · ขวา: แท็บ Story / Elements / Sequence / Timeline · ปุ่มธีม · ภาษา EN/TH"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__02-chat-input-area.webp",
+     "caption": "ช่องพิมพ์แชทด้านล่างซ้าย — ตัวเลือก Browser tool mode (Auto Confirm) · Model (GLM/Fable) · ปุ่มส่ง"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__03-new-chat.webp",
+     "caption": "กดปุ่ม New chat (ไอคอนบนหัวแชท) — เริ่มบทสนทนาใหม่"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__04-chat-history.webp",
+     "caption": "กดปุ่ม Chat history — รายการบทสนทนาเก่าของโปรเจกต์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05-project-settings.webp",
+     "caption": "กดปุ่ม Project settings — ตั้งค่าโปรเจกต์ (ไม่ได้บันทึก)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__06-hide-chat-panel.webp",
+     "caption": "กดปุ่ม Hide chat panel — ซ่อนแชท เหลือพื้นที่งานเต็มจอ"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__07-tab-elements.webp",
+     "caption": "แท็บ Elements — Cast / Set / Prop ของเรื่อง"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__08-tab-elements-full.webp",
+     "caption": "แท็บ Elements ทั้งหน้า"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__09-tab-sequence.webp",
+     "caption": "แท็บ Sequence — ลำดับช็อต (storyboard / วิดีโอต่อช็อต)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__10-tab-sequence-full.webp",
+     "caption": "แท็บ Sequence ทั้งหน้า"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__11-tab-timeline.webp",
+     "caption": "แท็บ Timeline — เรียงช็อตตามเวลา"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__12-tab-timeline-full.webp",
+     "caption": "แท็บ Timeline ทั้งหน้า"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__13-edit-story-cover.webp",
+     "caption": "แท็บ Story → กด Edit Story & Cover — ฟอร์มแก้เรื่องย่อ/ปก (ไม่ได้บันทึก)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__14-edit-in-chat.webp",
+     "caption": "กด Edit in chat ที่การ์ด Story Setup — ข้อความถูกใส่ในช่องแชทให้ AI แก้"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05a-project-settings-general.webp",
+     "caption": "กดปุ่ม Project settings (ไอคอนเฟือง) — หน้า General: ชื่อ · Ratio · Genre · Status · Owner · สถิติ · Danger zone (Delete project)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05b-project-settings-members.webp",
+     "caption": "Project settings → Members — สมาชิกที่เข้าโปรเจกต์นี้ได้"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05c-project-settings-library.webp",
+     "caption": "Project settings → Library — คลังไฟล์ของโปรเจกต์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05d-project-settings-storage.webp",
+     "caption": "Project settings → Storage — พื้นที่ที่โปรเจกต์นี้ใช้"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__15-choose-skill-menu.webp",
+     "caption": "กดปุ่ม Choose skill ในช่องแชท — เลือกสกิล (Auto-select · Auto Director · Auto Movie · Shot Continuity · Script from Story · สกิลส่วนตัว)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__16-attach-files.webp",
+     "caption": "กดปุ่ม Attach files ในช่องแชท — แนบไฟล์ให้ AI Director"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__17-quick-action-status.webp",
+     "caption": "กดปุ่มลัด 'Check status and continue' — AI Director ตอบสถานะโปรเจกต์ในแชท"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__18-theme-light.webp",
+     "caption": "กดปุ่มธีม (พระอาทิตย์) ที่หัวขวา — Studio ธีมสว่าง"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__19-language-th.webp",
+     "caption": "กด TH — Studio ภาษาไทย (สลับกลับธีมมืดแล้ว)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__21-elements-sets.webp",
+     "caption": "แท็บ Elements → Sets (4) — ฉาก/สถานที่ของเรื่อง · แท็บย่อย Casts / Sets / Props / Mix Stage · ปุ่ม Upload"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__22-elements-set-detail.webp",
+     "caption": "กดการ์ด Set ใบแรก (คูเมืองเชียงใหม่) — แผงรายละเอียด entity (รูป · คำอธิบาย · reference · ปุ่ม gen)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__23-elements-mix-stage.webp",
+     "caption": "แท็บ Elements → Mix Stage (16) — คลังภาพ/วิดีโออ้างอิงของโปรเจกต์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__24-elements-mix-stage-full.webp",
+     "caption": "Mix Stage ทั้งหน้า"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__25-elements-create-character.webp",
+     "caption": "แท็บ Casts (0) → กด Create a new character — ฟอร์มสร้างตัวละคร (ไม่ได้บันทึก)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__26-elements-upload.webp",
+     "caption": "แท็บ Elements → กด Upload — อัปโหลดไฟล์เข้าโปรเจกต์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__27-sequence-shot-card.webp",
+     "caption": "แท็บ Sequence — การ์ดช็อต: Storyboard/Manhwa · STORYBOARD FRAME · Mix Stage · VIDEO PROMPT · ความยาว · Generate Video · Timeline · Video options"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__28-sequence-preview.webp",
+     "caption": "กด Preview — พรีวิวลำดับช็อตทั้งซีเควนซ์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__29-sequence-models.webp",
+     "caption": "กด Models — เลือกโมเดลภาพ/วิดีโอที่ใช้ทั้งซีเควนซ์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__30-sequence-more-actions.webp",
+     "caption": "กด More actions (⋯) ของซีเควนซ์/ช็อต — เมนูจัดการ"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__31-sequence-storyboard-options.webp",
+     "caption": "กดลูกศรข้าง Generate Storyboard (Generate storyboard options) — ตัวเลือกการสร้าง storyboard"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__32-sequence-manhwa.webp",
+     "caption": "กดสลับ Storyboard → Manhwa บนการ์ดช็อต"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__33-sequence-video-options.webp",
+     "caption": "กด Video options ของช็อต — ตั้งค่าวิดีโอ (โมเดล · input mode · ความยาว)"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__34-sequence-mix-stage-picker.webp",
+     "caption": "กด Mix Stage บนการ์ดช็อต — เลือกภาพอ้างอิงจาก Mix Stage ให้ช็อตนี้"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__35-sequence-video-prompt.webp",
+     "caption": "กด VIDEO PROMPT — แก้พรอมต์วิดีโอของช็อต"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__36-sequence-storyboard-frame.webp",
+     "caption": "กด STORYBOARD FRAME — ขยายภาพ storyboard ของช็อต (ปุ่ม Previous/Next/Remove/Upload image)"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__17-close-editor-unsaved.webp",
+     "caption": "ใส่คลิปแล้วกด × Close editor โดยไม่ Save — สิ่งที่ระบบแสดง"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/studio/{id}/v2/activity",
+   "urlFull": "https://fortal.studio/studio/{id}/v2/activity",
+   "desc": "หน้ากิจกรรม/สถานะงานของโปรเจกต์",
+   "shots": [
+    {
+     "img": "2026-09-14__12-studio-agent__05e-project-settings-activity.webp",
+     "caption": "Project settings → Activity log — ประวัติการทำงานในโปรเจกต์"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05-project-settings-plans.webp",
+     "caption": "Project settings → Plans & credits (หมวด Workspace)"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/studio/{id}/idea-board",
+   "urlFull": "https://fortal.studio/studio/{id}/idea-board",
+   "desc": "กระดาน node ของโปรเจกต์",
+   "shots": [
+    {
+     "img": "2026-09-14__13-canvas__01-canvas-overview.webp",
+     "caption": "เปิดโปรเจกต์โหมด Canvas (CNX) — กระดาน node: ซ้าย: AI assistance · Select/Pan · Add input/processing/tool/helper node · ล่างซ้าย: Zoom/Fit/ภาพรวม · หัว: ชื่อโปรเจกต์ · Board Library · Tasks · ขวาล่าง: More actions · Open video editor"
+    },
+    {
+     "img": "2026-09-14__13-canvas__02-fit-view.webp",
+     "caption": "กด Fit View — ย่อให้เห็นทั้งกระดาน"
+    },
+    {
+     "img": "2026-09-14__13-canvas__03-add-input-node.webp",
+     "caption": "กด Add input node — เมนู node ขาเข้า 7 ชนิด (Prompt text · Image · Video · Audio · Asset reference · Canvas reference · Insert from output)"
+    },
+    {
+     "img": "2026-09-14__13-canvas__04-add-processing-node.webp",
+     "caption": "กด Add processing node — เมนู node ประมวลผล (Generate image/video/audio · Edit · Extend …)"
+    },
+    {
+     "img": "2026-09-14__13-canvas__05-add-tool-node.webp",
+     "caption": "กด Add tool node — เมนูเครื่องมือ 33 ตัวที่ใส่บนกระดานได้"
+    },
+    {
+     "img": "2026-09-14__13-canvas__06-add-tool-node-full.webp",
+     "caption": "เมนู Add tool node เลื่อนดูรายการที่เหลือ"
+    },
+    {
+     "img": "2026-09-14__13-canvas__07-add-helper-node.webp",
+     "caption": "กด Add helper node — เมนู node ตัวช่วย (Sticky note · Visual note …)"
+    },
+    {
+     "img": "2026-09-14__13-canvas__08-ai-assistance.webp",
+     "caption": "กด Open AI assistance (ซ้ายบน) — แชทช่วยทำงานบนกระดาน (skill IdeaBoard / Board Movie)"
+    },
+    {
+     "img": "2026-09-14__13-canvas__09-project-menu.webp",
+     "caption": "กดชื่อโปรเจกต์ (CNX) มุมซ้ายบน — เมนูโปรเจกต์"
+    },
+    {
+     "img": "2026-09-14__13-canvas__10-board-library.webp",
+     "caption": "กด Board Library — รายการกระดานในโปรเจกต์ / สร้างกระดานใหม่"
+    },
+    {
+     "img": "2026-09-14__13-canvas__11-tasks-panel.webp",
+     "caption": "กด Tasks (ขวาบน) — รายการงานที่กำลังรัน/เสร็จบนกระดาน"
+    },
+    {
+     "img": "2026-09-14__13-canvas__12-active-members.webp",
+     "caption": "กดปุ่มตัวอักษร D (1 active) — คนที่กำลังเปิดกระดานอยู่"
+    },
+    {
+     "img": "2026-09-14__13-canvas__13-more-workspace-actions.webp",
+     "caption": "กด More workspace actions (ขวาล่าง) — เมนูเพิ่มเติมของกระดาน"
+    },
+    {
+     "img": "2026-09-14__13-canvas__14-overview-map.webp",
+     "caption": "กด Show overview map — แผนที่ย่อของกระดาน"
+    },
+    {
+     "img": "2026-09-14__13-canvas__15-output-add-menu.webp",
+     "caption": "การ์ด output กดปุ่ม Add — เมนู Timeline / Review / Promote"
+    },
+    {
+     "img": "2026-09-14__13-canvas__16-output-detail.webp",
+     "caption": "การ์ด output กดปุ่ม Detail — รายละเอียดผลงาน"
+    },
+    {
+     "img": "2026-09-14__13-canvas__17-gen-node-input-issue.webp",
+     "caption": "node gen ที่ยังขาด input — ป้าย '1 input issue' + ปุ่ม Rules / Config"
+    },
+    {
+     "img": "2026-09-14__13-canvas__18-gen-node-rules.webp",
+     "caption": "กด Rules บน node gen — กติกา input ของโมเดล"
+    },
+    {
+     "img": "2026-09-14__13-canvas__19-pan-mode.webp",
+     "caption": "กด Pan mode — โหมดลากกระดาน"
+    },
+    {
+     "img": "2026-09-14__13-canvas__20-open-video-editor-button.webp",
+     "caption": "ปุ่ม Open video editor มุมขวาล่าง — พาไปหน้าตัดต่อของโปรเจกต์นี้"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/studio/{id}/video-editor",
+   "urlFull": "https://fortal.studio/studio/{id}/video-editor",
+   "desc": "ตัวตัดต่อในเว็บ",
+   "shots": [
+    {
+     "img": "2026-09-14__14-video-editor__01-editor-overview.webp",
+     "caption": "หน้า Video Editor — ซ้าย: Media (คลิปวิดีโอของช็อต ปุ่ม Download/Add) · กลาง: จอพรีวิว · ล่าง: timeline 3 layer (Video / Sound / Background music) · หัว: New video · Video draft · Save · Review · Close"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__02-new-video.webp",
+     "caption": "กด New video — สร้างวิดีโอตัดต่อใหม่ในโปรเจกต์ (ไม่ได้สร้าง)"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__03-manage-current-video.webp",
+     "caption": "กดปุ่ม Manage current video — เมนู Rename / Duplicate / Delete ของวิดีโอนี้"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__04-manage-folders.webp",
+     "caption": "กดปุ่ม Manage folders — จัดโฟลเดอร์วิดีโอ"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__05-add-clip.webp",
+     "caption": "กด Add ที่คลิป Shot 1 และ Shot 2 ใน Media — คลิปเข้าไปต่อกันบน timeline (ยังไม่ได้ Save)"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__06-clip-selected.webp",
+     "caption": "กดเลือกคลิปบน timeline — คลิปถูกไฮไลต์ ปุ่ม S (split) · A (arrange) · C (capture frame) · Del ใช้งานได้"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__07-split-clip.webp",
+     "caption": "เลื่อน playhead แล้วกด S — คลิปถูกตัดแบ่งเป็น 2 ส่วน"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__08-capture-frame.webp",
+     "caption": "กด C (Capture the current frame) — เก็บภาพเฟรมปัจจุบันเป็นรูป"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__09-play.webp",
+     "caption": "กด Play — พรีวิวเล่นวิดีโอ (playhead เดิน)"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__10-aspect-ratio-9-16.webp",
+     "caption": "เปลี่ยน Frame aspect ratio (16:9 ▾) เป็น 9:16 — จอพรีวิวเปลี่ยนสัดส่วน"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__11-add-layer.webp",
+     "caption": "กด Add layer — ตัวเลือกเพิ่ม layer"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__12-layer-lock-hover.webp",
+     "caption": "แถว layer: ชื่อ (แก้ได้) · ซ่อน · ล็อก · ย้ายขึ้น/ลง · ลบ layer — ชี้ที่ปุ่ม Lock layer"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__13-review.webp",
+     "caption": "กด Review — โหมดรีวิววิดีโอที่ตัดไว้"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__14-export-dialog.webp",
+     "caption": "กด Export — หน้าต่างเรนเดอร์ MP4 บนเครื่อง (720p/1080p · คุณภาพ · 'no points') — ปุ่ม Start render กดไม่ได้เมื่อ timeline ว่าง"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__15-export-with-clips.webp",
+     "caption": "ใส่คลิปแล้วกด Export — ตัวเลือกเรนเดอร์พร้อมปุ่ม Start render (ไม่ได้กด)"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__16-sources.webp",
+     "caption": "กด Sources — ดาวน์โหลดไฟล์ต้นทางที่ใช้ใน timeline"
+    }
+   ]
+  },
+  {
+   "group": "6 · Studio (ทำหนัง)",
+   "url": "/examples/canvas/{slug}",
+   "urlFull": "https://fortal.studio/examples/canvas/{slug}",
+   "desc": "กระดานตัวอย่าง 6 ชุด",
+   "shots": [
+    {
+     "img": "2026-09-14__15-examples__01-prompt-to-image-starter.webp",
+     "caption": "ตัวอย่าง Prompt to Image (read-only demo) — กระดานสำเร็จรูปจากหน้าแรก"
+    },
+    {
+     "img": "2026-09-14__15-examples__02-use-this-canvas.webp",
+     "caption": "ปุ่ม/ทางใช้กระดานตัวอย่างนี้กับโปรเจกต์ของเรา"
+    },
+    {
+     "img": "2026-09-14__15-examples__03-perfume-video-ad-variants.webp",
+     "caption": "ตัวอย่าง Perfume Video Ad Variants"
+    },
+    {
+     "img": "2026-09-14__15-examples__04-multi-reference-storyboard-sheet.webp",
+     "caption": "ตัวอย่าง Multi-reference Storyboard Sheet"
+    },
+    {
+     "img": "2026-09-14__15-examples__05-multi-reference-video-generation.webp",
+     "caption": "ตัวอย่าง Multi-reference Video Generation"
+    },
+    {
+     "img": "2026-09-14__15-examples__06-animated-film-cover-design.webp",
+     "caption": "ตัวอย่าง Animated Film Cover Design"
+    },
+    {
+     "img": "2026-09-14__15-examples__07-thai-voice-reference-video.webp",
+     "caption": "ตัวอย่าง Thai Voice Reference Video"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/skills",
+   "urlFull": "https://fortal.studio/skills",
+   "desc": "รายการสกิลของ agent",
+   "shots": [
+    {
+     "img": "2026-09-14__10-skills__01-skills-list.webp",
+     "caption": "หน้า /skills — My skills: แถบซ้าย (Skill set: All skills / Unassigned) · แท็บ All / Personal / Preset · ช่องค้นหา · ตัวกรอง Available in / Status · รายการสกิล"
+    },
+    {
+     "img": "2026-09-14__10-skills__02-tab-personal.webp",
+     "caption": "กดแท็บ Personal — เห็นเฉพาะสกิลที่สร้างเอง"
+    },
+    {
+     "img": "2026-09-14__10-skills__03-tab-preset.webp",
+     "caption": "กดแท็บ Preset — สกิลสำเร็จรูป 6 ตัวของระบบ (Read-only)"
+    },
+    {
+     "img": "2026-09-14__10-skills__04-filter-surface-canvas.webp",
+     "caption": "ตัวกรอง Available in เลือก Canvas — เหลือสกิลที่ใช้บน Canvas"
+    },
+    {
+     "img": "2026-09-14__10-skills__05-filter-status.webp",
+     "caption": "ตัวกรอง Status — ตัวเลือก Ready / Draft / Validation failed"
+    },
+    {
+     "img": "2026-09-14__10-skills__06-search-skills.webp",
+     "caption": "พิมพ์ค้นหาสกิล 'fact'"
+    },
+    {
+     "img": "2026-09-14__10-skills__07-new-skill-set.webp",
+     "caption": "กดปุ่ม + (New Skill Set) ที่แถบซ้าย — ฟอร์มสร้างชุดสกิล (ไม่ได้บันทึก)"
+    },
+    {
+     "img": "2026-09-14__10-skills__08-skill-card-actions.webp",
+     "caption": "แถวสกิล: สวิตช์ Enabled · ปุ่ม Create a copy · Open editor · Delete"
+    },
+    {
+     "img": "2026-09-14__10-skills__09-delete-skill-confirm.webp",
+     "caption": "กดปุ่ม Delete ของสกิล — หน้าต่างยืนยันลบ (ไม่ได้กดยืนยัน)"
+    },
+    {
+     "img": "2026-09-14__10-skills__13-preset-skill-open.webp",
+     "caption": "กดการ์ดสกิล Preset (Auto Director) — หน้ารายละเอียดสกิล Read-only"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/skills/new",
+   "urlFull": "https://fortal.studio/skills/new",
+   "desc": "สร้างสกิลใหม่",
+   "shots": [
+    {
+     "img": "2026-09-14__10-skills__11-skill-new.webp",
+     "caption": "กด New skill → หน้า Create a personal skill — ฟอร์ม + Built-in modules + Skill Builder chat (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/skills/import",
+   "urlFull": "https://fortal.studio/skills/import",
+   "desc": "นำเข้าสกิล",
+   "shots": [
+    {
+     "img": "2026-09-14__10-skills__12-skill-import.webp",
+     "caption": "กด Import skill → หน้า Import skill pack — รับไฟล์ .zip / .md / .json (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/skills/{id}",
+   "urlFull": "https://fortal.studio/skills/{id}",
+   "desc": "หน้าแก้สกิล",
+   "shots": [
+    {
+     "img": "2026-09-14__10-skills__10-skill-editor.webp",
+     "caption": "กด Open editor (ลูกศร >) ของสกิลส่วนตัว — หน้าแก้ไขสกิล (/skills/{id}) ทั้งหน้า"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/prompt-helpers",
+   "urlFull": "https://fortal.studio/prompt-helpers",
+   "desc": "รายการตัวช่วยเขียนพรอมต์",
+   "shots": [
+    {
+     "img": "2026-09-14__11-prompt-helpers__01-helpers-list.webp",
+     "caption": "หน้า /prompt-helpers — แท็บ โปรไฟล์ตัวช่วย / วิเคราะห์พรอมต์ · หมวดซ้าย · ตัวกรอง All/Image/Video/Audio · Presets/Mine · การ์ด preset 4 ใบ"
+    },
+    {
+     "img": "2026-09-14__11-prompt-helpers__02-tab-analyze.webp",
+     "caption": "กดแท็บ วิเคราะห์พรอมต์ (0) — รายการผลวิเคราะห์ (ยังว่าง)"
+    },
+    {
+     "img": "2026-09-14__11-prompt-helpers__03-category-cinematic.webp",
+     "caption": "กลับแท็บโปรไฟล์ตัวช่วย แล้วกดหมวด Cinematic — เหลือการ์ดในหมวดนั้น"
+    },
+    {
+     "img": "2026-09-14__11-prompt-helpers__04-filter-image.webp",
+     "caption": "ตัวกรองชนิด กด Image — เหลือ helper สำหรับภาพ"
+    },
+    {
+     "img": "2026-09-14__11-prompt-helpers__05-filter-mine.webp",
+     "caption": "ตัวกรอง Mine — helper ที่สร้างเอง (ยังไม่มี)"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/prompt-helpers/new",
+   "urlFull": "https://fortal.studio/prompt-helpers/new",
+   "desc": "สร้างตัวช่วยใหม่",
+   "shots": [
+    {
+     "img": "2026-09-14__11-prompt-helpers__07-helper-new.webp",
+     "caption": "กด New helper → ฟอร์ม New Prompt Helper 10 ช่อง + ปุ่ม วิเคราะห์และร่างโปรไฟล์ 20pt (ไม่ได้กด)"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/prompt-helpers/{id}",
+   "urlFull": "https://fortal.studio/prompt-helpers/{id}",
+   "desc": "หน้าแก้ตัวช่วย",
+   "shots": [
+    {
+     "img": "2026-09-14__11-prompt-helpers__06-preset-card-open.webp",
+     "caption": "กดการ์ด preset (Cinematic) — หน้ารายละเอียด Preset (read-only)"
+    }
+   ]
+  },
+  {
+   "group": "7 · สกิล / ตัวช่วยพรอมต์",
+   "url": "/prompts",
+   "urlFull": "https://fortal.studio/prompts",
+   "desc": "คลังพรอมต์",
+   "shots": [
+    {
+     "img": "fortal-ui-2026-09-15__02-new-pages__03-prompts.webp",
+     "caption": "คลังพรอมต์ (คนละหน้ากับ /prompt-helpers)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs",
+   "urlFull": "https://docs.siamshort.studio/docs",
+   "desc": "หน้าแรกคู่มือ",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__01-docs-home.webp",
+     "caption": "คู่มือ /docs (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/account-billing/account-and-security",
+   "urlFull": "https://docs.siamshort.studio/docs/account-billing/account-and-security",
+   "desc": "account billing/account and security",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__18-account-billing--account-and-security.webp",
+     "caption": "คู่มือ /docs/account-billing/account-and-security (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/account-billing/points-and-workspaces",
+   "urlFull": "https://docs.siamshort.studio/docs/account-billing/points-and-workspaces",
+   "desc": "account billing/points and workspaces",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__17-account-billing--points-and-workspaces.webp",
+     "caption": "คู่มือ /docs/account-billing/points-and-workspaces (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/canvas-nodes/node-types",
+   "urlFull": "https://docs.siamshort.studio/docs/canvas-nodes/node-types",
+   "desc": "canvas nodes/node types",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__13-canvas-nodes--node-types.webp",
+     "caption": "คู่มือ /docs/canvas-nodes/node-types (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/canvas-workflows/first-workflow",
+   "urlFull": "https://docs.siamshort.studio/docs/canvas-workflows/first-workflow",
+   "desc": "canvas workflows/first workflow",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__14-canvas-workflows--first-workflow.webp",
+     "caption": "คู่มือ /docs/canvas-workflows/first-workflow (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/canvas/canvas-basics",
+   "urlFull": "https://docs.siamshort.studio/docs/canvas/canvas-basics",
+   "desc": "canvas/canvas basics",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__12-canvas--canvas-basics.webp",
+     "caption": "คู่มือ /docs/canvas/canvas-basics (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/getting-started/interface-overview",
+   "urlFull": "https://docs.siamshort.studio/docs/getting-started/interface-overview",
+   "desc": "getting started/interface overview",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__03-getting-started--interface-overview.webp",
+     "caption": "คู่มือ /docs/getting-started/interface-overview (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/getting-started/what-is-siamshort",
+   "urlFull": "https://docs.siamshort.studio/docs/getting-started/what-is-siamshort",
+   "desc": "getting started/what is siamshort",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__02-getting-started--what-is-siamshort.webp",
+     "caption": "คู่มือ /docs/getting-started/what-is-siamshort (ทั้งหน้า)"
+    },
+    {
+     "img": "2026-09-14__16-docs__47-docs-thai.webp",
+     "caption": "คู่มือเมื่อกดปุ่ม TH (Switch language) — ผลที่ได้"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/integrations/connect-claude-mcp",
+   "urlFull": "https://docs.siamshort.studio/docs/integrations/connect-claude-mcp",
+   "desc": "integrations/connect claude mcp",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__19-integrations--connect-claude-mcp.webp",
+     "caption": "คู่มือ /docs/integrations/connect-claude-mcp (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/prompt-helpers/prompt-helpers",
+   "urlFull": "https://docs.siamshort.studio/docs/prompt-helpers/prompt-helpers",
+   "desc": "prompt helpers/prompt helpers",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__16-prompt-helpers--prompt-helpers.webp",
+     "caption": "คู่มือ /docs/prompt-helpers/prompt-helpers (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/skills/skills-overview",
+   "urlFull": "https://docs.siamshort.studio/docs/skills/skills-overview",
+   "desc": "skills/skills overview",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__15-skills--skills-overview.webp",
+     "caption": "คู่มือ /docs/skills/skills-overview (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/studio-agent/agent-mode-tour",
+   "urlFull": "https://docs.siamshort.studio/docs/studio-agent/agent-mode-tour",
+   "desc": "studio agent/agent mode tour",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__10-studio-agent--agent-mode-tour.webp",
+     "caption": "คู่มือ /docs/studio-agent/agent-mode-tour (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/studio-canvas/canvas-mode-tour",
+   "urlFull": "https://docs.siamshort.studio/docs/studio-canvas/canvas-mode-tour",
+   "desc": "studio canvas/canvas mode tour",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__11-studio-canvas--canvas-mode-tour.webp",
+     "caption": "คู่มือ /docs/studio-canvas/canvas-mode-tour (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/studio/create-a-film",
+   "urlFull": "https://docs.siamshort.studio/docs/studio/create-a-film",
+   "desc": "studio/create a film",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__08-studio--create-a-film.webp",
+     "caption": "คู่มือ /docs/studio/create-a-film (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/studio/project-settings",
+   "urlFull": "https://docs.siamshort.studio/docs/studio/project-settings",
+   "desc": "studio/project settings",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__09-studio--project-settings.webp",
+     "caption": "คู่มือ /docs/studio/project-settings (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-3d/generate-3d",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-3d/generate-3d",
+   "desc": "tools 3d/generate 3d",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__45-tools-3d--generate-3d.webp",
+     "caption": "คู่มือ /docs/tools-3d/generate-3d (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-3d/render-3d",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-3d/render-3d",
+   "desc": "tools 3d/render 3d",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__46-tools-3d--render-3d.webp",
+     "caption": "คู่มือ /docs/tools-3d/render-3d (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-audio/music-generator",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-audio/music-generator",
+   "desc": "tools audio/music generator",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__43-tools-audio--music-generator.webp",
+     "caption": "คู่มือ /docs/tools-audio/music-generator (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-audio/voice-clone",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-audio/voice-clone",
+   "desc": "tools audio/voice clone",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__44-tools-audio--voice-clone.webp",
+     "caption": "คู่มือ /docs/tools-audio/voice-clone (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/anyangle",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/anyangle",
+   "desc": "tools image/anyangle",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__20-tools-image--anyangle.webp",
+     "caption": "คู่มือ /docs/tools-image/anyangle (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/arrow-shot",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/arrow-shot",
+   "desc": "tools image/arrow shot",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__21-tools-image--arrow-shot.webp",
+     "caption": "คู่มือ /docs/tools-image/arrow-shot (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/color-grade",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/color-grade",
+   "desc": "tools image/color grade",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__22-tools-image--color-grade.webp",
+     "caption": "คู่มือ /docs/tools-image/color-grade (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/convert-image",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/convert-image",
+   "desc": "tools image/convert image",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__23-tools-image--convert-image.webp",
+     "caption": "คู่มือ /docs/tools-image/convert-image (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/custom-inpaint",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/custom-inpaint",
+   "desc": "tools image/custom inpaint",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__24-tools-image--custom-inpaint.webp",
+     "caption": "คู่มือ /docs/tools-image/custom-inpaint (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/depth-map",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/depth-map",
+   "desc": "tools image/depth map",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__25-tools-image--depth-map.webp",
+     "caption": "คู่มือ /docs/tools-image/depth-map (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/depth-map-local",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/depth-map-local",
+   "desc": "tools image/depth map local",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__26-tools-image--depth-map-local.webp",
+     "caption": "คู่มือ /docs/tools-image/depth-map-local (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/draw-to-edit",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/draw-to-edit",
+   "desc": "tools image/draw to edit",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__27-tools-image--draw-to-edit.webp",
+     "caption": "คู่มือ /docs/tools-image/draw-to-edit (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/extract-board",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/extract-board",
+   "desc": "tools image/extract board",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__28-tools-image--extract-board.webp",
+     "caption": "คู่มือ /docs/tools-image/extract-board (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/layout-image",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/layout-image",
+   "desc": "tools image/layout image",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__29-tools-image--layout-image.webp",
+     "caption": "คู่มือ /docs/tools-image/layout-image (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/overlay-image",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/overlay-image",
+   "desc": "tools image/overlay image",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__30-tools-image--overlay-image.webp",
+     "caption": "คู่มือ /docs/tools-image/overlay-image (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/pose-control",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/pose-control",
+   "desc": "tools image/pose control",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__31-tools-image--pose-control.webp",
+     "caption": "คู่มือ /docs/tools-image/pose-control (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/remove-background",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/remove-background",
+   "desc": "tools image/remove background",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__32-tools-image--remove-background.webp",
+     "caption": "คู่มือ /docs/tools-image/remove-background (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/restyle-background",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/restyle-background",
+   "desc": "tools image/restyle background",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__33-tools-image--restyle-background.webp",
+     "caption": "คู่มือ /docs/tools-image/restyle-background (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/restyle-person",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/restyle-person",
+   "desc": "tools image/restyle person",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__34-tools-image--restyle-person.webp",
+     "caption": "คู่มือ /docs/tools-image/restyle-person (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-image/storyboard",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-image/storyboard",
+   "desc": "tools image/storyboard",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__35-tools-image--storyboard.webp",
+     "caption": "คู่มือ /docs/tools-image/storyboard (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/color-grade-video",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/color-grade-video",
+   "desc": "tools video/color grade video",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__36-tools-video--color-grade-video.webp",
+     "caption": "คู่มือ /docs/tools-video/color-grade-video (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/lip-sync",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/lip-sync",
+   "desc": "tools video/lip sync",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__37-tools-video--lip-sync.webp",
+     "caption": "คู่มือ /docs/tools-video/lip-sync (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/motion-control",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/motion-control",
+   "desc": "tools video/motion control",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__38-tools-video--motion-control.webp",
+     "caption": "คู่มือ /docs/tools-video/motion-control (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/reframe-video",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/reframe-video",
+   "desc": "tools video/reframe video",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__39-tools-video--reframe-video.webp",
+     "caption": "คู่มือ /docs/tools-video/reframe-video (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/restyle-video",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/restyle-video",
+   "desc": "tools video/restyle video",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__40-tools-video--restyle-video.webp",
+     "caption": "คู่มือ /docs/tools-video/restyle-video (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/speed-ramp",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/speed-ramp",
+   "desc": "tools video/speed ramp",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__41-tools-video--speed-ramp.webp",
+     "caption": "คู่มือ /docs/tools-video/speed-ramp (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/tools-video/trim-video",
+   "urlFull": "https://docs.siamshort.studio/docs/tools-video/trim-video",
+   "desc": "tools video/trim video",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__42-tools-video--trim-video.webp",
+     "caption": "คู่มือ /docs/tools-video/trim-video (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/video-models/video-input-modes",
+   "urlFull": "https://docs.siamshort.studio/docs/video-models/video-input-modes",
+   "desc": "video models/video input modes",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__07-video-models--video-input-modes.webp",
+     "caption": "คู่มือ /docs/video-models/video-input-modes (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/workspace/generate-audio",
+   "urlFull": "https://docs.siamshort.studio/docs/workspace/generate-audio",
+   "desc": "workspace/generate audio",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__06-workspace--generate-audio.webp",
+     "caption": "คู่มือ /docs/workspace/generate-audio (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/workspace/generate-image",
+   "urlFull": "https://docs.siamshort.studio/docs/workspace/generate-image",
+   "desc": "workspace/generate image",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__04-workspace--generate-image.webp",
+     "caption": "คู่มือ /docs/workspace/generate-image (ทั้งหน้า)"
+    }
+   ]
+  },
+  {
+   "group": "8 · เว็บคู่มือแยก docs.siamshort.studio (ไม่ใช่ตัวเว็บแอป)",
+   "url": "[เว็บคู่มือ] docs.siamshort.studio/docs/workspace/generate-video",
+   "urlFull": "https://docs.siamshort.studio/docs/workspace/generate-video",
+   "desc": "workspace/generate video",
+   "shots": [
+    {
+     "img": "2026-09-14__16-docs__05-workspace--generate-video.webp",
+     "caption": "คู่มือ /docs/workspace/generate-video (ทั้งหน้า)"
+    }
+   ]
+  }
+ ]
+}

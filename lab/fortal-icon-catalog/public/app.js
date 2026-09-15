@@ -75,6 +75,7 @@
 '<header class="top"><div class="hrow">' +
   '<div class="brand"><b>แคตตาล็อกช่องไอคอน Fortal</b>' +
     '<span>' + SLOTS.length + ' ดวงที่ต้องวาด · ไปใช้จริง ' + PLACES + ' ตำแหน่ง</span></div>' +
+  '<nav class="sctabs"><a href="/" class="on">ไอคอน</a><a href="/screens">หน้าจอ</a></nav>' +
   '<span class="me" id="me"></span>' +
   '<div class="prog"><div class="pbar"><i id="pbar"></i></div>' +
     '<div class="pnum"><b id="pdone">0</b> / ' + SLOTS.length + ' ช่อง</div></div>' +
