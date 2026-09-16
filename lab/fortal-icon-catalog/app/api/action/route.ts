@@ -4,7 +4,11 @@ import { ensure, sql, logEvent } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 const MAX_B64 = 220 * 1024; // ไฟล์ดิบ 150 KB → base64 ราว 200 KB
+// ภาพดีไซน์ของแท็บ "หน้าจอ" (id ขึ้นต้น design:) เป็นภาพหน้าจอเต็ม ๆ จาก Figma ไม่ใช่ไอคอน
+// ฝั่งเบราว์เซอร์ย่อเป็น WebP ให้ก่อนส่งแล้ว แต่เผื่อเพดานไว้กว้างกว่า
+const MAX_B64_DESIGN = 3 * 1024 * 1024;
 const OK_MIME = ["image/svg+xml", "image/png", "image/webp"];
+const OK_MIME_DESIGN = ["image/png", "image/webp", "image/jpeg"];
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -91,10 +95,18 @@ export async function POST(req: Request) {
     const name = String(body.name || "").slice(0, 160);
     const mime = String(body.mime || "");
     const data = String(body.data || "");
-    if (!OK_MIME.includes(mime))
-      return Response.json({ error: "รับเฉพาะ SVG · PNG · WebP" }, { status: 400 });
-    if (!data || data.length > MAX_B64)
-      return Response.json({ error: "ไฟล์ใหญ่เกิน 150 KB" }, { status: 400 });
+    const isDesign = id.startsWith("design:");
+    if (isDesign) {
+      if (!OK_MIME_DESIGN.includes(mime))
+        return Response.json({ error: "รับเฉพาะ PNG · WebP · JPEG" }, { status: 400 });
+      if (!data || data.length > MAX_B64_DESIGN)
+        return Response.json({ error: "ไฟล์ใหญ่เกินไป (ย่อแล้วยังเกิน 2 MB)" }, { status: 400 });
+    } else {
+      if (!OK_MIME.includes(mime))
+        return Response.json({ error: "รับเฉพาะ SVG · PNG · WebP" }, { status: 400 });
+      if (!data || data.length > MAX_B64)
+        return Response.json({ error: "ไฟล์ใหญ่เกิน 150 KB" }, { status: 400 });
+    }
 
     const had = (await sql`select filename from slots where id = ${id}`) as unknown[];
     const now = Date.now();
