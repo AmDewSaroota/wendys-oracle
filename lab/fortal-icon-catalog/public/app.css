@@ -583,8 +583,6 @@ ul.uses li span{color:var(--tx3);font-size:11.5px}
 .scdesc{color:var(--tx2);font-size:14px}
 .sccount{margin-left:auto;color:var(--tx3);font-size:12px;white-space:nowrap}
 .scshots{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
-.scshot img{height:84px;border-radius:5px;border:1px solid var(--line);display:block;cursor:zoom-in}
-.scshot img:hover{border-color:var(--acc)}
 .scempty{color:var(--tx3);padding:40px 0;text-align:center}
 
 #sclb{position:fixed;inset:0;background:rgba(6,9,18,.97);display:none;z-index:90;
@@ -620,7 +618,7 @@ ul.uses li span{color:var(--tx3);font-size:11.5px}
 .scdrop:hover,.scdrop:focus{border-color:var(--acc)}
 .scdrop.over{border-color:var(--acc2);background:var(--card2)}
 .scdrop.has{display:block;border-style:solid;cursor:default}
-.scdrop.has img{max-width:100%;border-radius:6px;display:block}
+.scdrop.has img{max-width:100%;max-height:420px;object-fit:contain;border-radius:6px;display:block;margin:0 auto}
 .schint{color:var(--tx3);font-size:13px;text-align:center;line-height:1.5}
 .schint small{color:#5a6b88}
 .scmeta{display:flex;align-items:center;gap:10px;color:var(--tx3);font-size:11px;margin-top:7px}
@@ -630,11 +628,13 @@ ul.uses li span{color:var(--tx3);font-size:11.5px}
 .sclbcol{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;max-height:100%}
 .sclbcol img{max-width:100%;max-height:calc(100vh - 180px);object-fit:contain;border-radius:7px;border:1px solid var(--line)}
 .sclbtag{color:var(--tx3);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-.scshot{display:block;width:190px}
-.sccap{display:block;color:var(--tx3);font-size:11px;line-height:1.4;margin-top:4px;
-  max-height:30px;overflow:hidden}
+/* ภาพทุกใบเป็นจอเต็ม 1920x1080 เท่ากันแล้ว (16 ก.ย.) — ล็อกกล่องอัตราส่วน 16:9 กันภาพยืด */
+.scshot{display:block;width:200px;text-decoration:none}
+.scshot img{width:200px;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:top center;
+  border-radius:5px;border:1px solid var(--line);display:block;background:var(--bg2);cursor:zoom-in}
+.scshot:hover img{border-color:var(--acc)}
+.sccap{display:block;color:var(--tx3);font-size:11px;line-height:1.35;margin-top:5px;height:30px;overflow:hidden}
 .scshot:hover .sccap{color:var(--tx2)}
-.scshot img{width:190px;height:auto}
 .scfig{display:flex;align-items:center;gap:9px;margin-top:9px}
 .scfig>span{color:var(--tx3);font-size:11px;white-space:nowrap}
 .scfigin{flex:1;background:var(--bg2);border:1px solid var(--line);border-radius:6px;

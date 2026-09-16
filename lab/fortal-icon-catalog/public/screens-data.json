@@ -71,7 +71,7 @@
     },
     {
      "img": "2026-09-14__02-auth__07-forgot-with-email.webp",
-     "caption": "กรอกอีเมลแล้วกด Forgot password? — ขึ้น 'Password reset link sent — check your inbox.' พร้อมปุ่ม Back",
+     "caption": "กรอกอีเมลแล้วกด Forgot password? — ข้อความยืนยันว่าส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมล",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
      "sectionKey": "home--1"
     },
@@ -130,12 +130,6 @@
      "sectionKey": "home--2"
     },
     {
-     "img": "2026-09-14__03-billing__23-switch-back-to-org.webp",
-     "caption": "สลับ workspace กลับเป็น Fortal Team (Organization): เมนูโปรไฟล์ → กดชื่อ workspace → เลือก Fortal Team",
-     "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "home--2"
-    },
-    {
      "img": "2026-09-14__03-billing__28-pricing-visitor-get-team.webp",
      "caption": "กด Get Team ตอนยังไม่ล็อกอิน — สิ่งที่ระบบแสดง",
      "section": "สลับ workspace และเข้าหน้าเงิน",
@@ -154,14 +148,8 @@
      "sectionKey": "home--4"
     },
     {
-     "img": "fortal-ui-2026-09-15__01-home__01b-cookie-banner-in-page.webp",
-     "caption": "แบนเนอร์คุกกี้ ณ ตำแหน่งจริงบนหน้า (เต็มจอ) — เห็นว่าลอยอยู่มุมซ้ายล่างทับเนื้อหา",
-     "section": "ตัวหน้า",
-     "sectionKey": "home--4"
-    },
-    {
      "img": "fortal-ui-2026-09-15__01-home__02-cookie-banner.webp",
-     "caption": "แบนเนอร์คุกกี้ (มุมซ้ายล่าง) — ซูมเฉพาะกล่อง เห็นครบทั้งข้อความและปุ่ม Accept all / Reject / Settings",
+     "caption": "แบนเนอร์คุกกี้ (ซ้ายล่าง)",
      "section": "ตัวหน้า",
      "sectionKey": "home--4"
     },
@@ -252,18 +240,6 @@
     {
      "img": "fortal-ui-2026-09-15__01-home__20-home-thai.webp",
      "caption": "หน้าแรกภาษาไทย",
-     "section": "ตัวหน้า",
-     "sectionKey": "home--4"
-    },
-    {
-     "img": "fortal-ui-2026-09-15__02-new-pages__05-cookie-banner-fullscreen.webp",
-     "caption": "แบนเนอร์คุกกี้ (ครั้งแรกที่เข้าเว็บ) — เต็มจอ เห็นว่าอยู่มุมไหน",
-     "section": "ตัวหน้า",
-     "sectionKey": "home--4"
-    },
-    {
-     "img": "fortal-ui-2026-09-15__02-new-pages__06-cookie-banner-closeup.webp",
-     "caption": "แบนเนอร์คุกกี้ ซูมเฉพาะกล่อง — เห็นครบทั้งข้อความและปุ่ม Accept all / Reject / Settings",
      "section": "ตัวหน้า",
      "sectionKey": "home--4"
     },
@@ -421,6 +397,18 @@
      "sectionKey": "pricing--1"
     },
     {
+     "img": "2026-09-14__03-billing__16-pricing-get-starter.webp",
+     "caption": "กด Get Starter — สิ่งที่ระบบแสดงถัดไป (ไม่ได้ชำระเงิน)",
+     "section": "สลับ workspace และเข้าหน้าเงิน",
+     "sectionKey": "pricing--1"
+    },
+    {
+     "img": "2026-09-14__03-billing__23-switch-back-to-org.webp",
+     "caption": "สลับ workspace กลับเป็น Fortal Team (Organization)",
+     "section": "สลับ workspace และเข้าหน้าเงิน",
+     "sectionKey": "pricing--1"
+    },
+    {
      "img": "2026-09-14__03-billing__24-pricing-visitor-monthly.webp",
      "caption": "หน้า Plans & Pricing ตอนยังไม่ล็อกอิน — เห็นครบทั้ง Individual 5 แพ็ก · Team 3 แพ็ก (Team/Team Pro/Enterprise) · Top-up Points (ทั้งหน้า)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
@@ -440,7 +428,25 @@
     },
     {
      "img": "2026-09-14__03-billing__29-pricing-contact-sales.webp",
-     "caption": "กด Contact sales (Enterprise) ตอนยังไม่ล็อกอิน — หน้าไม่เปลี่ยน ไม่มีหน้าต่างเด้ง (น่าจะเปิดโปรแกรมอีเมลของเครื่อง)",
+     "caption": "กด Contact sales (Enterprise) — สิ่งที่ระบบแสดง",
+     "section": "สลับ workspace และเข้าหน้าเงิน",
+     "sectionKey": "pricing--1"
+    },
+    {
+     "img": "2026-09-14__03-billing__14-pricing-team-seats.webp",
+     "caption": "แพ็ก Team เปลี่ยนจำนวน Seats จาก 2 เป็น 5 — ราคารวมเปลี่ยนตาม",
+     "section": "สลับ workspace และเข้าหน้าเงิน",
+     "sectionKey": "pricing--1"
+    },
+    {
+     "img": "2026-09-14__03-billing__18-pricing-get-team.webp",
+     "caption": "กด Get Team (แพ็กทีม) ขณะอยู่กระเป๋าส่วนตัว — ข้อความที่ระบบแจ้ง",
+     "section": "สลับ workspace และเข้าหน้าเงิน",
+     "sectionKey": "pricing--1"
+    },
+    {
+     "img": "2026-09-14__03-billing__19-pricing-contact-sales.webp",
+     "caption": "กด Contact sales (Enterprise) — สิ่งที่ระบบแสดง",
      "section": "สลับ workspace และเข้าหน้าเงิน",
      "sectionKey": "pricing--1"
     }
@@ -467,7 +473,7 @@
     },
     {
      "img": "2026-09-14__03-billing__03-billing-request-credit.webp",
-     "caption": "กด Request credit — หน้าต่างขอดึงแต้มจาก credit line เข้าพูลของ Org (ไม่ได้กดยืนยัน)",
+     "caption": "กด Request credit — หน้าต่างขอวงเงินเครดิตเพิ่ม (ไม่ได้กดยืนยัน)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
      "sectionKey": "billing--1"
     },
@@ -500,7 +506,7 @@
    "shots": [
     {
      "img": "2026-09-14__03-billing__21-account-transactions.webp",
-     "caption": "(กระเป๋าส่วนตัว) เมนูโปรไฟล์ → Account → Transactions — พาไปหน้า /billing/usage ประวัติรายการแต้มของบัญชีส่วนตัว",
+     "caption": "หน้า /billing/usage — ประวัติรายการแต้ม (เปิดจาก เมนูโปรไฟล์ → Account → Transactions)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
      "sectionKey": "billing-usage--1"
     }
@@ -596,7 +602,7 @@
    "shots": [
     {
      "img": "2026-09-14__03-billing__10-org-transactions.webp",
-     "caption": "เมนูโปรไฟล์ → Organization → Transactions — พาไปหน้า /org/transactions ประวัติรายการแต้มของ Organization",
+     "caption": "เมนูโปรไฟล์ → Organization → Transactions — ประวัติรายการแต้มของ Organization",
      "section": "สลับ workspace และเข้าหน้าเงิน",
      "sectionKey": "org-transactions--1"
     }
@@ -616,14 +622,8 @@
    ],
    "shots": [
     {
-     "img": "2026-09-14__03-billing__16-pricing-get-starter.webp",
-     "caption": "กด Get Starter (กระเป๋าส่วนตัว) — ระบบพาไปหน้าชำระเงิน (เว็บชำระเงินแยก) แสดงแพ็กเกจ · เลขที่คำสั่งซื้อ · ราคา · ค่าธรรมเนียมบัตร · VAT · ยอดชำระวันนี้ (ไม่ได้ชำระเงิน)",
-     "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--1"
-    },
-    {
      "img": "2026-09-14__03-billing__17-pricing-start-trial.webp",
-     "caption": "กด Start trial ฿49 — หน้าชำระเงินของแพ็ก Trial 100 points · ยอดชำระ ฿65.01 (รวมค่าธรรมเนียมบัตร + VAT) (ไม่ได้ชำระเงิน)",
+     "caption": "กด Start trial ฿49 — สิ่งที่ระบบแสดงถัดไป (ไม่ได้ชำระเงิน)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
      "sectionKey": "siamshort-payment-fe-u75071-checkout-id--1"
     },
@@ -896,13 +896,13 @@
     },
     {
      "img": "2026-09-14__06-image__08-prompt-helper-menu.webp",
-     "caption": "กด No helper — เลือก Prompt helper ที่จะใช้ช่วยเขียนพรอมต์",
+     "caption": "กด No helper — เลือก Prompt helper",
      "section": "ตัวหน้า",
      "sectionKey": "image--1"
     },
     {
      "img": "2026-09-14__06-image__09-prompt-typed.webp",
-     "caption": "พิมพ์พรอมต์ — ปุ่ม Generate Image พร้อมราคา 0.2 pt",
+     "caption": "พิมพ์พรอมต์ — ปุ่ม Generate Image พร้อมราคา",
      "section": "ตัวหน้า",
      "sectionKey": "image--1"
     },
@@ -914,13 +914,13 @@
     },
     {
      "img": "2026-09-14__06-image__11-generated-result.webp",
-     "caption": "รอจน gen เสร็จ — ภาพผลลัพธ์ปรากฏบนสุดของประวัติ",
+     "caption": "รอจน gen เสร็จ — ภาพผลลัพธ์ปรากฏในประวัติ",
      "section": "ตัวหน้า",
      "sectionKey": "image--1"
     },
     {
      "img": "2026-09-14__06-image__12-result-detail.webp",
-     "caption": "กดภาพที่เพิ่ง gen — รายละเอียด + ปุ่มจัดการ",
+     "caption": "กดภาพที่เพิ่ง gen — รายละเอียด + ปุ่มจัดการ (ดาวน์โหลด · ดาว · ใช้เป็น reference · ลบ)",
      "section": "ตัวหน้า",
      "sectionKey": "image--1"
     }
@@ -1221,14 +1221,42 @@
     {
      "name": "ตัวหน้า",
      "key": "ai-director--1"
+    },
+    {
+     "name": "เมนูและแถบซ้าย",
+     "key": "ai-director--2"
     }
    ],
    "shots": [
+    {
+     "img": "2026-09-14__08-studio__01-studio-projects.webp",
+     "caption": "หน้า /studio — รายการโปรเจกต์ทั้งหมด (การ์ดบอกโหมด By Agent / By Canvas) + ปุ่ม New film",
+     "section": "ตัวหน้า",
+     "sectionKey": "ai-director--1"
+    },
+    {
+     "img": "2026-09-14__08-studio__02-new-film-dialog.webp",
+     "caption": "กด New film — หน้าต่างสร้างโปรเจกต์ใหม่ (เลือกโหมด · ตั้งชื่อ) (ไม่ได้สร้างจริง)",
+     "section": "ตัวหน้า",
+     "sectionKey": "ai-director--1"
+    },
+    {
+     "img": "2026-09-14__08-studio__04-project-card-hover.webp",
+     "caption": "เอาเมาส์ชี้การ์ดโปรเจกต์ — ปุ่ม/ข้อมูลที่ขึ้นตอน hover",
+     "section": "ตัวหน้า",
+     "sectionKey": "ai-director--1"
+    },
     {
      "img": "fortal-ui-2026-09-15__02-new-pages__01-ai-director.webp",
      "caption": "รายการโปรเจกต์ AI Director (หน้าที่ /studio เด้งมา) — หลังล็อกอิน",
      "section": "ตัวหน้า",
      "sectionKey": "ai-director--1"
+    },
+    {
+     "img": "2026-09-14__08-studio__03-project-menu.webp",
+     "caption": "กดปุ่ม ⋯ มุมการ์ดโปรเจกต์ (Project menu) — เมนูจัดการโปรเจกต์",
+     "section": "เมนูและแถบซ้าย",
+     "sectionKey": "ai-director--2"
     }
    ]
   },
@@ -1416,7 +1444,7 @@
     },
     {
      "img": "2026-09-14__12-studio-agent__22-elements-set-detail.webp",
-     "caption": "กดการ์ด Set ใบแรก (คูเมืองเชียงใหม่) — แผงรายละเอียด entity (รูป · คำอธิบาย · reference · ปุ่ม gen)",
+     "caption": "กดการ์ด Set ใบแรก — แผงรายละเอียด entity (รูป · คำอธิบาย · reference · ปุ่ม gen)",
      "section": "ตัวหน้า",
      "sectionKey": "studio-id-v2--1"
     },
@@ -1495,6 +1523,30 @@
     {
      "img": "2026-09-14__12-studio-agent__36-sequence-storyboard-frame.webp",
      "caption": "กด STORYBOARD FRAME — ขยายภาพ storyboard ของช็อต (ปุ่ม Previous/Next/Remove/Upload image)",
+     "section": "ตัวหน้า",
+     "sectionKey": "studio-id-v2--1"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__15-quick-action-status.webp",
+     "caption": "กดปุ่มลัด 📊 Check status and continue — AI Director ตอบสถานะโปรเจกต์ (โมเดลแชทไม่คิดแต้มตามที่เห็น)",
+     "section": "ตัวหน้า",
+     "sectionKey": "studio-id-v2--1"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__16-theme-light.webp",
+     "caption": "กดปุ่มธีม (Light) ที่หัวขวา — Studio ธีมสว่าง",
+     "section": "ตัวหน้า",
+     "sectionKey": "studio-id-v2--1"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__17-language-th.webp",
+     "caption": "กด TH — Studio ภาษาไทย",
+     "section": "ตัวหน้า",
+     "sectionKey": "studio-id-v2--1"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__37-sequence-timeline-button.webp",
+     "caption": "กดปุ่ม Timeline บนวิดีโอของช็อต — ส่งเทคนี้เข้า timeline/ตัดต่อ",
      "section": "ตัวหน้า",
      "sectionKey": "studio-id-v2--1"
     },
@@ -2077,7 +2129,7 @@
    "shots": [
     {
      "img": "2026-09-14__11-prompt-helpers__06-preset-card-open.webp",
-     "caption": "กดการ์ด preset (Cinematic) — หน้ารายละเอียด Preset (read-only)",
+     "caption": "กดการ์ด preset — หน้ารายละเอียด Preset (read-only)",
      "section": "ตัวหน้า",
      "sectionKey": "prompt-helpers-id--1"
     }
