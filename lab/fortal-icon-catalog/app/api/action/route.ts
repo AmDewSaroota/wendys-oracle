@@ -145,6 +145,16 @@ export async function POST(req: Request) {
 
   if (op === "note") {
     const note = String(body.note ?? "").slice(0, 600);
+    // ชุดย่อยของแท็บ "หน้าจอ" ใช้ note เก็บลิงก์ Figma — อาจยังไม่เคยอัปภาพ จึงยังไม่มีแถว
+    if (id.startsWith("design:")) {
+      await sql`
+        insert into slots (id, note, note_by, note_at)
+        values (${id}, ${note}, ${who}, ${Date.now()})
+        on conflict (id) do update set
+          note = excluded.note, note_by = excluded.note_by, note_at = excluded.note_at`;
+      await logEvent({ who, mail: me.email, action: "note", slot: id, th });
+      return Response.json({ ok: true });
+    }
     await sql`
       update slots set note = ${note}, note_by = ${who}, note_at = ${Date.now()}
       where id = ${id}`;

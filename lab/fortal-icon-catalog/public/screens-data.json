@@ -106,6 +106,24 @@
      "sectionKey": "home--1"
     },
     {
+     "img": "2026-09-14__03-billing__27-pricing-visitor-get-starter.webp",
+     "caption": "กด Get Starter ตอนยังไม่ล็อกอิน — ระบบเปิดหน้าต่าง Sign In ก่อน",
+     "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
+     "sectionKey": "home--1"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__16-sidebar-visitor.webp",
+     "caption": "แถบซ้าย (ยังไม่ล็อกอิน) — เมนู 9 หน้า · ธีม · Sign In · More",
+     "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
+     "sectionKey": "home--1"
+    },
+    {
+     "img": "fortal-ui-2026-09-15__01-home__21-sidebar-logged-in.webp",
+     "caption": "แถบซ้ายหลังล็อกอิน — ยอดแต้ม + รูปโปรไฟล์แทน Sign In",
+     "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
+     "sectionKey": "home--1"
+    },
+    {
      "img": "2026-09-14__03-billing__11-switch-to-personal.webp",
      "caption": "สลับ workspace: เมนูโปรไฟล์ → กดชื่อ Fortal Team → เลือก DewS CNX · Personal (กระเป๋าส่วนตัว แพ็ก Free)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
@@ -114,12 +132,6 @@
     {
      "img": "2026-09-14__03-billing__23-switch-back-to-org.webp",
      "caption": "สลับ workspace กลับเป็น Fortal Team (Organization): เมนูโปรไฟล์ → กดชื่อ workspace → เลือก Fortal Team",
-     "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "home--2"
-    },
-    {
-     "img": "2026-09-14__03-billing__27-pricing-visitor-get-starter.webp",
-     "caption": "กด Get Starter ตอนยังไม่ล็อกอิน — ระบบเปิดหน้าต่าง Sign In ก่อน",
      "section": "สลับ workspace และเข้าหน้าเงิน",
      "sectionKey": "home--2"
     },
@@ -256,12 +268,6 @@
      "sectionKey": "home--4"
     },
     {
-     "img": "fortal-ui-2026-09-15__01-home__16-sidebar-visitor.webp",
-     "caption": "แถบซ้าย (ยังไม่ล็อกอิน) — เมนู 9 หน้า · ธีม · Sign In · More",
-     "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
-    },
-    {
      "img": "fortal-ui-2026-09-15__01-home__17-more-menu-visitor.webp",
      "caption": "More (…) — Plans & Pricing · Terms · Privacy · Switch Language",
      "section": "เมนูและแถบซ้าย",
@@ -270,12 +276,6 @@
     {
      "img": "fortal-ui-2026-09-15__01-home__18-switch-language-submenu.webp",
      "caption": "More → Switch Language — รายการภาษา",
-     "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
-    },
-    {
-     "img": "fortal-ui-2026-09-15__01-home__21-sidebar-logged-in.webp",
-     "caption": "แถบซ้ายหลังล็อกอิน — ยอดแต้ม + รูปโปรไฟล์แทน Sign In",
      "section": "เมนูและแถบซ้าย",
      "sectionKey": "home--5"
     },

@@ -68,13 +68,15 @@
         var du = designUrl(sec.key), slot = slotOf(sec.key);
         html += '<div class="scsec" data-key="' + esc(sec.key) + '">' +
           '<div class="scsechead"><b>' + esc(sec.name) + "</b><span>" + mine.length + " ภาพ</span>" +
-          (du ? '<button class="sccmp" data-g="' + gi + '" data-key="' + esc(sec.key) + '">เทียบกับดีไซน์</button>' : "") +
+          '<button class="sccmp" data-g="' + gi + '" data-key="' + esc(sec.key) + '">' +
+          (du ? "เทียบกับดีไซน์" : "เปิดจอเทียบ") + "</button>" +
           "</div><div class=\"scpair\">";
 
         html += '<div class="scside"><div class="scsidehead">ของจริงในเว็บ</div><div class="scshots">';
         mine.forEach(function (sh) {
           html += '<a class="scshot" data-g="' + gi + '" data-img="' + esc(sh.img) + '" title="' + esc(sh.caption) + '">' +
-                  '<img loading="lazy" src="/screens/thumb/' + esc(sh.img) + '"></a>';
+                  '<img loading="lazy" src="/screens/thumb/' + esc(sh.img) + '">' +
+                  '<span class="sccap">' + esc(sh.caption) + "</span></a>";
         });
         html += "</div></div>";
 
@@ -84,6 +86,11 @@
             ? '<img src="' + du + '"><div class="scmeta">โดย ' + esc(slot.by || "-") +
               '<button class="scre" data-key="' + esc(sec.key) + '">เปลี่ยนรูป</button></div>'
             : '<div class="schint">ลากภาพมาวางตรงนี้<br><small>หรือกดเพื่อเลือกไฟล์ · วางจากคลิปบอร์ดก็ได้ (Ctrl+V)</small></div>') +
+          "</div>" +
+          '<div class="scfig"><span>ลิงก์ Figma</span>' +
+          '<input class="scfigin" data-key="' + esc(sec.key) + '" placeholder="วางลิงก์เฟรมใน Figma ที่นี่" value="' +
+          esc((slot && slot.note) || "") + '">' +
+          ((slot && slot.note) ? '<a class="scfiggo" href="' + esc(slot.note) + '" target="_blank" rel="noreferrer">เปิด</a>' : "") +
           "</div></div>";
 
         html += "</div></div>";
@@ -110,6 +117,22 @@
       nb.focus(); try { nb.setSelectionRange(pos, pos); } catch (e) {}
     });
     wireDrop();
+    [].slice.call(document.querySelectorAll(".scfigin")).forEach(function (inp) {
+      inp.addEventListener("change", function () { saveLink(inp.dataset.key, inp.value.trim()); });
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") inp.blur(); });
+    });
+  }
+
+  function saveLink(key, url) {
+    if (url && !/^https?:\/\//i.test(url)) { toast("ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://", true); return; }
+    fetch("/api/action", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ op: "note", id: "design:" + key, note: url }),
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.error) throw new Error(j.error);
+      return fetch("/api/state").then(function (s) { return s.json(); });
+    }).then(function (st) { state = st; render(); toast(url ? "เก็บลิงก์ Figma แล้ว" : "ลบลิงก์แล้ว"); })
+      .catch(function (e) { toast(e.message, true); });
   }
 
   function toast(msg, bad) {
@@ -206,12 +229,15 @@
     var sh = grp[idx];
     var L = document.getElementById("sclbL"), R = document.getElementById("sclbR");
     L.innerHTML = '<div class="sclbtag">ของจริงในเว็บ</div><img src="/screens/full/' + sh.img + '">';
-    if (cmpKey) {
-      var du = designUrl(cmpKey);
-      R.style.display = "";
-      R.innerHTML = '<div class="sclbtag">ดีไซน์ (Figma)</div>' +
-        (du ? '<img src="' + du + '">' : '<div class="schint">ยังไม่มีดีไซน์ของชุดนี้</div>');
-    } else { R.style.display = "none"; R.innerHTML = ""; }
+    var du = cmpKey ? designUrl(cmpKey) : null;
+    var note = cmpKey && slotOf(cmpKey) ? slotOf(cmpKey).note : "";
+    R.style.display = "";
+    R.innerHTML = '<div class="sclbtag">ดีไซน์ (Figma)</div>' +
+      (du ? '<img src="' + du + '">'
+          : '<div class="scdrop scdroplb" data-key="' + esc(cmpKey || "") + '" tabindex="0">' +
+            '<div class="schint">ยังไม่มีดีไซน์ของชุดนี้<br><small>ลากภาพมาวาง · กดเพื่อเลือกไฟล์ · Ctrl+V</small></div></div>') +
+      (note ? '<a class="scfiggo" href="' + esc(note) + '" target="_blank" rel="noreferrer">เปิดใน Figma</a>' : "");
+    wireDrop();
     document.getElementById("sclbcap").innerHTML =
       esc(sh.caption) + "<small>ภาพที่ " + (idx + 1) + " จาก " + grp.length +
       (idx === 0 ? " · ใบแรก" : "") + (idx === grp.length - 1 ? " · ใบสุดท้าย" : "") + "</small>";
