@@ -13,23 +13,23 @@
    "sections": [
     {
      "name": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "key": "home--1"
+     "key": "home--34421841"
     },
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "home--2"
+     "key": "home--e69b79be"
     },
     {
      "name": "เข้าหน้าบัญชี",
-     "key": "home--3"
+     "key": "home--b6aeb71c"
     },
     {
      "name": "ตัวหน้า",
-     "key": "home--4"
+     "key": "home--3fd63108"
     },
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "home--5"
+     "key": "home--d6fbdec0"
     }
    ],
    "shots": [
@@ -37,241 +37,241 @@
      "img": "2026-09-14__02-auth__01-signin-modal.webp",
      "caption": "กด Sign In ที่แถบซ้ายล่าง — หน้าต่าง Welcome to Fortal Studio มี 2 ทาง: Continue with Google / Continue with Email + ลิงก์ Privacy Policy · Terms of Use",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__02-signin-modal-slide-tab.webp",
      "caption": "ฝั่งขวาของหน้าต่าง Sign In เป็นสไลด์ 4 หัวข้อ (Story Shot · Cinematic Video · Character World · Timeline) — กดเปลี่ยนได้",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__03-email-form.webp",
      "caption": "กด Continue with Email — ฟอร์ม Email + Password · ปุ่ม Sign in · New here? Create an account · Forgot password? · Back",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__04-email-form-filled.webp",
      "caption": "กรอกอีเมลและรหัสผ่าน (ตัวอย่างสมมติ) ก่อนกด Sign in",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__05-signin-wrong-password.webp",
      "caption": "กด Sign in ด้วยอีเมล/รหัสผ่านที่ไม่ถูกต้อง — ข้อความแจ้งเตือนที่ผู้ใช้เห็น",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__06-forgot-no-email.webp",
      "caption": "กด Forgot password? ตอนยังไม่กรอกอีเมล — ขึ้น 'Enter your email above first.'",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__07-forgot-with-email.webp",
      "caption": "กรอกอีเมลแล้วกด Forgot password? — ข้อความยืนยันว่าส่งลิงก์รีเซ็ตรหัสผ่านไปที่อีเมล",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__08-create-account-form.webp",
      "caption": "กด New here? Create an account — ฟอร์มสมัคร Email + Password · ปุ่ม Create account · Already have an account? Sign in · Resend confirmation email · Back",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__09-create-account-resend-no-email.webp",
      "caption": "กด Resend confirmation email ตอนยังไม่กรอกอีเมล — ข้อความแจ้งเตือน",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__10-create-account-filled.webp",
      "caption": "ฟอร์มสมัครที่กรอกอีเมล/รหัสผ่านแล้ว (ไม่ได้กด Create account จริง — จะสร้างบัญชีในระบบ)",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__11-back-to-signin.webp",
      "caption": "กด Already have an account? Sign in — กลับมาฟอร์ม Sign in",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__02-auth__12-modal-closed.webp",
      "caption": "กด × ปิดหน้าต่าง Sign In — กลับหน้าแรกตามเดิม",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__03-billing__27-pricing-visitor-get-starter.webp",
      "caption": "กด Get Starter ตอนยังไม่ล็อกอิน — ระบบเปิดหน้าต่าง Sign In ก่อน",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__16-sidebar-visitor.webp",
      "caption": "แถบซ้าย (ยังไม่ล็อกอิน) — เมนู 9 หน้า · ธีม · Sign In · More",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__21-sidebar-logged-in.webp",
      "caption": "แถบซ้ายหลังล็อกอิน — ยอดแต้ม + รูปโปรไฟล์แทน Sign In",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "home--1"
+     "sectionKey": "home--34421841"
     },
     {
      "img": "2026-09-14__03-billing__11-switch-to-personal.webp",
      "caption": "สลับ workspace: เมนูโปรไฟล์ → กดชื่อ Fortal Team → เลือก DewS CNX · Personal (กระเป๋าส่วนตัว แพ็ก Free)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "home--2"
+     "sectionKey": "home--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__28-pricing-visitor-get-team.webp",
      "caption": "กด Get Team ตอนยังไม่ล็อกอิน — สิ่งที่ระบบแสดง",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "home--2"
+     "sectionKey": "home--e69b79be"
     },
     {
      "img": "2026-09-14__04-account__06-account-my-profile-menu.webp",
      "caption": "เมนูโปรไฟล์ → Account → My Profile (พาไปหน้า /account)",
      "section": "เข้าหน้าบัญชี",
-     "sectionKey": "home--3"
+     "sectionKey": "home--b6aeb71c"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__01-home-first-visit-full.webp",
      "caption": "หน้าแรกครั้งแรก (ยังไม่ล็อกอิน) ทั้งหน้า — มีแบนเนอร์คุกกี้",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__02-cookie-banner.webp",
      "caption": "แบนเนอร์คุกกี้ (ซ้ายล่าง)",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__03-cookie-settings-dialog.webp",
      "caption": "Settings → หน้าต่าง Cookie preferences",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__04-hero-slide-1.webp",
      "caption": "แบนเนอร์บน สไลด์ 1",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__05-hero-slide-2.webp",
      "caption": "แบนเนอร์บน สไลด์ 2",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__06-hero-slide-3.webp",
      "caption": "แบนเนอร์บน สไลด์ 3",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__07-hero-slide-4.webp",
      "caption": "แบนเนอร์บน สไลด์ 4",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__08-model-cards-and-prompt-box.webp",
      "caption": "การ์ดโมเดล 5 ใบ + กล่องพรอมต์ from 20 pts",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__09-discover-seedream-banner.webp",
      "caption": "ส่วน Limited-time boost — Discover Seedream 5.0 Pro",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__10-sample-canvas-section.webp",
      "caption": "ส่วน Sample Canvas 6 การ์ด (ชี้การ์ดแรก = ปุ่ม Use this Canvas)",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__11-inspiration-section.webp",
      "caption": "ส่วน Inspiration — ค้นหา · Sort · แท็บ All/Image/Video · การ์ดผลงาน",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__12-inspiration-filter-image.webp",
      "caption": "Inspiration แท็บ Image",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__13-inspiration-filter-video.webp",
      "caption": "Inspiration แท็บ Video",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__14-inspiration-search-empty.webp",
      "caption": "Inspiration ค้นหา 'city' — ไม่มีผลลัพธ์",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__15-inspiration-preview-modal.webp",
      "caption": "กดการ์ดผลงาน — หน้าต่างพรีวิว",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__19-home-light-theme.webp",
      "caption": "หน้าแรกธีมสว่าง",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__20-home-thai.webp",
      "caption": "หน้าแรกภาษาไทย",
      "section": "ตัวหน้า",
-     "sectionKey": "home--4"
+     "sectionKey": "home--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__17-more-menu-visitor.webp",
      "caption": "More (…) — Plans & Pricing · Terms · Privacy · Switch Language",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
+     "sectionKey": "home--d6fbdec0"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__18-switch-language-submenu.webp",
      "caption": "More → Switch Language — รายการภาษา",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
+     "sectionKey": "home--d6fbdec0"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__22-profile-menu.webp",
      "caption": "กดรูปโปรไฟล์ — เมนูบัญชี (workspace · Credit usage · Organization · Account · Sign out)",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
+     "sectionKey": "home--d6fbdec0"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__23-workspace-switcher.webp",
      "caption": "กดชื่อ workspace ในเมนู — รายการ workspace ที่สลับได้",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
+     "sectionKey": "home--d6fbdec0"
     },
     {
      "img": "fortal-ui-2026-09-15__01-home__24-more-menu-logged-in.webp",
      "caption": "More (…) หลังล็อกอิน",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "home--5"
+     "sectionKey": "home--d6fbdec0"
     }
    ]
   },
@@ -284,7 +284,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "auth-reset-password--1"
+     "key": "auth-reset-password--3fd63108"
     }
    ],
    "shots": [
@@ -292,7 +292,7 @@
      "img": "fortal-ui-2026-09-15__02-new-pages__04-reset-password-link-expired.webp",
      "caption": "หน้าตั้งรหัสผ่านใหม่ เมื่อเปิดโดยไม่มีลิงก์จากอีเมล — ขึ้น Link expired",
      "section": "ตัวหน้า",
-     "sectionKey": "auth-reset-password--1"
+     "sectionKey": "auth-reset-password--3fd63108"
     }
    ]
   },
@@ -305,7 +305,7 @@
    "sections": [
     {
      "name": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "key": "legal-privacy--1"
+     "key": "legal-privacy--34421841"
     }
    ],
    "shots": [
@@ -313,7 +313,7 @@
      "img": "2026-09-14__02-auth__13-legal-privacy.webp",
      "caption": "ลิงก์ Privacy Policy จากหน้าต่าง Sign In → หน้า /legal/privacy (ทั้งหน้า)",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "legal-privacy--1"
+     "sectionKey": "legal-privacy--34421841"
     }
    ]
   },
@@ -326,7 +326,7 @@
    "sections": [
     {
      "name": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "key": "legal-terms--1"
+     "key": "legal-terms--34421841"
     }
    ],
    "shots": [
@@ -334,7 +334,7 @@
      "img": "2026-09-14__02-auth__14-legal-terms.webp",
      "caption": "ลิงก์ Terms of Use → หน้า /legal/terms (ทั้งหน้า)",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "legal-terms--1"
+     "sectionKey": "legal-terms--34421841"
     }
    ]
   },
@@ -347,7 +347,7 @@
    "sections": [
     {
      "name": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "key": "google-accounts-google-com-signin--1"
+     "key": "google-accounts-google-com-signin--34421841"
     }
    ],
    "shots": [
@@ -355,7 +355,7 @@
      "img": "2026-09-14__02-auth__15-google-oauth-page.webp",
      "caption": "กด Continue with Google — ระบบพาไปหน้าเลือกบัญชีของ Google (ไม่ได้ล็อกอินต่อ)",
      "section": "เข้าสู่ระบบ / สมัคร / ลืมรหัส (ทั้งโฟลว์)",
-     "sectionKey": "google-accounts-google-com-signin--1"
+     "sectionKey": "google-accounts-google-com-signin--34421841"
     }
    ]
   },
@@ -368,7 +368,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "pricing--1"
+     "key": "pricing--e69b79be"
     }
    ],
    "shots": [
@@ -376,79 +376,79 @@
      "img": "2026-09-14__03-billing__01-pricing-org-postpaid.webp",
      "caption": "หน้า Plans & Pricing เมื่อ workspace ปัจจุบันเป็น Organization แบบ B2B (Fortal Team) — ขึ้น 'You're on Post-Paid billing' ไม่แสดงแพ็กเกจ มีปุ่ม Go to Billing → credit line",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__12-pricing-personal-monthly.webp",
      "caption": "หน้า Plans & Pricing เมื่ออยู่กระเป๋าส่วนตัว (Free) — แพ็ก Individual 5 แบบ (Trial/Starter/Plus/Pro/Ultra) · Team 3 แบบ (Team/Team Pro/Enterprise) · Top-up Points (ทั้งหน้า)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__13-pricing-personal-annual.webp",
      "caption": "กดสวิตช์ Annual (save up to −15%) — ราคารายปี",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__15-pricing-topup-section.webp",
      "caption": "ส่วน Top-up Points ท้ายหน้า Pricing (กระเป๋าส่วนตัว)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__16-pricing-get-starter.webp",
      "caption": "กด Get Starter — สิ่งที่ระบบแสดงถัดไป (ไม่ได้ชำระเงิน)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__23-switch-back-to-org.webp",
      "caption": "สลับ workspace กลับเป็น Fortal Team (Organization)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__24-pricing-visitor-monthly.webp",
      "caption": "หน้า Plans & Pricing ตอนยังไม่ล็อกอิน — เห็นครบทั้ง Individual 5 แพ็ก · Team 3 แพ็ก (Team/Team Pro/Enterprise) · Top-up Points (ทั้งหน้า)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__25-pricing-visitor-annual.webp",
      "caption": "กดสวิตช์ Annual — ราคารายปี ทุกแพ็ก (ทั้งหน้า)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__26-pricing-team-seats-5.webp",
      "caption": "แพ็ก Team เปลี่ยนจำนวน Seats จาก 2 เป็น 5 — ยอดรวมต่อเดือนเปลี่ยนตาม",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__29-pricing-contact-sales.webp",
      "caption": "กด Contact sales (Enterprise) — สิ่งที่ระบบแสดง",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__14-pricing-team-seats.webp",
      "caption": "แพ็ก Team เปลี่ยนจำนวน Seats จาก 2 เป็น 5 — ราคารวมเปลี่ยนตาม",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__18-pricing-get-team.webp",
      "caption": "กด Get Team (แพ็กทีม) ขณะอยู่กระเป๋าส่วนตัว — ข้อความที่ระบบแจ้ง",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__19-pricing-contact-sales.webp",
      "caption": "กด Contact sales (Enterprise) — สิ่งที่ระบบแสดง",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "pricing--1"
+     "sectionKey": "pricing--e69b79be"
     }
    ]
   },
@@ -461,7 +461,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "billing--1"
+     "key": "billing--e69b79be"
     }
    ],
    "shots": [
@@ -469,25 +469,25 @@
      "img": "2026-09-14__03-billing__02-billing-org.webp",
      "caption": "หน้า Billing & usage ของ Organization B2B — แพ็ก B2B/Enterprise · ยอดแต้ม · Credit line · Request credit · Drawdown history · Bill history · Tax invoice details",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "billing--1"
+     "sectionKey": "billing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__03-billing-request-credit.webp",
      "caption": "กด Request credit — หน้าต่างขอวงเงินเครดิตเพิ่ม (ไม่ได้กดยืนยัน)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "billing--1"
+     "sectionKey": "billing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__04-billing-tax-add-details.webp",
      "caption": "กด Add details ที่ Tax invoice details — ฟอร์มข้อมูลออกใบกำกับภาษี (ไม่ได้บันทึก)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "billing--1"
+     "sectionKey": "billing--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__20-billing-personal.webp",
      "caption": "หน้า Billing ของกระเป๋าส่วนตัว (แพ็ก Free)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "billing--1"
+     "sectionKey": "billing--e69b79be"
     }
    ]
   },
@@ -500,7 +500,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "billing-usage--1"
+     "key": "billing-usage--e69b79be"
     }
    ],
    "shots": [
@@ -508,7 +508,7 @@
      "img": "2026-09-14__03-billing__21-account-transactions.webp",
      "caption": "หน้า /billing/usage — ประวัติรายการแต้ม (เปิดจาก เมนูโปรไฟล์ → Account → Transactions)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "billing-usage--1"
+     "sectionKey": "billing-usage--e69b79be"
     }
    ]
   },
@@ -521,7 +521,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "org-members--1"
+     "key": "org-members--e69b79be"
     }
    ],
    "shots": [
@@ -529,19 +529,19 @@
      "img": "2026-09-14__03-billing__06-org-members.webp",
      "caption": "หน้า Members ของ Organization — รายชื่อสมาชิก · Role · Spend cap · ปุ่ม Invite member",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "org-members--1"
+     "sectionKey": "org-members--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__07-org-invite-member.webp",
      "caption": "กด Invite member — หน้าต่างเชิญสมาชิก (ไม่ได้ส่งคำเชิญ)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "org-members--1"
+     "sectionKey": "org-members--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__08-org-edit-spend-cap.webp",
      "caption": "กดที่ Spend cap 'Unlimited' ของสมาชิก — ตั้งเพดานแต้มต่อคน (ไม่ได้บันทึก)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "org-members--1"
+     "sectionKey": "org-members--e69b79be"
     }
    ]
   },
@@ -554,7 +554,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "org-usage--1"
+     "key": "org-usage--e69b79be"
     }
    ],
    "shots": [
@@ -562,7 +562,7 @@
      "img": "2026-09-14__03-billing__05-org-usage.webp",
      "caption": "หน้า Usage ของ Organization — การใช้แต้มแยกตามสมาชิก (By member) และตามโปรเจกต์ (By project)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "org-usage--1"
+     "sectionKey": "org-usage--e69b79be"
     }
    ]
   },
@@ -575,7 +575,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "org-storage--1"
+     "key": "org-storage--e69b79be"
     }
    ],
    "shots": [
@@ -583,7 +583,7 @@
      "img": "2026-09-14__03-billing__09-org-storage.webp",
      "caption": "หน้า Storage ของ Organization — พื้นที่ที่ใช้ แยกตามโปรเจกต์และคนสร้าง (ทั้งหน้า)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "org-storage--1"
+     "sectionKey": "org-storage--e69b79be"
     }
    ]
   },
@@ -596,7 +596,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "org-transactions--1"
+     "key": "org-transactions--e69b79be"
     }
    ],
    "shots": [
@@ -604,7 +604,7 @@
      "img": "2026-09-14__03-billing__10-org-transactions.webp",
      "caption": "เมนูโปรไฟล์ → Organization → Transactions — ประวัติรายการแต้มของ Organization",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "org-transactions--1"
+     "sectionKey": "org-transactions--e69b79be"
     }
    ]
   },
@@ -617,7 +617,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "siamshort-payment-fe-u75071-checkout-id--1"
+     "key": "siamshort-payment-fe-u75071-checkout-id--e69b79be"
     }
    ],
    "shots": [
@@ -625,19 +625,19 @@
      "img": "2026-09-14__03-billing__17-pricing-start-trial.webp",
      "caption": "กด Start trial ฿49 — สิ่งที่ระบบแสดงถัดไป (ไม่ได้ชำระเงิน)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--1"
+     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__18-checkout-tax-invoice.webp",
      "caption": "หน้าชำระเงิน — ติ๊ก 'ต้องการใบกำกับภาษี' แล้วมีฟอร์มข้อมูลใบกำกับภาษีเพิ่มขึ้นมา",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--1"
+     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--e69b79be"
     },
     {
      "img": "2026-09-14__03-billing__19-checkout-back-link.webp",
      "caption": "หน้าชำระเงิน เลื่อนลงล่าง — ลิงก์ 'กลับไปที่ Fortal Studio'",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--1"
+     "sectionKey": "siamshort-payment-fe-u75071-checkout-id--e69b79be"
     }
    ]
   },
@@ -650,7 +650,7 @@
    "sections": [
     {
      "name": "เข้าหน้าบัญชี",
-     "key": "account--1"
+     "key": "account--b6aeb71c"
     }
    ],
    "shots": [
@@ -658,25 +658,25 @@
      "img": "2026-09-14__04-account__01-account-overview.webp",
      "caption": "หน้า Account — Profile overview · Security overview (Email verified · Password · 2FA) · การ์ด Two-factor · Password · Active sessions",
      "section": "เข้าหน้าบัญชี",
-     "sectionKey": "account--1"
+     "sectionKey": "account--b6aeb71c"
     },
     {
      "img": "2026-09-14__04-account__02-account-edit-profile.webp",
      "caption": "กด Edit profile — ฟอร์มแก้ชื่อ/รูปโปรไฟล์แบบ inline (ไม่ได้บันทึก)",
      "section": "เข้าหน้าบัญชี",
-     "sectionKey": "account--1"
+     "sectionKey": "account--b6aeb71c"
     },
     {
      "img": "2026-09-14__04-account__03-account-2fa-remove.webp",
      "caption": "กด Remove ที่ Two-factor authentication — หน้าต่างยืนยัน (ไม่ได้กดยืนยัน)",
      "section": "เข้าหน้าบัญชี",
-     "sectionKey": "account--1"
+     "sectionKey": "account--b6aeb71c"
     },
     {
      "img": "2026-09-14__04-account__04-account-setup-password.webp",
      "caption": "กด Set up password — ฟอร์มตั้งรหัสผ่านสำหรับล็อกอินด้วยอีเมล (ไม่ได้บันทึก)",
      "section": "เข้าหน้าบัญชี",
-     "sectionKey": "account--1"
+     "sectionKey": "account--b6aeb71c"
     }
    ]
   },
@@ -689,7 +689,7 @@
    "sections": [
     {
      "name": "เข้าหน้าบัญชี",
-     "key": "account-sessions--1"
+     "key": "account-sessions--b6aeb71c"
     }
    ],
    "shots": [
@@ -697,7 +697,7 @@
      "img": "2026-09-14__04-account__05-account-sessions.webp",
      "caption": "กด Manage sessions → หน้า Active sessions — รายการอุปกรณ์ที่ล็อกอินอยู่ · ปุ่ม Log out รายตัว · Log out all other sessions · Log out all devices (ทั้งหน้า)",
      "section": "เข้าหน้าบัญชี",
-     "sectionKey": "account-sessions--1"
+     "sectionKey": "account-sessions--b6aeb71c"
     }
    ]
   },
@@ -710,7 +710,7 @@
    "sections": [
     {
      "name": "สลับ workspace และเข้าหน้าเงิน",
-     "key": "account-storage--1"
+     "key": "account-storage--e69b79be"
     }
    ],
    "shots": [
@@ -718,7 +718,7 @@
      "img": "2026-09-14__03-billing__22-account-storage.webp",
      "caption": "หน้า Storage ของบัญชี — ไฟล์ทั้งหมดที่เราเป็นเจ้าของในทุก workspace (ทั้งหน้า)",
      "section": "สลับ workspace และเข้าหน้าเงิน",
-     "sectionKey": "account-storage--1"
+     "sectionKey": "account-storage--e69b79be"
     }
    ]
   },
@@ -731,7 +731,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "video--1"
+     "key": "video--3fd63108"
     }
    ],
    "shots": [
@@ -739,103 +739,103 @@
      "img": "2026-09-14__05-video__01-video-page.webp",
      "caption": "หน้า /video — ประวัติงานที่เคย gen (จัดกลุ่มตามวัน) + กล่องพรอมต์ด้านล่าง (โมเดล · โฟลเดอร์ · ตั้งค่า · helper · ราคา)",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__02-folder-menu.webp",
      "caption": "กดปุ่มโฟลเดอร์ซ้ายบน (DewS) — รายการโฟลเดอร์งานที่เลือกได้ / สร้างโฟลเดอร์ใหม่",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__03-search-generations.webp",
      "caption": "กดไอคอนค้นหา (Search generations) ขวาบน — ช่องค้นหางานเก่า",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__04-sort-by-date.webp",
      "caption": "กด By Date — ตัวเลือกการเรียงลำดับ",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__05-type-filter.webp",
      "caption": "กดตัวกรองชนิด (Video) — ตัวเลือกกรองชนิดงาน",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__06-favorites-on.webp",
      "caption": "กด Favorites — แสดงเฉพาะงานที่กดดาวไว้",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__07-list-view.webp",
      "caption": "กดปุ่ม List view — ประวัติงานแบบรายการ",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__08-thumbnail-size.webp",
      "caption": "กลับเป็น Grid view แล้วเลื่อนแถบ Thumbnail size — ขนาดการ์ดเปลี่ยน",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__09-video-detail.webp",
      "caption": "กดการ์ดงานวิดีโอ — หน้าต่างรายละเอียด (พรอมต์ · โมเดล · ตั้งค่า · ปุ่มดาวน์โหลด/ใช้ซ้ำ)",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__10-attach-menu.webp",
      "caption": "กดปุ่ม Attach ในกล่องพรอมต์ — เลือกชนิดไฟล์อ้างอิงที่จะแนบ",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__11-model-menu.webp",
      "caption": "กดชื่อโมเดล (Seedance 2.0) — รายการโมเดลวิดีโอที่เลือกได้",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__12-auto-menu.webp",
      "caption": "กดปุ่ม Auto (ถัดจากโมเดล) — ตัวเลือกโหมด",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__13-generation-settings.webp",
      "caption": "กด 16:9 720p 5s Off — แผงตั้งค่า (สัดส่วน · ความละเอียด · ความยาว · เสียง)",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__14-prompt-helper-menu.webp",
      "caption": "กด No helper — เลือก Prompt helper ที่จะใช้ช่วยเขียนพรอมต์",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__15-prompt-typed.webp",
      "caption": "พิมพ์พรอมต์ในกล่อง — ปุ่ม Generate Video แสดงราคา (ไม่ได้กด gen)",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__16-enhance-prompt-hover.webp",
      "caption": "เอาเมาส์ชี้ปุ่ม 2pt (Enhance prompt) — คำอธิบาย (ไม่ได้กด)",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     },
     {
      "img": "2026-09-14__05-video__17-reset-prompt.webp",
      "caption": "กดปุ่ม Reset (ไอคอนวงกลม) — ล้างพรอมต์ทั้งหมด",
      "section": "ตัวหน้า",
-     "sectionKey": "video--1"
+     "sectionKey": "video--3fd63108"
     }
    ]
   },
@@ -848,7 +848,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "image--1"
+     "key": "image--3fd63108"
     }
    ],
    "shots": [
@@ -856,73 +856,73 @@
      "img": "2026-09-14__06-image__01-image-page.webp",
      "caption": "หน้า /image — ประวัติภาพที่เคย gen + กล่องพรอมต์ (GPT Image 2 · 1:1 1K Low JPEG · helper · ราคา 0.2 pt)",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__02-image-page-full.webp",
      "caption": "หน้า /image ทั้งหน้า (มีปุ่ม Load more ท้ายรายการ)",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__03-load-more.webp",
      "caption": "กด Load more — โหลดงานเก่าเพิ่ม",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__04-image-detail.webp",
      "caption": "กดการ์ดภาพ — หน้าต่างรายละเอียดภาพ",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__05-attach-menu.webp",
      "caption": "กดปุ่ม Attach — แนบภาพอ้างอิง",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__06-model-menu.webp",
      "caption": "กดชื่อโมเดล (GPT Image 2) — รายการโมเดลภาพที่เลือกได้",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__07-generation-settings.webp",
      "caption": "กด 1:1 1K Low JPEG — แผงตั้งค่า (สัดส่วน · ความละเอียด · คุณภาพ · ชนิดไฟล์)",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__08-prompt-helper-menu.webp",
      "caption": "กด No helper — เลือก Prompt helper",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__09-prompt-typed.webp",
      "caption": "พิมพ์พรอมต์ — ปุ่ม Generate Image พร้อมราคา",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__10-generating.webp",
      "caption": "กด Generate Image (0.2 pt) — การ์ดงานใหม่ขึ้นสถานะกำลังสร้าง",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__11-generated-result.webp",
      "caption": "รอจน gen เสร็จ — ภาพผลลัพธ์ปรากฏในประวัติ",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     },
     {
      "img": "2026-09-14__06-image__12-result-detail.webp",
      "caption": "กดภาพที่เพิ่ง gen — รายละเอียด + ปุ่มจัดการ (ดาวน์โหลด · ดาว · ใช้เป็น reference · ลบ)",
      "section": "ตัวหน้า",
-     "sectionKey": "image--1"
+     "sectionKey": "image--3fd63108"
     }
    ]
   },
@@ -935,7 +935,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "audio--1"
+     "key": "audio--3fd63108"
     }
    ],
    "shots": [
@@ -943,43 +943,43 @@
      "img": "2026-09-14__07-audio__01-audio-page.webp",
      "caption": "หน้า /audio — ประวัติเสียงที่เคย gen (การ์ดมีปุ่ม Play + แถบเลื่อน) + กล่องพรอมต์",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     },
     {
      "img": "2026-09-14__07-audio__02-audio-detail.webp",
      "caption": "กดการ์ดเสียง — หน้าต่างรายละเอียด",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     },
     {
      "img": "2026-09-14__07-audio__03-audio-playing.webp",
      "caption": "กดปุ่ม Play บนการ์ด — กำลังเล่นเสียง",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     },
     {
      "img": "2026-09-14__07-audio__04-model-menu.webp",
      "caption": "กดชื่อโมเดล (Seed Audio 1.0 · Multilingual) — ตัวเลือกโมเดล/ภาษา/เสียง",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     },
     {
      "img": "2026-09-14__07-audio__05-generation-settings.webp",
      "caption": "กด MP3 24 kHz — แผงตั้งค่าไฟล์เสียง",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     },
     {
      "img": "2026-09-14__07-audio__06-prompt-typed.webp",
      "caption": "พิมพ์ข้อความที่จะให้อ่าน — ปุ่ม Generate แสดงราคา (ไม่ได้กด gen)",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     },
     {
      "img": "2026-09-14__07-audio__07-prompt-helper-menu.webp",
      "caption": "กด No helper — เลือก Prompt helper ที่จะใช้ช่วยเขียนพรอมต์",
      "section": "ตัวหน้า",
-     "sectionKey": "audio--1"
+     "sectionKey": "audio--3fd63108"
     }
    ]
   },
@@ -992,7 +992,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "tools--1"
+     "key": "tools--3fd63108"
     }
    ],
    "shots": [
@@ -1000,13 +1000,13 @@
      "img": "2026-09-14__09-tools__01-tools-list.webp",
      "caption": "หน้า /tools — Creative Tools ทั้ง 31 ตัว (การ์ดบอกชื่อ · คำอธิบาย · ป้าย Local/AI)",
      "section": "ตัวหน้า",
-     "sectionKey": "tools--1"
+     "sectionKey": "tools--3fd63108"
     },
     {
      "img": "2026-09-14__09-tools__02-tool-card-hover.webp",
      "caption": "เอาเมาส์ชี้การ์ดเครื่องมือ (Crop Image)",
      "section": "ตัวหน้า",
-     "sectionKey": "tools--1"
+     "sectionKey": "tools--3fd63108"
     }
    ]
   },
@@ -1018,196 +1018,316 @@
    "desc": "หน้าเครื่องมือ 31 ตัว (คนละ URL)",
    "sections": [
     {
-     "name": "ตัวหน้า",
-     "key": "tools-slug--1"
+     "name": "เครื่องมือ Anyangle",
+     "key": "tools-slug--c340b30d"
+    },
+    {
+     "name": "เครื่องมือ Arrow Shot",
+     "key": "tools-slug--709ba9a9"
+    },
+    {
+     "name": "เครื่องมือ Color Grade",
+     "key": "tools-slug--f377e471"
+    },
+    {
+     "name": "เครื่องมือ Color Grade Video",
+     "key": "tools-slug--040121e5"
+    },
+    {
+     "name": "เครื่องมือ Convert FPS",
+     "key": "tools-slug--179a59f3"
+    },
+    {
+     "name": "เครื่องมือ Convert Image",
+     "key": "tools-slug--31352040"
+    },
+    {
+     "name": "เครื่องมือ Crop Image",
+     "key": "tools-slug--d8fb0725"
+    },
+    {
+     "name": "เครื่องมือ Custom Inpaint",
+     "key": "tools-slug--cc35e587"
+    },
+    {
+     "name": "เครื่องมือ Depth Map",
+     "key": "tools-slug--d92e057e"
+    },
+    {
+     "name": "เครื่องมือ Depth Map Local",
+     "key": "tools-slug--41be6b00"
+    },
+    {
+     "name": "เครื่องมือ Draw To Edit",
+     "key": "tools-slug--e406236d"
+    },
+    {
+     "name": "เครื่องมือ Extract Board",
+     "key": "tools-slug--eedba675"
+    },
+    {
+     "name": "เครื่องมือ Generate 3D",
+     "key": "tools-slug--006b5e4c"
+    },
+    {
+     "name": "เครื่องมือ Layout Image",
+     "key": "tools-slug--6d6545bb"
+    },
+    {
+     "name": "เครื่องมือ Lip Sync",
+     "key": "tools-slug--43d9a4f3"
+    },
+    {
+     "name": "เครื่องมือ Motion Control",
+     "key": "tools-slug--4de18b62"
+    },
+    {
+     "name": "เครื่องมือ Music Generator",
+     "key": "tools-slug--9f92b925"
+    },
+    {
+     "name": "เครื่องมือ Overlay Image",
+     "key": "tools-slug--5cf1a1ba"
+    },
+    {
+     "name": "เครื่องมือ Pose Control",
+     "key": "tools-slug--30d0b2e9"
+    },
+    {
+     "name": "เครื่องมือ Reframe Video",
+     "key": "tools-slug--8ff59142"
+    },
+    {
+     "name": "เครื่องมือ Remove Background",
+     "key": "tools-slug--5f167837"
+    },
+    {
+     "name": "เครื่องมือ Render 3D",
+     "key": "tools-slug--0f93fd6c"
+    },
+    {
+     "name": "เครื่องมือ Restyle Background",
+     "key": "tools-slug--fe1ff8e5"
+    },
+    {
+     "name": "เครื่องมือ Restyle Person",
+     "key": "tools-slug--064dbbc0"
+    },
+    {
+     "name": "เครื่องมือ Restyle Video",
+     "key": "tools-slug--087ccaa1"
+    },
+    {
+     "name": "เครื่องมือ Speed Ramp",
+     "key": "tools-slug--47b00222"
+    },
+    {
+     "name": "เครื่องมือ Storyboard",
+     "key": "tools-slug--9508cf6f"
+    },
+    {
+     "name": "เครื่องมือ Trim Video",
+     "key": "tools-slug--4030b81e"
+    },
+    {
+     "name": "เครื่องมือ Upscale Image",
+     "key": "tools-slug--ac64d823"
+    },
+    {
+     "name": "เครื่องมือ Upscale Video",
+     "key": "tools-slug--7320a75b"
+    },
+    {
+     "name": "เครื่องมือ Voice Clone",
+     "key": "tools-slug--50a4a6ef"
     }
    ],
    "shots": [
     {
      "img": "2026-09-14__09-tools__03-tool-anyangle.webp",
      "caption": "เครื่องมือ Anyangle (/tools/anyangle) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Anyangle",
+     "sectionKey": "tools-slug--c340b30d"
     },
     {
      "img": "2026-09-14__09-tools__04-tool-arrow-shot.webp",
      "caption": "เครื่องมือ Arrow Shot (/tools/arrow-shot) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Arrow Shot",
+     "sectionKey": "tools-slug--709ba9a9"
     },
     {
      "img": "2026-09-14__09-tools__05-tool-color-grade.webp",
      "caption": "เครื่องมือ Color Grade (/tools/color-grade) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Color Grade",
+     "sectionKey": "tools-slug--f377e471"
     },
     {
      "img": "2026-09-14__09-tools__06-tool-color-grade-video.webp",
      "caption": "เครื่องมือ Color Grade Video (/tools/color-grade-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Color Grade Video",
+     "sectionKey": "tools-slug--040121e5"
     },
     {
      "img": "2026-09-14__09-tools__07-tool-convert-fps.webp",
      "caption": "เครื่องมือ Convert FPS (/tools/convert-fps) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Convert FPS",
+     "sectionKey": "tools-slug--179a59f3"
     },
     {
      "img": "2026-09-14__09-tools__08-tool-convert-image.webp",
      "caption": "เครื่องมือ Convert Image (/tools/convert-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Convert Image",
+     "sectionKey": "tools-slug--31352040"
     },
     {
      "img": "2026-09-14__09-tools__09-tool-crop-image.webp",
      "caption": "เครื่องมือ Crop Image (/tools/crop-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Crop Image",
+     "sectionKey": "tools-slug--d8fb0725"
     },
     {
      "img": "2026-09-14__09-tools__10-tool-custom-inpaint.webp",
      "caption": "เครื่องมือ Custom Inpaint (/tools/custom-inpaint) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Custom Inpaint",
+     "sectionKey": "tools-slug--cc35e587"
     },
     {
      "img": "2026-09-14__09-tools__11-tool-depth-map.webp",
      "caption": "เครื่องมือ Depth Map (/tools/depth-map) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Depth Map",
+     "sectionKey": "tools-slug--d92e057e"
     },
     {
      "img": "2026-09-14__09-tools__12-tool-depth-map-local.webp",
      "caption": "เครื่องมือ Depth Map Local (/tools/depth-map-local) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Depth Map Local",
+     "sectionKey": "tools-slug--41be6b00"
     },
     {
      "img": "2026-09-14__09-tools__13-tool-draw-to-edit.webp",
      "caption": "เครื่องมือ Draw To Edit (/tools/draw-to-edit) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Draw To Edit",
+     "sectionKey": "tools-slug--e406236d"
     },
     {
      "img": "2026-09-14__09-tools__14-tool-extract-board.webp",
      "caption": "เครื่องมือ Extract Board (/tools/extract-board) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Extract Board",
+     "sectionKey": "tools-slug--eedba675"
     },
     {
      "img": "2026-09-14__09-tools__15-tool-generate-3d.webp",
      "caption": "เครื่องมือ Generate 3D (/tools/generate-3d) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Generate 3D",
+     "sectionKey": "tools-slug--006b5e4c"
     },
     {
      "img": "2026-09-14__09-tools__16-tool-layout-image.webp",
      "caption": "เครื่องมือ Layout Image (/tools/layout-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Layout Image",
+     "sectionKey": "tools-slug--6d6545bb"
     },
     {
      "img": "2026-09-14__09-tools__17-tool-lip-sync.webp",
      "caption": "เครื่องมือ Lip Sync (/tools/lip-sync) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Lip Sync",
+     "sectionKey": "tools-slug--43d9a4f3"
     },
     {
      "img": "2026-09-14__09-tools__18-tool-motion-control.webp",
      "caption": "เครื่องมือ Motion Control (/tools/motion-control) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Motion Control",
+     "sectionKey": "tools-slug--4de18b62"
     },
     {
      "img": "2026-09-14__09-tools__19-tool-music-generator.webp",
      "caption": "เครื่องมือ Music Generator (/tools/music-generator) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Music Generator",
+     "sectionKey": "tools-slug--9f92b925"
     },
     {
      "img": "2026-09-14__09-tools__20-tool-overlay-image.webp",
      "caption": "เครื่องมือ Overlay Image (/tools/overlay-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Overlay Image",
+     "sectionKey": "tools-slug--5cf1a1ba"
     },
     {
      "img": "2026-09-14__09-tools__21-tool-pose-control.webp",
      "caption": "เครื่องมือ Pose Control (/tools/pose-control) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Pose Control",
+     "sectionKey": "tools-slug--30d0b2e9"
     },
     {
      "img": "2026-09-14__09-tools__22-tool-reframe-video.webp",
      "caption": "เครื่องมือ Reframe Video (/tools/reframe-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Reframe Video",
+     "sectionKey": "tools-slug--8ff59142"
     },
     {
      "img": "2026-09-14__09-tools__23-tool-remove-background.webp",
      "caption": "เครื่องมือ Remove Background (/tools/remove-background) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Remove Background",
+     "sectionKey": "tools-slug--5f167837"
     },
     {
      "img": "2026-09-14__09-tools__24-tool-render-3d.webp",
      "caption": "เครื่องมือ Render 3D (/tools/render-3d) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Render 3D",
+     "sectionKey": "tools-slug--0f93fd6c"
     },
     {
      "img": "2026-09-14__09-tools__25-tool-restyle-background.webp",
      "caption": "เครื่องมือ Restyle Background (/tools/restyle-background) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Restyle Background",
+     "sectionKey": "tools-slug--fe1ff8e5"
     },
     {
      "img": "2026-09-14__09-tools__26-tool-restyle-person.webp",
      "caption": "เครื่องมือ Restyle Person (/tools/restyle-person) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Restyle Person",
+     "sectionKey": "tools-slug--064dbbc0"
     },
     {
      "img": "2026-09-14__09-tools__27-tool-restyle-video.webp",
      "caption": "เครื่องมือ Restyle Video (/tools/restyle-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Restyle Video",
+     "sectionKey": "tools-slug--087ccaa1"
     },
     {
      "img": "2026-09-14__09-tools__28-tool-speed-ramp.webp",
      "caption": "เครื่องมือ Speed Ramp (/tools/speed-ramp) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Speed Ramp",
+     "sectionKey": "tools-slug--47b00222"
     },
     {
      "img": "2026-09-14__09-tools__29-tool-storyboard.webp",
      "caption": "เครื่องมือ Storyboard (/tools/storyboard) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Storyboard",
+     "sectionKey": "tools-slug--9508cf6f"
     },
     {
      "img": "2026-09-14__09-tools__30-tool-trim-video.webp",
      "caption": "เครื่องมือ Trim Video (/tools/trim-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Trim Video",
+     "sectionKey": "tools-slug--4030b81e"
     },
     {
      "img": "2026-09-14__09-tools__31-tool-upscale-image.webp",
      "caption": "เครื่องมือ Upscale Image (/tools/upscale-image) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Upscale Image",
+     "sectionKey": "tools-slug--ac64d823"
     },
     {
      "img": "2026-09-14__09-tools__32-tool-upscale-video.webp",
      "caption": "เครื่องมือ Upscale Video (/tools/upscale-video) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Upscale Video",
+     "sectionKey": "tools-slug--7320a75b"
     },
     {
      "img": "2026-09-14__09-tools__33-tool-voice-clone.webp",
      "caption": "เครื่องมือ Voice Clone (/tools/voice-clone) — หน้าเริ่มต้นก่อนอัปโหลดไฟล์",
-     "section": "ตัวหน้า",
-     "sectionKey": "tools-slug--1"
+     "section": "เครื่องมือ Voice Clone",
+     "sectionKey": "tools-slug--50a4a6ef"
     }
    ]
   },
@@ -1220,11 +1340,11 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "ai-director--1"
+     "key": "ai-director--3fd63108"
     },
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "ai-director--2"
+     "key": "ai-director--d6fbdec0"
     }
    ],
    "shots": [
@@ -1232,31 +1352,31 @@
      "img": "2026-09-14__08-studio__01-studio-projects.webp",
      "caption": "หน้า /studio — รายการโปรเจกต์ทั้งหมด (การ์ดบอกโหมด By Agent / By Canvas) + ปุ่ม New film",
      "section": "ตัวหน้า",
-     "sectionKey": "ai-director--1"
+     "sectionKey": "ai-director--3fd63108"
     },
     {
      "img": "2026-09-14__08-studio__02-new-film-dialog.webp",
      "caption": "กด New film — หน้าต่างสร้างโปรเจกต์ใหม่ (เลือกโหมด · ตั้งชื่อ) (ไม่ได้สร้างจริง)",
      "section": "ตัวหน้า",
-     "sectionKey": "ai-director--1"
+     "sectionKey": "ai-director--3fd63108"
     },
     {
      "img": "2026-09-14__08-studio__04-project-card-hover.webp",
      "caption": "เอาเมาส์ชี้การ์ดโปรเจกต์ — ปุ่ม/ข้อมูลที่ขึ้นตอน hover",
      "section": "ตัวหน้า",
-     "sectionKey": "ai-director--1"
+     "sectionKey": "ai-director--3fd63108"
     },
     {
      "img": "fortal-ui-2026-09-15__02-new-pages__01-ai-director.webp",
      "caption": "รายการโปรเจกต์ AI Director (หน้าที่ /studio เด้งมา) — หลังล็อกอิน",
      "section": "ตัวหน้า",
-     "sectionKey": "ai-director--1"
+     "sectionKey": "ai-director--3fd63108"
     },
     {
      "img": "2026-09-14__08-studio__03-project-menu.webp",
      "caption": "กดปุ่ม ⋯ มุมการ์ดโปรเจกต์ (Project menu) — เมนูจัดการโปรเจกต์",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "ai-director--2"
+     "sectionKey": "ai-director--d6fbdec0"
     }
    ]
   },
@@ -1269,7 +1389,7 @@
    "sections": [
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "canvas--1"
+     "key": "canvas--d6fbdec0"
     }
    ],
    "shots": [
@@ -1277,7 +1397,7 @@
      "img": "fortal-ui-2026-09-15__02-new-pages__02-canvas-list.webp",
      "caption": "รายการกระดาน Canvas ทั้งหมดของ workspace",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "canvas--1"
+     "sectionKey": "canvas--d6fbdec0"
     }
    ]
   },
@@ -1289,278 +1409,302 @@
    "desc": "โปรเจกต์โหมด Agent — แชท + Story/Elements/Sequence/Timeline",
    "sections": [
     {
-     "name": "ตัวหน้า",
-     "key": "studio-id-v2--1"
+     "name": "แท็บ Story",
+     "key": "studio-id-v2--584f088d"
     },
     {
-     "name": "เมนูและแถบซ้าย",
-     "key": "studio-id-v2--2"
+     "name": "แท็บ Elements",
+     "key": "studio-id-v2--450b3b58"
+    },
+    {
+     "name": "แท็บ Sequence",
+     "key": "studio-id-v2--fc10548d"
+    },
+    {
+     "name": "แท็บ Timeline",
+     "key": "studio-id-v2--c2bf7502"
+    },
+    {
+     "name": "แชท AI Director",
+     "key": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "name": "Project settings",
+     "key": "studio-id-v2--c706def0"
+    },
+    {
+     "name": "ธีมและภาษา",
+     "key": "studio-id-v2--c0700037"
+    },
+    {
+     "name": "ปิดตัวตัดต่อแล้วกลับมาหน้านี้",
+     "key": "studio-id-v2--39a259cd"
     }
    ],
    "shots": [
     {
      "img": "2026-09-14__12-studio-agent__01-studio-overview.webp",
      "caption": "เปิดโปรเจกต์โหมด Agent (Chiang Mai History) — ซ้าย: แชท AI Director + ปุ่มลัด 3 ปุ่ม + ช่องพิมพ์ (Auto Confirm · โมเดล GLM/Fable) · ขวา: แท็บ Story / Elements / Sequence / Timeline · ปุ่มธีม · ภาษา EN/TH",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__02-chat-input-area.webp",
-     "caption": "ช่องพิมพ์แชทด้านล่างซ้าย — ตัวเลือก Browser tool mode (Auto Confirm) · Model (GLM/Fable) · ปุ่มส่ง",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__03-new-chat.webp",
-     "caption": "กดปุ่ม New chat (ไอคอนบนหัวแชท) — เริ่มบทสนทนาใหม่",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Story",
+     "sectionKey": "studio-id-v2--584f088d"
     },
     {
      "img": "2026-09-14__12-studio-agent__04-chat-history.webp",
      "caption": "กดปุ่ม Chat history — รายการบทสนทนาเก่าของโปรเจกต์",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__05-project-settings.webp",
-     "caption": "กดปุ่ม Project settings — ตั้งค่าโปรเจกต์ (ไม่ได้บันทึก)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__06-hide-chat-panel.webp",
-     "caption": "กดปุ่ม Hide chat panel — ซ่อนแชท เหลือพื้นที่งานเต็มจอ",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__07-tab-elements.webp",
-     "caption": "แท็บ Elements — Cast / Set / Prop ของเรื่อง",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__08-tab-elements-full.webp",
-     "caption": "แท็บ Elements ทั้งหน้า",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__09-tab-sequence.webp",
-     "caption": "แท็บ Sequence — ลำดับช็อต (storyboard / วิดีโอต่อช็อต)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__10-tab-sequence-full.webp",
-     "caption": "แท็บ Sequence ทั้งหน้า",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__11-tab-timeline.webp",
-     "caption": "แท็บ Timeline — เรียงช็อตตามเวลา",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__12-tab-timeline-full.webp",
-     "caption": "แท็บ Timeline ทั้งหน้า",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Story",
+     "sectionKey": "studio-id-v2--584f088d"
     },
     {
      "img": "2026-09-14__12-studio-agent__13-edit-story-cover.webp",
      "caption": "แท็บ Story → กด Edit Story & Cover — ฟอร์มแก้เรื่องย่อ/ปก (ไม่ได้บันทึก)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Story",
+     "sectionKey": "studio-id-v2--584f088d"
     },
     {
      "img": "2026-09-14__12-studio-agent__14-edit-in-chat.webp",
      "caption": "กด Edit in chat ที่การ์ด Story Setup — ข้อความถูกใส่ในช่องแชทให้ AI แก้",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Story",
+     "sectionKey": "studio-id-v2--584f088d"
     },
     {
-     "img": "2026-09-14__12-studio-agent__05a-project-settings-general.webp",
-     "caption": "กดปุ่ม Project settings (ไอคอนเฟือง) — หน้า General: ชื่อ · Ratio · Genre · Status · Owner · สถิติ · Danger zone (Delete project)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "img": "2026-09-14__12-studio-agent__07-tab-elements.webp",
+     "caption": "แท็บ Elements — Cast / Set / Prop ของเรื่อง",
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
-     "img": "2026-09-14__12-studio-agent__05b-project-settings-members.webp",
-     "caption": "Project settings → Members — สมาชิกที่เข้าโปรเจกต์นี้ได้",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__05c-project-settings-library.webp",
-     "caption": "Project settings → Library — คลังไฟล์ของโปรเจกต์",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__05d-project-settings-storage.webp",
-     "caption": "Project settings → Storage — พื้นที่ที่โปรเจกต์นี้ใช้",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__15-choose-skill-menu.webp",
-     "caption": "กดปุ่ม Choose skill ในช่องแชท — เลือกสกิล (Auto-select · Auto Director · Auto Movie · Shot Continuity · Script from Story · สกิลส่วนตัว)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__16-attach-files.webp",
-     "caption": "กดปุ่ม Attach files ในช่องแชท — แนบไฟล์ให้ AI Director",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__17-quick-action-status.webp",
-     "caption": "กดปุ่มลัด 'Check status and continue' — AI Director ตอบสถานะโปรเจกต์ในแชท",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__18-theme-light.webp",
-     "caption": "กดปุ่มธีม (พระอาทิตย์) ที่หัวขวา — Studio ธีมสว่าง",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__19-language-th.webp",
-     "caption": "กด TH — Studio ภาษาไทย (สลับกลับธีมมืดแล้ว)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "img": "2026-09-14__12-studio-agent__08-tab-elements-full.webp",
+     "caption": "แท็บ Elements ทั้งหน้า",
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
      "img": "2026-09-14__12-studio-agent__21-elements-sets.webp",
      "caption": "แท็บ Elements → Sets (4) — ฉาก/สถานที่ของเรื่อง · แท็บย่อย Casts / Sets / Props / Mix Stage · ปุ่ม Upload",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
      "img": "2026-09-14__12-studio-agent__22-elements-set-detail.webp",
      "caption": "กดการ์ด Set ใบแรก — แผงรายละเอียด entity (รูป · คำอธิบาย · reference · ปุ่ม gen)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
      "img": "2026-09-14__12-studio-agent__23-elements-mix-stage.webp",
      "caption": "แท็บ Elements → Mix Stage (16) — คลังภาพ/วิดีโออ้างอิงของโปรเจกต์",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
      "img": "2026-09-14__12-studio-agent__24-elements-mix-stage-full.webp",
      "caption": "Mix Stage ทั้งหน้า",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
      "img": "2026-09-14__12-studio-agent__25-elements-create-character.webp",
      "caption": "แท็บ Casts (0) → กด Create a new character — ฟอร์มสร้างตัวละคร (ไม่ได้บันทึก)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
     },
     {
      "img": "2026-09-14__12-studio-agent__26-elements-upload.webp",
      "caption": "แท็บ Elements → กด Upload — อัปโหลดไฟล์เข้าโปรเจกต์",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Elements",
+     "sectionKey": "studio-id-v2--450b3b58"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__09-tab-sequence.webp",
+     "caption": "แท็บ Sequence — ลำดับช็อต (storyboard / วิดีโอต่อช็อต)",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__10-tab-sequence-full.webp",
+     "caption": "แท็บ Sequence ทั้งหน้า",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
     },
     {
      "img": "2026-09-14__12-studio-agent__27-sequence-shot-card.webp",
      "caption": "แท็บ Sequence — การ์ดช็อต: Storyboard/Manhwa · STORYBOARD FRAME · Mix Stage · VIDEO PROMPT · ความยาว · Generate Video · Timeline · Video options",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
     },
     {
      "img": "2026-09-14__12-studio-agent__28-sequence-preview.webp",
      "caption": "กด Preview — พรีวิวลำดับช็อตทั้งซีเควนซ์",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
     },
     {
      "img": "2026-09-14__12-studio-agent__29-sequence-models.webp",
      "caption": "กด Models — เลือกโมเดลภาพ/วิดีโอที่ใช้ทั้งซีเควนซ์",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__31-sequence-storyboard-options.webp",
-     "caption": "กดลูกศรข้าง Generate Storyboard (Generate storyboard options) — ตัวเลือกการสร้าง storyboard",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__32-sequence-manhwa.webp",
-     "caption": "กดสลับ Storyboard → Manhwa บนการ์ดช็อต",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__33-sequence-video-options.webp",
-     "caption": "กด Video options ของช็อต — ตั้งค่าวิดีโอ (โมเดล · input mode · ความยาว)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__34-sequence-mix-stage-picker.webp",
-     "caption": "กด Mix Stage บนการ์ดช็อต — เลือกภาพอ้างอิงจาก Mix Stage ให้ช็อตนี้",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__35-sequence-video-prompt.webp",
-     "caption": "กด VIDEO PROMPT — แก้พรอมต์วิดีโอของช็อต",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__36-sequence-storyboard-frame.webp",
-     "caption": "กด STORYBOARD FRAME — ขยายภาพ storyboard ของช็อต (ปุ่ม Previous/Next/Remove/Upload image)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__15-quick-action-status.webp",
-     "caption": "กดปุ่มลัด 📊 Check status and continue — AI Director ตอบสถานะโปรเจกต์ (โมเดลแชทไม่คิดแต้มตามที่เห็น)",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__16-theme-light.webp",
-     "caption": "กดปุ่มธีม (Light) ที่หัวขวา — Studio ธีมสว่าง",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__17-language-th.webp",
-     "caption": "กด TH — Studio ภาษาไทย",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__12-studio-agent__37-sequence-timeline-button.webp",
-     "caption": "กดปุ่ม Timeline บนวิดีโอของช็อต — ส่งเทคนี้เข้า timeline/ตัดต่อ",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
-    },
-    {
-     "img": "2026-09-14__14-video-editor__17-close-editor-unsaved.webp",
-     "caption": "ใส่คลิปแล้วกด × Close editor โดยไม่ Save — สิ่งที่ระบบแสดง",
-     "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2--1"
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
     },
     {
      "img": "2026-09-14__12-studio-agent__30-sequence-more-actions.webp",
      "caption": "กด More actions (⋯) ของซีเควนซ์/ช็อต — เมนูจัดการ",
-     "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-v2--2"
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__31-sequence-storyboard-options.webp",
+     "caption": "กดลูกศรข้าง Generate Storyboard (Generate storyboard options) — ตัวเลือกการสร้าง storyboard",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__32-sequence-manhwa.webp",
+     "caption": "กดสลับ Storyboard → Manhwa บนการ์ดช็อต",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__33-sequence-video-options.webp",
+     "caption": "กด Video options ของช็อต — ตั้งค่าวิดีโอ (โมเดล · input mode · ความยาว)",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__34-sequence-mix-stage-picker.webp",
+     "caption": "กด Mix Stage บนการ์ดช็อต — เลือกภาพอ้างอิงจาก Mix Stage ให้ช็อตนี้",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__35-sequence-video-prompt.webp",
+     "caption": "กด VIDEO PROMPT — แก้พรอมต์วิดีโอของช็อต",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__36-sequence-storyboard-frame.webp",
+     "caption": "กด STORYBOARD FRAME — ขยายภาพ storyboard ของช็อต (ปุ่ม Previous/Next/Remove/Upload image)",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__37-sequence-timeline-button.webp",
+     "caption": "กดปุ่ม Timeline บนวิดีโอของช็อต — ส่งเทคนี้เข้า timeline/ตัดต่อ",
+     "section": "แท็บ Sequence",
+     "sectionKey": "studio-id-v2--fc10548d"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__11-tab-timeline.webp",
+     "caption": "แท็บ Timeline — เรียงช็อตตามเวลา",
+     "section": "แท็บ Timeline",
+     "sectionKey": "studio-id-v2--c2bf7502"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__12-tab-timeline-full.webp",
+     "caption": "แท็บ Timeline ทั้งหน้า",
+     "section": "แท็บ Timeline",
+     "sectionKey": "studio-id-v2--c2bf7502"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__02-chat-input-area.webp",
+     "caption": "ช่องพิมพ์แชทด้านล่างซ้าย — ตัวเลือก Browser tool mode (Auto Confirm) · Model (GLM/Fable) · ปุ่มส่ง",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__03-new-chat.webp",
+     "caption": "กดปุ่ม New chat (ไอคอนบนหัวแชท) — เริ่มบทสนทนาใหม่",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__06-hide-chat-panel.webp",
+     "caption": "กดปุ่ม Hide chat panel — ซ่อนแชท เหลือพื้นที่งานเต็มจอ",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__15-choose-skill-menu.webp",
+     "caption": "กดปุ่ม Choose skill ในช่องแชท — เลือกสกิล (Auto-select · Auto Director · Auto Movie · Shot Continuity · Script from Story · สกิลส่วนตัว)",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__16-attach-files.webp",
+     "caption": "กดปุ่ม Attach files ในช่องแชท — แนบไฟล์ให้ AI Director",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__17-quick-action-status.webp",
+     "caption": "กดปุ่มลัด 'Check status and continue' — AI Director ตอบสถานะโปรเจกต์ในแชท",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__15-quick-action-status.webp",
+     "caption": "กดปุ่มลัด 📊 Check status and continue — AI Director ตอบสถานะโปรเจกต์ (โมเดลแชทไม่คิดแต้มตามที่เห็น)",
+     "section": "แชท AI Director",
+     "sectionKey": "studio-id-v2--f36eb6c0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05-project-settings.webp",
+     "caption": "กดปุ่ม Project settings — ตั้งค่าโปรเจกต์ (ไม่ได้บันทึก)",
+     "section": "Project settings",
+     "sectionKey": "studio-id-v2--c706def0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05a-project-settings-general.webp",
+     "caption": "กดปุ่ม Project settings (ไอคอนเฟือง) — หน้า General: ชื่อ · Ratio · Genre · Status · Owner · สถิติ · Danger zone (Delete project)",
+     "section": "Project settings",
+     "sectionKey": "studio-id-v2--c706def0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05b-project-settings-members.webp",
+     "caption": "Project settings → Members — สมาชิกที่เข้าโปรเจกต์นี้ได้",
+     "section": "Project settings",
+     "sectionKey": "studio-id-v2--c706def0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05c-project-settings-library.webp",
+     "caption": "Project settings → Library — คลังไฟล์ของโปรเจกต์",
+     "section": "Project settings",
+     "sectionKey": "studio-id-v2--c706def0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__05d-project-settings-storage.webp",
+     "caption": "Project settings → Storage — พื้นที่ที่โปรเจกต์นี้ใช้",
+     "section": "Project settings",
+     "sectionKey": "studio-id-v2--c706def0"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__18-theme-light.webp",
+     "caption": "กดปุ่มธีม (พระอาทิตย์) ที่หัวขวา — Studio ธีมสว่าง",
+     "section": "ธีมและภาษา",
+     "sectionKey": "studio-id-v2--c0700037"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__19-language-th.webp",
+     "caption": "กด TH — Studio ภาษาไทย (สลับกลับธีมมืดแล้ว)",
+     "section": "ธีมและภาษา",
+     "sectionKey": "studio-id-v2--c0700037"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__16-theme-light.webp",
+     "caption": "กดปุ่มธีม (Light) ที่หัวขวา — Studio ธีมสว่าง",
+     "section": "ธีมและภาษา",
+     "sectionKey": "studio-id-v2--c0700037"
+    },
+    {
+     "img": "2026-09-14__12-studio-agent__17-language-th.webp",
+     "caption": "กด TH — Studio ภาษาไทย",
+     "section": "ธีมและภาษา",
+     "sectionKey": "studio-id-v2--c0700037"
+    },
+    {
+     "img": "2026-09-14__14-video-editor__17-close-editor-unsaved.webp",
+     "caption": "ใส่คลิปแล้วกด × Close editor โดยไม่ Save — สิ่งที่ระบบแสดง",
+     "section": "ปิดตัวตัดต่อแล้วกลับมาหน้านี้",
+     "sectionKey": "studio-id-v2--39a259cd"
     }
    ]
   },
@@ -1573,7 +1717,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "studio-id-v2-activity--1"
+     "key": "studio-id-v2-activity--3fd63108"
     }
    ],
    "shots": [
@@ -1581,13 +1725,13 @@
      "img": "2026-09-14__12-studio-agent__05e-project-settings-activity.webp",
      "caption": "Project settings → Activity log — ประวัติการทำงานในโปรเจกต์",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2-activity--1"
+     "sectionKey": "studio-id-v2-activity--3fd63108"
     },
     {
      "img": "2026-09-14__12-studio-agent__05-project-settings-plans.webp",
      "caption": "Project settings → Plans & credits (หมวด Workspace)",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-v2-activity--1"
+     "sectionKey": "studio-id-v2-activity--3fd63108"
     }
    ]
   },
@@ -1600,11 +1744,11 @@
    "sections": [
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "studio-id-idea-board--1"
+     "key": "studio-id-idea-board--d6fbdec0"
     },
     {
      "name": "ตัวหน้า",
-     "key": "studio-id-idea-board--2"
+     "key": "studio-id-idea-board--3fd63108"
     }
    ],
    "shots": [
@@ -1612,121 +1756,121 @@
      "img": "2026-09-14__13-canvas__01-canvas-overview.webp",
      "caption": "เปิดโปรเจกต์โหมด Canvas (CNX) — กระดาน node: ซ้าย: AI assistance · Select/Pan · Add input/processing/tool/helper node · ล่างซ้าย: Zoom/Fit/ภาพรวม · หัว: ชื่อโปรเจกต์ · Board Library · Tasks · ขวาล่าง: More actions · Open video editor",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__03-add-input-node.webp",
      "caption": "กด Add input node — เมนู node ขาเข้า 7 ชนิด (Prompt text · Image · Video · Audio · Asset reference · Canvas reference · Insert from output)",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__04-add-processing-node.webp",
      "caption": "กด Add processing node — เมนู node ประมวลผล (Generate image/video/audio · Edit · Extend …)",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__05-add-tool-node.webp",
      "caption": "กด Add tool node — เมนูเครื่องมือ 33 ตัวที่ใส่บนกระดานได้",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__06-add-tool-node-full.webp",
      "caption": "เมนู Add tool node เลื่อนดูรายการที่เหลือ",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__07-add-helper-node.webp",
      "caption": "กด Add helper node — เมนู node ตัวช่วย (Sticky note · Visual note …)",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__09-project-menu.webp",
      "caption": "กดชื่อโปรเจกต์ (CNX) มุมซ้ายบน — เมนูโปรเจกต์",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__13-more-workspace-actions.webp",
      "caption": "กด More workspace actions (ขวาล่าง) — เมนูเพิ่มเติมของกระดาน",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__15-output-add-menu.webp",
      "caption": "การ์ด output กดปุ่ม Add — เมนู Timeline / Review / Promote",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-idea-board--1"
+     "sectionKey": "studio-id-idea-board--d6fbdec0"
     },
     {
      "img": "2026-09-14__13-canvas__02-fit-view.webp",
      "caption": "กด Fit View — ย่อให้เห็นทั้งกระดาน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__08-ai-assistance.webp",
      "caption": "กด Open AI assistance (ซ้ายบน) — แชทช่วยทำงานบนกระดาน (skill IdeaBoard / Board Movie)",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__10-board-library.webp",
      "caption": "กด Board Library — รายการกระดานในโปรเจกต์ / สร้างกระดานใหม่",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__11-tasks-panel.webp",
      "caption": "กด Tasks (ขวาบน) — รายการงานที่กำลังรัน/เสร็จบนกระดาน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__12-active-members.webp",
      "caption": "กดปุ่มตัวอักษร D (1 active) — คนที่กำลังเปิดกระดานอยู่",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__14-overview-map.webp",
      "caption": "กด Show overview map — แผนที่ย่อของกระดาน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__16-output-detail.webp",
      "caption": "การ์ด output กดปุ่ม Detail — รายละเอียดผลงาน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__17-gen-node-input-issue.webp",
      "caption": "node gen ที่ยังขาด input — ป้าย '1 input issue' + ปุ่ม Rules / Config",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__18-gen-node-rules.webp",
      "caption": "กด Rules บน node gen — กติกา input ของโมเดล",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__19-pan-mode.webp",
      "caption": "กด Pan mode — โหมดลากกระดาน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     },
     {
      "img": "2026-09-14__13-canvas__20-open-video-editor-button.webp",
      "caption": "ปุ่ม Open video editor มุมขวาล่าง — พาไปหน้าตัดต่อของโปรเจกต์นี้",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-idea-board--2"
+     "sectionKey": "studio-id-idea-board--3fd63108"
     }
    ]
   },
@@ -1739,11 +1883,11 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "studio-id-video-editor--1"
+     "key": "studio-id-video-editor--3fd63108"
     },
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "studio-id-video-editor--2"
+     "key": "studio-id-video-editor--d6fbdec0"
     }
    ],
    "shots": [
@@ -1751,97 +1895,97 @@
      "img": "2026-09-14__14-video-editor__01-editor-overview.webp",
      "caption": "หน้า Video Editor — ซ้าย: Media (คลิปวิดีโอของช็อต ปุ่ม Download/Add) · กลาง: จอพรีวิว · ล่าง: timeline 3 layer (Video / Sound / Background music) · หัว: New video · Video draft · Save · Review · Close",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__02-new-video.webp",
      "caption": "กด New video — สร้างวิดีโอตัดต่อใหม่ในโปรเจกต์ (ไม่ได้สร้าง)",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__04-manage-folders.webp",
      "caption": "กดปุ่ม Manage folders — จัดโฟลเดอร์วิดีโอ",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__05-add-clip.webp",
      "caption": "กด Add ที่คลิป Shot 1 และ Shot 2 ใน Media — คลิปเข้าไปต่อกันบน timeline (ยังไม่ได้ Save)",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__06-clip-selected.webp",
      "caption": "กดเลือกคลิปบน timeline — คลิปถูกไฮไลต์ ปุ่ม S (split) · A (arrange) · C (capture frame) · Del ใช้งานได้",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__07-split-clip.webp",
      "caption": "เลื่อน playhead แล้วกด S — คลิปถูกตัดแบ่งเป็น 2 ส่วน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__08-capture-frame.webp",
      "caption": "กด C (Capture the current frame) — เก็บภาพเฟรมปัจจุบันเป็นรูป",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__09-play.webp",
      "caption": "กด Play — พรีวิวเล่นวิดีโอ (playhead เดิน)",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__10-aspect-ratio-9-16.webp",
      "caption": "เปลี่ยน Frame aspect ratio (16:9 ▾) เป็น 9:16 — จอพรีวิวเปลี่ยนสัดส่วน",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__11-add-layer.webp",
      "caption": "กด Add layer — ตัวเลือกเพิ่ม layer",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__12-layer-lock-hover.webp",
      "caption": "แถว layer: ชื่อ (แก้ได้) · ซ่อน · ล็อก · ย้ายขึ้น/ลง · ลบ layer — ชี้ที่ปุ่ม Lock layer",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__13-review.webp",
      "caption": "กด Review — โหมดรีวิววิดีโอที่ตัดไว้",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__14-export-dialog.webp",
      "caption": "กด Export — หน้าต่างเรนเดอร์ MP4 บนเครื่อง (720p/1080p · คุณภาพ · 'no points') — ปุ่ม Start render กดไม่ได้เมื่อ timeline ว่าง",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__15-export-with-clips.webp",
      "caption": "ใส่คลิปแล้วกด Export — ตัวเลือกเรนเดอร์พร้อมปุ่ม Start render (ไม่ได้กด)",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__16-sources.webp",
      "caption": "กด Sources — ดาวน์โหลดไฟล์ต้นทางที่ใช้ใน timeline",
      "section": "ตัวหน้า",
-     "sectionKey": "studio-id-video-editor--1"
+     "sectionKey": "studio-id-video-editor--3fd63108"
     },
     {
      "img": "2026-09-14__14-video-editor__03-manage-current-video.webp",
      "caption": "กดปุ่ม Manage current video — เมนู Rename / Duplicate / Delete ของวิดีโอนี้",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "studio-id-video-editor--2"
+     "sectionKey": "studio-id-video-editor--d6fbdec0"
     }
    ]
   },
@@ -1854,7 +1998,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "examples-canvas-slug--1"
+     "key": "examples-canvas-slug--3fd63108"
     }
    ],
    "shots": [
@@ -1862,43 +2006,43 @@
      "img": "2026-09-14__15-examples__01-prompt-to-image-starter.webp",
      "caption": "ตัวอย่าง Prompt to Image (read-only demo) — กระดานสำเร็จรูปจากหน้าแรก",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     },
     {
      "img": "2026-09-14__15-examples__02-use-this-canvas.webp",
      "caption": "ปุ่ม/ทางใช้กระดานตัวอย่างนี้กับโปรเจกต์ของเรา",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     },
     {
      "img": "2026-09-14__15-examples__03-perfume-video-ad-variants.webp",
      "caption": "ตัวอย่าง Perfume Video Ad Variants",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     },
     {
      "img": "2026-09-14__15-examples__04-multi-reference-storyboard-sheet.webp",
      "caption": "ตัวอย่าง Multi-reference Storyboard Sheet",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     },
     {
      "img": "2026-09-14__15-examples__05-multi-reference-video-generation.webp",
      "caption": "ตัวอย่าง Multi-reference Video Generation",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     },
     {
      "img": "2026-09-14__15-examples__06-animated-film-cover-design.webp",
      "caption": "ตัวอย่าง Animated Film Cover Design",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     },
     {
      "img": "2026-09-14__15-examples__07-thai-voice-reference-video.webp",
      "caption": "ตัวอย่าง Thai Voice Reference Video",
      "section": "ตัวหน้า",
-     "sectionKey": "examples-canvas-slug--1"
+     "sectionKey": "examples-canvas-slug--3fd63108"
     }
    ]
   },
@@ -1910,74 +2054,90 @@
    "desc": "รายการสกิลของ agent",
    "sections": [
     {
-     "name": "เมนูและแถบซ้าย",
-     "key": "skills--1"
+     "name": "แท็บ All (หน้าแรก)",
+     "key": "skills--e4d7b29d"
     },
     {
-     "name": "ตัวหน้า",
-     "key": "skills--2"
+     "name": "แท็บ Personal",
+     "key": "skills--0425e4ca"
+    },
+    {
+     "name": "แท็บ Preset",
+     "key": "skills--ec7d0e1b"
+    },
+    {
+     "name": "ตัวกรองและค้นหา",
+     "key": "skills--c66dc733"
+    },
+    {
+     "name": "สร้าง Skill Set",
+     "key": "skills--053a41b7"
+    },
+    {
+     "name": "จัดการสกิล (เปิด · คัดลอก · ลบ)",
+     "key": "skills--82439912"
     }
    ],
    "shots": [
     {
      "img": "2026-09-14__10-skills__01-skills-list.webp",
      "caption": "หน้า /skills — My skills: แถบซ้าย (Skill set: All skills / Unassigned) · แท็บ All / Personal / Preset · ช่องค้นหา · ตัวกรอง Available in / Status · รายการสกิล",
-     "section": "เมนูและแถบซ้าย",
-     "sectionKey": "skills--1"
-    },
-    {
-     "img": "2026-09-14__10-skills__07-new-skill-set.webp",
-     "caption": "กดปุ่ม + (New Skill Set) ที่แถบซ้าย — ฟอร์มสร้างชุดสกิล (ไม่ได้บันทึก)",
-     "section": "เมนูและแถบซ้าย",
-     "sectionKey": "skills--1"
+     "section": "แท็บ All (หน้าแรก)",
+     "sectionKey": "skills--e4d7b29d"
     },
     {
      "img": "2026-09-14__10-skills__02-tab-personal.webp",
      "caption": "กดแท็บ Personal — เห็นเฉพาะสกิลที่สร้างเอง",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
+     "section": "แท็บ Personal",
+     "sectionKey": "skills--0425e4ca"
     },
     {
      "img": "2026-09-14__10-skills__03-tab-preset.webp",
      "caption": "กดแท็บ Preset — สกิลสำเร็จรูป 6 ตัวของระบบ (Read-only)",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
-    },
-    {
-     "img": "2026-09-14__10-skills__04-filter-surface-canvas.webp",
-     "caption": "ตัวกรอง Available in เลือก Canvas — เหลือสกิลที่ใช้บน Canvas",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
-    },
-    {
-     "img": "2026-09-14__10-skills__05-filter-status.webp",
-     "caption": "ตัวกรอง Status — ตัวเลือก Ready / Draft / Validation failed",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
-    },
-    {
-     "img": "2026-09-14__10-skills__06-search-skills.webp",
-     "caption": "พิมพ์ค้นหาสกิล 'fact'",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
-    },
-    {
-     "img": "2026-09-14__10-skills__08-skill-card-actions.webp",
-     "caption": "แถวสกิล: สวิตช์ Enabled · ปุ่ม Create a copy · Open editor · Delete",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
-    },
-    {
-     "img": "2026-09-14__10-skills__09-delete-skill-confirm.webp",
-     "caption": "กดปุ่ม Delete ของสกิล — หน้าต่างยืนยันลบ (ไม่ได้กดยืนยัน)",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
+     "section": "แท็บ Preset",
+     "sectionKey": "skills--ec7d0e1b"
     },
     {
      "img": "2026-09-14__10-skills__13-preset-skill-open.webp",
      "caption": "กดการ์ดสกิล Preset (Auto Director) — หน้ารายละเอียดสกิล Read-only",
-     "section": "ตัวหน้า",
-     "sectionKey": "skills--2"
+     "section": "แท็บ Preset",
+     "sectionKey": "skills--ec7d0e1b"
+    },
+    {
+     "img": "2026-09-14__10-skills__04-filter-surface-canvas.webp",
+     "caption": "ตัวกรอง Available in เลือก Canvas — เหลือสกิลที่ใช้บน Canvas",
+     "section": "ตัวกรองและค้นหา",
+     "sectionKey": "skills--c66dc733"
+    },
+    {
+     "img": "2026-09-14__10-skills__05-filter-status.webp",
+     "caption": "ตัวกรอง Status — ตัวเลือก Ready / Draft / Validation failed",
+     "section": "ตัวกรองและค้นหา",
+     "sectionKey": "skills--c66dc733"
+    },
+    {
+     "img": "2026-09-14__10-skills__06-search-skills.webp",
+     "caption": "พิมพ์ค้นหาสกิล 'fact'",
+     "section": "ตัวกรองและค้นหา",
+     "sectionKey": "skills--c66dc733"
+    },
+    {
+     "img": "2026-09-14__10-skills__07-new-skill-set.webp",
+     "caption": "กดปุ่ม + (New Skill Set) ที่แถบซ้าย — ฟอร์มสร้างชุดสกิล (ไม่ได้บันทึก)",
+     "section": "สร้าง Skill Set",
+     "sectionKey": "skills--053a41b7"
+    },
+    {
+     "img": "2026-09-14__10-skills__08-skill-card-actions.webp",
+     "caption": "แถวสกิล: สวิตช์ Enabled · ปุ่ม Create a copy · Open editor · Delete",
+     "section": "จัดการสกิล (เปิด · คัดลอก · ลบ)",
+     "sectionKey": "skills--82439912"
+    },
+    {
+     "img": "2026-09-14__10-skills__09-delete-skill-confirm.webp",
+     "caption": "กดปุ่ม Delete ของสกิล — หน้าต่างยืนยันลบ (ไม่ได้กดยืนยัน)",
+     "section": "จัดการสกิล (เปิด · คัดลอก · ลบ)",
+     "sectionKey": "skills--82439912"
     }
    ]
   },
@@ -1990,7 +2150,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "skills-new--1"
+     "key": "skills-new--3fd63108"
     }
    ],
    "shots": [
@@ -1998,7 +2158,7 @@
      "img": "2026-09-14__10-skills__11-skill-new.webp",
      "caption": "กด New skill → หน้า Create a personal skill — ฟอร์ม + Built-in modules + Skill Builder chat (ทั้งหน้า)",
      "section": "ตัวหน้า",
-     "sectionKey": "skills-new--1"
+     "sectionKey": "skills-new--3fd63108"
     }
    ]
   },
@@ -2011,7 +2171,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "skills-import--1"
+     "key": "skills-import--3fd63108"
     }
    ],
    "shots": [
@@ -2019,7 +2179,7 @@
      "img": "2026-09-14__10-skills__12-skill-import.webp",
      "caption": "กด Import skill → หน้า Import skill pack — รับไฟล์ .zip / .md / .json (ทั้งหน้า)",
      "section": "ตัวหน้า",
-     "sectionKey": "skills-import--1"
+     "sectionKey": "skills-import--3fd63108"
     }
    ]
   },
@@ -2032,7 +2192,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "skills-id--1"
+     "key": "skills-id--3fd63108"
     }
    ],
    "shots": [
@@ -2040,7 +2200,7 @@
      "img": "2026-09-14__10-skills__10-skill-editor.webp",
      "caption": "กด Open editor (ลูกศร >) ของสกิลส่วนตัว — หน้าแก้ไขสกิล (/skills/{id}) ทั้งหน้า",
      "section": "ตัวหน้า",
-     "sectionKey": "skills-id--1"
+     "sectionKey": "skills-id--3fd63108"
     }
    ]
   },
@@ -2053,11 +2213,11 @@
    "sections": [
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "prompt-helpers--1"
+     "key": "prompt-helpers--d6fbdec0"
     },
     {
      "name": "ตัวหน้า",
-     "key": "prompt-helpers--2"
+     "key": "prompt-helpers--3fd63108"
     }
    ],
    "shots": [
@@ -2065,31 +2225,31 @@
      "img": "2026-09-14__11-prompt-helpers__01-helpers-list.webp",
      "caption": "หน้า /prompt-helpers — แท็บ โปรไฟล์ตัวช่วย / วิเคราะห์พรอมต์ · หมวดซ้าย · ตัวกรอง All/Image/Video/Audio · Presets/Mine · การ์ด preset 4 ใบ",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "prompt-helpers--1"
+     "sectionKey": "prompt-helpers--d6fbdec0"
     },
     {
      "img": "2026-09-14__11-prompt-helpers__03-category-cinematic.webp",
      "caption": "กลับแท็บโปรไฟล์ตัวช่วย แล้วกดหมวด Cinematic — เหลือการ์ดในหมวดนั้น",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "prompt-helpers--1"
+     "sectionKey": "prompt-helpers--d6fbdec0"
     },
     {
      "img": "2026-09-14__11-prompt-helpers__02-tab-analyze.webp",
      "caption": "กดแท็บ วิเคราะห์พรอมต์ (0) — รายการผลวิเคราะห์ (ยังว่าง)",
      "section": "ตัวหน้า",
-     "sectionKey": "prompt-helpers--2"
+     "sectionKey": "prompt-helpers--3fd63108"
     },
     {
      "img": "2026-09-14__11-prompt-helpers__04-filter-image.webp",
      "caption": "ตัวกรองชนิด กด Image — เหลือ helper สำหรับภาพ",
      "section": "ตัวหน้า",
-     "sectionKey": "prompt-helpers--2"
+     "sectionKey": "prompt-helpers--3fd63108"
     },
     {
      "img": "2026-09-14__11-prompt-helpers__05-filter-mine.webp",
      "caption": "ตัวกรอง Mine — helper ที่สร้างเอง (ยังไม่มี)",
      "section": "ตัวหน้า",
-     "sectionKey": "prompt-helpers--2"
+     "sectionKey": "prompt-helpers--3fd63108"
     }
    ]
   },
@@ -2102,7 +2262,7 @@
    "sections": [
     {
      "name": "เมนูและแถบซ้าย",
-     "key": "prompt-helpers-new--1"
+     "key": "prompt-helpers-new--d6fbdec0"
     }
    ],
    "shots": [
@@ -2110,7 +2270,7 @@
      "img": "2026-09-14__11-prompt-helpers__07-helper-new.webp",
      "caption": "กด New helper → ฟอร์ม New Prompt Helper 10 ช่อง + ปุ่ม วิเคราะห์และร่างโปรไฟล์ 20pt (ไม่ได้กด)",
      "section": "เมนูและแถบซ้าย",
-     "sectionKey": "prompt-helpers-new--1"
+     "sectionKey": "prompt-helpers-new--d6fbdec0"
     }
    ]
   },
@@ -2123,7 +2283,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "prompt-helpers-id--1"
+     "key": "prompt-helpers-id--3fd63108"
     }
    ],
    "shots": [
@@ -2131,7 +2291,7 @@
      "img": "2026-09-14__11-prompt-helpers__06-preset-card-open.webp",
      "caption": "กดการ์ด preset — หน้ารายละเอียด Preset (read-only)",
      "section": "ตัวหน้า",
-     "sectionKey": "prompt-helpers-id--1"
+     "sectionKey": "prompt-helpers-id--3fd63108"
     }
    ]
   },
@@ -2144,7 +2304,7 @@
    "sections": [
     {
      "name": "ตัวหน้า",
-     "key": "prompts--1"
+     "key": "prompts--3fd63108"
     }
    ],
    "shots": [
@@ -2152,7 +2312,7 @@
      "img": "fortal-ui-2026-09-15__02-new-pages__03-prompts.webp",
      "caption": "คลังพรอมต์ (คนละหน้ากับ /prompt-helpers)",
      "section": "ตัวหน้า",
-     "sectionKey": "prompts--1"
+     "sectionKey": "prompts--3fd63108"
     }
    ]
   }
